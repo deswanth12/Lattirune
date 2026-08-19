@@ -69,7 +69,7 @@ namespace Lattirune.Editor
             Debug.Log($"[Lattirune.Build] Starting Android Build ({outputFileName}, AppBundle: {isAppBundle}, Release: {isRelease})...");
 
             // 1. Configure Android Player Settings
-            PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, PACKAGE_ID);
+            PlayerSettings.SetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Android, PACKAGE_ID);
             PlayerSettings.bundleVersion = "1.0.0";
             PlayerSettings.Android.bundleVersionCode = 1;
             PlayerSettings.productName = "Lattirune";

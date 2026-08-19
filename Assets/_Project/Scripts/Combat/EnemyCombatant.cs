@@ -94,6 +94,11 @@ namespace Lattirune.Combat
                     int poisonStacks = Mathf.Max(1, Mathf.RoundToInt(trait.TraitValue));
                     OnPoisonInflicted?.Invoke(poisonStacks);
                 }
+                else if (trait.TraitType == EnemyTraitType.SummonMinions)
+                {
+                    int minions = Mathf.Max(1, Mathf.RoundToInt(trait.TraitValue));
+                    OnMinionsSummoned?.Invoke(minions);
+                }
             }
         }
 

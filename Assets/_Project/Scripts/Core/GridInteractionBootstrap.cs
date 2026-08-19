@@ -50,6 +50,8 @@ namespace Lattirune.Core
         [SerializeField] private Vector3 stagingOrigin = new Vector3(-2.2f, -4f, 0f);
         [SerializeField] private float itemSpacing = 1.1f;
 
+        public float ItemSpacing => itemSpacing;
+
         [Header("Item Catalogue (TASK-005 Prototype Items)")]
         [SerializeField] private List<ItemDataSO> prototypeItemCatalogue = new List<ItemDataSO>();
 
