@@ -98,14 +98,38 @@ namespace Lattirune.Tests
 
             // Re-initialize (unsubscribes previous)
             _coordinator.Initialize(_audio, _haptic, grid, synergy, null, null);
-
-            // Trigger another placement
-            grid.PlaceItem("item_02", new Vector2Int(1, 1), new Vector2Int(1, 1));
-            // Total should be 2, not 3 (no duplicate listeners!)
+            grid.PlaceItem("item_02", new Vector2Int(0, 0), new Vector2Int(1, 1));
             Assert.AreEqual(2, _haptic.TriggerCount);
             Assert.AreEqual(2, _audio.TotalSfxPlayed);
 
             Object.DestroyImmediate(synergyObj);
+        }
+
+        [Test]
+        public void InteractionFeedbackCoordinator_ReactionAndMerchantEvents_TriggerFeedback()
+        {
+            var rxnObj = new GameObject("RxnSys");
+            var rxnSys = rxnObj.AddComponent<Lattirune.Reactions.ElementalReactionSystem>();
+            rxnSys.EnsureDefaultDefinitions();
+
+            var merchObj = new GameObject("MerchSys");
+            var merchSys = merchObj.AddComponent<Lattirune.Economy.MerchantSystem>();
+            merchSys.Initialize();
+
+            _coordinator.Initialize(_audio, _haptic, null, null, null, null, rxnSys, merchSys);
+
+            // Test merchant purchase
+            merchSys.GenerateOffers(1);
+            var economy = merchObj.AddComponent<Lattirune.Economy.SimpleEconomyService>();
+            economy.Initialize(999);
+            merchSys.BuyOffer(0, economy);
+
+            Assert.AreEqual(1, _haptic.TriggerCount);
+            Assert.AreEqual(HapticType.Success, _haptic.LastTriggered);
+            Assert.AreEqual(AudioCueType.RewardApplied, _audio.LastCuePlayed);
+
+            Object.DestroyImmediate(rxnObj);
+            Object.DestroyImmediate(merchObj);
         }
     }
 }

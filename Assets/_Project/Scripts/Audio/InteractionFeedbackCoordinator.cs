@@ -21,6 +21,8 @@ namespace Lattirune.Audio
         private SynergySystem _synergySystem;
         private CombatSystem _combatSystem;
         private RewardService _rewardService;
+        private Reactions.ElementalReactionSystem _reactionSystem;
+        private Economy.MerchantSystem _merchantSystem;
 
         public AudioController Audio => audioController;
         public HapticFeedback Haptics => hapticFeedback;
@@ -31,7 +33,9 @@ namespace Lattirune.Audio
             LatticeGrid grid,
             SynergySystem synergy,
             CombatSystem combat,
-            RewardService rewards)
+            RewardService rewards,
+            Reactions.ElementalReactionSystem reactions = null,
+            Economy.MerchantSystem merchant = null)
         {
             UnsubscribeAll();
 
@@ -41,6 +45,8 @@ namespace Lattirune.Audio
             _synergySystem = synergy;
             _combatSystem = combat;
             _rewardService = rewards;
+            _reactionSystem = reactions;
+            _merchantSystem = merchant;
 
             SubscribeAll();
         }
@@ -62,6 +68,16 @@ namespace Lattirune.Audio
             {
                 _synergySystem.OnSynergyActivated += HandleSynergyActivated;
                 _synergySystem.OnSynergyDeactivated += HandleSynergyDeactivated;
+            }
+
+            if (_reactionSystem != null)
+            {
+                _reactionSystem.OnReactionActivated += HandleReactionActivated;
+            }
+
+            if (_merchantSystem != null)
+            {
+                _merchantSystem.OnOfferPurchased += HandleOfferPurchased;
             }
 
             if (_combatSystem != null)
@@ -90,6 +106,16 @@ namespace Lattirune.Audio
             {
                 _synergySystem.OnSynergyActivated -= HandleSynergyActivated;
                 _synergySystem.OnSynergyDeactivated -= HandleSynergyDeactivated;
+            }
+
+            if (_reactionSystem != null)
+            {
+                _reactionSystem.OnReactionActivated -= HandleReactionActivated;
+            }
+
+            if (_merchantSystem != null)
+            {
+                _merchantSystem.OnOfferPurchased -= HandleOfferPurchased;
             }
 
             if (_combatSystem != null)
@@ -128,6 +154,18 @@ namespace Lattirune.Audio
         {
             audioController?.PlaySfx(AudioCueType.SynergyDeactivated);
             hapticFeedback?.TriggerHaptic(HapticType.Light);
+        }
+
+        private void HandleReactionActivated(Reactions.ElementalReactionResult result)
+        {
+            audioController?.PlaySfx(AudioCueType.RuneConduitIgnite);
+            hapticFeedback?.TriggerHaptic(HapticType.Heavy);
+        }
+
+        private void HandleOfferPurchased(Economy.MerchantOffer offer)
+        {
+            audioController?.PlaySfx(AudioCueType.RewardApplied);
+            hapticFeedback?.TriggerHaptic(HapticType.Success);
         }
 
         private void HandleAttackExecuted(DamageResult damage)

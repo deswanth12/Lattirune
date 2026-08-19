@@ -389,7 +389,8 @@ namespace Lattirune.Core
                 _grid, 
                 synergySystem, 
                 combatSystem, 
-                rewardService
+                rewardService,
+                reactionSystem
             );
         }
 
@@ -509,6 +510,11 @@ namespace Lattirune.Core
             merchantUiObj.transform.SetParent(transform);
             var merchantUI = merchantUiObj.AddComponent<MerchantStallUIController>();
             merchantUI.Initialize(merchantSystem, runManager, inventorySystem, _grid, _playerCombatant, runManager, navigationController);
+
+            if (feedbackCoordinator != null)
+            {
+                feedbackCoordinator.Initialize(audioController, hapticFeedback, _grid, synergySystem, combatSystem, rewardService, reactionSystem, merchantSystem);
+            }
 
             // Hero Classes & Loadouts Subsystem (TASK-057)
             GameObject heroObj = new GameObject("HeroClassManager");
