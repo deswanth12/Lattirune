@@ -104,7 +104,7 @@ namespace Lattirune.Tests
             // Create corrupt files in both primary and backup locations
             File.WriteAllBytes(_saveSystem.PrimarySavePath, new byte[] { 0x01, 0x02, 0x03 });
             File.WriteAllBytes(_saveSystem.BackupSavePath, new byte[] { 0x04, 0x05, 0x06 });
-
+            UnityEngine.TestTools.LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("Both primary and backup saves are corrupt"));
             LoadResult loadResult = _saveSystem.Load();
             Assert.AreEqual(SaveStatus.Corrupt, loadResult.Status);
             Assert.IsNotNull(loadResult.Data);

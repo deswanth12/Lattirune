@@ -146,5 +146,19 @@ namespace Lattirune.Dungeon
                 new List<EnemyTraitDefinitionSO> { summon });
             return enc;
         }
+
+        public void SetBossDefinition(Lattirune.Boss.BossDefinitionSO boss)
+        {
+            bossDefinition = boss;
+            isBoss = boss != null;
+        }
+
+        public static EncounterDefinitionSO CreateLichLord()
+        {
+            EncounterDefinitionSO enc = ScriptableObject.CreateInstance<EncounterDefinitionSO>();
+            enc.Initialize("enc_f10_lich", "Boss Chamber: The Lich Lord", "The Lich Lord", hp: 750, armor: 10, attack: 8, interval: 2.5f, boss: true);
+            enc.SetBossDefinition(Lattirune.Boss.BossDefinitionSO.CreateLichLordDefinition());
+            return enc;
+        }
     }
 }

@@ -163,7 +163,7 @@ namespace Lattirune.Tests
         {
             _mainMenu.StartNewRun();
 
-            Assert.AreEqual(ScreenState.GRID_BUILD, _nav.CurrentScreen);
+            Assert.AreEqual(ScreenState.HERO_SELECTION, _nav.CurrentScreen);
             Assert.AreEqual(1, _runManager.CurrentFloorNumber);
             Assert.AreEqual(1, _meta.TotalRunsAttempted);
         }
@@ -241,8 +241,10 @@ namespace Lattirune.Tests
             // 1. Start from Main Menu
             Assert.AreEqual(ScreenState.MAIN_MENU, _nav.CurrentScreen);
 
-            // 2. Start Run -> Grid Build
+            // 2. Start Run -> Hero Selection -> Grid Build
             _mainMenu.StartNewRun();
+            Assert.AreEqual(ScreenState.HERO_SELECTION, _nav.CurrentScreen);
+            _nav.NavigateTo(ScreenState.GRID_BUILD);
             Assert.AreEqual(ScreenState.GRID_BUILD, _nav.CurrentScreen);
 
             // 3. Confirm Grid -> Combat

@@ -172,54 +172,54 @@ namespace Lattirune.Tests
 
             // 1. Ember Rune: Fire, East, +6 Fire Dmg
             var ember = db.GetRune("rune_ember");
-            Assert.AreEqual(RuneElement.Fire, ember.Element);
+            Assert.AreEqual(ElementType.Fire, ember.Element);
             Assert.AreEqual(ConduitDirection.East, ember.Direction);
             Assert.AreEqual(6, ember.FlatDamageBonus);
 
             // 2. Frost Rune: Ice, South, +4 Ice Dmg
             var frost = db.GetRune("rune_frost");
-            Assert.AreEqual(RuneElement.Ice, frost.Element);
+            Assert.AreEqual(ElementType.Ice, frost.Element);
             Assert.AreEqual(ConduitDirection.South, frost.Direction);
             Assert.AreEqual(4, frost.FlatDamageBonus);
 
             // 3. Spark Rune: Lightning, North, +8 Shock Dmg
             var spark = db.GetRune("rune_spark");
-            Assert.AreEqual(RuneElement.Lightning, spark.Element);
+            Assert.AreEqual(ElementType.Lightning, spark.Element);
             Assert.AreEqual(ConduitDirection.North, spark.Direction);
             Assert.AreEqual(8, spark.FlatDamageBonus);
 
             // 4. Venom Rune: Poison, West, 2 Poison stacks
             var venom = db.GetRune("rune_venom");
-            Assert.AreEqual(RuneElement.Poison, venom.Element);
+            Assert.AreEqual(ElementType.Poison, venom.Element);
             Assert.AreEqual(ConduitDirection.West, venom.Direction);
             Assert.AreEqual(2, venom.PoisonStacksPerSec);
 
             // 5. Crossfire Rune: Fire, Cross (All 4 cardinal vectors)
             var crossfire = db.GetRune("rune_crossfire");
-            Assert.AreEqual(RuneElement.Fire, crossfire.Element);
+            Assert.AreEqual(ElementType.Fire, crossfire.Element);
             Assert.AreEqual(3, crossfire.FlatDamageBonus);
 
             // 6. Prism Rune: Light, Split
             var prism = db.GetRune("rune_prism");
-            Assert.AreEqual(RuneElement.Light, prism.Element);
+            Assert.AreEqual(ElementType.Light, prism.Element);
 
             // 7. Amplifier Node: Force, Omni
             var amp = db.GetRune("rune_amplifier");
-            Assert.AreEqual(RuneElement.Force, amp.Element);
+            Assert.AreEqual(ElementType.Force, amp.Element);
 
             // 8. Iron Rune: Earth, South, +15 Shield
             var iron = db.GetRune("rune_iron");
-            Assert.AreEqual(RuneElement.Earth, iron.Element);
+            Assert.AreEqual(ElementType.Earth, iron.Element);
             Assert.AreEqual(15, iron.StartingShieldBonus);
 
             // 9. Vampire Rune: Shadow, North, 12% Lifesteal
             var vamp = db.GetRune("rune_vampire");
-            Assert.AreEqual(RuneElement.Shadow, vamp.Element);
+            Assert.AreEqual(ElementType.Shadow, vamp.Element);
             Assert.AreEqual(0.12f, vamp.LifestealRatio, 0.001f);
 
             // 10. Haste Rune: Wind, East, +25% Attack Speed
             var haste = db.GetRune("rune_haste");
-            Assert.AreEqual(RuneElement.Wind, haste.Element);
+            Assert.AreEqual(ElementType.Wind, haste.Element);
             Assert.AreEqual(0.25f, haste.AttackSpeedBonus, 0.001f);
         }
 

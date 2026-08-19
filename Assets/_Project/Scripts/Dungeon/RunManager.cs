@@ -357,7 +357,7 @@ namespace Lattirune.Dungeon
             if (playerCombatant != null)
             {
                 int restoreHp = Mathf.Max(1, Mathf.RoundToInt(playerCombatant.MaxHp * hpFraction));
-                playerCombatant.Heal(restoreHp);
+                playerCombatant.Revive(restoreHp);
             }
 
             SetState(RunState.EncounterActive);
@@ -565,7 +565,7 @@ namespace Lattirune.Dungeon
         public void RestoreRunState(int floorIdx, int encIdx, RunState state, int gold = 0, int embers = 0)
         {
             EnsureDefaultDungeon();
-            currentFloorIndex = Mathf.Clamp(floorIdx, 0, Mathf.Max(0, TotalFloors - 1));
+            currentFloorIndex = isEndlessMode ? Mathf.Max(0, floorIdx) : Mathf.Clamp(floorIdx, 0, Mathf.Max(0, TotalFloors - 1));
             currentEncounterIndex = encIdx;
             currentState = state;
             currentGold = Mathf.Max(0, gold);

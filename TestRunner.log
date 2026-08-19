@@ -1,15 +1,15 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
-[Licensing::IpcConnector] Successfully connected to the License Client on channel: "LicenseClient-k deswanth" at "2026-08-19T14:14:01.9010014Z"
+[Licensing::IpcConnector] Successfully connected to the License Client on channel: "LicenseClient-k deswanth" at "2026-08-19T14:15:19.4614737Z"
 [Licensing::Client] Error: Code 10 while verifying Licensing Client signature (process Id: 22272, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
 [Licensing::Module] Error: LicensingClient has failed validation; ignoring
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.17.4+4293ba1
-  Session Id:              42e82985d77a4876abed9953101aa9a5
+  Session Id:              946e40dfb9cd439c8ca64b2dbcf0465f
   Correlation Id:          5f1f0be40cc748e74f21d99ad77d1a20
-  External correlation Id: 8217173979287947757
+  External correlation Id: 1214841064758292525
   Machine Id:              7TIDP4hQvQAnfbRYHZkxxeqEfqk=
 [Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-k deswanth" (connect: 0.00s, validation: 0.01s, handshake: 0.04s)
-[Licensing::IpcConnector] Successfully connected to the License Notification on channel: "LicenseClient-k deswanth-notifications" at "2026-08-19T14:14:01.9503144Z"
+[Licensing::IpcConnector] Successfully connected to the License Notification on channel: "LicenseClient-k deswanth-notifications" at "2026-08-19T14:15:19.5114918Z"
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully updated license
 Built from '6000.0/staging' branch; Version is '6000.0.38f1 (82314a941f2d) revision 8532298'; Using compiler version '193933523'; Build Type 'Release'
@@ -71,16 +71,16 @@ C:/GAME PLAN
     "memorysetup-temp-allocator-size-gi-baking-worker=262144"
     "memorysetup-temp-allocator-size-gi-baking-worker=262144"
     "memorysetup-temp-allocator-size-gfx=262144"
-Player connection [11492]  Target information:
+Player connection [26228]  Target information:
 
-Player connection [11492]  * "[IP] 192.168.1.6 [Port] 55504 [Flags] 2 [Guid] 3413611701 [EditorId] 3413611701 [Version] 1048832 [Id] WindowsEditor(7,buddy) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [26228]  * "[IP] 192.168.1.6 [Port] 55504 [Flags] 2 [Guid] 3185130169 [EditorId] 3185130169 [Version] 1048832 [Id] WindowsEditor(7,buddy) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [11492] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [11492] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [26228] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [26228] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Package Manager] Connected to IPC stream "Upm-23380" after 0.2 seconds.
+[Package Manager] Connected to IPC stream "Upm-29616" after 0.2 seconds.
 Library Redirect Path: Library/
 [Package Manager] Restoring resolved packages state from cache
 [Licensing::Client] Successfully resolved entitlement details
@@ -143,7 +143,7 @@ Package Manager log level set to [2]
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] Serial number assigned to: "F4-4G3C-GQHF-7FCK-8FSR-XXXX"
 [Licensing::Module] Serial number assigned to: "13469957967341-UnityPersXXXX"
-Refreshing native plugins compatible for Editor in 1.26 ms, found 1 plugins.
+Refreshing native plugins compatible for Editor in 1.35 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.0.38f1 (82314a941f2d)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/Resources/UnitySubsystems
@@ -162,7 +162,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56380
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56616
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -171,15 +171,15 @@ Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
-Registered in 0.002782 seconds.
-- Loaded All Assemblies, in  0.267 seconds
+Registered in 0.003135 seconds.
+- Loaded All Assemblies, in  0.294 seconds
 Native extension for Android target not found
-Android Extension - Scanning For ADB Devices 203 ms
+Android Extension - Scanning For ADB Devices 5255 ms
 Native extension for WindowsStandalone target not found
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.433 seconds
-Domain Reload Profiling: 699ms
-	BeginReloadAssembly (91ms)
+- Finished resetting the current domain, in  5.493 seconds
+Domain Reload Profiling: 5785ms
+	BeginReloadAssembly (97ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
@@ -187,25 +187,25 @@ Domain Reload Profiling: 699ms
 		CreateAndSetChildDomain (1ms)
 	RebuildCommonClasses (27ms)
 	RebuildNativeTypeToScriptingClass (8ms)
-	initialDomainReloadingComplete (35ms)
-	LoadAllAssembliesAndSetupDomain (105ms)
-		LoadAssemblies (90ms)
+	initialDomainReloadingComplete (37ms)
+	LoadAllAssembliesAndSetupDomain (122ms)
+		LoadAssemblies (95ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (102ms)
-			TypeCache.Refresh (101ms)
-				TypeCache.ScanAssembly (92ms)
+		AnalyzeDomain (120ms)
+			TypeCache.Refresh (118ms)
+				TypeCache.ScanAssembly (109ms)
 			BuildScriptInfoCaches (0ms)
 			ResolveRequiredComponents (0ms)
-	FinalizeReload (434ms)
+	FinalizeReload (5493ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (410ms)
+		SetupLoadedEditorAssemblies (5470ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (264ms)
+			InitializePlatformSupportModulesInManaged (5318ms)
 			SetLoadedEditorAssemblies (3ms)
-			BeforeProcessingInitializeOnLoad (32ms)
-			ProcessInitializeOnLoadAttributes (75ms)
-			ProcessInitializeOnLoadMethodAttributes (36ms)
+			BeforeProcessingInitializeOnLoad (34ms)
+			ProcessInitializeOnLoadAttributes (77ms)
+			ProcessInitializeOnLoadMethodAttributes (38ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -217,120 +217,141 @@ Domain Reload Profiling: 699ms
 [Licensing::Module] Serial number assigned to: "F4-4G3C-GQHF-7FCK-8FSR-XXXX"
 [Licensing::Module] Serial number assigned to: "13469957967341-UnityPersXXXX"
 Application.AssetDatabase Initial Refresh Start
+[ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\bee_backend.exe --dont-print-to-structured-log --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/GAME PLAN
 DisplayProgressbar: Compiling Scripts
-ExitCode: 4 Duration: 0s229ms
-Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1300b0aE-inputdata.json
-[594/748    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-*** Tundra requires additional run (0.20 seconds), 1 items updated, 593 evaluated
-Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\Tools\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1300b0aE.dag.json" "Library/Bee/1300b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
-WorkingDir: C:/GAME PLAN
-ExitCode: 0 Duration: 0s422ms
-Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\bee_backend.exe --dont-print-to-structured-log --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1300b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
-WorkingDir: C:/GAME PLAN
-ExitCode: 0 Duration: 0s319ms
-Finished compiling graph: 751 nodes, 11763 flattened edges (9581 ToBuild, 116 ToUse), maximum node priority 839
-[594/748    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-*** Tundra build success (0.30 seconds), 1 items updated, 748 evaluated
-AssetDatabase: script compilation time: 1.360694s
+ExitCode: 0 Duration: 2s538ms
+[591/748    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[736/748    1s] Csc Library/Bee/artifacts/1300b0aE.dag/Lattirune.Runtime.dll (+2 others)
+[739/748    0s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/Lattirune.Tests.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1300b0aE.dag/Lattirune.Tests.dll, with 129 defines and 254 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+
+running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+[740/748    0s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/Lattirune.Runtime.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1300b0aE.dag/Lattirune.Runtime.dll, with 131 defines and 229 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+
+running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+[742/748    0s] CopyFiles Library/ScriptAssemblies/Lattirune.Runtime.pdb
+[743/748    0s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+Processing assembly Library/Bee/artifacts/1300b0aE.dag/Assembly-CSharp-Editor.dll, with 129 defines and 301 references
+
+processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+
+running Unity.Jobs.CodeGen.JobsILPostProcessor
+
+running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+[747/748    0s] CopyFiles Library/ScriptAssemblies/Lattirune.Runtime.dll
+*** Tundra build success (2.51 seconds), 7 items updated, 748 evaluated
+AssetDatabase: script compilation time: 2.902789s
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  0.548 seconds
-Refreshing native plugins compatible for Editor in 0.87 ms, found 1 plugins.
+- Loaded All Assemblies, in  0.969 seconds
+Refreshing native plugins compatible for Editor in 0.95 ms, found 1 plugins.
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  1.736 seconds
-Domain Reload Profiling: 2281ms
-	BeginReloadAssembly (237ms)
+- Finished resetting the current domain, in  1.921 seconds
+Domain Reload Profiling: 2887ms
+	BeginReloadAssembly (245ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (10ms)
+		DisableScriptedObjects (11ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (133ms)
-	RebuildCommonClasses (24ms)
+		CreateAndSetChildDomain (131ms)
+	RebuildCommonClasses (26ms)
 	RebuildNativeTypeToScriptingClass (8ms)
-	initialDomainReloadingComplete (19ms)
-	LoadAllAssembliesAndSetupDomain (256ms)
-		LoadAssemblies (215ms)
+	initialDomainReloadingComplete (20ms)
+	LoadAllAssembliesAndSetupDomain (667ms)
+		LoadAssemblies (630ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
 		AnalyzeDomain (113ms)
-			TypeCache.Refresh (79ms)
-				TypeCache.ScanAssembly (71ms)
-			BuildScriptInfoCaches (24ms)
+			TypeCache.Refresh (81ms)
+				TypeCache.ScanAssembly (72ms)
+			BuildScriptInfoCaches (23ms)
 			ResolveRequiredComponents (7ms)
-	FinalizeReload (1737ms)
+	FinalizeReload (1921ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (1606ms)
+		SetupLoadedEditorAssemblies (1812ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (20ms)
-			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (88ms)
-			ProcessInitializeOnLoadAttributes (1437ms)
-			ProcessInitializeOnLoadMethodAttributes (53ms)
+			InitializePlatformSupportModulesInManaged (21ms)
+			SetLoadedEditorAssemblies (3ms)
+			BeforeProcessingInitializeOnLoad (95ms)
+			ProcessInitializeOnLoadAttributes (1607ms)
+			ProcessInitializeOnLoadMethodAttributes (81ms)
 			AfterProcessingInitializeOnLoad (4ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (7ms)
-Asset Pipeline Refresh (id=b8203662d45223b498ff97901912246a): Total: 4.005 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+		AwakeInstancesAfterBackupRestoration (8ms)
+Refreshing native plugins compatible for Editor in 1.10 ms, found 1 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=f86fa2174a2e27944817ace487fc89d6): Total: 6.278 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
 		Imports: total=0 (actual=0, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=1984 ms
-		Asset DB Callback time: managed=52 ms, native=0 ms
-		Scripting: domain reloads=1, domain reload time=577 ms, compile time=1363 ms, other=27 ms
+		Asset DB Process Time: managed=0 ms, native=2166 ms
+		Asset DB Callback time: managed=173 ms, native=4 ms
+		Scripting: domain reloads=1, domain reload time=1001 ms, compile time=2904 ms, other=27 ms
 		Project Asset Count: scripts=940, non-scripts=2178
-		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Asset File Changes: new=0, changed=2, moved=0, deleted=0
 		Scan Filter Count: 0
 	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 1.690ms
-	ApplyChangesToAssetFolders: 0.311ms
-	Scan: 69.056ms
-	OnSourceAssetsModified: 0.001ms
-	CategorizeAssetsWithTransientArtifact: 18.424ms
-	ProcessAssetsWithTransientArtifactChanges: 36.720ms
-	CategorizeAssets: 33.562ms
-	ImportOutOfDateAssets: 1742.130ms (378.520ms without children)
-		CompileScripts: 1362.714ms
+	InvokePackagesCallback: 1.665ms
+	ApplyChangesToAssetFolders: 0.464ms
+	Scan: 64.161ms
+	OnSourceAssetsModified: 0.706ms
+	CategorizeAssetsWithTransientArtifact: 20.041ms
+	ProcessAssetsWithTransientArtifactChanges: 37.072ms
+	CategorizeAssets: 31.694ms
+	ImportOutOfDateAssets: 1926.875ms (-978.014ms without children)
+		CompileScripts: 2904.021ms
 		ReloadNativeAssets: 0.004ms
-		UnloadImportedAssets: 0.088ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.343ms
+		UnloadImportedAssets: 0.096ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.328ms
 		InitializingProgressBar: 0.000ms
 		PostProcessAllAssetNotificationsAddChangedAssets: 0.000ms
-		OnDemandSchedulerStart: 0.462ms
-	PostProcessAllAssets: 52.423ms
+		OnDemandSchedulerStart: 0.440ms
+	PostProcessAllAssets: 174.868ms
+	Hotreload: 1.928ms
 	GatherAllCurrentPrimaryArtifactRevisions: 0.002ms
-	UnloadStreamsBegin: 0.991ms
-	PersistCurrentRevisions: 0.113ms
+	UnloadStreamsBegin: 1.208ms
+	PersistCurrentRevisions: 0.087ms
 	UnloadStreamsEnd: 0.001ms
-	GenerateScriptTypeHashes: 2.746ms
-	Untracked: 2049.394ms
+	GenerateScriptTypeHashes: 2.441ms
+	Untracked: 4016.778ms
 
 Application.AssetDatabase Initial Refresh End
-Scanning for USB devices : 33.924ms
+Scanning for USB devices : 3.753ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-Lattirune
 Unloading 59 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4248 unused Assets / (5.4 MB). Loaded Objects now: 4907.
-Memory consumption went from 170.5 MB to 165.1 MB.
-Total: 8.778700 ms (FindLiveObjects: 0.376300 ms CreateObjectMapping: 0.325300 ms MarkObjects: 5.757700 ms  DeleteObjects: 2.318100 ms)
+Unloading 4248 unused Assets / (4.5 MB). Loaded Objects now: 4910.
+Memory consumption went from 166.7 MB to 162.2 MB.
+Total: 7.282300 ms (FindLiveObjects: 0.281500 ms CreateObjectMapping: 0.217100 ms MarkObjects: 4.925800 ms  DeleteObjects: 1.857000 ms)
 
-[Project] Loading completed in 10.511 seconds
-	Project init time: 				6.706 seconds
+[Project] Loading completed in 16.122 seconds
+	Project init time: 				13.504 seconds
 		Template init time: 		0.000 seconds
-		Package Manager init time: 		0.150 seconds
-		Asset Database init time: 		0.555 seconds
+		Package Manager init time: 		0.200 seconds
+		Asset Database init time: 		0.571 seconds
 		Global illumination init time: 	0.004 seconds
-		Assemblies load time: 			0.712 seconds
-		Unity extensions init time: 	0.016 seconds
-		Asset Database refresh time: 	4.005 seconds
-	Scene opening time: 			1.582 seconds
-##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1787148852390,"processId":23380,"projectLoad":10.5108166,"projectInit":6.7060973,"templateInit":0.0,"packageManagerInit":0.1501221,"assetDatabaseInit":0.5549967,"globalIlluminationInit":0.0036453,"assembliesLoad":0.7117197,"unityExtensionsInit":0.016315,"assetDatabaseRefresh":4.0049395,"sceneOpening":1.5816963}
-##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1787148852390,"processId":23380,"editorVersion":"6000.0.38f1 (82314a941f2d)","branch":"6000.0/staging","buildType":"Release","platform":"Windows"}
-Asset Pipeline Refresh (id=7d15aa44186b8d94a85ad7d250a49a71): Total: 0.067 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
-Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
+		Assemblies load time: 			5.801 seconds
+		Unity extensions init time: 	0.004 seconds
+		Asset Database refresh time: 	6.278 seconds
+	Scene opening time: 			1.059 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1787148935573,"processId":29616,"projectLoad":16.1216778,"projectInit":13.5040359,"templateInit":0.0,"packageManagerInit":0.2001143,"assetDatabaseInit":0.5712142,"globalIlluminationInit":0.0042414,"assembliesLoad":5.8005415,"unityExtensionsInit":0.0040912,"assetDatabaseRefresh":6.2776382,"sceneOpening":1.0589251}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1787148935573,"processId":29616,"editorVersion":"6000.0.38f1 (82314a941f2d)","branch":"6000.0/staging","buildType":"Release","platform":"Windows"}
+Asset Pipeline Refresh (id=21328354236b6034b87774fdb67c1ac5): Total: 0.033 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
 Running tests for ExecutionSettings with details:
 targetPlatform = 
 playerHeartbeatTimeout = 600
@@ -360,21 +381,21 @@ UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 Opening scene 'Assets/_Project/Scenes/Bootstrap.unity'
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/_Project/Scenes/Bootstrap.unity'
-	Deserialize:            3.267 ms
-	Integration:            205.328 ms
-	Integration of assets:  0.004 ms
-	Thread Wait Time:       0.047 ms
-	Total Operation Time:   208.646 ms
-Unloading 6 unused Assets / (6.7 KB). Loaded Objects now: 4950.
-Memory consumption went from 153.3 MB to 153.3 MB.
-Total: 7.201500 ms (FindLiveObjects: 0.327300 ms CreateObjectMapping: 0.089600 ms MarkObjects: 6.685700 ms  DeleteObjects: 0.097000 ms)
+	Deserialize:            1.490 ms
+	Integration:            159.515 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.102 ms
+	Total Operation Time:   161.108 ms
+Unloading 6 unused Assets / (6.7 KB). Loaded Objects now: 4953.
+Memory consumption went from 149.6 MB to 149.6 MB.
+Total: 5.932600 ms (FindLiveObjects: 0.214800 ms CreateObjectMapping: 0.072500 ms MarkObjects: 5.570200 ms  DeleteObjects: 0.074300 ms)
 
 [UnityConnectServicesConfig] config is NOT valid, switching to default
-Created GICache directory at C:/Users/k deswanth/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.024s, timestamps: [10.526 - 10.550]
+Created GICache directory at C:/Users/k deswanth/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.014s, timestamps: [16.128 - 16.143]
 Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 0 unused Assets / (2.2 KB). Loaded Objects now: 4953.
-Memory consumption went from 153.1 MB to 153.1 MB.
-Total: 6.723600 ms (FindLiveObjects: 0.372400 ms CreateObjectMapping: 0.128100 ms MarkObjects: 6.210700 ms  DeleteObjects: 0.011300 ms)
+Unloading 0 unused Assets / (2.2 KB). Loaded Objects now: 4956.
+Memory consumption went from 149.4 MB to 149.4 MB.
+Total: 6.205900 ms (FindLiveObjects: 0.133700 ms CreateObjectMapping: 0.053000 ms MarkObjects: 6.009200 ms  DeleteObjects: 0.009200 ms)
 
 Executing IPrebuildSetup for: Unity.PerformanceTesting.Editor.TestRunBuilder.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -598,6 +619,162 @@ UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteCallback () (at ./
 UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 
 (Filename: Assets/_Project/Scripts/Combat/CombatSystem.cs Line: 74)
+
+[Lattirune.Save] Save file written successfully.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+Lattirune.Save.SaveSystem:Save (Lattirune.Save.SaveData) (at Assets/_Project/Scripts/Save/SaveSystem.cs:100)
+Lattirune.Tests.Phase2MilestoneVerificationTests:Phase2_CompleteVerticalSliceLoop_ThreeFloors_Reactions_Prisms_LichLordBoss_AndSaveLoad () (at Assets/_Project/Tests/Phase2MilestoneVerificationTests.cs:237)
+System.Reflection.RuntimeMethodInfo:Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEngine.TestTools.UnityTestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/UnityTestMethodCommand.cs:16)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand/<>c__DisplayClass2_0:<Execute>b__0 () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:24)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:CaptureException (NUnit.Framework.Internal.TestResult,System.Action) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:72)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:ExecuteAndCheckLog (UnityEngine.TestTools.Logging.LogScope,NUnit.Framework.Internal.TestResult,System.Action) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:83)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:24)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand/<ExecuteEnumerable>d__3:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:35)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<NUnit.Framework.ITestAction>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:187)
+UnityEngine.TestTools.ImmediateEnumerableCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/ImmediateEnumerableCommand.cs:18)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<System.Reflection.MethodInfo>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:194)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<System.Reflection.MethodInfo>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:187)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<UnityEngine.TestTools.IOuterUnityTestAction>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:187)
+UnityEngine.TestTools.RetryCommand/<ExecuteEnumerable>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/RetryCommand.cs:37)
+UnityEngine.TestTools.RepeatCommand/<ExecuteEnumerable>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/RepeatCommand.cs:36)
+UnityEngine.TestTools.TimeoutCommand/<ExecuteEnumerable>d__3:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/TimeoutCommand.cs:33)
+UnityEngine.TestTools.IgnoreTestCommand/<ExecuteEnumerable>d__3:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/IgnoreTestCommand.cs:42)
+UnityEngine.TestTools.StrictCheckCommand/<ExecuteEnumerable>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/StrictCheckCommand.cs:29)
+UnityEngine.TestRunner.NUnitExtensions.Runner.DefaultTestWorkItem/<PerformWork>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/DefaultTestWorkItem.cs:50)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEditor.TestTools.TestRunner.EditModeRunner:MoveNextAndUpdateYieldObject () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRunner/EditModeRunner.cs:167)
+UnityEditor.TestTools.TestRunner.EditModeRunner:TestConsumer (UnityEditor.TestTools.TestRunner.TestRunnerStateSerializer) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRunner/EditModeRunner.cs:205)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.EditModeRunTask/<Execute>d__1:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/Tasks/EditModeRunTask.cs:48)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteStep () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:173)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteCallback () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:108)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/_Project/Scripts/Save/SaveSystem.cs Line: 100)
+
+[Lattirune.UI] Reward selection is locked. Double-selection prevented.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+Lattirune.UI.RewardService:ApplyReward (Lattirune.UI.RewardOption,UnityEngine.Vector3,UnityEngine.Transform) (at Assets/_Project/Scripts/UI/RewardService.cs:32)
+Lattirune.Tests.ProductionHardeningTests:RewardHardening_SelectionLock_PreventsDoubleGranting () (at Assets/_Project/Tests/ProductionHardeningTests.cs:245)
+System.Reflection.RuntimeMethodInfo:Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEngine.TestTools.UnityTestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/UnityTestMethodCommand.cs:16)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand/<>c__DisplayClass2_0:<Execute>b__0 () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:24)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:CaptureException (NUnit.Framework.Internal.TestResult,System.Action) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:72)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:ExecuteAndCheckLog (UnityEngine.TestTools.Logging.LogScope,NUnit.Framework.Internal.TestResult,System.Action) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:83)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:24)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand/<ExecuteEnumerable>d__3:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:35)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<NUnit.Framework.ITestAction>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:187)
+UnityEngine.TestTools.ImmediateEnumerableCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/ImmediateEnumerableCommand.cs:18)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<System.Reflection.MethodInfo>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:194)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<System.Reflection.MethodInfo>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:187)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<UnityEngine.TestTools.IOuterUnityTestAction>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:187)
+UnityEngine.TestTools.RetryCommand/<ExecuteEnumerable>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/RetryCommand.cs:37)
+UnityEngine.TestTools.RepeatCommand/<ExecuteEnumerable>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/RepeatCommand.cs:36)
+UnityEngine.TestTools.TimeoutCommand/<ExecuteEnumerable>d__3:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/TimeoutCommand.cs:33)
+UnityEngine.TestTools.IgnoreTestCommand/<ExecuteEnumerable>d__3:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/IgnoreTestCommand.cs:42)
+UnityEngine.TestTools.StrictCheckCommand/<ExecuteEnumerable>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/StrictCheckCommand.cs:29)
+UnityEngine.TestRunner.NUnitExtensions.Runner.DefaultTestWorkItem/<PerformWork>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/DefaultTestWorkItem.cs:50)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEditor.TestTools.TestRunner.EditModeRunner:MoveNextAndUpdateYieldObject () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRunner/EditModeRunner.cs:167)
+UnityEditor.TestTools.TestRunner.EditModeRunner:TestConsumer (UnityEditor.TestTools.TestRunner.TestRunnerStateSerializer) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRunner/EditModeRunner.cs:205)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.EditModeRunTask/<Execute>d__1:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/Tasks/EditModeRunTask.cs:48)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteStep () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:173)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteCallback () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:108)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/_Project/Scripts/UI/RewardService.cs Line: 32)
+
+[Lattirune.UI] Reward selection is locked. Double-selection prevented.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+Lattirune.UI.RewardService:ApplyReward (Lattirune.UI.RewardOption,UnityEngine.Vector3,UnityEngine.Transform) (at Assets/_Project/Scripts/UI/RewardService.cs:32)
+Lattirune.Tests.RewardServiceTests:RewardService_DoubleSelection_IsPreventedByLock () (at Assets/_Project/Tests/RewardServiceTests.cs:65)
+System.Reflection.RuntimeMethodInfo:Invoke (object,System.Reflection.BindingFlags,System.Reflection.Binder,object[],System.Globalization.CultureInfo)
+System.Reflection.MethodBase:Invoke (object,object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod (System.Reflection.MethodInfo,object,object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke (object,object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod (NUnit.Framework.Internal.ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext)
+UnityEngine.TestTools.UnityTestMethodCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/UnityTestMethodCommand.cs:16)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand/<>c__DisplayClass2_0:<Execute>b__0 () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:24)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:CaptureException (NUnit.Framework.Internal.TestResult,System.Action) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:72)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:ExecuteAndCheckLog (UnityEngine.TestTools.Logging.LogScope,NUnit.Framework.Internal.TestResult,System.Action) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:83)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:24)
+UnityEngine.TestRunner.NUnitExtensions.Runner.UnityLogCheckDelegatingCommand/<ExecuteEnumerable>d__3:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/UnityLogCheckDelegatingCommand.cs:35)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<NUnit.Framework.ITestAction>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:187)
+UnityEngine.TestTools.ImmediateEnumerableCommand:Execute (NUnit.Framework.Internal.ITestExecutionContext) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/ImmediateEnumerableCommand.cs:18)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<System.Reflection.MethodInfo>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:194)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<System.Reflection.MethodInfo>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:187)
+UnityEngine.TestTools.BeforeAfterTestCommandBase`1/<ExecuteEnumerable>d__14<UnityEngine.TestTools.IOuterUnityTestAction>:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/BeforeAfterTestCommandBase.cs:187)
+UnityEngine.TestTools.RetryCommand/<ExecuteEnumerable>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/RetryCommand.cs:37)
+UnityEngine.TestTools.RepeatCommand/<ExecuteEnumerable>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/RepeatCommand.cs:36)
+UnityEngine.TestTools.TimeoutCommand/<ExecuteEnumerable>d__3:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/TimeoutCommand.cs:33)
+UnityEngine.TestTools.IgnoreTestCommand/<ExecuteEnumerable>d__3:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/IgnoreTestCommand.cs:42)
+UnityEngine.TestTools.StrictCheckCommand/<ExecuteEnumerable>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Commands/StrictCheckCommand.cs:29)
+UnityEngine.TestRunner.NUnitExtensions.Runner.DefaultTestWorkItem/<PerformWork>d__2:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/DefaultTestWorkItem.cs:50)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<RunChildren>d__16:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:197)
+UnityEngine.TestRunner.NUnitExtensions.Runner.CompositeWorkItem/<PerformWork>d__12:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEngine.TestRunner/NUnitExtensions/Runner/CompositeWorkItem.cs:76)
+UnityEditor.TestTools.TestRunner.EditModeRunner:MoveNextAndUpdateYieldObject () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRunner/EditModeRunner.cs:167)
+UnityEditor.TestTools.TestRunner.EditModeRunner:TestConsumer (UnityEditor.TestTools.TestRunner.TestRunnerStateSerializer) (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRunner/EditModeRunner.cs:205)
+UnityEditor.TestTools.TestRunner.TestRun.Tasks.EditModeRunTask/<Execute>d__1:MoveNext () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/Tasks/EditModeRunTask.cs:48)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteStep () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:173)
+UnityEditor.TestTools.TestRunner.TestRun.TestJobRunner:ExecuteCallback () (at ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/TestJobRunner.cs:108)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/_Project/Scripts/UI/RewardService.cs Line: 32)
 
 [Lattirune.Save] Decryption failed (file corrupted or modified): Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1559,17 +1736,17 @@ UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 
 (Filename: ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/TestRun/Tasks/BuildActionTaskBase.cs Line: 51)
 
-Asset Pipeline Refresh (id=d7919c23843f19846b285a3f4e258e58): Total: 0.007 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=62e264ebee1d7804580f56506a74bdc2): Total: 0.005 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/_Project/Scenes/Bootstrap.unity'
-	Deserialize:            1.005 ms
-	Integration:            223.394 ms
-	Integration of assets:  0.003 ms
-	Thread Wait Time:       0.022 ms
-	Total Operation Time:   224.424 ms
-Unloading 5 unused Assets / (6.7 KB). Loaded Objects now: 4954.
-Memory consumption went from 154.0 MB to 154.0 MB.
-Total: 9.111700 ms (FindLiveObjects: 0.213400 ms CreateObjectMapping: 0.099900 ms MarkObjects: 8.674600 ms  DeleteObjects: 0.122500 ms)
+	Deserialize:            0.501 ms
+	Integration:            167.642 ms
+	Integration of assets:  0.001 ms
+	Thread Wait Time:       0.008 ms
+	Total Operation Time:   168.152 ms
+Unloading 5 unused Assets / (6.7 KB). Loaded Objects now: 4957.
+Memory consumption went from 150.3 MB to 150.3 MB.
+Total: 9.649700 ms (FindLiveObjects: 0.193200 ms CreateObjectMapping: 0.095300 ms MarkObjects: 9.265600 ms  DeleteObjects: 0.094500 ms)
 
 DisplayProgressbar: Undo
 Test run completed. Exiting with code 2 (Failed). One or more tests failed.
@@ -1585,9 +1762,7 @@ UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 
 (Filename: ./Library/PackageCache/com.unity.test-framework@0a21eb82d95c/UnityEditor.TestRunner/CommandLineTest/Executer.cs Line: 81)
 
-Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\PlaybackEngines\AndroidPlayer\OpenJDK\bin\java.exe -classpath "C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\PlaybackEngines\AndroidPlayer\Tools\gradle\lib\gradle-launcher-8.4.jar" org.gradle.launcher.GradleMain "-Dorg.gradle.jvmargs=-Xmx4096m" "--stop" 
-WorkingDir: 
-Killing ADB server in 0.1113335 seconds.
+Killing ADB server in 0.0891393 seconds.
 [Physics::Module] Cleanup current backned.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -1600,4 +1775,4 @@ Cleanup mono
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1787148857757,"processId":23380,"allocatedMemory":14318001,"memoryLabels":[{"Default":14269},{"Permanent":15356},{"NewDelete":82457},{"Thread":4230344},{"Manager":32666},{"VertexData":8},{"Geometry":816},{"Texture":160},{"Shader":81099},{"Material":24},{"GfxDevice":55136},{"Animation":328},{"Audio":4040},{"FontEngine":256},{"Physics":1241},{"Serialization":968},{"Input":14824},{"JobScheduler":34888},{"TextLib":32},{"Mono":32},{"ScriptingNativeRuntime":155060},{"BaseObject":1636976},{"Resource":1304},{"Renderer":2928},{"Transform":4646},{"File":3941},{"WebCam":752},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":9540},{"DynamicArray":112285},{"HashMap":80617},{"Utility":2665726},{"Curl":48},{"PoolAlloc":1912},{"AI":104},{"TypeTree":5005},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7888},{"Director":8240},{"WebRequest":808},{"VR":45961},{"SceneManager":496},{"Video":64},{"LazyScriptCache":32},{"NativeArray":8},{"Camera":17},{"Secure":1},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":256},{"Hierarchy":272},{"Gui":80},{"EditorUtility":52742},{"VersionControl":4},{"Undo":947},{"AssetDatabase":4545761},{"EditorGi":328},{"UnityConnect":24208},{"Upm":1996},{"DrivenProperties":72},{"LocalIPC":270},{"ProfilerEditor":9738},{"CoreBusinessMetrics":3622},{"Licensing":3512},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1787148938566,"processId":29616,"allocatedMemory":14330681,"memoryLabels":[{"Default":14269},{"Permanent":15356},{"NewDelete":82457},{"Thread":4230344},{"Manager":32666},{"VertexData":8},{"Geometry":816},{"Texture":160},{"Shader":81099},{"Material":24},{"GfxDevice":55136},{"Animation":328},{"Audio":4040},{"FontEngine":256},{"Physics":1241},{"Serialization":968},{"Input":14824},{"JobScheduler":34960},{"TextLib":32},{"Mono":32},{"ScriptingNativeRuntime":155060},{"BaseObject":1646960},{"Resource":1304},{"Renderer":2928},{"Transform":4646},{"File":3941},{"WebCam":752},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":9540},{"DynamicArray":112285},{"HashMap":80617},{"Utility":2665726},{"Curl":48},{"PoolAlloc":1912},{"AI":104},{"TypeTree":7533},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7888},{"Director":8240},{"WebRequest":808},{"VR":45961},{"SceneManager":496},{"Video":64},{"LazyScriptCache":32},{"NativeArray":8},{"Camera":17},{"Secure":1},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":256},{"Hierarchy":272},{"Gui":80},{"EditorUtility":52838},{"VersionControl":4},{"Undo":947},{"AssetDatabase":4545761},{"EditorGi":328},{"UnityConnect":24208},{"Upm":1996},{"DrivenProperties":72},{"LocalIPC":270},{"ProfilerEditor":9738},{"CoreBusinessMetrics":3622},{"Licensing":3512},{"AssetReference":32},{"IPCStream":32}]}

@@ -76,7 +76,7 @@ namespace Lattirune.Tests
             Assert.IsTrue(bossEnc.IsValid(out string err));
             Assert.IsNull(err);
             Assert.IsTrue(bossEnc.IsBoss);
-            Assert.AreEqual("Lich Lord", bossEnc.EnemyName);
+            Assert.AreEqual("The Lich Lord", bossEnc.EnemyName);
         }
 
         [Test]

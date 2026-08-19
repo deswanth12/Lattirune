@@ -88,9 +88,7 @@ namespace Lattirune.Dungeon
 
             // Floor 3: Boss Encounter (The Lich Lord)
             DungeonFloorDefinitionSO f3 = ScriptableObject.CreateInstance<DungeonFloorDefinitionSO>();
-            EncounterDefinitionSO enc3 = ScriptableObject.CreateInstance<EncounterDefinitionSO>();
-            enc3.Initialize("enc_f3_lich", "Boss Chamber: The Lich Lord", "The Lich Lord", hp: 750, armor: 10, attack: 8, interval: 2.5f, boss: true);
-            f3.Initialize(3, "floor_03", "Floor 3: Boss Sanctum", new List<EncounterDefinitionSO> { enc3 });
+            f3.Initialize(3, "floor_03", "Floor 3: Boss Sanctum", new List<EncounterDefinitionSO> { EncounterDefinitionSO.CreateLichLord() });
             floorList.Add(f3);
 
             dungeon.Initialize("dungeon_cursed_sewers_slice", "The Cursed Sewers (Vertical Slice)", floorList);
@@ -155,9 +153,7 @@ namespace Lattirune.Dungeon
 
             // Floor 10: Boss Chamber: The Lich Lord
             DungeonFloorDefinitionSO f10 = ScriptableObject.CreateInstance<DungeonFloorDefinitionSO>();
-            EncounterDefinitionSO enc10 = ScriptableObject.CreateInstance<EncounterDefinitionSO>();
-            enc10.Initialize("enc_f10_lich", "Boss Chamber: The Lich Lord", "The Lich Lord", hp: 750, armor: 10, attack: 8, interval: 2.5f, boss: true);
-            f10.Initialize(10, "floor_10", "Floor 10: Boss Sanctum", new List<EncounterDefinitionSO> { enc10 });
+            f10.Initialize(10, "floor_10", "Floor 10: Boss Sanctum", new List<EncounterDefinitionSO> { EncounterDefinitionSO.CreateLichLord() });
             floorList.Add(f10);
 
             dungeon.Initialize("dungeon_cursed_sewers_full", "The Cursed Sewers (Full 10 Floors)", floorList);

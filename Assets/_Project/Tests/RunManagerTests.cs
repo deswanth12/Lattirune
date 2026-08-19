@@ -77,7 +77,7 @@ namespace Lattirune.Tests
 
             // FLOOR 3 (Boss):
             Assert.AreEqual(3, _runManager.CurrentFloorNumber);
-            Assert.AreEqual("Lich Lord", _enemy.CombatantName);
+            Assert.AreEqual("The Lich Lord", _enemy.CombatantName);
             _runManager.StartEncounterCombat();
             // Win Boss
             _enemy.TakeDamage(new DamageResult("Hero", "Lich", 999, 0, 1f, 1f, 0, 999, false));
@@ -95,8 +95,8 @@ namespace Lattirune.Tests
         {
             _runManager.StartRun();
             // Floor 1 Sewer Rat
-            Assert.AreEqual(40, _enemy.MaxHp);
-            Assert.AreEqual(1, _enemy.Armor);
+            Assert.AreEqual(35, _enemy.MaxHp);
+            Assert.AreEqual(0, _enemy.Armor);
             Assert.AreEqual(3, _enemy.BaseAttackDamage);
         }
 

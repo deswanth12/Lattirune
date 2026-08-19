@@ -47,6 +47,14 @@ namespace Lattirune.Items
             }
         }
 
+        public void RegisterAlias(ItemDataSO alias)
+        {
+            if (alias != null && !string.IsNullOrEmpty(alias.ItemId))
+            {
+                _itemLookup[alias.ItemId] = alias;
+            }
+        }
+
         public ItemDataSO GetItem(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
@@ -265,35 +273,34 @@ namespace Lattirune.Items
                 shield: 45, cursed: true);
             list.Add(bloodShield);
 
-            // ==========================================
-            // BACKWARD-COMPATIBLE PROTOTYPE ITEM ALIASES
-            // ==========================================
+            db.Initialize(list);
+
+            // Prototype aliases for backwards compatibility
             ItemDataSO protoSword = ScriptableObject.CreateInstance<ItemDataSO>();
             protoSword.Initialize("item_training_sword", "Training Sword", "A reliable iron training sword.",
                 ItemCategory.Weapon, new Vector2Int(1, 2), true, new Color(0.9f, 0.5f, 0.1f), damage: 10, cd: 2.0f);
-            list.Add(protoSword);
+            db.RegisterAlias(protoSword);
 
             ItemDataSO protoEmber = ScriptableObject.CreateInstance<ItemDataSO>();
             protoEmber.Initialize("item_ember_blade", "Ember Blade", "A blade glowing with stored heat.",
                 ItemCategory.Weapon, new Vector2Int(2, 1), true, new Color(0.91f, 0.3f, 0.24f), damage: 12, cd: 1.6f);
-            list.Add(protoEmber);
+            db.RegisterAlias(protoEmber);
 
             ItemDataSO protoGuard = ScriptableObject.CreateInstance<ItemDataSO>();
             protoGuard.Initialize("item_guard_plate", "Guard Plate", "A reinforced defensive chestplate.",
                 ItemCategory.Shield, new Vector2Int(2, 2), true, new Color(0.2f, 0.6f, 0.86f), shield: 20);
-            list.Add(protoGuard);
+            db.RegisterAlias(protoGuard);
 
             ItemDataSO protoRelic = ScriptableObject.CreateInstance<ItemDataSO>();
             protoRelic.Initialize("item_arcane_relic", "Arcane Relic", "Ancient artifact vibrating with energy.",
                 ItemCategory.Relic, new Vector2Int(1, 1), false, new Color(0.61f, 0.35f, 0.71f), flatBonus: 4);
-            list.Add(protoRelic);
+            db.RegisterAlias(protoRelic);
 
             ItemDataSO protoFlask = ScriptableObject.CreateInstance<ItemDataSO>();
             protoFlask.Initialize("item_vital_flask", "Vital Flask", "Restorative dungeon potion.",
                 ItemCategory.Consumable, new Vector2Int(1, 1), false, new Color(0.18f, 0.8f, 0.44f));
-            list.Add(protoFlask);
+            db.RegisterAlias(protoFlask);
 
-            db.Initialize(list);
             return db;
         }
     }

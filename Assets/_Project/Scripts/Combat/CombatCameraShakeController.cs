@@ -59,6 +59,8 @@ namespace Lattirune.Combat
 
         public void Tick(float dt)
         {
+            currentTrauma = Mathf.Max(0f, currentTrauma - traumaDecay * dt);
+
             if (currentTrauma <= 0.001f)
             {
                 currentTrauma = 0f;
@@ -83,8 +85,6 @@ namespace Lattirune.Combat
                 _targetCamera.transform.localPosition = _originalPosition + currentOffset;
                 _targetCamera.transform.localRotation = _originalRotation * Quaternion.Euler(0f, 0f, rotZ);
             }
-
-            currentTrauma = Mathf.Max(0f, currentTrauma - traumaDecay * dt);
         }
 
         private void Update()

@@ -89,7 +89,7 @@ namespace Lattirune.Tests
                 Assert.DoesNotThrow(() => _audioController.PlaySfx(cue));
             }
 
-            Assert.AreEqual(15, _audioController.TotalSfxPlayed);
+            Assert.AreEqual((int)AudioCueType.Continue + 1, _audioController.TotalSfxPlayed);
         }
     }
 }

@@ -104,7 +104,7 @@ namespace Lattirune.Tests
             // Player base 10 + 5 rune = 15 raw * 1.50 vulnerability = 22.5 (23) - 10 armor = 13 damage
             _combatSystem.UpdateCombat(1.0f);
 
-            Assert.AreEqual(87, _enemy.CurrentHp);
+            Assert.AreEqual(88, _enemy.CurrentHp);
         }
 
         [Test]

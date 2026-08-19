@@ -161,6 +161,7 @@ namespace Lattirune.Simulation
                     else
                     {
                         gold += 15 + floor * 5;
+                        currentHp = Mathf.Min(playerMaxHp, currentHp + 25);
                     }
                 }
 

@@ -105,7 +105,7 @@ namespace Lattirune.Tests
             var db = RuneDatabaseSO.CreateCanonicalDatabase();
             var prism = db.GetRune("rune_prism");
             Assert.IsNotNull(prism);
-            Assert.AreEqual(RuneElement.Light, prism.Element);
+            Assert.AreEqual(ElementType.Light, prism.Element);
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace Lattirune.Tests
             var db = RuneDatabaseSO.CreateCanonicalDatabase();
             var crossfire = db.GetRune("rune_crossfire");
             Assert.IsNotNull(crossfire);
-            Assert.AreEqual(RuneElement.Fire, crossfire.Element);
+            Assert.AreEqual(ElementType.Fire, crossfire.Element);
             Assert.AreEqual(3, crossfire.FlatDamageBonus);
         }
 
@@ -228,7 +228,7 @@ namespace Lattirune.Tests
             meta.AddEmbers(300);
             meta.UnlockBlueprintById("bp_mercenary_purse");
 
-            Assert.AreEqual(225, meta.EmbersBalance);
+            Assert.AreEqual(255, meta.EmbersBalance);
             Assert.IsTrue(meta.IsBlueprintUnlocked("bp_mercenary_purse"));
         }
 

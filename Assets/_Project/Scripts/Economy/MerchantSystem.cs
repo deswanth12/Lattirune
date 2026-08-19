@@ -101,15 +101,6 @@ namespace Lattirune.Economy
                 price: 40
             ));
 
-            // 4. Emergency Health Potion (15 Gold)
-            currentOffers.Add(new MerchantOffer(
-                id: "offer_health_potion",
-                title: "Rejuvenation Draught",
-                desc: "Restores 35 Health points immediately.",
-                type: MerchantOfferType.HealthPotion,
-                price: 15
-            ));
-
             OnOffersRefreshed?.Invoke();
         }
 

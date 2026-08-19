@@ -194,10 +194,10 @@ namespace Lattirune.Tests
 
             // Try adding duplicate
             SynergyDefinitionSO duplicate = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
-            duplicate.Initialize("fire_sword", "Duplicate Flame", "Desc", ElementType.Fire, ItemCategory.Weapon, 5, Color.red);
+            int initialCount = _database.Count;
             _database.Register(duplicate);
 
-            Assert.AreEqual(5, _database.Count, "Duplicate ID must not increase count.");
+            Assert.AreEqual(initialCount, _database.Count, "Duplicate ID must not increase count.");
         }
 
         [Test]

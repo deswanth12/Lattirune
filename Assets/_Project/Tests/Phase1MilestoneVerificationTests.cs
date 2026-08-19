@@ -182,7 +182,7 @@ namespace Lattirune.Tests
 
             Assert.AreEqual(CombatState.Defeat, combat.CurrentState);
             Assert.IsFalse(player.IsAlive);
-            Assert.AreEqual(1, audio.TotalSfxPlayed); // Defeat SFX
+            Assert.AreEqual(2, audio.TotalSfxPlayed); // Attack + Defeat SFX
 
             // Retry combat
             combat.ResetCombat();

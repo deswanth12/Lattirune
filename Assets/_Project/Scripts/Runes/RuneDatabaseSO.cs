@@ -47,6 +47,14 @@ namespace Lattirune.Runes
             }
         }
 
+        public void RegisterAlias(RuneData alias)
+        {
+            if (alias != null && !string.IsNullOrEmpty(alias.RuneId))
+            {
+                _runeLookup[alias.RuneId] = alias;
+            }
+        }
+
         public RuneData GetRune(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
@@ -175,26 +183,25 @@ namespace Lattirune.Runes
                 haste: 0.25f);
             list.Add(haste);
 
-            // ==========================================
-            // BACKWARD-COMPATIBLE PROTOTYPE ALIASES
-            // ==========================================
+            db.Initialize(list);
+
+            // Prototype aliases for backwards compatibility
             RuneData protoFire = ScriptableObject.CreateInstance<RuneData>();
             protoFire.Initialize("fire_rune_01", "Fire Rune", ConduitDirection.North, ElementType.Fire, maxRange: 3, active: true, damageBonus: 5);
-            list.Add(protoFire);
+            db.RegisterAlias(protoFire);
 
             RuneData protoIce = ScriptableObject.CreateInstance<RuneData>();
             protoIce.Initialize("ice_rune_01", "Ice Rune", ConduitDirection.East, ElementType.Ice, maxRange: 4, active: true, damageBonus: 4);
-            list.Add(protoIce);
+            db.RegisterAlias(protoIce);
 
             RuneData protoOmni = ScriptableObject.CreateInstance<RuneData>();
             protoOmni.Initialize("rune_omni", "Omnidirectional Node", ConduitDirection.Omni, ElementType.Force, maxRange: 1, active: true);
-            list.Add(protoOmni);
+            db.RegisterAlias(protoOmni);
 
             RuneData protoPrism = ScriptableObject.CreateInstance<RuneData>();
             protoPrism.Initialize("prism_demo", "Prism Rune", ConduitDirection.Split, ElementType.Light, maxRange: 3, active: true);
-            list.Add(protoPrism);
+            db.RegisterAlias(protoPrism);
 
-            db.Initialize(list);
             return db;
         }
     }

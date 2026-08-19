@@ -28,7 +28,7 @@ namespace Lattirune.Combat
 
         public void SetupDefaultPlayer(int initialHp = 100)
         {
-            Initialize("Hero", initialHp, baseArmor: 0, interval: 1.2f);
+            Initialize("Hero", initialHp, baseArmor: 0, interval: 1.0f);
         }
 
         /// <summary>

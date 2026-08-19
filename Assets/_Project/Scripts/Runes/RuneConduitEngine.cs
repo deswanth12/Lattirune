@@ -243,7 +243,7 @@ namespace Lattirune.Runes
                 }
             }
 
-            string rootId = $"beam_{rune.RuneId}_{origin.x}_{origin.y}";
+            string rootId = $"beam_{rune.RuneId}_{origin.x}_{origin.y}_{direction}";
             TraceBeam(rootId, null, origin, direction, Mathf.Clamp(range, 1, LatticeGrid.WIDTH), 0);
 
             return allPaths;

@@ -121,8 +121,26 @@ namespace Lattirune.Reactions
             return valid;
         }
 
+        public static ElementType MapRuneElement(Lattirune.Runes.RuneElement runeElem)
+        {
+            switch (runeElem)
+            {
+                case Lattirune.Runes.RuneElement.Fire: return ElementType.Fire;
+                case Lattirune.Runes.RuneElement.Ice: return ElementType.Ice;
+                case Lattirune.Runes.RuneElement.Lightning: return ElementType.Lightning;
+                case Lattirune.Runes.RuneElement.Poison: return ElementType.Poison;
+                case Lattirune.Runes.RuneElement.Light: return ElementType.Light;
+                case Lattirune.Runes.RuneElement.Shadow:
+                case Lattirune.Runes.RuneElement.Void: return ElementType.Shadow;
+                case Lattirune.Runes.RuneElement.Wind: return ElementType.Wind;
+                case Lattirune.Runes.RuneElement.Force: return ElementType.Force;
+                case Lattirune.Runes.RuneElement.Earth: return ElementType.Earth;
+                default: return ElementType.Physical;
+            }
+        }
+
         public ElementalReactionDefinitionSO GetReaction(ElementType a, ElementType b) => FindReaction(a, b);
-        public ElementalReactionDefinitionSO GetReaction(Lattirune.Runes.RuneElement a, Lattirune.Runes.RuneElement b) => FindReaction((ElementType)(int)a, (ElementType)(int)b);
+        public ElementalReactionDefinitionSO GetReaction(Lattirune.Runes.RuneElement a, Lattirune.Runes.RuneElement b) => FindReaction(MapRuneElement(a), MapRuneElement(b));
         public bool HasReaction(string id) => GetById(id) != null;
 
         public static ElementalReactionDatabaseSO CreateCanonicalDatabase() => CreateDefaultDatabase();

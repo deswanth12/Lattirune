@@ -88,7 +88,7 @@ namespace Lattirune.Combat
 
         public virtual void Heal(int amount)
         {
-            if (!IsAlive || amount <= 0) return;
+            if (amount <= 0) return;
 
             int prevHp = currentHp;
             currentHp = Mathf.Min(maxHp, currentHp + amount);
@@ -99,6 +99,15 @@ namespace Lattirune.Combat
                 OnHealed?.Invoke(actualHeal);
                 OnHpChanged?.Invoke();
             }
+        }
+
+        public virtual void Revive(int healthAmount)
+        {
+            if (healthAmount <= 0) return;
+            currentHp = Mathf.Clamp(healthAmount, 1, maxHp);
+            cooldownTimer = 0f;
+            OnHealed?.Invoke(currentHp);
+            OnHpChanged?.Invoke();
         }
 
         public void ResetHpToFull()
