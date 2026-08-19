@@ -23,6 +23,14 @@ namespace Lattirune.Grid
         }
 
         /// <summary>
+        /// Calculates the world position for a grid coordinate vector.
+        /// </summary>
+        public static Vector3 GridToWorld(Vector2Int gridCoord, Vector2 gridOrigin = default, float cellSize = DEFAULT_CELL_SIZE, float cellSpacing = DEFAULT_CELL_SPACING)
+        {
+            return GridToWorldPosition(gridCoord.x, gridCoord.y, gridOrigin, cellSize, cellSpacing);
+        }
+
+        /// <summary>
         /// Calculates the bottom-left world origin of the 5x5 grid such that the grid is centered at targetCenter.
         /// </summary>
         public static Vector2 CalculateGridOrigin(Vector2 targetCenter, int gridWidth = LatticeGrid.WIDTH, int gridHeight = LatticeGrid.HEIGHT, float cellSize = DEFAULT_CELL_SIZE, float cellSpacing = DEFAULT_CELL_SPACING)

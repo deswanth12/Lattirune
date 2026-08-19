@@ -31,8 +31,10 @@ namespace Lattirune.Items
         public ItemDataSO Data => itemData;
         public string InstanceId => instanceId;
         public int CurrentRotationDegrees => currentRotationDegrees;
+        public int CurrentRotationAngle => currentRotationDegrees;
         public bool IsPlacedOnGrid => isPlacedOnGrid;
         public Vector2Int CurrentGridPosition => currentGridPosition;
+        public Vector2Int GridPosition => currentGridPosition;
         public Vector3 OriginalPosition => _originalPosition;
         public string ActiveSynergyId => activeSynergyId;
         public bool HasActiveSynergy => hasActiveSynergy;
@@ -78,6 +80,11 @@ namespace Lattirune.Items
             currentRotationDegrees = ItemRotationUtility.GetNextRotation(currentRotationDegrees);
             UpdateVisual();
             return true;
+        }
+
+        public bool RotateClockwise()
+        {
+            return Rotate90();
         }
 
         /// <summary>

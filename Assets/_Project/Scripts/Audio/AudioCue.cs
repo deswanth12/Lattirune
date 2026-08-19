@@ -21,4 +21,18 @@ namespace Lattirune.Audio
         Retry,
         Continue
     }
+
+    /// <summary>
+    /// UI/Gameplay sound effect alias enum matching audio cue mappings.
+    /// </summary>
+    public enum SoundEffectType
+    {
+        ButtonClick,
+        ItemPlaced,
+        InvalidPlacement,
+        RewardClaimed,
+        Victory,
+        Defeat,
+        CombatHit
+    }
 }

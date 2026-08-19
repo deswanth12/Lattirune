@@ -1,5 +1,6 @@
 using UnityEngine;
 using Lattirune.Core;
+using Lattirune.Grid;
 
 namespace Lattirune.Items
 {

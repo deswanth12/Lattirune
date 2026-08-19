@@ -32,8 +32,15 @@ namespace Lattirune.Audio
 
         public float EffectiveSfxVolume => isMuted ? 0f : masterVolume * sfxVolume;
 
+        public static AudioController Instance { get; private set; }
+
         private void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+
             _audioSource = GetComponent<AudioSource>();
             if (_audioSource == null)
             {
@@ -42,6 +49,14 @@ namespace Lattirune.Audio
 
             _audioSource.playOnAwake = false;
             CreateSyntheticFallbackClip();
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         public void SetMasterVolume(float volume)
@@ -95,6 +110,26 @@ namespace Lattirune.Audio
                 float finalVol = Mathf.Clamp01(EffectiveSfxVolume * volumeScale);
                 _audioSource.PlayOneShot(clip, finalVol);
             }
+        }
+
+        public void PlaySoundEffect(AudioCueType cue, float volumeScale = 1.0f)
+        {
+            PlaySfx(cue, volumeScale);
+        }
+
+        public void PlaySoundEffect(SoundEffectType sound, float volumeScale = 1.0f)
+        {
+            AudioCueType cue = sound switch
+            {
+                SoundEffectType.ItemPlaced => AudioCueType.ItemValidPlacement,
+                SoundEffectType.InvalidPlacement => AudioCueType.ItemInvalidPlacement,
+                SoundEffectType.RewardClaimed => AudioCueType.RewardApplied,
+                SoundEffectType.Victory => AudioCueType.Victory,
+                SoundEffectType.Defeat => AudioCueType.Defeat,
+                SoundEffectType.CombatHit => AudioCueType.Attack,
+                _ => AudioCueType.ButtonClick
+            };
+            PlaySfx(cue, volumeScale);
         }
 
         public void ResetTelemetry()
