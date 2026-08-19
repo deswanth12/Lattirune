@@ -584,6 +584,22 @@ namespace Lattirune.Core
             var tutorialManager = tutObj.AddComponent<TutorialManager>();
             tutorialManager.Initialize(alreadyCompleted: false);
 
+            _grid.OnItemPlaced += (id, origin, size) => tutorialManager.AdvanceStep(TutorialStep.DragWeaponToGrid);
+            if (synergySystem != null)
+            {
+                synergySystem.OnSynergyActivated += (syn) => tutorialManager.AdvanceStep(TutorialStep.ConnectRuneLaser);
+            }
+            if (combatSystem != null)
+            {
+                combatSystem.OnStateChanged += (state) =>
+                {
+                    if (state == CombatState.Fighting)
+                    {
+                        tutorialManager.AdvanceStep(TutorialStep.StartFirstBattle);
+                    }
+                };
+            }
+
             GameObject tutUiObj = new GameObject("TutorialOverlayUIController");
             tutUiObj.transform.SetParent(transform);
             var tutorialUI = tutUiObj.AddComponent<TutorialOverlayUIController>();
