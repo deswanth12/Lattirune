@@ -428,7 +428,15 @@ namespace Lattirune.Core
                 combatSystemObj.transform.SetParent(transform);
                 combatSystem = combatSystemObj.AddComponent<CombatSystem>();
             }
-            combatSystem.Initialize(_playerCombatant, _enemyCombatant, combatEffectSystem);
+
+            GameObject comboObj = new GameObject("ComboTracker");
+            comboObj.transform.SetParent(transform);
+            var comboTracker = comboObj.AddComponent<Lattirune.Combo.ComboTracker>();
+            comboTracker.Initialize();
+            comboTracker.BindCombatSystem(combatSystem);
+            if (reactionSystem != null) comboTracker.BindReactionSystem(reactionSystem);
+
+            combatSystem.Initialize(_playerCombatant, _enemyCombatant, combatEffectSystem, null, comboTracker);
 
             // Boss System coordinator (TASK-018)
             if (bossSystem == null)
@@ -517,7 +525,7 @@ namespace Lattirune.Core
 
             if (feedbackCoordinator != null)
             {
-                feedbackCoordinator.Initialize(audioController, hapticFeedback, _grid, synergySystem, combatSystem, rewardService, reactionSystem, merchantSystem);
+                feedbackCoordinator.Initialize(audioController, hapticFeedback, _grid, synergySystem, combatSystem, rewardService, reactionSystem, merchantSystem, comboTracker);
             }
 
             // Hero Classes & Loadouts Subsystem (TASK-057)

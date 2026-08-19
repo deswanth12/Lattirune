@@ -23,6 +23,7 @@ namespace Lattirune.Audio
         private RewardService _rewardService;
         private Reactions.ElementalReactionSystem _reactionSystem;
         private Economy.MerchantSystem _merchantSystem;
+        private Combo.ComboTracker _comboTracker;
 
         public AudioController Audio => audioController;
         public HapticFeedback Haptics => hapticFeedback;
@@ -35,7 +36,8 @@ namespace Lattirune.Audio
             CombatSystem combat,
             RewardService rewards,
             Reactions.ElementalReactionSystem reactions = null,
-            Economy.MerchantSystem merchant = null)
+            Economy.MerchantSystem merchant = null,
+            Combo.ComboTracker combo = null)
         {
             UnsubscribeAll();
 
@@ -47,6 +49,7 @@ namespace Lattirune.Audio
             _rewardService = rewards;
             _reactionSystem = reactions;
             _merchantSystem = merchant;
+            _comboTracker = combo;
 
             SubscribeAll();
         }
@@ -92,6 +95,12 @@ namespace Lattirune.Audio
             {
                 _rewardService.OnRewardApplied += HandleRewardApplied;
             }
+
+            if (_comboTracker != null)
+            {
+                _comboTracker.OnComboIncremented += HandleComboIncremented;
+                _comboTracker.OnReactionChainIncremented += HandleReactionChainIncremented;
+            }
         }
 
         public void UnsubscribeAll()
@@ -129,6 +138,12 @@ namespace Lattirune.Audio
             if (_rewardService != null)
             {
                 _rewardService.OnRewardApplied -= HandleRewardApplied;
+            }
+
+            if (_comboTracker != null)
+            {
+                _comboTracker.OnComboIncremented -= HandleComboIncremented;
+                _comboTracker.OnReactionChainIncremented -= HandleReactionChainIncremented;
             }
         }
 
@@ -196,6 +211,26 @@ namespace Lattirune.Audio
         {
             audioController?.PlaySfx(AudioCueType.RewardApplied);
             hapticFeedback?.TriggerHaptic(HapticType.Success);
+        }
+
+        private void HandleComboIncremented(int comboCount, float multiplier)
+        {
+            // Milestone feedback at 5x, 10x, 15x...
+            if (comboCount > 0 && comboCount % 5 == 0)
+            {
+                audioController?.PlaySfx(AudioCueType.SynergyActivated);
+                hapticFeedback?.TriggerHaptic(HapticType.Medium);
+            }
+        }
+
+        private void HandleReactionChainIncremented(int chainCount)
+        {
+            // Consecutive reaction milestone feedback
+            if (chainCount >= 2)
+            {
+                audioController?.PlaySfx(AudioCueType.RuneConduitIgnite);
+                hapticFeedback?.TriggerHaptic(HapticType.Heavy);
+            }
         }
     }
 }
