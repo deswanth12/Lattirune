@@ -40,6 +40,11 @@ namespace Lattirune.Synergy
             return synergyDefinitions.Find(d => d != null && d.SynergyId == synergyId);
         }
 
+        public bool HasSynergy(string synergyId)
+        {
+            return GetById(synergyId) != null;
+        }
+
         public SynergyDefinitionSO FindMatchingDefinition(RuneData rune, ItemDataSO itemData)
         {
             if (rune == null || itemData == null || synergyDefinitions == null) return null;
@@ -97,6 +102,9 @@ namespace Lattirune.Synergy
             return errors.Count == 0;
         }
 
+        public static SynergyDatabaseSO CreateCanonicalDatabase() => CreateDefaultDatabase();
+        public static SynergyDatabaseSO CreateCanonicalSynergyDatabase() => CreateDefaultDatabase();
+
         /// <summary>
         /// Creates a complete prototype 5-element synergy matrix + 5 Master Item Combinations matching PLAN.md Section 7.1.
         /// </summary>
@@ -104,6 +112,8 @@ namespace Lattirune.Synergy
         {
             SynergyDatabaseSO db = ScriptableObject.CreateInstance<SynergyDatabaseSO>();
             List<SynergyDefinitionSO> list = new List<SynergyDefinitionSO>();
+
+            // ==========================================
 
             // ==========================================
             // 1. MASTER ITEM COMBINATIONS (PLAN.md Section 7.1)

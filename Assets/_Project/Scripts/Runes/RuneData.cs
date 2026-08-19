@@ -3,6 +3,16 @@ using Lattirune.Core;
 
 namespace Lattirune.Runes
 {
+    public enum RuneElement
+    {
+        Fire = 0,
+        Ice = 1,
+        Lightning = 2,
+        Poison = 3,
+        Void = 4,
+        Light = 5
+    }
+
     /// <summary>
     /// Data-driven ScriptableObject definition for a magical Rune.
     /// Stores core directional conduit properties, elemental affinity, and combat bonuses for the 5x5 LatticeGrid.

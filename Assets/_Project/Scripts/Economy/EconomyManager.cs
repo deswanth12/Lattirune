@@ -37,12 +37,42 @@ namespace Lattirune.Economy
             return UnityEngine.Random.Range(NORMAL_MOB_GOLD_MIN, NORMAL_MOB_GOLD_MAX + 1);
         }
 
+        public static int GenerateNormalMobGoldDrop(int? seed = null)
+        {
+            if (seed.HasValue)
+            {
+                var rand = new System.Random(seed.Value);
+                return rand.Next(NORMAL_MOB_GOLD_MIN, NORMAL_MOB_GOLD_MAX + 1);
+            }
+            return GetGoldDrop(false);
+        }
+
+        public static int GenerateEliteMobGoldDrop(int? seed = null)
+        {
+            if (seed.HasValue)
+            {
+                var rand = new System.Random(seed.Value);
+                return rand.Next(ELITE_MOB_GOLD_MIN, ELITE_MOB_GOLD_MAX + 1);
+            }
+            return GetGoldDrop(true);
+        }
+
         /// <summary>
         /// Generates a randomized persistent Embers drop for clearing a boss encounter.
         /// </summary>
         public static int GetBossEmbersDrop()
         {
             return UnityEngine.Random.Range(BOSS_EMBERS_MIN, BOSS_EMBERS_MAX + 1);
+        }
+
+        public static int GenerateBossEmbersDrop(int? seed = null)
+        {
+            if (seed.HasValue)
+            {
+                var rand = new System.Random(seed.Value);
+                return rand.Next(BOSS_EMBERS_MIN, BOSS_EMBERS_MAX + 1);
+            }
+            return GetBossEmbersDrop();
         }
 
         public static int GetCommonItemPrice() => COMMON_ITEM_PRICE;

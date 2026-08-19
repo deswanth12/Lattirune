@@ -28,9 +28,12 @@ namespace Lattirune.Boss
 
         public string PhaseId => phaseId;
         public string DisplayName => displayName;
+        public string PhaseName => displayName;
         public float HpThresholdPercentage => hpThresholdPercentage;
         public int BonusArmor => bonusArmor;
+        public int ArmorBonus => bonusArmor;
         public int BonusAttack => bonusAttack;
+        public int AttackBonus => bonusAttack;
         public float AttackIntervalMultiplier => attackIntervalMultiplier;
         public CombatEffectDefinitionSO PhaseEffect => phaseEffect;
 

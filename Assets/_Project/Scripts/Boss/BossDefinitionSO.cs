@@ -25,6 +25,7 @@ namespace Lattirune.Boss
 
         public string BossId => bossId;
         public string DisplayName => displayName;
+        public string BossName => displayName;
         public int MaxHp => maxHp;
         public int BaseArmor => baseArmor;
         public int BaseAttack => baseAttack;

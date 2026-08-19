@@ -22,6 +22,7 @@ namespace Lattirune.Combat
         public event Action<int> OnMinionsSummoned;
 
         public int BaseAttackDamage => baseAttackDamage;
+        public int BaseDamage => baseAttackDamage;
         public IReadOnlyList<EnemyTraitDefinitionSO> ActiveTraits => _activeTraits;
 
         public void SetupTrainingDummy(int hp = 50, int baseArmor = 2, int attack = 4, float interval = 1.5f)
@@ -30,6 +31,15 @@ namespace Lattirune.Combat
             _activeTraits.Clear();
             Initialize("Training Dummy", hp, baseArmor, interval);
         }
+
+        public void SetupSewerRat() => SetupCustom("Sewer Rat", 35, 0, 3, 1.2f);
+        public void SetupGoblinThief() => SetupCustom("Goblin Thief", 45, 0, 4, 1.0f);
+        public void SetupArmoredSkeleton() => SetupCustom("Armored Skeleton", 75, 15, 5, 2.0f);
+        public void SetupVenomousSpider() => SetupCustom("Venomous Spider", 50, 0, 4, 1.4f);
+        public void SetupAcidSlime() => SetupCustom("Acid Slime", 160, 2, 6, 2.0f);
+        public void SetupNecromancer() => SetupCustom("Necromancer", 140, 0, 5, 3.0f);
+        public void SetupSlime() => SetupCustom("Acid Slime", 160, 2, 6, 2.0f);
+        public void SetupSkeleton() => SetupCustom("Armored Skeleton", 75, 15, 5, 2.0f);
 
         public void SetupCustom(
             string name,

@@ -21,6 +21,7 @@ namespace Lattirune.Dungeon
         public int FloorNumber => floorNumber;
         public string FloorId => floorId;
         public string DisplayName => displayName;
+        public string FloorName => displayName;
         public IReadOnlyList<EncounterDefinitionSO> Encounters => encounters;
         public int EncounterCount => encounters != null ? encounters.Count : 0;
 

@@ -107,6 +107,22 @@ namespace Lattirune.Inventory
             return true;
         }
 
+        public int ExpandCapacity(int count = 1)
+        {
+            int expanded = 0;
+            for (int y = 0; y < _height && expanded < count; y++)
+            {
+                for (int x = 0; x < _width && expanded < count; x++)
+                {
+                    if (_cells[x, y].IsLocked)
+                    {
+                        if (UnlockCell(x, y)) expanded++;
+                    }
+                }
+            }
+            return UnlockedCellCount;
+        }
+
         public bool LockCell(int x, int y)
         {
             if (!IsValidCoordinate(x, y)) return false;

@@ -40,5 +40,17 @@ namespace Lattirune.Combat
             IsCritical = isCritical;
             IsReflected = isReflected;
         }
+
+        public DamageResult(
+            string source,
+            string target,
+            int baseDamage,
+            int targetArmor,
+            int finalDamage,
+            bool isCritical = false,
+            bool isReflected = false)
+            : this(source, target, baseDamage, 0, 1.0f, 1.0f, targetArmor, finalDamage, isCritical, isReflected)
+        {
+        }
     }
 }

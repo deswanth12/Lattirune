@@ -111,6 +111,13 @@ namespace Lattirune.Reactions
             return errors.Count == 0;
         }
 
+        public ElementalReactionDefinitionSO GetReaction(ElementType a, ElementType b) => FindReaction(a, b);
+        public ElementalReactionDefinitionSO GetReaction(Lattirune.Runes.RuneElement a, Lattirune.Runes.RuneElement b) => FindReaction((ElementType)(int)a, (ElementType)(int)b);
+        public bool HasReaction(string id) => GetById(id) != null;
+
+        public static ElementalReactionDatabaseSO CreateCanonicalDatabase() => CreateDefaultDatabase();
+        public static ElementalReactionDatabaseSO CreateCanonicalReactionDatabase() => CreateDefaultDatabase();
+
         /// <summary>
         /// Creates a complete prototype Elemental Reaction database implementing PLAN.md Section 7.
         /// </summary>

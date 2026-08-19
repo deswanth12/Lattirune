@@ -25,6 +25,7 @@ namespace Lattirune.Dungeon
 
         [Header("Enemy Traits (PLAN.md Section 10)")]
         [SerializeField] private List<EnemyTraitDefinitionSO> enemyTraits = new List<EnemyTraitDefinitionSO>();
+        [SerializeField] private Lattirune.Boss.BossDefinitionSO bossDefinition;
 
         public string EncounterId => encounterId;
         public string DisplayName => displayName;
@@ -35,6 +36,7 @@ namespace Lattirune.Dungeon
         public float AttackInterval => attackInterval;
         public bool IsBoss => isBoss;
         public IReadOnlyList<EnemyTraitDefinitionSO> EnemyTraits => enemyTraits;
+        public Lattirune.Boss.BossDefinitionSO BossDefinition => bossDefinition;
 
         public void Initialize(
             string id,
