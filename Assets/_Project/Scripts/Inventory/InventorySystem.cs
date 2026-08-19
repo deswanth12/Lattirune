@@ -16,6 +16,7 @@ namespace Lattirune.Inventory
 
         private InventoryGrid _grid;
         private readonly List<ItemInstance> _storedItems = new List<ItemInstance>();
+        private readonly List<ItemInstance> _stagingItems = new List<ItemInstance>();
         private int _expansionStep = 0;
 
         public event Action<ItemInstance, Vector2Int> OnItemAdded;
@@ -27,6 +28,8 @@ namespace Lattirune.Inventory
         public InventoryGrid Grid => _grid;
         public IReadOnlyList<ItemInstance> StoredItems => _storedItems;
         public int StoredItemCount => _storedItems.Count;
+        public IReadOnlyList<ItemInstance> StagingItems => _stagingItems;
+        public int StagingItemCount => _stagingItems.Count;
         public int Capacity => _grid != null ? _grid.UnlockedCellCount : 0;
         public int TotalCapacity => _grid != null ? _grid.TotalCellCount : 0;
         public int UnlockedCount => _grid != null ? _grid.UnlockedCellCount : 0;
@@ -185,9 +188,31 @@ namespace Lattirune.Inventory
             OnInventoryChanged?.Invoke();
         }
 
+        public void AddItemToStaging(ItemInstance item)
+        {
+            if (item == null) return;
+            if (!_stagingItems.Contains(item))
+            {
+                _stagingItems.Add(item);
+                OnInventoryChanged?.Invoke();
+            }
+        }
+
+        public bool RemoveItemFromStaging(ItemInstance item)
+        {
+            if (item == null) return false;
+            bool removed = _stagingItems.Remove(item);
+            if (removed)
+            {
+                OnInventoryChanged?.Invoke();
+            }
+            return removed;
+        }
+
         public void ClearInventory()
         {
             _storedItems.Clear();
+            _stagingItems.Clear();
             if (inventoryDefinition != null)
             {
                 Initialize(inventoryDefinition);

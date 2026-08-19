@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Combat;
@@ -147,7 +147,7 @@ namespace Lattirune.Progression
                     var itemData = itemDatabase.GetItem(itemId);
                     if (itemData != null)
                     {
-                        var instance = ItemFactory.CreateInstance(itemData);
+                        var instance = ItemFactory.CreateInstance(itemData, Vector3.zero);
                         inventory.AddItemToStaging(instance);
                     }
                 }

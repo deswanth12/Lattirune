@@ -12,7 +12,7 @@ namespace Lattirune.Items
 
         public static ItemInstance CreateInstance(
             ItemDataSO data, 
-            Vector3 spawnPosition, 
+            Vector3 spawnPosition = default, 
             Transform parent = null, 
             int initialRotation = 0)
         {

@@ -30,9 +30,11 @@ namespace Lattirune.Progression
 
         public BlueprintDatabaseSO Database => blueprintDatabase;
         public int EmbersBalance => embersBalance;
+        public int CurrentEmbers => embersBalance;
         public int TotalRunsAttempted => totalRunsAttempted;
         public int TotalBossClears => totalBossClears;
         public IReadOnlyCollection<string> UnlockedBlueprintIds => _unlockedBlueprintIds;
+        public IReadOnlyCollection<string> UnlockedBlueprints => _unlockedBlueprintIds;
         public int UnlockedBlueprintCount => _unlockedBlueprintIds.Count;
 
         private void Awake()
@@ -48,10 +50,10 @@ namespace Lattirune.Progression
             }
         }
 
-        public void Initialize(BlueprintDatabaseSO db = null)
+        public void Initialize(BlueprintDatabaseSO db = null, int startingEmbers = 0)
         {
             blueprintDatabase = db ?? BlueprintDatabaseSO.CreateCanonicalBlueprintDatabase();
-            embersBalance = 0;
+            embersBalance = Mathf.Max(0, startingEmbers);
             totalRunsAttempted = 0;
             totalBossClears = 0;
             _unlockedBlueprintIds.Clear();
