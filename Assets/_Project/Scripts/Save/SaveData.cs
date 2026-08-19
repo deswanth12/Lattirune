@@ -156,15 +156,20 @@ namespace Lattirune.Save
         public float sfxVolume = 1.0f;
         public bool isMuted = false;
         public bool hapticsEnabled = true;
+        public bool hasCompletedTutorial = false;
 
-        public SavedSettingsData() { }
+        public SavedSettingsData() 
+        {
+            hasCompletedTutorial = false;
+        }
 
-        public SavedSettingsData(float master, float sfx, bool muted, bool haptics)
+        public SavedSettingsData(float master, float sfx, bool muted, bool haptics, bool tutorial = false)
         {
             masterVolume = Mathf.Clamp01(master);
             sfxVolume = Mathf.Clamp01(sfx);
             isMuted = muted;
             hapticsEnabled = haptics;
+            hasCompletedTutorial = tutorial;
         }
     }
 
