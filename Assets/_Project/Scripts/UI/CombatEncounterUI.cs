@@ -15,6 +15,7 @@ namespace Lattirune.UI
     public class CombatEncounterUI : MonoBehaviour
     {
         [Header("System References")]
+        [SerializeField] private ScreenNavigationController navigation;
         [SerializeField] private CombatSystem combatSystem;
         [SerializeField] private SynergySystem synergySystem;
         [SerializeField] private RewardService rewardService;
@@ -29,6 +30,7 @@ namespace Lattirune.UI
         private bool _isShowingRewards = false;
         private string _combatLog = "Arrange items on the 5x5 grid, then tap 'START BATTLE'.";
 
+        public ScreenNavigationController Navigation => navigation;
         public CombatSystem Combat => combatSystem;
         public RewardService Rewards => rewardService;
         public IReadOnlyList<RewardOption> CurrentRewardOptions => _currentRewardOptions;
@@ -50,10 +52,25 @@ namespace Lattirune.UI
 
             if (combatSystem != null)
             {
-                combatSystem.OnAttackExecuted += HandleAttackExecuted;
-                combatSystem.OnVictory += HandleVictory;
-                combatSystem.OnDefeat += HandleDefeat;
+                combatSystem.OnStateChanged += HandleCombatStateChanged;
             }
+
+            if (rewardService != null)
+            {
+                rewardService.OnRewardApplied += HandleRewardApplied;
+            }
+        }
+
+        public void Initialize(
+            CombatSystem combat, 
+            SynergySystem synergy, 
+            RewardService service, 
+            List<ItemDataSO> catalogue,
+            Transform spawnParent,
+            ScreenNavigationController nav)
+        {
+            navigation = nav;
+            Initialize(combat, synergy, service, catalogue, spawnParent);
         }
 
         private void OnDestroy()
@@ -119,6 +136,11 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
+            if (navigation != null && navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.COMBAT)
+            {
+                return;
+            }
+
             if (combatSystem == null || combatSystem.Player == null || combatSystem.Enemy == null) return;
 
             GUIStyle panelStyle = new GUIStyle(GUI.skin.box);

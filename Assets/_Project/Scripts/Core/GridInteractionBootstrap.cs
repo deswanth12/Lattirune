@@ -657,6 +657,11 @@ namespace Lattirune.Core
                 mainMenuController = menuObj.AddComponent<MainMenuController>();
             }
             mainMenuController.Initialize(navigationController, runManager, metaProgressionManager, saveSystem);
+
+            if (combatEncounterUI != null)
+            {
+                combatEncounterUI.Initialize(combatSystem, synergySystem, rewardService, prototypeItemCatalogue, stagingAreaParent, navigationController);
+            }
         }
 
         private void OnGUI()
