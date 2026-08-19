@@ -20,6 +20,7 @@ using Lattirune.Events;
 using Lattirune.Modifiers;
 using Lattirune.Monetization;
 using Lattirune.Combo;
+using Lattirune.Tutorial;
 
 namespace Lattirune.Core
 {
@@ -556,6 +557,23 @@ namespace Lattirune.Core
             monObj.transform.SetParent(transform);
             var monetizationService = monObj.AddComponent<OfflineMonetizationService>();
             monetizationService.Initialize();
+
+            // Campfire Rest UI Controller (TASK-063)
+            GameObject restUiObj = new GameObject("CampfireRestUIController");
+            restUiObj.transform.SetParent(transform);
+            var campfireRestUI = restUiObj.AddComponent<CampfireRestUIController>();
+            campfireRestUI.Initialize(runManager, _playerCombatant, null, navigation);
+
+            // Tutorial System Subsystem (TASK-063)
+            GameObject tutObj = new GameObject("TutorialManager");
+            tutObj.transform.SetParent(transform);
+            var tutorialManager = tutObj.AddComponent<TutorialManager>();
+            tutorialManager.Initialize(alreadyCompleted: false);
+
+            GameObject tutUiObj = new GameObject("TutorialOverlayUIController");
+            tutUiObj.transform.SetParent(transform);
+            var tutorialUI = tutUiObj.AddComponent<TutorialOverlayUIController>();
+            tutorialUI.Initialize(tutorialManager);
         }
 
         private void BuildDefaultItemDefinitions()

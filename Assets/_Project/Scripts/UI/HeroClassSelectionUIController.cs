@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Lattirune.Core;
 using Lattirune.Progression;
@@ -32,13 +32,38 @@ namespace Lattirune.UI
             metaProgression = meta;
             navigation = nav;
             _selectedPreviewIndex = 0;
-            _feedbackMessage = ""Choose your Champion for the descent."";
+            _feedbackMessage = "Choose your Champion for the descent.";
+
+            if (navigation != null)
+            {
+                navigation.OnScreenChanged += HandleScreenChanged;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (navigation != null)
+            {
+                navigation.OnScreenChanged -= HandleScreenChanged;
+            }
+        }
+
+        private void HandleScreenChanged(ScreenState prev, ScreenState next)
+        {
+            if (next == ScreenState.HERO_SELECTION)
+            {
+                Show();
+            }
+            else if (prev == ScreenState.HERO_SELECTION)
+            {
+                Hide();
+            }
         }
 
         public void Show()
         {
             isVisible = true;
-            _feedbackMessage = ""Choose your Champion for the descent."";
+            _feedbackMessage = "Choose your Champion for the descent.";
         }
 
         public void Hide()

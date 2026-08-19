@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Core;
@@ -35,6 +35,31 @@ namespace Lattirune.UI
         {
             codexManager = codex;
             navigation = nav;
+
+            if (navigation != null)
+            {
+                navigation.OnScreenChanged += HandleScreenChanged;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (navigation != null)
+            {
+                navigation.OnScreenChanged -= HandleScreenChanged;
+            }
+        }
+
+        private void HandleScreenChanged(ScreenState prev, ScreenState next)
+        {
+            if (next == ScreenState.CODEX)
+            {
+                Show();
+            }
+            else if (prev == ScreenState.CODEX)
+            {
+                Hide();
+            }
         }
 
         public void Show()

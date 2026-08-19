@@ -63,7 +63,7 @@ namespace Lattirune.UI
             }
 
             // Contextual back routing
-            if (currentScreen == ScreenState.BLUEPRINT_FORGE)
+            if (currentScreen == ScreenState.BLUEPRINT_FORGE || currentScreen == ScreenState.HERO_SELECTION || currentScreen == ScreenState.CODEX)
             {
                 NavigateTo(ScreenState.CAMPFIRE_HUB, recordHistory: false);
                 return true;

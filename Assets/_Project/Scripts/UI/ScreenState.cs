@@ -9,6 +9,8 @@ namespace Lattirune.UI
         MAIN_MENU,
         CAMPFIRE_HUB,
         BLUEPRINT_FORGE,
+        HERO_SELECTION,
+        CODEX,
         RUN_START,
         GRID_BUILD,
         COMBAT,

@@ -99,7 +99,7 @@ namespace Lattirune.UI
         private void DrawHubWindow()
         {
             float modalWidth = 360f;
-            float modalHeight = 310f;
+            float modalHeight = 440f;
             float startX = 20f;
             float startY = 100f;
 
@@ -127,6 +127,18 @@ namespace Lattirune.UI
             if (GUILayout.Button("ENTER BLUEPRINT FORGE", GUILayout.Height(52)))
             {
                 OpenBlueprintForge();
+            }
+            GUILayout.Space(6);
+
+            if (GUILayout.Button("HERO ROSTER & LOADOUTS", GUILayout.Height(52)))
+            {
+                if (navigation != null) navigation.NavigateTo(ScreenState.HERO_SELECTION);
+            }
+            GUILayout.Space(6);
+
+            if (GUILayout.Button("ARCANE CODEX & BESTIARY", GUILayout.Height(52)))
+            {
+                if (navigation != null) navigation.NavigateTo(ScreenState.CODEX);
             }
             GUILayout.Space(6);
 
