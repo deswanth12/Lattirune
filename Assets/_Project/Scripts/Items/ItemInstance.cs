@@ -5,31 +5,35 @@ using Lattirune.Grid;
 namespace Lattirune.Items
 {
     /// <summary>
-    /// Development test item representing a draggable entity for spatial grid testing.
-    /// Supports dynamic footprints (1x1, 1x2, 2x1, 2x2) and visual state feedback.
-    /// [DEVELOPMENT ONLY]
+    /// Runtime representation of an item in the game world / inventory.
+    /// References immutable ItemDataSO while managing instance-specific position, rotation, and visual states.
     /// </summary>
     [RequireComponent(typeof(BoxCollider2D))]
-    public class TestItem : MonoBehaviour
+    public class ItemInstance : MonoBehaviour
     {
-        [Header("Item Properties")]
-        [SerializeField] private string itemId = "test_item_1x1";
-        [SerializeField] private Vector2Int dimensions = new Vector2Int(1, 1);
-        [SerializeField] private Color itemColor = new Color(0.85f, 0.45f, 0.15f, 1f); // Amber / Copper
+        [Header("Data Reference")]
+        [SerializeField] private ItemDataSO itemData;
 
-        [Header("State")]
-        [SerializeField] private bool isPlacedOnGrid;
-        [SerializeField] private Vector2Int currentGridPosition;
+        [Header("Runtime Instance State")]
+        [SerializeField] private string instanceId;
+        [SerializeField] private int currentRotationDegrees = 0;
+        [SerializeField] private bool isPlacedOnGrid = false;
+        [SerializeField] private Vector2Int currentGridPosition = new Vector2Int(-1, -1);
 
         private Vector3 _originalPosition;
         private SpriteRenderer _spriteRenderer;
         private BoxCollider2D _collider;
 
-        public string ItemId => itemId;
-        public Vector2Int Dimensions => dimensions;
+        public ItemDataSO Data => itemData;
+        public string InstanceId => instanceId;
+        public int CurrentRotationDegrees => currentRotationDegrees;
         public bool IsPlacedOnGrid => isPlacedOnGrid;
         public Vector2Int CurrentGridPosition => currentGridPosition;
         public Vector3 OriginalPosition => _originalPosition;
+
+        public Vector2Int CurrentDimensions => itemData != null 
+            ? ItemRotationUtility.GetRotatedDimensions(itemData.BaseDimensions, currentRotationDegrees)
+            : Vector2Int.one;
 
         private void Awake()
         {
@@ -41,29 +45,43 @@ namespace Lattirune.Items
 
             _collider = GetComponent<BoxCollider2D>();
             _originalPosition = transform.position;
-
-            CreatePlaceholderVisual();
         }
 
-        public void Initialize(string id, Vector2Int dims, Color color, Vector3 startPosition)
+        public void Initialize(ItemDataSO data, string id, Vector3 startPosition, int initialRotation = 0)
         {
-            itemId = id;
-            dimensions = dims;
-            itemColor = color;
+            itemData = data;
+            instanceId = id;
             transform.position = startPosition;
             _originalPosition = startPosition;
+            currentRotationDegrees = ItemRotationUtility.NormalizeRotation(initialRotation);
             isPlacedOnGrid = false;
+            currentGridPosition = new Vector2Int(-1, -1);
 
-            CreatePlaceholderVisual();
+            UpdateVisual();
         }
 
-        public void CreatePlaceholderVisual()
+        public bool Rotate90()
         {
+            if (itemData == null || !itemData.RotationAllowed)
+            {
+                return false;
+            }
+
+            currentRotationDegrees = ItemRotationUtility.GetNextRotation(currentRotationDegrees);
+            UpdateVisual();
+            return true;
+        }
+
+        public void UpdateVisual()
+        {
+            if (itemData == null) return;
+
+            Vector2Int dims = CurrentDimensions;
             float cellSize = GridCoordinateUtility.DEFAULT_CELL_SIZE;
             float cellSpacing = GridCoordinateUtility.DEFAULT_CELL_SPACING;
 
-            float width = (dimensions.x * cellSize) + ((dimensions.x - 1) * cellSpacing);
-            float height = (dimensions.y * cellSize) + ((dimensions.y - 1) * cellSpacing);
+            float width = (dims.x * cellSize) + ((dims.x - 1) * cellSpacing);
+            float height = (dims.y * cellSize) + ((dims.y - 1) * cellSpacing);
 
             Texture2D tex = new Texture2D(32, 32);
             for (int x = 0; x < 32; x++)
@@ -71,7 +89,7 @@ namespace Lattirune.Items
                 for (int y = 0; y < 32; y++)
                 {
                     bool isBorder = x <= 1 || x >= 30 || y <= 1 || y >= 30;
-                    tex.SetPixel(x, y, isBorder ? Color.white : itemColor);
+                    tex.SetPixel(x, y, isBorder ? Color.white : itemData.PlaceholderColor);
                 }
             }
             tex.filterMode = FilterMode.Point;
@@ -79,7 +97,7 @@ namespace Lattirune.Items
 
             _spriteRenderer.sprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 32);
             _spriteRenderer.color = Color.white;
-            _spriteRenderer.sortingOrder = 10; // In front of grid tiles
+            _spriteRenderer.sortingOrder = 10;
 
             transform.localScale = new Vector3(width, height, 1f);
 
@@ -91,10 +109,14 @@ namespace Lattirune.Items
 
         public void SetVisualState(bool isDragging, bool isValidDrop = true)
         {
+            if (_spriteRenderer == null) return;
+
             if (isDragging)
             {
-                _spriteRenderer.color = isValidDrop ? new Color(0.2f, 1f, 0.4f, 0.85f) : new Color(1f, 0.2f, 0.2f, 0.85f);
-                _spriteRenderer.sortingOrder = 20; // Float above everything during drag
+                _spriteRenderer.color = isValidDrop 
+                    ? new Color(0.2f, 1f, 0.4f, 0.85f) 
+                    : new Color(1f, 0.2f, 0.2f, 0.85f);
+                _spriteRenderer.sortingOrder = 20;
             }
             else
             {

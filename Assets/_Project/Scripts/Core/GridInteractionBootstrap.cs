@@ -8,8 +8,7 @@ using Lattirune.Runes;
 namespace Lattirune.Core
 {
     /// <summary>
-    /// Bootstraps the physical 5x5 LatticeGrid interaction & Rune Conduit prototype.
-    /// Instantiates grid visualization, drag controller, test items, development runes, and debug conduit lines.
+    /// Bootstraps the physical 5x5 LatticeGrid interaction, data-driven prototype items, and Rune Conduit engine.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -21,18 +20,23 @@ namespace Lattirune.Core
         [SerializeField] private Transform stagingAreaParent;
 
         [Header("Staging Layout")]
-        [SerializeField] private Vector3 stagingOrigin = new Vector3(-2f, -4f, 0f);
-        [SerializeField] private float itemSpacing = 1.5f;
+        [SerializeField] private Vector3 stagingOrigin = new Vector3(-2.2f, -4f, 0f);
+        [SerializeField] private float itemSpacing = 1.1f;
+
+        [Header("Item Catalogue (TASK-005 Prototype Items)")]
+        [SerializeField] private List<ItemDataSO> prototypeItemCatalogue = new List<ItemDataSO>();
 
         [Header("Development Runes & Targets (TASK-004 Demo)")]
         [SerializeField] private bool enableConduitDemo = true;
 
         private LatticeGrid _grid;
+        private readonly List<ItemInstance> _spawnedItemInstances = new List<ItemInstance>();
         private readonly List<(Vector2Int origin, ConduitDirection dir, int range)> _activeRunes = new List<(Vector2Int, ConduitDirection, int)>();
         private readonly List<ConduitTarget> _activeTargets = new List<ConduitTarget>();
 
         public LatticeGrid Grid => _grid;
         public GridView View => gridView;
+        public IReadOnlyList<ItemInstance> SpawnedItems => _spawnedItemInstances;
 
         private void Start()
         {
@@ -71,8 +75,8 @@ namespace Lattirune.Core
             }
             conduitDebugView.Initialize(gridView);
 
-            // 5. Spawn Test Items for Interactive Footprint Testing
-            SpawnTestItems();
+            // 5. Spawn Prototype Data-Driven Items
+            SpawnPrototypeCatalogue();
 
             // 6. Setup Development Rune Conduits Demo if enabled
             if (enableConduitDemo)
@@ -84,6 +88,65 @@ namespace Lattirune.Core
             // Hook into item placement/removal events to dynamically recalculate conduits
             _grid.OnItemPlaced += (id, origin, size) => RecalculateAndRenderConduits();
             _grid.OnItemRemoved += (id, origin, size) => RecalculateAndRenderConduits();
+        }
+
+        private void SpawnPrototypeCatalogue()
+        {
+            if (stagingAreaParent == null)
+            {
+                GameObject stagingObj = new GameObject("StagingArea");
+                stagingObj.transform.SetParent(transform);
+                stagingAreaParent = stagingObj.transform;
+            }
+
+            // If no catalog assets were assigned in inspector, build the 5 baseline prototype items programmatically
+            if (prototypeItemCatalogue == null || prototypeItemCatalogue.Count == 0)
+            {
+                BuildDefaultItemDefinitions();
+            }
+
+            for (int i = 0; i < prototypeItemCatalogue.Count; i++)
+            {
+                ItemDataSO data = prototypeItemCatalogue[i];
+                if (data == null) continue;
+
+                Vector3 spawnPos = stagingOrigin + new Vector3(i * itemSpacing, 0f, 0f);
+                ItemInstance instance = ItemFactory.CreateInstance(data, spawnPos, stagingAreaParent);
+                if (instance != null)
+                {
+                    _spawnedItemInstances.Add(instance);
+                }
+            }
+        }
+
+        private void BuildDefaultItemDefinitions()
+        {
+            prototypeItemCatalogue = new List<ItemDataSO>();
+
+            // 1. Training Sword (Weapon, 1x2, Rotatable)
+            ItemDataSO sword = ScriptableObject.CreateInstance<ItemDataSO>();
+            sword.Initialize("item_training_sword", "Training Sword", "A reliable iron training sword.", ItemCategory.Weapon, new Vector2Int(1, 2), true, new Color(0.9f, 0.5f, 0.1f));
+            prototypeItemCatalogue.Add(sword);
+
+            // 2. Ember Blade (Weapon, 2x1, Rotatable)
+            ItemDataSO ember = ScriptableObject.CreateInstance<ItemDataSO>();
+            ember.Initialize("item_ember_blade", "Ember Blade", "A blade glowing with stored heat.", ItemCategory.Weapon, new Vector2Int(2, 1), true, new Color(0.91f, 0.3f, 0.24f));
+            prototypeItemCatalogue.Add(ember);
+
+            // 3. Guard Plate (Shield, 2x2, Rotatable)
+            ItemDataSO plate = ScriptableObject.CreateInstance<ItemDataSO>();
+            plate.Initialize("item_guard_plate", "Guard Plate", "A reinforced defensive chestplate.", ItemCategory.Shield, new Vector2Int(2, 2), true, new Color(0.2f, 0.6f, 0.86f));
+            prototypeItemCatalogue.Add(plate);
+
+            // 4. Arcane Relic (Relic, 1x1, Fixed)
+            ItemDataSO relic = ScriptableObject.CreateInstance<ItemDataSO>();
+            relic.Initialize("item_arcane_relic", "Arcane Relic", "Ancient artifact vibrating with energy.", ItemCategory.Relic, new Vector2Int(1, 1), false, new Color(0.61f, 0.35f, 0.71f));
+            prototypeItemCatalogue.Add(relic);
+
+            // 5. Vital Flask (Consumable, 1x1, Fixed)
+            ItemDataSO flask = ScriptableObject.CreateInstance<ItemDataSO>();
+            flask.Initialize("item_vital_flask", "Vital Flask", "Restorative dungeon potion.", ItemCategory.Consumable, new Vector2Int(1, 1), false, new Color(0.18f, 0.8f, 0.44f));
+            prototypeItemCatalogue.Add(flask);
         }
 
         private void SetupDevelopmentRunesAndTargets()
@@ -106,7 +169,6 @@ namespace Lattirune.Core
         {
             if (conduitDebugView == null || _grid == null) return;
 
-            // Target detection predicate
             bool IsTarget(Vector2Int coord)
             {
                 foreach (var t in _activeTargets)
@@ -118,42 +180,6 @@ namespace Lattirune.Core
 
             List<RuneConduitResult> results = RuneConduitEngine.CalculateMultipleConduits(_grid, _activeRunes, IsTarget);
             conduitDebugView.RenderConduits(results);
-        }
-
-        private void SpawnTestItems()
-        {
-            if (stagingAreaParent == null)
-            {
-                GameObject stagingObj = new GameObject("StagingArea");
-                stagingObj.transform.SetParent(transform);
-                stagingAreaParent = stagingObj.transform;
-            }
-
-            // Item 1: 1x1 Dagger (Amber)
-            CreateTestItem("item_1x1_dagger", new Vector2Int(1, 1), new Color(0.9f, 0.5f, 0.1f), stagingOrigin);
-
-            // Item 2: 1x2 Sword (Copper)
-            Vector3 pos2 = stagingOrigin + new Vector3(itemSpacing * 1.0f, 0f, 0f);
-            CreateTestItem("item_1x2_sword", new Vector2Int(1, 2), new Color(0.7f, 0.4f, 0.2f), pos2);
-
-            // Item 3: 2x1 Bow (Emerald)
-            Vector3 pos3 = stagingOrigin + new Vector3(itemSpacing * 2.2f, 0f, 0f);
-            CreateTestItem("item_2x1_bow", new Vector2Int(2, 1), new Color(0.2f, 0.7f, 0.4f), pos3);
-
-            // Item 4: 2x2 Shield (Cobalt)
-            Vector3 pos4 = stagingOrigin + new Vector3(itemSpacing * 3.8f, 0f, 0f);
-            CreateTestItem("item_2x2_shield", new Vector2Int(2, 2), new Color(0.2f, 0.4f, 0.8f), pos4);
-        }
-
-        private TestItem CreateTestItem(string id, Vector2Int dims, Color color, Vector3 position)
-        {
-            GameObject obj = new GameObject(id);
-            obj.transform.SetParent(stagingAreaParent);
-            obj.transform.position = position;
-
-            TestItem item = obj.AddComponent<TestItem>();
-            item.Initialize(id, dims, color, position);
-            return item;
         }
     }
 }
