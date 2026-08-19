@@ -102,7 +102,8 @@ namespace Lattirune.Audio
             }
             else
             {
-                clip = _syntheticFallbackClip;
+                clip = ProceduralAudioSynthesizer.CreateClipForCue(cue);
+                _cueClips[cue] = clip;
             }
 
             if (_audioSource != null && clip != null)
