@@ -20,6 +20,18 @@ namespace Lattirune.Combat.Effects
         public event Action<CombatEffectInstance> OnEffectExpired;
 
         public CombatEffectDatabaseSO Database => effectDatabase;
+        public int ActiveEffectCount
+        {
+            get
+            {
+                int count = 0;
+                foreach (var list in _activeEffectsByTarget.Values)
+                {
+                    if (list != null) count += list.Count;
+                }
+                return count;
+            }
+        }
 
         private void Awake()
         {

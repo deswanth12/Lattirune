@@ -89,39 +89,57 @@ namespace Lattirune.UI
         {
             if (!_isShowingModal || _activeEvent == null) return;
 
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
+
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+
+            float panelWidth = 960f;
+            float panelHeight = 1200f;
+            float posX = (1080f - panelWidth) * 0.5f;
+            float posY = (1920f - panelHeight) * 0.5f;
+
             GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.fontSize = 14;
-            boxStyle.alignment = TextAnchor.UpperLeft;
+            boxStyle.normal.background = Texture2D.whiteTexture;
+
+            Color oldColor = GUI.color;
+            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
+            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
+            GUI.color = oldColor;
+
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
             GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 18;
+            titleStyle.fontSize = 32;
             titleStyle.fontStyle = FontStyle.Bold;
             titleStyle.alignment = TextAnchor.MiddleCenter;
+            titleStyle.normal.textColor = new Color(0.95f, 0.8f, 0.2f); // Gold
 
-            GUIStyle bodyStyle = new GUIStyle(GUI.skin.label);
-            bodyStyle.fontSize = 13;
-            bodyStyle.wordWrap = true;
+            GUILayout.Label($"✨ {_activeEvent.Title} ✨", titleStyle);
+            GUILayout.Space(12);
 
-            int panelWidth = Mathf.Min(480, Screen.width - 40);
-            int panelHeight = 420;
-            int posX = (Screen.width - panelWidth) / 2;
-            int posY = (Screen.height - panelHeight) / 2;
+            GUIStyle resourceStyle = new GUIStyle(GUI.skin.label);
+            resourceStyle.fontSize = 20;
+            resourceStyle.alignment = TextAnchor.MiddleCenter;
+            resourceStyle.normal.textColor = Color.cyan;
 
-            GUILayout.BeginArea(new Rect(posX, posY, panelWidth, panelHeight), boxStyle);
-
-            GUILayout.Space(10);
-            GUILayout.Label(_activeEvent.Title, titleStyle);
-            GUILayout.Space(8);
-
-            // Resources header
             int currentGold = _economyService != null ? _economyService.GoldBalance : 0;
             int currentHp = playerCombatant != null ? playerCombatant.CurrentHp : 100;
             int maxHp = playerCombatant != null ? playerCombatant.MaxHp : 100;
-            GUILayout.Label($"[ HERO HP: {currentHp}/{maxHp} | GOLD: {currentGold} ]", bodyStyle);
+            GUILayout.Label($"[ ❤️ HERO HP: {currentHp}/{maxHp}  |  💰 GOLD: {currentGold} ]", resourceStyle);
+            GUILayout.Space(16);
 
-            GUILayout.Space(6);
+            GUIStyle bodyStyle = new GUIStyle(GUI.skin.label);
+            bodyStyle.fontSize = 20;
+            bodyStyle.wordWrap = true;
+            bodyStyle.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
             GUILayout.Label(_activeEvent.Description, bodyStyle);
-            GUILayout.Space(12);
+            GUILayout.Space(24);
+
+            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
+            btnStyle.fontSize = 20;
+            btnStyle.fontStyle = FontStyle.Bold;
 
             // Choices list
             for (int i = 0; i < _activeEvent.Choices.Count; i++)
@@ -129,26 +147,30 @@ namespace Lattirune.UI
                 var choice = _activeEvent.Choices[i];
                 if (choice == null) continue;
 
-                string btnText = $"{choice.DisplayName}\n<size=11>{choice.Description}</size>";
-                if (GUILayout.Button(btnText, GUILayout.MinHeight(54)))
+                string btnText = $"{choice.DisplayName}\n<size=16><i>{choice.Description}</i></size>";
+                if (GUILayout.Button(btnText, btnStyle, GUILayout.MinHeight(75)))
                 {
                     if (eventService != null)
                     {
                         eventService.SelectChoice(choice.ChoiceId, _economyService, playerCombatant, modifierManager);
                     }
                 }
-                GUILayout.Space(4);
+                GUILayout.Space(10);
             }
 
             if (!string.IsNullOrEmpty(_lastOutcomeMessage))
             {
-                GUILayout.Space(6);
+                GUILayout.Space(12);
                 GUIStyle alertStyle = new GUIStyle(GUI.skin.label);
+                alertStyle.fontSize = 18;
+                alertStyle.fontStyle = FontStyle.Italic;
+                alertStyle.alignment = TextAnchor.MiddleCenter;
                 alertStyle.normal.textColor = Color.yellow;
                 GUILayout.Label(_lastOutcomeMessage, alertStyle);
             }
 
             GUILayout.EndArea();
+            GUI.matrix = oldMatrix;
         }
     }
 }

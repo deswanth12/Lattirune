@@ -110,6 +110,8 @@ namespace Lattirune.Combat
             player.ResetCooldown();
             enemy.ResetCooldown();
 
+            enemy.TriggerEncounterStartTraits();
+
             OnStateChanged?.Invoke(CombatState.Fighting);
         }
 
@@ -201,9 +203,31 @@ namespace Lattirune.Combat
 
                 OnAttackExecuted?.Invoke(playerDamage);
 
+                // Handle enemy damage reflection if trait exists
+                int reflectedDmg = enemy.CalculateDamageReflect(playerDamage);
+                if (reflectedDmg > 0 && player.IsAlive)
+                {
+                    DamageResult reflectResult = new DamageResult(
+                        $"{enemy.CombatantName} (Thorns)",
+                        player.CombatantName,
+                        reflectedDmg,
+                        0,
+                        reflectedDmg,
+                        false,
+                        true
+                    );
+                    player.TakeDamage(reflectResult);
+                    OnAttackExecuted?.Invoke(reflectResult);
+                }
+
                 if (!enemy.IsAlive)
                 {
                     ResolveVictory();
+                    return;
+                }
+                if (!player.IsAlive)
+                {
+                    ResolveDefeat();
                     return;
                 }
             }
@@ -241,6 +265,25 @@ namespace Lattirune.Combat
                 player.TakeDamage(enemyDamage);
                 enemy.ResetCooldown();
                 OnAttackExecuted?.Invoke(enemyDamage);
+
+                // Trigger enemy attack traits (Poison, Gold Steal, Minions)
+                enemy.TriggerAttackTraits(player, enemyDamage);
+
+                if (effectSystem != null && effectSystem.Database != null)
+                {
+                    for (int t = 0; t < enemy.ActiveTraits.Count; t++)
+                    {
+                        var trait = enemy.ActiveTraits[t];
+                        if (trait != null && trait.TraitType == EnemyTraitType.ApplyPoisonOnHit)
+                        {
+                            var poisonDef = effectSystem.Database.GetByEffectId("effect_poison_dot");
+                            if (poisonDef != null)
+                            {
+                                effectSystem.ApplyEffect(new CombatEffectInstance(poisonDef, player));
+                            }
+                        }
+                    }
+                }
 
                 if (!player.IsAlive)
                 {

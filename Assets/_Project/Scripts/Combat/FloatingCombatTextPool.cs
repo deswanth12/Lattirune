@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,6 +32,12 @@ namespace Lattirune.Combat
             if (combatSystem != null)
             {
                 combatSystem.OnAttackExecuted += HandleAttackExecuted;
+                combatSystem.OnEmergencyPotionUsed += HandleEmergencyPotionUsed;
+
+                if (combatSystem.Effects != null)
+                {
+                    combatSystem.Effects.OnEffectTicked += HandleEffectTicked;
+                }
             }
         }
 
@@ -40,6 +46,12 @@ namespace Lattirune.Combat
             if (combatSystem != null)
             {
                 combatSystem.OnAttackExecuted -= HandleAttackExecuted;
+                combatSystem.OnEmergencyPotionUsed -= HandleEmergencyPotionUsed;
+
+                if (combatSystem.Effects != null)
+                {
+                    combatSystem.Effects.OnEffectTicked -= HandleEffectTicked;
+                }
             }
         }
 
@@ -48,11 +60,44 @@ namespace Lattirune.Combat
             // Spawn floaty over target: target center approximate on 1080x1920 portrait
             Vector2 spawnPos = new Vector2(540f + UnityEngine.Random.Range(-40f, 40f), 450f + UnityEngine.Random.Range(-20f, 20f));
             
-            FloatingTextType type = damage.IsCritical ? FloatingTextType.CriticalDamage : (damage.RuneBonus > 0 ? FloatingTextType.ElementalDamage : FloatingTextType.NormalDamage);
-            string prefix = damage.IsCritical ? "CRIT! " : "";
-            string text = $"{prefix}-{damage.FinalDamage}";
+            FloatingTextType type;
+            string prefix = "";
 
+            if (damage.IsReflected)
+            {
+                type = FloatingTextType.StatusEffect;
+                prefix = "THORNS! ";
+            }
+            else if (damage.IsCritical)
+            {
+                type = FloatingTextType.CriticalDamage;
+                prefix = "CRIT! ";
+            }
+            else if (damage.RuneBonus > 0)
+            {
+                type = FloatingTextType.ElementalDamage;
+                prefix = "🔥 ";
+            }
+            else
+            {
+                type = FloatingTextType.NormalDamage;
+            }
+
+            string text = $"{prefix}-{damage.FinalDamage}";
             SpawnText(text, spawnPos, type);
+        }
+
+        private void HandleEmergencyPotionUsed(int healAmount)
+        {
+            Vector2 playerPos = new Vector2(540f, 320f);
+            SpawnText($"+{healAmount} HP", playerPos, FloatingTextType.Heal, duration: 1.0f);
+        }
+
+        private void HandleEffectTicked(Lattirune.Combat.Effects.CombatEffectInstance instance, float tickDamage)
+        {
+            if (tickDamage <= 0) return;
+            Vector2 pos = new Vector2(540f + UnityEngine.Random.Range(-30f, 30f), 480f + UnityEngine.Random.Range(-15f, 15f));
+            SpawnText($"-{Mathf.RoundToInt(tickDamage)} ({instance.Definition.DisplayName})", pos, FloatingTextType.StatusEffect, duration: 0.85f);
         }
 
         public FloatingCombatText SpawnText(string text, Vector2 screenPos, FloatingTextType type, float duration = 0.85f)

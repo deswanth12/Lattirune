@@ -162,6 +162,21 @@ namespace Lattirune.Combat.Effects
             );
             list.Add(frostbite);
 
+            // 6. Poison DoT -> 4 Dmg/s ticking poison
+            CombatEffectDefinitionSO poison = ScriptableObject.CreateInstance<CombatEffectDefinitionSO>();
+            poison.Initialize(
+                "effect_poison_dot",
+                "Poison Toxin",
+                "trait_poison",
+                CombatEffectType.DamageOverTime,
+                4.0f,
+                1.0f,
+                4.0f,
+                "Inflicts virulent toxin dealing 4 damage per second.",
+                new Color(0.2f, 0.85f, 0.2f, 0.9f)
+            );
+            list.Add(poison);
+
             db.Initialize(list);
             return db;
         }

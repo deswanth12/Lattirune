@@ -67,6 +67,7 @@ namespace Lattirune.Audio
             if (_combatSystem != null)
             {
                 _combatSystem.OnAttackExecuted += HandleAttackExecuted;
+                _combatSystem.OnEmergencyPotionUsed += HandleEmergencyPotionUsed;
                 _combatSystem.OnVictory += HandleVictory;
                 _combatSystem.OnDefeat += HandleDefeat;
             }
@@ -94,6 +95,7 @@ namespace Lattirune.Audio
             if (_combatSystem != null)
             {
                 _combatSystem.OnAttackExecuted -= HandleAttackExecuted;
+                _combatSystem.OnEmergencyPotionUsed -= HandleEmergencyPotionUsed;
                 _combatSystem.OnVictory -= HandleVictory;
                 _combatSystem.OnDefeat -= HandleDefeat;
             }
@@ -132,6 +134,12 @@ namespace Lattirune.Audio
         {
             audioController?.PlaySfx(AudioCueType.Attack);
             hapticFeedback?.TriggerHaptic(HapticType.Light);
+        }
+
+        private void HandleEmergencyPotionUsed(int healAmount)
+        {
+            audioController?.PlaySfx(AudioCueType.RewardApplied);
+            hapticFeedback?.TriggerHaptic(HapticType.Medium);
         }
 
         private void HandleVictory()

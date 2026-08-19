@@ -194,5 +194,63 @@ namespace Lattirune.Tests
             // 10 base - 2 armor = 8
             Assert.AreEqual(8, result.FinalDamage);
         }
+
+        [Test]
+        public void Combat_EnemyDamageReflect_DamagesPlayerOnHit()
+        {
+            var reflectTrait = ScriptableObject.CreateInstance<EnemyTraitDefinitionSO>();
+            reflectTrait.Initialize("trait_reflect", "Damage Reflect", EnemyTraitType.DamageReflect, 0.25f);
+
+            _enemy.SetupCustom("Armored Skeleton", 100, 0, 0, 99.0f, new[] { reflectTrait });
+            _player.SetExplicitStats(baseDamage: 20, runeBonus: 0, armorValue: 0, interval: 1.0f);
+
+            _combatSystem.StartCombat();
+            int playerInitialHp = _player.CurrentHp;
+
+            // Player attacks for 20 DMG. 25% of 20 = 5 damage reflected back to player.
+            _combatSystem.UpdateCombat(1.0f);
+
+            Assert.AreEqual(80, _enemy.CurrentHp);
+            Assert.AreEqual(playerInitialHp - 5, _player.CurrentHp, "Player should take 5 reflected thorn damage.");
+        }
+
+        [Test]
+        public void Combat_EnemyPoisonOnHit_AppliesPoisonDoT()
+        {
+            var effectSystem = _holderObj.AddComponent<Lattirune.Combat.Effects.CombatEffectSystem>();
+            effectSystem.EnsureDefaultDatabase();
+
+            var poisonTrait = ScriptableObject.CreateInstance<EnemyTraitDefinitionSO>();
+            poisonTrait.Initialize("trait_poison", "Poison On Hit", EnemyTraitType.ApplyPoisonOnHit, 2f);
+
+            _enemy.SetupCustom("Venomous Spider", 100, 0, 5, 1.0f, new[] { poisonTrait });
+            _player.SetExplicitStats(baseDamage: 0, runeBonus: 0, armorValue: 0, interval: 99.0f);
+
+            _combatSystem.Initialize(_player, _enemy, effectSystem);
+            _combatSystem.StartCombat();
+
+            // Enemy strikes player at 1.0s (5 physical damage + Poison DoT applied)
+            _combatSystem.UpdateCombat(1.0f);
+            Assert.AreEqual(95, _player.CurrentHp);
+            Assert.AreEqual(1, effectSystem.ActiveEffectCount, "Poison DoT effect must be active on player.");
+
+            // Advance 1.0s to trigger poison tick (4 poison damage)
+            _combatSystem.UpdateCombat(1.0f);
+            Assert.AreEqual(91, _player.CurrentHp, "Player should take 4 ticking poison damage.");
+        }
+
+        [Test]
+        public void Combat_EnemyStartTraits_TriggeredOnCombatStart()
+        {
+            bool bagSlotDisabled = false;
+            var acidTrait = ScriptableObject.CreateInstance<EnemyTraitDefinitionSO>();
+            acidTrait.Initialize("trait_acid", "Acid Spit", EnemyTraitType.DisableBagSlot, 1f);
+
+            _enemy.SetupCustom("Acid Slime", 100, 0, 5, 2.0f, new[] { acidTrait });
+            _enemy.OnBagSlotDisabled += () => bagSlotDisabled = true;
+
+            _combatSystem.StartCombat();
+            Assert.IsTrue(bagSlotDisabled, "Encounter start trait should be invoked when battle begins.");
+        }
     }
 }
