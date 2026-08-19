@@ -5,6 +5,7 @@ using Lattirune.Combat;
 using Lattirune.Core;
 using Lattirune.Grid;
 using Lattirune.Items;
+using Lattirune.Reactions;
 using Lattirune.Runes;
 using Lattirune.Save;
 using Lattirune.Synergy;
@@ -13,9 +14,9 @@ using Lattirune.UI;
 namespace Lattirune.Core
 {
     /// <summary>
-    /// Bootstraps the complete Phase 1 Prototype: 5x5 LatticeGrid, data-driven items,
-    /// Rune Conduit engine, Elemental Synergy system, 1v1 Combat loop, Reward selection,
-    /// coordinated Audio/Haptic interaction feedback, and Encrypted Local Save persistence.
+    /// Bootstraps the complete Phase 2 Prototype: 5x5 LatticeGrid, data-driven items,
+    /// Rune Conduit engine, 5-Element Synergy system, 2-Beam Elemental Reactions,
+    /// 1v1 Combat loop, Reward selection, Audio/Haptics, and Encrypted Local Save persistence.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -25,6 +26,7 @@ namespace Lattirune.Core
         [SerializeField] private ItemDragController dragController;
         [SerializeField] private RuneConduitDebugView conduitDebugView;
         [SerializeField] private SynergySystem synergySystem;
+        [SerializeField] private ElementalReactionSystem reactionSystem;
         [SerializeField] private CombatSystem combatSystem;
         [SerializeField] private RewardService rewardService;
         [SerializeField] private CombatEncounterUI combatEncounterUI;
@@ -41,7 +43,7 @@ namespace Lattirune.Core
         [Header("Item Catalogue (TASK-005 Prototype Items)")]
         [SerializeField] private List<ItemDataSO> prototypeItemCatalogue = new List<ItemDataSO>();
 
-        [Header("Development Runes & Targets (TASK-004 & TASK-006 Demo)")]
+        [Header("Development Runes & Targets (TASK-004, TASK-006 & TASK-013 Demo)")]
         [SerializeField] private bool enableConduitDemo = true;
 
         private LatticeGrid _grid;
@@ -54,6 +56,7 @@ namespace Lattirune.Core
         public LatticeGrid Grid => _grid;
         public GridView View => gridView;
         public SynergySystem Synergy => synergySystem;
+        public ElementalReactionSystem Reactions => reactionSystem;
         public CombatSystem Combat => combatSystem;
         public RewardService Rewards => rewardService;
         public CombatEncounterUI EncounterUI => combatEncounterUI;
@@ -111,13 +114,22 @@ namespace Lattirune.Core
             }
             synergySystem.EnsureDefaultDefinitions();
 
-            // 6. Ensure Catalogue Exists
+            // 6. Ensure ElementalReactionSystem exists and initialize (TASK-013)
+            if (reactionSystem == null)
+            {
+                GameObject reactionObj = new GameObject("ElementalReactionSystem");
+                reactionObj.transform.SetParent(transform);
+                reactionSystem = reactionObj.AddComponent<ElementalReactionSystem>();
+            }
+            reactionSystem.EnsureDefaultDefinitions();
+
+            // 7. Ensure Catalogue Exists
             if (prototypeItemCatalogue == null || prototypeItemCatalogue.Count == 0)
             {
                 BuildDefaultItemDefinitions();
             }
 
-            // 7. Setup Save System (TASK-010)
+            // 8. Setup Save System (TASK-010)
             if (saveSystem == null)
             {
                 GameObject saveObj = new GameObject("SaveSystem");
@@ -125,22 +137,22 @@ namespace Lattirune.Core
                 saveSystem = saveObj.AddComponent<SaveSystem>();
             }
 
-            // 8. Spawn Prototype Items or Restore from Save
+            // 9. Spawn Prototype Items or Restore from Save
             LoadOrCreateState();
 
-            // 9. Setup Development Runes
+            // 10. Setup Development Runes
             if (enableConduitDemo && _activeRunesWithData.Count == 0)
             {
                 SetupDevelopmentRunesAndTargets();
             }
 
-            // 10. Setup Combat Entities & Encounter UI (TASK-007 & TASK-008)
+            // 11. Setup Combat Entities & Encounter UI (TASK-007 & TASK-008)
             SetupCombatAndRewardEncounter();
 
-            // 11. Setup Audio, Haptics & Feedback Coordinator (TASK-009)
+            // 12. Setup Audio, Haptics & Feedback Coordinator (TASK-009)
             SetupFeedbackSystem();
 
-            // 12. Initial recalculation of conduits, synergies, and player stats
+            // 13. Initial recalculation of conduits, synergies, reactions, and player stats
             RecalculateAndRenderConduits();
 
             // Hook into item placement/removal events to dynamically recalculate conduits, synergies, and combat stats
@@ -380,10 +392,16 @@ namespace Lattirune.Core
 
         private void SetupDevelopmentRunesAndTargets()
         {
-            // Demo Fire Rune: Position (2,1) emitting North with range 3
+            // 1. Demo Fire Rune: Position (2,1) emitting North with range 3 (passes through 2,2; 2,3; 2,4)
             RuneData fireRune = ScriptableObject.CreateInstance<RuneData>();
             fireRune.Initialize("fire_rune_01", "Fire Rune", ConduitDirection.North, ElementType.Fire, 3);
             _activeRunesWithData.Add((fireRune, new Vector2Int(2, 1), ConduitDirection.North, 3));
+
+            // 2. Demo Ice Rune: Position (0,3) emitting East with range 4 (passes through 1,3; 2,3; 3,3; 4,3)
+            // Crossing with Fire Rune at (2,3) -> Triggers Steam Reaction!
+            RuneData iceRune = ScriptableObject.CreateInstance<RuneData>();
+            iceRune.Initialize("ice_rune_01", "Ice Rune", ConduitDirection.East, ElementType.Ice, 4);
+            _activeRunesWithData.Add((iceRune, new Vector2Int(0, 3), ConduitDirection.East, 4));
 
             // Demo Target Receptor at (2,4)
             GameObject targetObj = new GameObject("Target_2_4");
@@ -422,10 +440,16 @@ namespace Lattirune.Core
 
             conduitDebugView.RenderConduits(results);
 
-            // Update Synergies
+            // Update Synergies (Rune + Item)
             if (synergySystem != null)
             {
                 synergySystem.UpdateSynergies(activeConduitData, _spawnedItemInstances);
+            }
+
+            // Update Elemental Reactions (Rune Beam x Rune Beam) (TASK-013)
+            if (reactionSystem != null)
+            {
+                reactionSystem.UpdateReactions(activeConduitData);
             }
 
             // Update Player Combat Stats from the Grid build
@@ -437,9 +461,9 @@ namespace Lattirune.Core
 
         private void OnGUI()
         {
-            // Development persistence controls in top right
-            GUILayout.BeginArea(new Rect(Screen.width - 140, 20, 120, 130), GUI.skin.box);
-            GUILayout.Label("<size=11><b>DEV SAVE</b></size>");
+            // Development persistence & reaction telemetry in top right
+            GUILayout.BeginArea(new Rect(Screen.width - 180, 20, 160, 200), GUI.skin.box);
+            GUILayout.Label("<size=11><b>DEV CONTROLS</b></size>");
             if (GUILayout.Button("SAVE"))
             {
                 SaveCurrentState();
@@ -454,6 +478,16 @@ namespace Lattirune.Core
                 saveSystem.DeleteSave();
                 LoadOrCreateState();
                 RecalculateAndRenderConduits();
+            }
+
+            GUILayout.Space(6);
+            if (reactionSystem != null && reactionSystem.ActiveReactionCount > 0)
+            {
+                GUILayout.Label("<size=10><b>REACTIONS:</b></size>");
+                foreach (var r in reactionSystem.ActiveReactions)
+                {
+                    GUILayout.Label($"<size=9>• {r.ReactionName} ({r.ElementA}x{r.ElementB}) @ [{r.GridCoordinate.x},{r.GridCoordinate.y}]</size>");
+                }
             }
             GUILayout.EndArea();
         }

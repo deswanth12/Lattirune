@@ -24,10 +24,21 @@ The elemental synergy matrix maps directional energy conduits to compatible item
 | ☠️ **Poison** | `poison_blade` (Venomous Strike) | Weapon | +3 Ticking Poison Bonus | Toxic Green `#26D940` |
 | ✨ **Light** | `light_relic` (Radiant Dawn) | Relic | +4 Radiant Resonator Power | Radiant Gold `#FFEB73` |
 
-### Architecture Principles:
-* **Static Rules vs. Runtime State:** `SynergyDefinitionSO` defines static rule criteria; runtime state resides strictly on `ItemInstance` and `SynergySystem`.
-* **Zero ScriptableObject Mutation:** Static data assets remain 100% immutable during gameplay and serialization.
-* **Deterministic Recalculation:** Active synergies are dynamically recomputed from placed items and rune rays post-load.
+## Elemental Reaction Matrix (2-Beam Cross-Intersections)
+
+When two distinct directional rune beams cross at the same discrete grid cell, `ElementalIntersectionEngine` evaluates the pair symmetrically and triggers an Elemental Reaction:
+
+| Reaction Name | Reaction ID | Elemental Pair | In-Combat Mechanical Effect |
+| :--- | :--- | :--- | :--- |
+| **Steam** | `reaction_steam` | Fire Beam + Ice Beam | 25% Enemy Blind / Miss |
+| **Plasma** | `reaction_plasma` | Fire Beam + Lightning Beam | 18 Dmg/s Continuous Ray |
+| **Toxic Flame** | `reaction_toxic_flame` | Fire Beam + Poison Beam | Detonates Poison Stacks (2×) |
+| **Superconductor** | `reaction_superconductor` | Lightning Beam + Ice Beam | -40% Enemy Resistance |
+| **Frostbite** | `reaction_frostbite` | Ice Beam + Poison Beam | +50% Poison Tick Damage |
+
+### Synergy vs. Reaction Distinction:
+* **Synergy (Rune + Item):** Direct interaction where a directional conduit illuminates and powers an item in the lattice grid.
+* **Elemental Reaction (Rune + Rune):** Crossing interaction where two orthogonal beams intersect at a shared integer coordinate without needing an item placed at the junction.
 
 ## Documentation
 
