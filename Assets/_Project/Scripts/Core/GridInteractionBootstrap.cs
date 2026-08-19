@@ -16,9 +16,9 @@ namespace Lattirune.Core
 {
     /// <summary>
     /// Bootstraps the complete Phase 2 Prototype: 5x5 LatticeGrid, data-driven items,
-    /// Prism Rune refraction & beam splitting, 5-Element Synergy system, 2-Beam Elemental Reactions,
-    /// Combat Effect / Status Framework, 1v1 Combat loop, Reward selection, Audio/Haptics,
-    /// and Encrypted Local Save persistence.
+    /// Crossfire Multi-Directional Emitters & Omnidirectional Nodes, Prism Refraction,
+    /// 5-Element Synergy system, 2-Beam Elemental Reactions, Combat Effect / Status Framework,
+    /// 1v1 Combat loop, Reward selection, Audio/Haptics, and Encrypted Local Save persistence.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -46,7 +46,7 @@ namespace Lattirune.Core
         [Header("Item Catalogue (TASK-005 Prototype Items)")]
         [SerializeField] private List<ItemDataSO> prototypeItemCatalogue = new List<ItemDataSO>();
 
-        [Header("Development Runes & Targets (TASK-004, TASK-006, TASK-013 & TASK-015 Demo)")]
+        [Header("Development Runes & Targets (TASK-004, TASK-006, TASK-013, TASK-015 & TASK-016 Demo)")]
         [SerializeField] private bool enableConduitDemo = true;
         [SerializeField] private PrismRuneDataSO defaultPrismData;
 
@@ -147,7 +147,7 @@ namespace Lattirune.Core
             // 9. Spawn Prototype Items or Restore from Save
             LoadOrCreateState();
 
-            // 10. Setup Development Runes & Prism Refraction (TASK-015)
+            // 10. Setup Development Runes, Crossfire & Prism Refraction (TASK-015 & TASK-016)
             if (enableConduitDemo && _activeRunesWithData.Count == 0)
             {
                 SetupDevelopmentRunesAndTargets();
@@ -460,6 +460,15 @@ namespace Lattirune.Core
             }
         }
 
+        public void AddRuneEmitter(RuneData rune, Vector2Int origin, int range = 5)
+        {
+            if (rune != null)
+            {
+                _activeRunesWithData.Add((rune, origin, rune.Direction, range));
+                RecalculateAndRenderConduits();
+            }
+        }
+
         public void RecalculateAndRenderConduits()
         {
             if (conduitDebugView == null || _grid == null) return;
@@ -487,11 +496,10 @@ namespace Lattirune.Core
             for (int i = 0; i < _activeRunesWithData.Count; i++)
             {
                 var (rune, origin, dir, range) = _activeRunesWithData[i];
-                List<ConduitBeamPath> paths = RuneConduitEngine.CalculateConduitWithRefraction(
+                List<ConduitBeamPath> paths = MultiDirectionalEmitter.EmitBeams(
                     _grid, 
                     rune, 
                     origin, 
-                    dir, 
                     range, 
                     GetPrism, 
                     IsTarget, 

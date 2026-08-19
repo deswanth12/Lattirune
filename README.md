@@ -45,12 +45,20 @@ The Prism Rune (`prism_rune`, Light affinity) acts as an optical beam splitter. 
 * **Full Interoperability:** Refracted split branches participate seamlessly in both Item Synergies and Elemental 2-Beam Cross-Intersections.
 * **Cycle Protection:** Recursive traversal tracks visited prism nodes to eliminate infinite loop configurations.
 
+## Crossfire Rune & Multi-Directional Emitters
+
+The Crossfire Rune (`rune_crossfire`, Fire affinity) and Amplifier Node (`rune_omni`) emit energy simultaneously along multiple cardinal vectors from a single origin tile:
+* **4-Way Cardinal Emission:** Emits four independent root `ConduitBeamPath` instances (North, South, East, West) across the 5×5 lattice grid.
+* **MultiDirectionalEmitter:** Unified emitter abstraction managing directional resolution without mutating static `RuneData` assets.
+* **Chained Prism Compatibility:** Each emitted Crossfire beam can independently intersect with Prisms, generating secondary refractions.
+* **Zero Self-Intersection:** Beams originating from the same root emitter ID are filtered out from triggering self-reactions.
+
 ## Combat Status & Effect Framework
 
 Elemental reactions resolve dynamically into runtime combat effects:
 
 ```
-Rune Beam A x Rune Beam B (or Prism Branches)
+Rune Beam A x Rune Beam B (or Prism/Crossfire Branches)
         ↓
 ElementalIntersectionEngine
         ↓
