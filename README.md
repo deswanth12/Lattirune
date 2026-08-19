@@ -12,18 +12,20 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** MVP 1.0.0 Release Package Finalized (Ready for Manual Android QA)
 
-## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-039)
+## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-040)
 
 * **Build Target (RC):** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
-* **Build Target (v1.0.0):** `Builds/Android/Lattirune-1.0.0.apk`
+* **Build Target (v1.0.0 APK):** `Builds/Android/Lattirune-1.0.0.apk`
+* **Build Target (v1.0.0 AAB):** `Builds/Android/Lattirune-1.0.0.aab` (Pipeline Configured)
 * **Package ID:** `com.developer.lattirune`
 * **Version Name:** `1.0.0`
 * **Version Code:** `1`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 438 / 438 passing ($100\%$)
+* **EditMode Tests:** 451 / 451 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
+* **Privacy Policy:** [`Docs/MVP1.0-Privacy-Policy.md`](./Docs/MVP1.0-Privacy-Policy.md)
 * **Play Store Checklist:** [`Docs/MVP1.0-Google-Play-Submission-Checklist.md`](./Docs/MVP1.0-Google-Play-Submission-Checklist.md)
 * **Store Listing Copy:** [`Docs/MVP1.0-Google-Play-Store-Listing.md`](./Docs/MVP1.0-Google-Play-Store-Listing.md)
 * **Content Rating Prep:** [`Docs/MVP1.0-Content-Rating-Preparation.md`](./Docs/MVP1.0-Content-Rating-Preparation.md)
@@ -47,7 +49,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 
 ## Manual QA Status
 
-* **Automated Regression:** `438 / 438 PASS`
+* **Automated Regression:** `451 / 451 PASS`
 * **Android Device:** `NOT TESTED`
 * **Installation:** `NOT TESTED`
 * **Physical Touch:** `NOT TESTED`
@@ -58,12 +60,17 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 
 ## Google Play Release Status
 
-* **Automated Regression:** `438 / 438 PASS`
+* **Automated Regression:** `451 / 451 PASS`
+* **AAB Pipeline:** `CONFIGURED` (`Builds/Android/Lattirune-1.0.0.aab`)
+* **AAB Artifact:** `NOT GENERATED` (Pending Unity runtime build execution)
+* **Privacy Policy:** `PREPARED` ([`Docs/MVP1.0-Privacy-Policy.md`](./Docs/MVP1.0-Privacy-Policy.md))
+* **Privacy Policy URL:** `NOT HOSTED` (A public URL must be hosted before Google Play submission)
 * **Physical Android QA:** `NOT COMPLETED`
 * **Google Play Submission:** `NOT SUBMITTED`
-* **AAB:** `NOT CONFIGURED`
-* **Release Artifact:** `Builds/Android/Lattirune-1.0.0.apk`
-* **Release Blocker:** `Physical Android QA pending`
+* **Remaining Blockers:**
+  1. Physical Android device QA pending hardware lab verification.
+  2. Public Privacy Policy URL not hosted.
+  3. Store listing graphic assets (icon, feature graphic, screenshots) pending capture.
 
 ## Full Mobile Screen Navigation Flow & UI Architecture
 
@@ -176,7 +183,7 @@ The execution engine enforcing deterministic cascading triggers as specified in 
 The complete rune catalogue defined in PLAN.md Section 5.1:
 
 | # | Rune Name | ID | Element | Direction | Mechanical In-Combat Effect | Compatible Setup |
-| :- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| :- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | **Ember Rune** | `rune_ember` | Fire | East ($\rightarrow$) | +6 Fire Dmg; Burn (3 dmg/s for 4s) | Blades, Bows, Wands |
 | 2 | **Frost Rune** | `rune_frost` | Ice | South ($\downarrow$) | +4 Ice Dmg; Enemy speed -15% | Shields, Daggers |
 | 3 | **Spark Rune** | `rune_spark` | Lightning | North ($\uparrow$) | +8 Shock Dmg; 25% chain arc chance | Fast weapons (<1.5s) |
@@ -312,3 +319,4 @@ The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic 
 * [`MVP1.0-Google-Play-Submission-Checklist.md`](./Docs/MVP1.0-Google-Play-Submission-Checklist.md) — Play Store submission readiness checklist.
 * [`MVP1.0-Google-Play-Store-Listing.md`](./Docs/MVP1.0-Google-Play-Store-Listing.md) — Play Store title and description copy.
 * [`MVP1.0-Content-Rating-Preparation.md`](./Docs/MVP1.0-Content-Rating-Preparation.md) — IARC content rating evaluation preparation.
+* [`MVP1.0-Privacy-Policy.md`](./Docs/MVP1.0-Privacy-Policy.md) — Lattirune privacy policy document.

@@ -28,14 +28,16 @@
 * **Target API Level:** Android 14 (API Level 34) (`PASS`)
 * **Touch Target Standard:** All interactive UI elements satisfy $\ge 52\text{ dp}$ (`PASS`)
 
-## 4. Release Artifacts
+## 4. Release Artifacts & Pipeline
 * **Development / Verification APK:** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk` (`PASS`)
 * **Production Versioned APK:** `Builds/Android/Lattirune-1.0.0.apk` (`PASS`)
-* **Android App Bundle (.aab):** Not configured in build pipeline (`BLOCKED` for Play Store Production Track)
+* **Android App Bundle (.aab) Pipeline:** Configured in `AndroidBuildScript.cs` (`PASS`)
+* **AAB Target Path:** `Builds/Android/Lattirune-1.0.0.aab` (`CONFIGURED` / `STATIC VERIFIED`)
+* **AAB Artifact Generation:** `NOT GENERATED` (Pending Unity runtime build execution)
 * **Artifact Tracking in Git:** Excluded via `.gitignore` (`PASS`)
 
 ## 5. Store Listing
-* **Short Description:** Prepared (76 characters, max 80) (`PASS`)
+* **Short Description:** Prepared (75 characters, max 80) (`PASS`)
 * **Full Description:** Prepared with accurate MVP 1.0 feature set (`PASS`)
 * **Draft Location:** [`Docs/MVP1.0-Google-Play-Store-Listing.md`](./MVP1.0-Google-Play-Store-Listing.md) (`PASS`)
 
@@ -68,7 +70,8 @@
 * **Data Safety Questionnaire:** Must be confirmed manually in Play Console (`NOT VERIFIED`)
 
 ## 11. Privacy Policy Requirement
-* **Public URL:** A publicly accessible privacy policy URL must be hosted before production release (`BLOCKED`)
+* **Privacy Policy Document:** Prepared at [`Docs/MVP1.0-Privacy-Policy.md`](./MVP1.0-Privacy-Policy.md) (`READY`)
+* **Public URL:** A publicly accessible privacy policy URL must be hosted before production release (`NOT HOSTED` / `BLOCKED`)
 * **Offline Evidence:** Codebase contains zero telemetry, tracking, or network requests (`PASS`)
 
 ## 12. Ads Declaration
@@ -89,7 +92,8 @@
 * **Target SDK:** API Level 34+ compliant (`PASS`)
 
 ## 16. Release Signing
-* **Production Keystore:** Must remain outside git repository (`PASS`)
+* **Production Keystore:** Keystore credentials strictly decoupled from git repository (`PASS`)
+* **Production Signing in Source:** `NOT CONFIGURED` (Managed via secure CI/CD environment variables or local signing)
 * **Play App Signing:** Recommended for production AAB submission (`NOT VERIFIED`)
 
 ## 17. Testing Tracks
@@ -98,21 +102,22 @@
 * **Production Track:** Target for full release (`BLOCKED` pending testing tracks)
 
 ## 18. Manual QA Dependency
-* **Automated Unit & Integration Tests:** 425 / 425 PASS (`PASS`)
+* **Automated Unit & Integration Tests:** 438 / 438 PASS (`PASS`)
 * **Physical Android Device Verification:** Pending hardware lab execution (`BLOCKED`)
 
 ## 19. Release Blockers Table
 | Blocker ID | Description | Severity | Remediation Requirement |
 | :--- | :--- | :--- | :--- |
 | **BLK-001** | Physical Android device QA not completed | `CRITICAL` | Execute manual smoke checklist on physical hardware |
-| **BLK-002** | Android App Bundle (.aab) pipeline not configured | `CRITICAL` | Configure AAB export in `AndroidBuildScript.cs` |
-| **BLK-003** | Public Privacy Policy URL not hosted | `REQUIRED` | Host static policy URL for Play Console listing |
-| **BLK-004** | Store listing graphic assets not finalized | `REQUIRED` | Provide 512×512 icon, 1024×500 feature graphic, and screenshots |
+| **BLK-002** | Public Privacy Policy URL not hosted | `REQUIRED` | Host static policy URL for Play Console listing |
+| **BLK-003** | Store listing graphic assets not finalized | `REQUIRED` | Provide 512×512 icon, 1024×500 feature graphic, and screenshots |
 
 ## 20. Final Submission Checklist
 * [x] Core gameplay, 10 floors, 20 items, 10 runes, 6 enemies, Lich Lord implemented and verified.
-* [x] 425 automated regression tests passing with 0 compilation and console errors.
+* [x] 438 automated regression tests passing with 0 compilation and console errors.
 * [x] Package identity (`com.developer.lattirune`), version name (`1.0.0`), and version code (`1`) unified.
+* [x] AAB build pipeline configured in `AndroidBuildScript.cs`.
+* [x] Privacy policy document created based on local encrypted offline architecture.
 * [x] Zero ads, zero IAP, zero analytics, zero network permissions.
 * [ ] Physical Android device smoke test executed and signed off.
 * [ ] Android App Bundle (.aab) generated and signed.

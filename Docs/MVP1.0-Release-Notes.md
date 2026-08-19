@@ -42,6 +42,7 @@ Lattirune MVP 1.0 marks the completion of the core tactical auto-battler rogueli
 
 * **Release Candidate APK:** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
 * **Production Versioned APK:** `Builds/Android/Lattirune-1.0.0.apk`
+* **Production Versioned AAB:** `Builds/Android/Lattirune-1.0.0.aab` (Pipeline configured)
 * **Package Identity:** `com.developer.lattirune`
 * **Version Name:** `1.0.0`
 * **Version Code:** `1`
@@ -50,11 +51,11 @@ Lattirune MVP 1.0 marks the completion of the core tactical auto-battler rogueli
 
 ## 4. Verification & QA Status
 
-* **Automated EditMode Test Suite:** 425 / 425 tests passing ($100\%$ pass rate).
+* **Automated EditMode Test Suite:** 451 / 451 tests passing ($100\%$ pass rate).
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Android Build Status:** PASS
-* **Security Audit:** PASS (Zero secrets, private keys, or API credentials stored in repository; `.gitignore` properly excludes build outputs and keystores).
+* **Security Audit:** PASS (Zero secrets, private keys, or API credentials stored in repository; `.gitignore` properly excludes build outputs, keystores, and credentials).
 
 ---
 
@@ -77,7 +78,7 @@ Lattirune MVP 1.0 marks the completion of the core tactical auto-battler rogueli
 
 ## 6. Manual QA Status
 
-* **Automated Regression:** `425 / 425 PASS`
+* **Automated Regression:** `451 / 451 PASS`
 * **Android Device Testing:** `NOT TESTED`
 * **Clean APK Installation:** `NOT TESTED`
 * **Cold Launch & Resume:** `NOT TESTED`
@@ -89,7 +90,20 @@ Lattirune MVP 1.0 marks the completion of the core tactical auto-battler rogueli
 
 ---
 
-## 7. Known Limitations & Future Scope
+## 7. TASK-040 Release Readiness
+
+* **AAB Pipeline Status:** `CONFIGURED` (`Builds/Android/Lattirune-1.0.0.aab`)
+* **Privacy Policy Document Status:** `READY` ([`Docs/MVP1.0-Privacy-Policy.md`](./MVP1.0-Privacy-Policy.md))
+* **Privacy Policy Public URL Status:** `NOT HOSTED` (A public URL must be hosted before Google Play submission)
+* **Physical QA Status:** `NOT COMPLETED`
+* **Remaining Release Blockers:**
+  1. Physical Android device QA pending hardware lab verification.
+  2. Public Privacy Policy URL not hosted.
+  3. Store listing graphic assets (icon, feature graphic, screenshots) pending capture.
+
+---
+
+## 8. Known Limitations & Future Scope
 
 * **Physical Device Testing:** Physical hardware testing on Android retail devices (Samsung Galaxy, Google Pixel) remains pending manual QA lab verification.
-* **Google Play Publishing:** Store listing assets, signed AAB bundles, and Google Play Console submissions are scheduled for post-MVP Phase 4.
+* **Google Play Publishing:** Store listing assets, signed AAB upload, and Google Play Console submissions are scheduled for post-MVP Phase 4.
