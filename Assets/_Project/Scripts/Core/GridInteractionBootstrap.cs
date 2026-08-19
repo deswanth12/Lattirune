@@ -492,15 +492,10 @@ namespace Lattirune.Core
             };
 
             // Procedural Run Events Subsystem (TASK-051 & TASK-052)
-            GameObject econObj = new GameObject("EconomyManager");
-            econObj.transform.SetParent(transform);
-            var economyManager = econObj.AddComponent<EconomyManager>();
-            economyManager.Initialize(startingGold: 0);
-
             GameObject eventObj = new GameObject("RunEventIntegration");
             eventObj.transform.SetParent(transform);
             var eventIntegration = eventObj.AddComponent<RunEventIntegration>();
-            eventIntegration.Initialize(runManager, economyManager, _playerCombatant, combatSystem);
+            eventIntegration.Initialize(runManager, runManager, _playerCombatant, combatSystem);
 
             // Merchant Stall Subsystem (TASK-056)
             GameObject merchantObj = new GameObject("MerchantSystem");
@@ -511,7 +506,7 @@ namespace Lattirune.Core
             GameObject merchantUiObj = new GameObject("MerchantStallUIController");
             merchantUiObj.transform.SetParent(transform);
             var merchantUI = merchantUiObj.AddComponent<MerchantStallUIController>();
-            merchantUI.Initialize(merchantSystem, economyManager, inventorySystem, _grid, _playerCombatant, runManager, navigationController);
+            merchantUI.Initialize(merchantSystem, runManager, inventorySystem, _grid, _playerCombatant, runManager, navigationController);
 
             // Hero Classes & Loadouts Subsystem (TASK-057)
             GameObject heroObj = new GameObject("HeroClassManager");

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Lattirune.Combat;
@@ -135,7 +135,7 @@ namespace Lattirune.Tests
             var panel = _holder.AddComponent<RunEventMobilePanel>();
             var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
-            var economy = econObj.AddComponent<EconomyManager>();
+            var economy = econObj.AddComponent<SimpleEconomyService>();
             economy.Initialize(50);
 
             var modManager = _holder.AddComponent<RunModifierManager>();
@@ -174,7 +174,7 @@ namespace Lattirune.Tests
 
             var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
-            var economy = econObj.AddComponent<EconomyManager>();
+            var economy = econObj.AddComponent<SimpleEconomyService>();
             economy.Initialize(30);
 
             var modManager = _holder.AddComponent<RunModifierManager>();

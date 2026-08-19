@@ -113,7 +113,7 @@ namespace Lattirune.Events
 
         public bool SelectChoice(
             string choiceId,
-            EconomyManager economy,
+            IEconomyService economy,
             PlayerCombatant player,
             RunModifierManager modifierManager)
         {

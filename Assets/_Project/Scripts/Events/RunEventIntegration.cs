@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Lattirune.Combat;
 using Lattirune.Core;
@@ -20,9 +20,10 @@ namespace Lattirune.Events
         [SerializeField] private RunEventPresenter eventPresenter;
         [SerializeField] private RunEventMobilePanel mobilePanel;
         [SerializeField] private RunModifierManager modifierManager;
-        [SerializeField] private EconomyManager economyManager;
         [SerializeField] private PlayerCombatant playerCombatant;
         [SerializeField] private CombatSystem combatSystem;
+
+        private IEconomyService _economyService;
 
         public RunEventService EventService => eventService;
         public RunEventTrigger EventTrigger => eventTrigger;
@@ -31,14 +32,14 @@ namespace Lattirune.Events
 
         public void Initialize(
             RunManager manager,
-            EconomyManager economy,
+            IEconomyService economy,
             PlayerCombatant player,
             CombatSystem combat,
             RunModifierManager modifiers = null,
             IRandomSource random = null)
         {
             runManager = manager;
-            economyManager = economy;
+            _economyService = economy ?? (manager as IEconomyService);
             playerCombatant = player;
             combatSystem = combat;
 
@@ -81,7 +82,7 @@ namespace Lattirune.Events
                 eventTrigger,
                 mobilePanel,
                 combatSystem,
-                economyManager,
+                _economyService,
                 playerCombatant,
                 modifierManager,
                 random

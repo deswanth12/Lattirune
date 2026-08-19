@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Lattirune.Choices;
@@ -253,7 +253,7 @@ namespace Lattirune.Tests
 
             var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
-            var economy = econObj.AddComponent<EconomyManager>();
+            var economy = econObj.AddComponent<SimpleEconomyService>();
             economy.Initialize(startingGold: 50);
 
             var db = RunChoiceDatabaseSO.CreateCanonicalChoiceDatabase();
@@ -285,7 +285,7 @@ namespace Lattirune.Tests
 
             var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
-            var economy = econObj.AddComponent<EconomyManager>();
+            var economy = econObj.AddComponent<SimpleEconomyService>();
             economy.Initialize(startingGold: 10); // Has 10, choice needs 30
 
             var db = RunChoiceDatabaseSO.CreateCanonicalChoiceDatabase();

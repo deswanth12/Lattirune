@@ -66,7 +66,7 @@ namespace Lattirune.Choices
 
         public bool ApplyChoice(
             RunChoiceDefinitionSO choice, 
-            EconomyManager economy, 
+            IEconomyService economy, 
             PlayerCombatant player, 
             RunModifierManager modifierManager)
         {

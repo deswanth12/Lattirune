@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Combat;
@@ -118,7 +118,7 @@ namespace Lattirune.Economy
         /// </summary>
         public bool BuyOffer(
             int index,
-            EconomyManager economy,
+            IEconomyService economy,
             InventorySystem inventory = null,
             LatticeGrid grid = null,
             PlayerCombatant player = null)
@@ -176,7 +176,7 @@ namespace Lattirune.Economy
         /// <summary>
         /// Rerolls all unsold offers for a nominal gold fee.
         /// </summary>
-        public bool RerollOffers(EconomyManager economy, int cost = 10, int floorNumber = 1)
+        public bool RerollOffers(IEconomyService economy, int cost = 10, int floorNumber = 1)
         {
             if (economy == null || !economy.CanAfford(cost)) return false;
             if (!economy.SpendGold(cost)) return false;

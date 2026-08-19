@@ -15,10 +15,10 @@ namespace Lattirune.UI
     {
         [Header("References")]
         [SerializeField] private RunEventService eventService;
-        [SerializeField] private EconomyManager economyManager;
         [SerializeField] private PlayerCombatant playerCombatant;
         [SerializeField] private RunModifierManager modifierManager;
 
+        private IEconomyService _economyService;
         private RunEventDefinitionSO _activeEvent;
         private string _lastOutcomeMessage = string.Empty;
         private bool _isShowingModal = false;
@@ -29,12 +29,12 @@ namespace Lattirune.UI
 
         public void Initialize(
             RunEventService service,
-            EconomyManager economy,
+            IEconomyService economy,
             PlayerCombatant player,
             RunModifierManager modifiers)
         {
             eventService = service;
-            economyManager = economy;
+            _economyService = economy;
             playerCombatant = player;
             modifierManager = modifiers;
 
@@ -114,7 +114,7 @@ namespace Lattirune.UI
             GUILayout.Space(8);
 
             // Resources header
-            int currentGold = economyManager != null ? economyManager.GoldBalance : 0;
+            int currentGold = _economyService != null ? _economyService.GoldBalance : 0;
             int currentHp = playerCombatant != null ? playerCombatant.CurrentHp : 100;
             int maxHp = playerCombatant != null ? playerCombatant.MaxHp : 100;
             GUILayout.Label($"[ HERO HP: {currentHp}/{maxHp} | GOLD: {currentGold} ]", bodyStyle);
@@ -134,7 +134,7 @@ namespace Lattirune.UI
                 {
                     if (eventService != null)
                     {
-                        eventService.SelectChoice(choice.ChoiceId, economyManager, playerCombatant, modifierManager);
+                        eventService.SelectChoice(choice.ChoiceId, _economyService, playerCombatant, modifierManager);
                     }
                 }
                 GUILayout.Space(4);

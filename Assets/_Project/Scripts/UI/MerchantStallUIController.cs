@@ -17,12 +17,13 @@ namespace Lattirune.UI
     {
         [Header("References")]
         [SerializeField] private MerchantSystem merchantSystem;
-        [SerializeField] private EconomyManager economyManager;
         [SerializeField] private InventorySystem inventorySystem;
         [SerializeField] private LatticeGrid latticeGrid;
         [SerializeField] private PlayerCombatant playerCombatant;
         [SerializeField] private RunManager runManager;
         [SerializeField] private ScreenNavigationController navigation;
+
+        private IEconomyService _economyService;
 
         [Header("State")]
         [SerializeField] private bool isVisible = false;
@@ -32,7 +33,7 @@ namespace Lattirune.UI
 
         public void Initialize(
             MerchantSystem merchant,
-            EconomyManager economy,
+            IEconomyService economy,
             InventorySystem inventory,
             LatticeGrid grid,
             PlayerCombatant player,
@@ -40,7 +41,7 @@ namespace Lattirune.UI
             ScreenNavigationController nav = null)
         {
             merchantSystem = merchant;
-            economyManager = economy;
+            _economyService = economy ?? (run as IEconomyService);
             inventorySystem = inventory;
             latticeGrid = grid;
             playerCombatant = player;
@@ -132,7 +133,7 @@ namespace Lattirune.UI
             goldStyle.alignment = TextAnchor.MiddleCenter;
             goldStyle.normal.textColor = Color.yellow;
 
-            int currentGold = economyManager != null ? economyManager.CurrentGold : 0;
+            int currentGold = _economyService != null ? _economyService.CurrentGold : (runManager != null ? runManager.CurrentGold : 0);
             int floorNum = runManager != null ? runManager.CurrentFloorNumber : 1;
             GUILayout.Label($"Floor {floorNum}  |  Your Gold: {currentGold} 🪙", goldStyle);
             GUILayout.Space(10);
@@ -172,12 +173,12 @@ namespace Lattirune.UI
 
                 if (!offer.IsSold)
                 {
-                    bool canAfford = economyManager != null && economyManager.CanAfford(offer.CurrentPrice);
+                    bool canAfford = _economyService != null && _economyService.CanAfford(offer.CurrentPrice);
                     GUI.enabled = canAfford;
 
                     if (GUILayout.Button($"PURCHASE ({offer.CurrentPrice}g)", GUILayout.Height(55)))
                     {
-                        if (merchantSystem.BuyOffer(i, economyManager, inventorySystem, latticeGrid, playerCombatant))
+                        if (merchantSystem.BuyOffer(i, _economyService, inventorySystem, latticeGrid, playerCombatant))
                         {
                             _feedbackMessage = $"Pleasure doing business! You acquired {offer.Title}.";
                         }
@@ -193,11 +194,11 @@ namespace Lattirune.UI
             GUILayout.FlexibleSpace();
 
             // Reroll Button (10 Gold)
-            bool canReroll = economyManager != null && economyManager.CanAfford(10);
+            bool canReroll = _economyService != null && _economyService.CanAfford(10);
             GUI.enabled = canReroll;
             if (GUILayout.Button("🔄 REROLL STOCK (10 Gold)", GUILayout.Height(60)))
             {
-                if (merchantSystem.RerollOffers(economyManager, 10, floorNum))
+                if (merchantSystem.RerollOffers(_economyService, 10, floorNum))
                 {
                     _feedbackMessage = "The merchant reveals a fresh crate of wares!";
                 }

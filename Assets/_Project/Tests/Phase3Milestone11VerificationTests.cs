@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Lattirune.Combat;
@@ -76,7 +76,7 @@ namespace Lattirune.Tests
 
             var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
-            var economy = econObj.AddComponent<EconomyManager>();
+            var economy = econObj.AddComponent<SimpleEconomyService>();
             economy.Initialize(startingGold: 20);
 
             var eventService = _holder.AddComponent<RunEventService>();

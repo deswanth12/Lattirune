@@ -20,7 +20,7 @@ namespace Lattirune.Dungeon
     /// Merchant Stall transactions, Campfire Rest Site decisions, boss encounters, run modifiers, combo rewards, and run lifecycle.
     /// Strictly adheres to PLAN.md Sections 9.1, 11, and 13.1.
     /// </summary>
-    public class RunManager : MonoBehaviour
+    public class RunManager : MonoBehaviour, IEconomyService
     {
         [Header("Configuration")]
         [SerializeField] private DungeonDefinitionSO dungeonDefinition;

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Lattirune.Boss;
@@ -85,7 +85,7 @@ namespace Lattirune.Tests
             var meta = _holder.AddComponent<MetaProgressionManager>();
             meta.Initialize(startingEmbers: 100);
 
-            var economy = _holder.AddComponent<EconomyManager>();
+            var economy = _holder.AddComponent<SimpleEconomyService>();
             economy.Initialize(startingGold: 50);
 
             var runManager = _holder.AddComponent<RunManager>();

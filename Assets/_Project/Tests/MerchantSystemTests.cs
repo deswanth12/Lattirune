@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Lattirune.Combat;
@@ -16,7 +16,7 @@ namespace Lattirune.Tests
     {
         private GameObject _holder;
         private MerchantSystem _merchant;
-        private EconomyManager _economy;
+        private SimpleEconomyService _economy;
         private LatticeGrid _grid;
         private InventorySystem _inventory;
         private PlayerCombatant _player;
@@ -33,7 +33,7 @@ namespace Lattirune.Tests
                 new SystemRandomSource(42)
             );
 
-            _economy = _holder.AddComponent<EconomyManager>();
+            _economy = _holder.AddComponent<SimpleEconomyService>();
             _economy.Initialize(startingGold: 100);
 
             _grid = _holder.AddComponent<LatticeGrid>();

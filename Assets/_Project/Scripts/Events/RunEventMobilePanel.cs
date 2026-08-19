@@ -17,7 +17,7 @@ namespace Lattirune.Events
 
         private RunEventDefinitionSO _activeEvent;
         private RunEventService _eventService;
-        private EconomyManager _economyManager;
+        private IEconomyService _economyManager;
         private PlayerCombatant _playerCombatant;
         private RunModifierManager _modifierManager;
         private string _outcomeFeedback = string.Empty;
@@ -30,7 +30,7 @@ namespace Lattirune.Events
 
         public void Initialize(
             RunEventService service,
-            EconomyManager economy,
+            IEconomyService economy,
             PlayerCombatant player,
             RunModifierManager modifiers)
         {
