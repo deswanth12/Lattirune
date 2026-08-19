@@ -10,18 +10,20 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Engine:** Unity 6 LTS (2D URP)
 * **Language:** C#
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
-* **Development Status:** MVP 1.0 Release Artifact Verified
+* **Development Status:** MVP 1.0 Release Sign-Off (Ready for Ship)
 
-## Phase 3 MVP 1.0 Release Artifact & Ship Check (TASK-033 & TASK-034)
+## Phase 3 MVP 1.0 Final Release Sign-Off (TASK-035)
 
 * **Build Target:** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
 * **Package ID:** `com.developer.lattirune`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 370 / 370 passing ($100\%$)
+* **EditMode Tests:** 389 / 389 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
-* **Release Artifact Sign-Off:**
+* **Release Manifest:** [`Docs/MVP1.0-Release-Manifest.md`](./Docs/MVP1.0-Release-Manifest.md)
+* **Traceability Matrix:** [`Docs/MVP1.0-Release-Traceability.md`](./Docs/MVP1.0-Release-Traceability.md)
+* **Release Sign-Off:**
   * **20 Canonical Items:** Exact footprints, stats, cursed flags, and traits verified against PLAN.md Section 6.1.
   * **10 Canonical Runes:** Direction, element, damage bonus, and special mechanics verified against PLAN.md Section 5.1.
   * **5 Master Synergies & 5 Elemental Reactions:** Master overrides and symmetric pair resolution ($A + B == B + A$) verified.
@@ -273,3 +275,5 @@ The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic 
 ## Documentation
 
 * [`PLAN.md`](./PLAN.md) — Master project planning and technical architecture blueprint (v1.0.1).
+* [`MVP1.0-Release-Manifest.md`](./Docs/MVP1.0-Release-Manifest.md) — Official MVP 1.0 Release Manifest and build specifications.
+* [`MVP1.0-Release-Traceability.md`](./Docs/MVP1.0-Release-Traceability.md) — Comprehensive requirements traceability matrix.
