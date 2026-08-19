@@ -19,6 +19,8 @@ namespace Lattirune.Items
         private bool _wasPlacedBeforeDrag;
         private Vector2Int _previousGridPos;
         private int _previousRotation;
+        private float _lastTapTime;
+        private string _lastTappedItemId;
 
         public ItemInstance ActiveDraggedItem => _activeDraggedItem;
 
@@ -52,6 +54,31 @@ namespace Lattirune.Items
             {
                 RotateActiveItem();
             }
+        }
+
+        private void OnGUI()
+        {
+            if (_activeDraggedItem == null) return;
+
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
+
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+
+            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
+            btnStyle.fontSize = 24;
+            btnStyle.fontStyle = FontStyle.Bold;
+
+            Color oldColor = GUI.color;
+            GUI.color = Color.cyan;
+            if (GUI.Button(new Rect(540f - 180f, 1550f, 360f, 75f), "🔄 ROTATE (90°)", btnStyle))
+            {
+                RotateActiveItem();
+            }
+            GUI.color = oldColor;
+
+            GUI.matrix = oldMatrix;
         }
 
         public bool RotateActiveItem()
@@ -95,6 +122,15 @@ namespace Lattirune.Items
                 ItemInstance item = hit.collider.GetComponent<ItemInstance>();
                 if (item != null)
                 {
+                    // Double-tap in-place rotation detection (< 0.35s)
+                    float now = Time.time;
+                    if (now - _lastTapTime < 0.35f && _lastTappedItemId == item.InstanceId)
+                    {
+                        item.RotateClockwise();
+                    }
+                    _lastTapTime = now;
+                    _lastTappedItemId = item.InstanceId;
+
                     StartDraggingItem(item, worldPos);
                 }
             }
