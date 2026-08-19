@@ -87,6 +87,7 @@ namespace Lattirune.Dungeon
         public bool IsMerchantFloor => CurrentFloorNumber == 4 || CurrentFloorNumber == 9;
         public bool IsCampfireFloor => CurrentFloorNumber == 8;
         public bool HasUsedReviveThisRun => hasUsedReviveThisRun;
+        public bool CanRevivePlayer => currentState == RunState.Defeated && !hasUsedReviveThisRun;
         public bool IsEndlessMode => isEndlessMode;
 
         public void EnableEndlessMode()

@@ -267,11 +267,22 @@ namespace Lattirune.UI
                     combatSystem.UseEmergencyPotion(player, 25);
                 }
             }
-            // Retry Button (in Defeat State)
+            // Retry and Revive Controls (in Defeat State)
             else if (combatSystem.CurrentState == CombatState.Defeat)
             {
+                if (runManager != null && runManager.CanRevivePlayer)
+                {
+                    GUI.color = Color.green;
+                    if (GUILayout.Button("❤️ REVIVE (50% HP)", btnStyle, GUILayout.Height(65), GUILayout.Width(300)))
+                    {
+                        runManager.RevivePlayer(0.5f);
+                    }
+                    GUI.color = oldColor;
+                    GUILayout.Space(12);
+                }
+
                 GUI.color = Color.red;
-                if (GUILayout.Button("🔄 RETRY ENCOUNTER", btnStyle, GUILayout.Height(65), GUILayout.Width(320)))
+                if (GUILayout.Button("🔄 RETRY ENCOUNTER", btnStyle, GUILayout.Height(65), GUILayout.Width(300)))
                 {
                     combatSystem.ResetCombat();
                 }
