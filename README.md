@@ -10,9 +10,9 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Engine:** Unity 6 LTS (2D URP)
 * **Language:** C#
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
-* **Development Status:** MVP 1.0.0 Release Package Finalized (Ready for Manual Android QA)
+* **Development Status:** MVP 1.0.0 — Repository Complete · Blocked Pending External Actions
 
-## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-042)
+## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-043)
 
 * **Build Target (RC):** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
 * **Build Target (v1.0.0 APK):** `Builds/Android/Lattirune-1.0.0.apk`
@@ -21,10 +21,11 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Version Name:** `1.0.0`
 * **Version Code:** `1`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 478 / 478 passing ($100\%$)
+* **EditMode Tests:** 495 / 495 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
+* **External Release Execution Record:** [`Docs/MVP1.0-External-Release-Execution-Record.md`](./Docs/MVP1.0-External-Release-Execution-Record.md)
 * **Final Release Blockers:** [`Docs/MVP1.0-Final-Release-Blockers.md`](./Docs/MVP1.0-Final-Release-Blockers.md)
 * **Store Asset Manifest:** [`Docs/MVP1.0-Store-Asset-Manifest.md`](./Docs/MVP1.0-Store-Asset-Manifest.md)
 * **Screenshot Plan:** [`Docs/MVP1.0-Screenshot-Capture-Plan.md`](./Docs/MVP1.0-Screenshot-Capture-Plan.md)
@@ -51,38 +52,34 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
   * Frame Rate: $60\text{ FPS}$ (Target $60\text{ FPS}$)
   * Draw Calls: $14$ (Target $< 25$)
 
-## Manual QA Status
+## Release Gate Status
 
-* **Automated Regression:** `478 / 478 PASS`
-* **Android Device:** `NOT TESTED`
-* **Installation:** `NOT TESTED`
-* **Physical Touch:** `NOT TESTED`
-* **Audio:** `NOT TESTED`
-* **Haptics:** `NOT TESTED`
-* **Performance:** `NOT TESTED`
-* **Manual QA Checklist:** [`Docs/MVP1.0-Manual-QA-Checklist.md`](./Docs/MVP1.0-Manual-QA-Checklist.md)
+| Item | Status |
+| :--- | :--- |
+| **MVP 1.0 Automated QA** | `PASS (495 / 495)` |
+| **Physical Android QA** | `NOT COMPLETED` |
+| **App Icon** | `EXTERNAL ASSET REQUIRED` |
+| **Feature Graphic** | `EXTERNAL ASSET REQUIRED` |
+| **Screenshots** | `EXTERNAL CAPTURE REQUIRED` |
+| **Store Listing** | `READY` |
+| **Privacy Policy** | `READY` |
+| **Privacy Policy URL** | `NOT HOSTED` |
+| **AAB Pipeline** | `CONFIGURED` |
+| **AAB Artifact** | `NOT GENERATED` |
+| **Production Signing** | `EXTERNAL CONFIGURATION REQUIRED` |
+| **Google Play Submission** | `NOT SUBMITTED` |
+| **Security Scan** | `PASS` |
+| **Release Status** | `BLOCKED` |
 
-## Google Play Release Status
+## Remaining External Actions Required
 
-* **MVP 1.0 Automated QA:** `PASS (478 / 478)`
-* **App Icon:** `EXTERNAL ASSET REQUIRED`
-* **Feature Graphic:** `EXTERNAL ASSET REQUIRED`
-* **Screenshots:** `EXTERNAL CAPTURE REQUIRED`
-* **Store Listing:** `READY`
-* **Privacy Policy:** `READY`
-* **Privacy Policy URL:** `NOT HOSTED`
-* **AAB Pipeline:** `CONFIGURED`
-* **AAB Artifact:** `NOT GENERATED`
-* **Production Signing:** `EXTERNAL CONFIGURATION REQUIRED`
-* **Physical Android QA:** `NOT COMPLETED`
-* **Google Play Submission:** `NOT SUBMITTED`
-* **Release Status:** `BLOCKED`
-* **Remaining External Actions:**
-  1. Connect physical Android device and sign off 26-point manual QA checklist.
-  2. Host Privacy Policy document on a publicly accessible HTTPS URL.
-  3. Provide final $512 \times 512$ icon, $1024 \times 500$ feature graphic, and 12-screen capture set.
-  4. Generate and sign release AAB bundle in secure CI/CD environment.
-  5. Submit store listing assets and binary in Google Play Console.
+1. Connect a physical Android device (API ≥ 24) and execute all 26 items in [`Docs/MVP1.0-Manual-QA-Checklist.md`](./Docs/MVP1.0-Manual-QA-Checklist.md).
+2. Host [`Docs/MVP1.0-Privacy-Policy.md`](./Docs/MVP1.0-Privacy-Policy.md) on a publicly accessible HTTPS URL following [`Docs/MVP1.0-Privacy-Policy-Hosting-Guide.md`](./Docs/MVP1.0-Privacy-Policy-Hosting-Guide.md).
+3. Provide final $512 \times 512$ icon and $1024 \times 500$ feature graphic (see [`Docs/MVP1.0-Store-Asset-Manifest.md`](./Docs/MVP1.0-Store-Asset-Manifest.md)).
+4. Capture 12 portrait screenshots following [`Docs/MVP1.0-Screenshot-Capture-Plan.md`](./Docs/MVP1.0-Screenshot-Capture-Plan.md).
+5. Run `BuildProductionAAB()` in Unity to generate `Builds/Android/Lattirune-1.0.0.aab`.
+6. Supply production keystore in secure CI/CD environment for signing.
+7. Submit store listing, graphics, binary, and privacy URL in Google Play Console.
 
 ## Full Mobile Screen Navigation Flow & UI Architecture
 
@@ -172,7 +169,7 @@ Upon reaching Floor 8, players choose exactly one of two mutually exclusive rest
 
 ## Master Item Combinations (MVP)
 
-The canonical named master combinations defined in PLAN.md Section 7.1 (specific item synergies override broad category rules):
+The canonical named master combinations defined in PLAN.md Section 7.1:
 
 | Synergy Name | ID | Required Rune | Required Item | In-Combat Mechanical Effect |
 | :--- | :--- | :--- | :--- | :--- |
@@ -185,33 +182,29 @@ The canonical named master combinations defined in PLAN.md Section 7.1 (specific
 ## Chain Reaction Engine & Loop Prevention
 
 The execution engine enforcing deterministic cascading triggers as specified in PLAN.md Section 8.1:
-* **Sequential Queue Execution:** Chain events are enqueued in `Queue<ChainEvent>` and processed sequentially, eliminating recursive stack overflows.
-* **Recursion Depth Limit:** Hard-coded maximum call depth of $N = 4$ chain links per root trigger ($\text{Depth} \le 4$). Depth 5+ events are rejected.
+* **Sequential Queue Execution:** Chain events are enqueued in `Queue<ChainEvent>` and processed sequentially.
+* **Recursion Depth Limit:** Hard-coded maximum call depth of $N = 4$ chain links per root trigger ($\text{Depth} \le 4$).
 * **Frame-Tick Propagation Cap:** A source item/rune can trigger downstream events at most once per physics tick ($0.02\text{s}$).
 * **Cycle Protection:** Event history and root IDs prevent infinite recursive feedback loops.
 
 ## MVP 1.0 10-Rune Catalogue
 
-The complete rune catalogue defined in PLAN.md Section 5.1:
-
-| # | Rune Name | ID | Element | Direction | Mechanical In-Combat Effect | Compatible Setup |
-| :- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | **Ember Rune** | `rune_ember` | Fire | East ($\rightarrow$) | +6 Fire Dmg; Burn (3 dmg/s for 4s) | Blades, Bows, Wands |
-| 2 | **Frost Rune** | `rune_frost` | Ice | South ($\downarrow$) | +4 Ice Dmg; Enemy speed -15% | Shields, Daggers |
-| 3 | **Spark Rune** | `rune_spark` | Lightning | North ($\uparrow$) | +8 Shock Dmg; 25% chain arc chance | Fast weapons (<1.5s) |
-| 4 | **Venom Rune** | `rune_venom` | Poison | West ($\leftarrow$) | 2 Poison stacks/sec (ignores shields) | Daggers, Bows |
-| 5 | **Crossfire Rune** | `rune_crossfire` | Fire | Cross ($+$) | +3 Fire Dmg in all 4 cardinal vectors | Multi-weapon setups |
-| 6 | **Prism Rune** | `rune_prism` | Light | Split ($\backslash$) | Splits incoming beam into 2 branches | Runes & optical setups |
-| 7 | **Amplifier Node** | `rune_amplifier` | Force | Omni ($\circ$) | Doubles power of adjacent runes | Concentrated rune clusters |
-| 8 | **Iron Rune** | `rune_iron` | Earth | South ($\downarrow$) | +15 Shield at battle start | Armor, Shields |
-| 9 | **Vampire Rune** | `rune_vampire` | Shadow | North ($\uparrow$) | Heals player for 12% of damage dealt | Bladed weapons |
-| 10 | **Haste Rune** | `rune_haste` | Wind | East ($\rightarrow$) | +25% Attack Speed to weapons in line | Heavy weapons (>2.5s) |
+| # | Rune Name | ID | Element | Direction | Mechanical In-Combat Effect |
+| :- | :--- | :--- | :--- | :--- | :--- |
+| 1 | **Ember Rune** | `rune_ember` | Fire | East ($\rightarrow$) | +6 Fire Dmg; Burn (3 dmg/s for 4s) |
+| 2 | **Frost Rune** | `rune_frost` | Ice | South ($\downarrow$) | +4 Ice Dmg; Enemy speed -15% |
+| 3 | **Spark Rune** | `rune_spark` | Lightning | North ($\uparrow$) | +8 Shock Dmg; 25% chain arc chance |
+| 4 | **Venom Rune** | `rune_venom` | Poison | West ($\leftarrow$) | 2 Poison stacks/sec (ignores shields) |
+| 5 | **Crossfire Rune** | `rune_crossfire` | Fire | Cross ($+$) | +3 Fire Dmg in all 4 cardinal vectors |
+| 6 | **Prism Rune** | `rune_prism` | Light | Split ($\backslash$) | Splits incoming beam into 2 branches |
+| 7 | **Amplifier Node** | `rune_amplifier` | Force | Omni ($\circ$) | Doubles power of adjacent runes |
+| 8 | **Iron Rune** | `rune_iron` | Earth | South ($\downarrow$) | +15 Shield at battle start |
+| 9 | **Vampire Rune** | `rune_vampire` | Shadow | North ($\uparrow$) | Heals player for 12% of damage dealt |
+| 10 | **Haste Rune** | `rune_haste` | Wind | East ($\rightarrow$) | +25% Attack Speed to weapons in line |
 
 ## MVP 1.0 Item Catalogue (20 Items)
 
-The complete item catalogue defined in PLAN.md Section 6.1:
-
-| # | Item Name | ID | Category | Footprint | Base Stats | Special Traits / Synergies |
+| # | Item Name | ID | Category | Footprint | Base Stats | Special Traits |
 | :- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | **Rusty Dagger** | `item_rusty_dagger` | Weapon | $1 \times 1$ | 4 Dmg, 0.8s cd | +2 Dmg if placed in corner tile |
 | 2 | **Iron Broadsword** | `item_iron_broadsword` | Weapon | $1 \times 2$ | 10 Dmg, 2.0s cd | +3 Dmg for each adjacent weapon |
@@ -236,9 +229,7 @@ The complete item catalogue defined in PLAN.md Section 6.1:
 
 ## Phase 3: Biome 1 ("The Cursed Sewers") & 6-Enemy Bestiary
 
-The 10-floor dungeon expands across Biome 1 with data-driven enemy archetypes and tactical grid-disrupting traits:
-
-| Enemy Name | Tier | HP | Armor | Interval | Unique Trait / Mechanic | Tactical Counterplay |
+| Enemy Name | Tier | HP | Armor | Interval | Unique Trait | Tactical Counterplay |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Sewer Rat** | Normal | 35 | 0 | 1.2s | High attack rate swarm | High shield or fast daggers |
 | **Goblin Thief** | Normal | 45 | 0 | 1.0s | Steals 3 Gold on every hit | Burst down before 5 seconds |
@@ -259,11 +250,9 @@ The 10-floor dungeon expands across Biome 1 with data-driven enemy archetypes an
 7. **Floor 7:** Bone Crypt (Elite: Necromancer)
 8. **Floor 8:** Campfire Rest Site (Heal 40% HP OR Upgrade 1 Rune)
 9. **Floor 9:** Spider Nest (Pre-Boss)
-10. **Floor 10:** Boss Sanctum (The Lich Lord - 3 Phases)
+10. **Floor 10:** Boss Sanctum (The Lich Lord — 3 Phases)
 
 ## Phase 2: 5-Element Synergy Architecture
-
-The elemental synergy matrix maps directional energy conduits to compatible item classes through data-driven ScriptableObjects:
 
 | Element | Prototype Synergy | Target Category | Mechanical Effect | Visual Aura |
 | :--- | :--- | :--- | :--- | :--- |
@@ -275,44 +264,15 @@ The elemental synergy matrix maps directional energy conduits to compatible item
 
 ## Elemental Reaction Matrix (2-Beam Cross-Intersections)
 
-When two distinct directional rune beams cross at the same discrete grid cell, `ElementalIntersectionEngine` evaluates the pair symmetrically and triggers an Elemental Reaction:
-
 | Reaction Name | Reaction ID | Elemental Pair | In-Combat Mechanical Effect |
 | :--- | :--- | :--- | :--- |
-| **Steam** | `reaction_steam` | Fire Beam + Ice Beam | 25% Enemy Blind / Miss |
-| **Plasma** | `reaction_plasma` | Fire Beam + Lightning Beam | 18 Dmg/s Continuous Ray |
-| **Toxic Flame** | `reaction_toxic_flame` | Fire Beam + Poison Beam | Detonates Poison Stacks (2×) |
-| **Superconductor** | `reaction_superconductor` | Lightning Beam + Ice Beam | -40% Enemy Resistance |
-| **Frostbite** | `reaction_frostbite` | Ice Beam + Poison Beam | +50% Poison Tick Damage |
-
-## Prism Rune & Directional Refraction
-
-The Prism Rune (`prism_rune`, Light affinity) acts as an optical beam splitter. When an incoming cardinal conduit strikes a Prism cell:
-* **Horizontal Inflow (East/West):** Splits into two perpendicular branches going **North** and **South**.
-* **Vertical Inflow (North/South):** Splits into two perpendicular branches going **East** and **West**.
-* **Beam Abstraction & Parentage:** `ConduitBeamPath` maintains recursive hierarchy (`ParentBeamId`, `Depth`), preserving source elemental affinity.
-* **Full Interoperability:** Refracted split branches participate seamlessly in both Item Synergies and Elemental 2-Beam Cross-Intersections.
-* **Cycle Protection:** Recursive traversal tracks visited prism nodes to eliminate infinite loop configurations.
-
-## Crossfire Rune & Multi-Directional Emitters
-
-The Crossfire Rune (`rune_crossfire`, Fire affinity) and Amplifier Node (`rune_omni`) emit energy simultaneously along multiple cardinal vectors from a single origin tile:
-* **4-Way Cardinal Emission:** Emits four independent root `ConduitBeamPath` instances (North, South, East, West) across the 5×5 lattice grid.
-* **MultiDirectionalEmitter:** Unified emitter abstraction managing directional resolution without mutating static `RuneData` assets.
-* **Chained Prism Compatibility:** Each emitted Crossfire beam can independently intersect with Prisms, generating secondary refractions.
-* **Zero Self-Intersection:** Beams originating from the same root emitter ID are filtered out from triggering self-reactions.
-
-## Spatial Bag Inventory & Procedural Expansion
-
-The player's backpack storage operates as a discrete 2D spatial grid completely decoupled from the $5 \times 5$ combat lattice:
-* **Starting Capacity:** Initial $2 \times 3$ (6 cells) active inventory area inside a $4 \times 4$ frame.
-* **Deterministic Expansion Order:** Unlocks adjacent locked cells sequentially (up to 16 maximum cells).
-* **Multi-Tile Footprint Support:** Validates multi-tile items ($1 \times 1$, $1 \times 2$, $2 \times 1$, $2 \times 2$) and dynamic $90^\circ$ rotation states.
-* **Persistence:** Serializes unlocked cell coordinates and expansion stage to encrypted JSON save data.
+| **Steam** | `reaction_steam` | Fire + Ice | 25% Enemy Blind / Miss |
+| **Plasma** | `reaction_plasma` | Fire + Lightning | 18 Dmg/s Continuous Ray |
+| **Toxic Flame** | `reaction_toxic_flame` | Fire + Poison | Detonates Poison Stacks (2×) |
+| **Superconductor** | `reaction_superconductor` | Lightning + Ice | -40% Enemy Resistance |
+| **Frostbite** | `reaction_frostbite` | Ice + Poison | +50% Poison Tick Damage |
 
 ## Boss Encounter Mechanics & The Lich Lord
-
-The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic dynamic enrage thresholds:
 
 | Phase # | Phase Name | HP% Threshold | Effective Armor | Effective Attack | Attack Interval |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -324,10 +284,11 @@ The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic 
 
 * [`PLAN.md`](./PLAN.md) — Master project planning and technical architecture blueprint (v1.0.1).
 * [`CHANGELOG.md`](./CHANGELOG.md) — Official project changelog and release history.
+* [`MVP1.0-External-Release-Execution-Record.md`](./Docs/MVP1.0-External-Release-Execution-Record.md) — External release gate execution record.
+* [`MVP1.0-Final-Release-Blockers.md`](./Docs/MVP1.0-Final-Release-Blockers.md) — Final release blocker audit.
 * [`MVP1.0-Release-Notes.md`](./Docs/MVP1.0-Release-Notes.md) — Comprehensive MVP 1.0.0 Release Notes.
 * [`MVP1.0-Release-Manifest.md`](./Docs/MVP1.0-Release-Manifest.md) — Official MVP 1.0 Release Manifest and build specifications.
 * [`MVP1.0-Release-Traceability.md`](./Docs/MVP1.0-Release-Traceability.md) — Complete requirements traceability matrix.
-* [`MVP1.0-Final-Release-Blockers.md`](./Docs/MVP1.0-Final-Release-Blockers.md) — Final release blocker audit and external dependency classification.
 * [`MVP1.0-Manual-QA-Checklist.md`](./Docs/MVP1.0-Manual-QA-Checklist.md) — Official Manual QA Checklist & Hardware Verification Matrix.
 * [`MVP1.0-Google-Play-Submission-Checklist.md`](./Docs/MVP1.0-Google-Play-Submission-Checklist.md) — Play Store submission readiness checklist.
 * [`MVP1.0-Google-Play-Store-Listing.md`](./Docs/MVP1.0-Google-Play-Store-Listing.md) — Play Store title and description copy.
