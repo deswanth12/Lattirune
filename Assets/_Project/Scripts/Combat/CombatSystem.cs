@@ -1,16 +1,19 @@
 using System;
 using UnityEngine;
+using Lattirune.Combat.Effects;
 
 namespace Lattirune.Combat
 {
     /// <summary>
-    /// Coordinates 1v1 auto-battle encounters, execution cooldowns, damage application, and victory/defeat resolution.
+    /// Coordinates 1v1 auto-battle encounters, execution cooldowns, damage application,
+    /// dynamic runtime stat modifiers from CombatEffectSystem, and victory/defeat resolution.
     /// </summary>
     public class CombatSystem : MonoBehaviour
     {
         [Header("Encounter References")]
         [SerializeField] private PlayerCombatant player;
         [SerializeField] private EnemyCombatant enemy;
+        [SerializeField] private CombatEffectSystem effectSystem;
 
         [Header("State")]
         [SerializeField] private CombatState currentState = CombatState.Preparing;
@@ -24,11 +27,16 @@ namespace Lattirune.Combat
         public CombatState CurrentState => currentState;
         public PlayerCombatant Player => player;
         public EnemyCombatant Enemy => enemy;
+        public CombatEffectSystem Effects => effectSystem;
 
-        public void Initialize(PlayerCombatant playerCombatant, EnemyCombatant enemyCombatant)
+        public void Initialize(
+            PlayerCombatant playerCombatant, 
+            EnemyCombatant enemyCombatant, 
+            CombatEffectSystem effects = null)
         {
             player = playerCombatant;
             enemy = enemyCombatant;
+            effectSystem = effects;
             currentState = CombatState.Preparing;
         }
 
@@ -62,16 +70,45 @@ namespace Lattirune.Combat
                 return;
             }
 
+            // 0. Update Active Combat Status Effects & DoTs
+            if (effectSystem != null)
+            {
+                effectSystem.UpdateEffects(deltaTime);
+
+                if (!enemy.IsAlive)
+                {
+                    ResolveVictory();
+                    return;
+                }
+                if (!player.IsAlive)
+                {
+                    ResolveDefeat();
+                    return;
+                }
+            }
+
             // 1. Player Attack Turn
             if (player.IsAlive && player.TickCooldown(deltaTime))
             {
+                int effectiveEnemyArmor = enemy.Armor;
+                float damageModifier = 1.0f;
+                int effectivePlayerAttack = player.BaseAttackDamage;
+
+                if (effectSystem != null)
+                {
+                    effectiveEnemyArmor = Mathf.RoundToInt(enemy.Armor * effectSystem.GetArmorMultiplier(enemy));
+                    damageModifier *= effectSystem.GetDamageIntakeMultiplier(enemy);
+                    effectivePlayerAttack = Mathf.RoundToInt(player.BaseAttackDamage * effectSystem.GetAttackMultiplier(player));
+                }
+
                 DamageResult playerDamage = DamageCalculator.CalculateDamage(
                     sourceName: player.CombatantName,
                     targetName: enemy.CombatantName,
-                    baseDamage: player.BaseAttackDamage,
+                    baseDamage: effectivePlayerAttack,
                     runeBonus: player.ActiveRuneBonus,
-                    targetArmor: enemy.Armor,
-                    isCritical: false
+                    targetArmor: effectiveEnemyArmor,
+                    isCritical: false,
+                    damageModifier: damageModifier
                 );
 
                 enemy.TakeDamage(playerDamage);
@@ -88,13 +125,25 @@ namespace Lattirune.Combat
             // 2. Enemy Attack Turn
             if (enemy.IsAlive && enemy.TickCooldown(deltaTime))
             {
+                int effectivePlayerArmor = player.Armor;
+                float damageModifier = 1.0f;
+                int effectiveEnemyAttack = enemy.BaseAttackDamage;
+
+                if (effectSystem != null)
+                {
+                    effectivePlayerArmor = Mathf.RoundToInt(player.Armor * effectSystem.GetArmorMultiplier(player));
+                    damageModifier *= effectSystem.GetDamageIntakeMultiplier(player);
+                    effectiveEnemyAttack = Mathf.RoundToInt(enemy.BaseAttackDamage * effectSystem.GetAttackMultiplier(enemy));
+                }
+
                 DamageResult enemyDamage = DamageCalculator.CalculateDamage(
                     sourceName: enemy.CombatantName,
                     targetName: player.CombatantName,
-                    baseDamage: enemy.BaseAttackDamage,
+                    baseDamage: effectiveEnemyAttack,
                     runeBonus: 0,
-                    targetArmor: player.Armor,
-                    isCritical: false
+                    targetArmor: effectivePlayerArmor,
+                    isCritical: false,
+                    damageModifier: damageModifier
                 );
 
                 player.TakeDamage(enemyDamage);
@@ -115,6 +164,7 @@ namespace Lattirune.Combat
 
             if (player != null) player.ResetHpToFull();
             if (enemy != null) enemy.ResetHpToFull();
+            if (effectSystem != null) effectSystem.ClearAllEffects();
 
             OnStateChanged?.Invoke(CombatState.Preparing);
         }
@@ -122,6 +172,7 @@ namespace Lattirune.Combat
         private void ResolveVictory()
         {
             currentState = CombatState.Victory;
+            if (effectSystem != null) effectSystem.ClearAllEffects();
             OnStateChanged?.Invoke(CombatState.Victory);
             OnVictory?.Invoke();
         }
@@ -129,6 +180,7 @@ namespace Lattirune.Combat
         private void ResolveDefeat()
         {
             currentState = CombatState.Defeat;
+            if (effectSystem != null) effectSystem.ClearAllEffects();
             OnStateChanged?.Invoke(CombatState.Defeat);
             OnDefeat?.Invoke();
         }

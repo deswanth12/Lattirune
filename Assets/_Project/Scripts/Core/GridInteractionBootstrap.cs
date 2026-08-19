@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Audio;
 using Lattirune.Combat;
+using Lattirune.Combat.Effects;
 using Lattirune.Core;
 using Lattirune.Grid;
 using Lattirune.Items;
@@ -16,7 +17,8 @@ namespace Lattirune.Core
     /// <summary>
     /// Bootstraps the complete Phase 2 Prototype: 5x5 LatticeGrid, data-driven items,
     /// Rune Conduit engine, 5-Element Synergy system, 2-Beam Elemental Reactions,
-    /// 1v1 Combat loop, Reward selection, Audio/Haptics, and Encrypted Local Save persistence.
+    /// Combat Effect / Status Framework, 1v1 Combat loop, Reward selection, Audio/Haptics,
+    /// and Encrypted Local Save persistence.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -27,6 +29,7 @@ namespace Lattirune.Core
         [SerializeField] private RuneConduitDebugView conduitDebugView;
         [SerializeField] private SynergySystem synergySystem;
         [SerializeField] private ElementalReactionSystem reactionSystem;
+        [SerializeField] private CombatEffectSystem combatEffectSystem;
         [SerializeField] private CombatSystem combatSystem;
         [SerializeField] private RewardService rewardService;
         [SerializeField] private CombatEncounterUI combatEncounterUI;
@@ -57,6 +60,7 @@ namespace Lattirune.Core
         public GridView View => gridView;
         public SynergySystem Synergy => synergySystem;
         public ElementalReactionSystem Reactions => reactionSystem;
+        public CombatEffectSystem Effects => combatEffectSystem;
         public CombatSystem Combat => combatSystem;
         public RewardService Rewards => rewardService;
         public CombatEncounterUI EncounterUI => combatEncounterUI;
@@ -146,7 +150,7 @@ namespace Lattirune.Core
                 SetupDevelopmentRunesAndTargets();
             }
 
-            // 11. Setup Combat Entities & Encounter UI (TASK-007 & TASK-008)
+            // 11. Setup Combat Entities, Effects & Encounter UI (TASK-007, TASK-008 & TASK-014)
             SetupCombatAndRewardEncounter();
 
             // 12. Setup Audio, Haptics & Feedback Coordinator (TASK-009)
@@ -323,6 +327,15 @@ namespace Lattirune.Core
             _enemyCombatant = enemyObj.AddComponent<EnemyCombatant>();
             _enemyCombatant.SetupTrainingDummy(hp: 50, baseArmor: 2, attack: 4, interval: 1.5f);
 
+            // Combat Effect System (TASK-014)
+            if (combatEffectSystem == null)
+            {
+                GameObject effectObj = new GameObject("CombatEffectSystem");
+                effectObj.transform.SetParent(transform);
+                combatEffectSystem = effectObj.AddComponent<CombatEffectSystem>();
+            }
+            combatEffectSystem.EnsureDefaultDatabase();
+
             // Combat System coordinator
             if (combatSystem == null)
             {
@@ -330,7 +343,23 @@ namespace Lattirune.Core
                 combatSystemObj.transform.SetParent(transform);
                 combatSystem = combatSystemObj.AddComponent<CombatSystem>();
             }
-            combatSystem.Initialize(_playerCombatant, _enemyCombatant);
+            combatSystem.Initialize(_playerCombatant, _enemyCombatant, combatEffectSystem);
+
+            // Apply active elemental reactions to combat when battle starts
+            combatSystem.OnStateChanged += (state) =>
+            {
+                if (state == CombatState.Fighting && reactionSystem != null && combatEffectSystem != null)
+                {
+                    foreach (var reaction in reactionSystem.ActiveReactions)
+                    {
+                        var effectInstance = ReactionEffectResolver.ResolveEffect(reaction, combatEffectSystem.Database, _enemyCombatant);
+                        if (effectInstance != null)
+                        {
+                            combatEffectSystem.ApplyEffect(effectInstance);
+                        }
+                    }
+                }
+            };
 
             // Reward Service (TASK-008)
             if (rewardService == null)
@@ -462,7 +491,7 @@ namespace Lattirune.Core
         private void OnGUI()
         {
             // Development persistence & reaction telemetry in top right
-            GUILayout.BeginArea(new Rect(Screen.width - 180, 20, 160, 200), GUI.skin.box);
+            GUILayout.BeginArea(new Rect(Screen.width - 180, 20, 160, 260), GUI.skin.box);
             GUILayout.Label("<size=11><b>DEV CONTROLS</b></size>");
             if (GUILayout.Button("SAVE"))
             {
@@ -480,15 +509,29 @@ namespace Lattirune.Core
                 RecalculateAndRenderConduits();
             }
 
-            GUILayout.Space(6);
+            GUILayout.Space(4);
             if (reactionSystem != null && reactionSystem.ActiveReactionCount > 0)
             {
                 GUILayout.Label("<size=10><b>REACTIONS:</b></size>");
                 foreach (var r in reactionSystem.ActiveReactions)
                 {
-                    GUILayout.Label($"<size=9>• {r.ReactionName} ({r.ElementA}x{r.ElementB}) @ [{r.GridCoordinate.x},{r.GridCoordinate.y}]</size>");
+                    GUILayout.Label($"<size=9>• {r.ReactionName} @ [{r.GridCoordinate.x},{r.GridCoordinate.y}]</size>");
                 }
             }
+
+            if (combatEffectSystem != null && _enemyCombatant != null)
+            {
+                var effects = combatEffectSystem.GetActiveEffects(_enemyCombatant);
+                if (effects.Count > 0)
+                {
+                    GUILayout.Label("<size=10><b>ACTIVE EFFECTS:</b></size>");
+                    foreach (var eff in effects)
+                    {
+                        GUILayout.Label($"<size=9>• {eff.Definition.DisplayName} ({eff.RemainingDuration:F1}s)</size>");
+                    }
+                }
+            }
+
             GUILayout.EndArea();
         }
     }

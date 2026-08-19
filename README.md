@@ -36,9 +36,28 @@ When two distinct directional rune beams cross at the same discrete grid cell, `
 | **Superconductor** | `reaction_superconductor` | Lightning Beam + Ice Beam | -40% Enemy Resistance |
 | **Frostbite** | `reaction_frostbite` | Ice Beam + Poison Beam | +50% Poison Tick Damage |
 
-### Synergy vs. Reaction Distinction:
-* **Synergy (Rune + Item):** Direct interaction where a directional conduit illuminates and powers an item in the lattice grid.
-* **Elemental Reaction (Rune + Rune):** Crossing interaction where two orthogonal beams intersect at a shared integer coordinate without needing an item placed at the junction.
+## Combat Status & Effect Framework
+
+Elemental reactions resolve dynamically into runtime combat effects:
+
+```
+Rune Beam A x Rune Beam B
+        ↓
+ElementalIntersectionEngine
+        ↓
+ElementalReactionSystem (ReactionResult)
+        ↓
+ReactionEffectResolver
+        ↓
+CombatEffectSystem (CombatEffectInstance)
+        ↓
+Combatant (Damage Pipeline & Runtime Modifiers)
+```
+
+### Architecture Principles:
+* **Static Rules vs. Runtime State:** `CombatEffectDefinitionSO` defines immutable rules; `CombatEffectInstance` tracks deterministic runtime durations, stack counts, and periodic tick timers.
+* **Non-Mutating Stat Modifiers:** Runtime effects modify effective combat parameters (Armor, Attack, Damage Intake) dynamically during damage pipeline execution without permanently altering base stats.
+* **Transient vs. Persistent State:** Temporary combat status effects and timers are never written to disk; persistent build state remains isolated in `SaveSystem`.
 
 ## Documentation
 
