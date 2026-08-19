@@ -10,7 +10,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Engine:** Unity 6 LTS (2D URP)
 * **Language:** C#
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
-* **Development Status:** Pre-production / Prototype
+* **Development Status:** Pre-production / Vertical Slice Complete (Phase 2)
 
 ## Phase 2: 5-Element Synergy Architecture
 
@@ -84,6 +84,13 @@ The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic 
 | **Phase 1** | Frost Warden | $100\% \rightarrow 66\%$ | 10 | 8 | 2.5s |
 | **Phase 2** | Soul Harvest | $66\% \rightarrow 33\%$ | 15 (+5) | 12 (+4) | 2.0s (0.8×) |
 | **Phase 3** | Necrotic Inversion | $33\% \rightarrow 0\%$ | 20 (+10) | 16 (+8) | 1.6s (0.64×) |
+
+## Phase 2 Milestone Verification
+
+* **Automated Unit & Integration Tests:** 191 / 191 EditMode tests passing (100% pass rate).
+* **Core Gameplay Loop:** Full 3-floor run, cross-intersection reactions, Prism/Crossfire conduits, multi-phase boss encounter, reward draft, bag expansion, and AES-256 local encrypted save restoration verified.
+* **Android Target:** Package `com.developer.lattirune`, Portrait $1080 \times 1920$, Target API 34.
+* **Release Artifact:** `Builds/Android/Lattirune-Phase2-Verification.apk` via `AndroidBuildScript.cs`.
 
 ## Combat Status & Effect Framework
 

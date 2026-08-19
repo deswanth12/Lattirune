@@ -8,20 +8,32 @@ using UnityEngine;
 namespace Lattirune.Editor
 {
     /// <summary>
-    /// Automated Android Build script for Phase 1 Milestone Verification.
-    /// Builds a development APK targeting 1080x1920 portrait orientation.
+    /// Automated Android Build script for Phase 1 and Phase 2 Milestone Verification.
+    /// Builds development and verification APKs targeting 1080x1920 portrait orientation.
     /// </summary>
     public static class AndroidBuildScript
     {
         public const string BUILD_OUTPUT_DIR = "Builds/Android";
-        public const string APK_NAME = "Lattirune-Phase1-Dev.apk";
+        public const string APK_NAME_PHASE1 = "Lattirune-Phase1-Dev.apk";
+        public const string APK_NAME_PHASE2 = "Lattirune-Phase2-Verification.apk";
         public const string PACKAGE_ID = "com.developer.lattirune";
         public const string BOOTSTRAP_SCENE_PATH = "Assets/_Project/Scenes/Bootstrap.unity";
+
+        [MenuItem("Lattirune/Build/Build Android Phase 2 Verification APK")]
+        public static bool BuildAndroidPhase2VerificationApk()
+        {
+            return ExecuteAndroidBuild(APK_NAME_PHASE2);
+        }
 
         [MenuItem("Lattirune/Build/Build Android Development APK")]
         public static bool BuildAndroidDevelopmentApk()
         {
-            Debug.Log("[Lattirune.Build] Starting Android Development Build...");
+            return ExecuteAndroidBuild(APK_NAME_PHASE1);
+        }
+
+        private static bool ExecuteAndroidBuild(string apkFileName)
+        {
+            Debug.Log($"[Lattirune.Build] Starting Android Build ({apkFileName})...");
 
             // 1. Configure Android Player Settings
             PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, PACKAGE_ID);
@@ -41,7 +53,7 @@ namespace Lattirune.Editor
                 Directory.CreateDirectory(outputDirectory);
             }
 
-            string apkPath = Path.Combine(outputDirectory, APK_NAME);
+            string apkPath = Path.Combine(outputDirectory, apkFileName);
 
             // 3. Build Player Options
             BuildPlayerOptions options = new BuildPlayerOptions
