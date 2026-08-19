@@ -805,8 +805,12 @@ namespace Lattirune.Core
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        [SerializeField] private bool showDevControlsOverlay = false;
+
         private void OnGUI()
         {
+            if (!showDevControlsOverlay) return;
+
             // Only show developer HUD overlay during active gameplay (GRID_BUILD / COMBAT)
             if (navigationController != null && navigationController.CurrentScreen != ScreenState.GRID_BUILD && navigationController.CurrentScreen != ScreenState.COMBAT)
             {
