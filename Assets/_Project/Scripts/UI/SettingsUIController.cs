@@ -19,11 +19,13 @@ namespace Lattirune.UI
         [Header("Runtime Settings")]
         [SerializeField] private float masterVolume = 1.0f;
         [SerializeField] private float sfxVolume = 1.0f;
+        [SerializeField] private float musicVolume = 0.7f;
         [SerializeField] private bool isMuted = false;
         [SerializeField] private bool hapticsEnabled = true;
 
         public float MasterVolume => masterVolume;
         public float SfxVolume => sfxVolume;
+        public float MusicVolume => musicVolume;
         public bool IsMuted => isMuted;
         public bool HapticsEnabled => hapticsEnabled;
 
@@ -58,6 +60,7 @@ namespace Lattirune.UI
 
             masterVolume = 1.0f;
             sfxVolume = 1.0f;
+            musicVolume = 0.7f;
             isMuted = false;
             hapticsEnabled = true;
             ApplyToSystems();
@@ -72,6 +75,12 @@ namespace Lattirune.UI
         public void SetSfxVolume(float vol)
         {
             sfxVolume = Mathf.Clamp01(vol);
+            ApplyToSystems();
+        }
+
+        public void SetMusicVolume(float vol)
+        {
+            musicVolume = Mathf.Clamp01(vol);
             ApplyToSystems();
         }
 
@@ -93,6 +102,7 @@ namespace Lattirune.UI
             {
                 audioController.SetMasterVolume(masterVolume);
                 audioController.SetSfxVolume(sfxVolume);
+                audioController.SetMusicVolume(musicVolume);
                 audioController.SetMuted(isMuted);
             }
             HapticFeedback.SetHapticsEnabled(hapticsEnabled);
@@ -145,7 +155,7 @@ namespace Lattirune.UI
             GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
             GUI.color = oldColor;
 
-            GUILayout.BeginArea(new Rect(posX + 40, posY + 50, panelWidth - 80, panelHeight - 100));
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
             GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
             titleStyle.fontSize = 36;
@@ -154,19 +164,26 @@ namespace Lattirune.UI
             titleStyle.normal.textColor = new Color(0.3f, 0.8f, 1f); // Arcane Cyan
 
             GUILayout.Label("⚙️ AUDIO & HAPTICS ⚙️", titleStyle);
-            GUILayout.Space(24);
+            GUILayout.Space(20);
 
             GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
             labelStyle.fontSize = 22;
             labelStyle.normal.textColor = Color.white;
 
             GUILayout.Label($"Master Volume: <b>{Mathf.RoundToInt(masterVolume * 100)}%</b>", labelStyle);
-            masterVolume = GUILayout.HorizontalSlider(masterVolume, 0f, 1f, GUILayout.Height(30));
-            GUILayout.Space(16);
+            float newMaster = GUILayout.HorizontalSlider(masterVolume, 0f, 1f, GUILayout.Height(30));
+            if (Mathf.Abs(newMaster - masterVolume) > 0.001f) SetMasterVolume(newMaster);
+            GUILayout.Space(12);
+
+            GUILayout.Label($"Music (BGM) Volume: <b>{Mathf.RoundToInt(musicVolume * 100)}%</b>", labelStyle);
+            float newMusic = GUILayout.HorizontalSlider(musicVolume, 0f, 1f, GUILayout.Height(30));
+            if (Mathf.Abs(newMusic - musicVolume) > 0.001f) SetMusicVolume(newMusic);
+            GUILayout.Space(12);
 
             GUILayout.Label($"SFX Volume: <b>{Mathf.RoundToInt(sfxVolume * 100)}%</b>", labelStyle);
-            sfxVolume = GUILayout.HorizontalSlider(sfxVolume, 0f, 1f, GUILayout.Height(30));
-            GUILayout.Space(24);
+            float newSfx = GUILayout.HorizontalSlider(sfxVolume, 0f, 1f, GUILayout.Height(30));
+            if (Mathf.Abs(newSfx - sfxVolume) > 0.001f) SetSfxVolume(newSfx);
+            GUILayout.Space(20);
 
             GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
             btnStyle.fontSize = 22;
@@ -182,7 +199,7 @@ namespace Lattirune.UI
             {
                 ToggleHaptics();
             }
-            GUILayout.Space(24);
+            GUILayout.Space(20);
 
             if (GUILayout.Button("SAVE & RETURN", btnStyle, GUILayout.Height(65)))
             {
