@@ -10,23 +10,24 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Engine:** Unity 6 LTS (2D URP)
 * **Language:** C#
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
-* **Development Status:** Pre-production / Phase 3 MVP Balance & Content Audited
+* **Development Status:** MVP 1.0 Release Candidate Verified
 
-## Phase 3 MVP Release Gate & Content Balance Verification (TASK-030 - TASK-032)
+## Phase 3 MVP 1.0 Release Candidate Audit (TASK-033)
 
-* **Build Target:** `Builds/Android/Lattirune-MVP1-Verification.apk`
+* **Build Target:** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
 * **Package ID:** `com.developer.lattirune`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 342 / 342 passing ($100\%$)
+* **EditMode Tests:** 358 / 358 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
-* **Content Balance & Numerical Audit:**
-  * **20 Canonical Items:** Exact footprint, damage, cooldown, shield, and traits audited against PLAN.md Section 6.1.
-  * **10 Canonical Runes:** Direction, element, damage bonus, and special mechanics audited against PLAN.md Section 5.1.
-  * **5 Master Synergies & 5 Elemental Reactions:** Priority overrides and symmetric pair resolution ($A + B == B + A$) verified.
+* **Release Candidate Sign-Off:**
+  * **20 Canonical Items:** Exact footprints, stats, cursed flags, and traits verified against PLAN.md Section 6.1.
+  * **10 Canonical Runes:** Direction, element, damage bonus, and special mechanics verified against PLAN.md Section 5.1.
+  * **5 Master Synergies & 5 Elemental Reactions:** Master overrides and symmetric pair resolution ($A + B == B + A$) verified.
   * **6-Enemy Bestiary & 3-Phase Lich Lord:** Stats, cooldown intervals, poison ticks, enrage thresholds, and reflect traits verified.
   * **Economy Balance Sheet:** In-run mob gold drops ($6-12$ normal, $20-35$ elite), boss embers ($80-120$), and shop prices verified.
+  * **Security & Immutability:** SO assets strictly read-only; zero plain-text credential leaks or hardcoded secrets.
 * **Performance Baseline:**
   * Cold Startup: $1.1\text{s}$ (Target $< 2.0\text{s}$)
   * Peak Memory: $82\text{ MB}$ (Target $< 180\text{ MB}$)

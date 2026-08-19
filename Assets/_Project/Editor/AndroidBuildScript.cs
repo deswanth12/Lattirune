@@ -8,8 +8,8 @@ using UnityEngine;
 namespace Lattirune.Editor
 {
     /// <summary>
-    /// Automated Android Build script for Phase 1, Phase 2, and Phase 3 MVP Release Verification.
-    /// Builds development and release verification APKs targeting 1080x1920 portrait orientation.
+    /// Automated Android Build script for Phase 1, Phase 2, and Phase 3 MVP Release Candidate.
+    /// Builds development and release candidate APKs targeting 1080x1920 portrait orientation.
     /// </summary>
     public static class AndroidBuildScript
     {
@@ -17,8 +17,15 @@ namespace Lattirune.Editor
         public const string APK_NAME_PHASE1 = "Lattirune-Phase1-Dev.apk";
         public const string APK_NAME_PHASE2 = "Lattirune-Phase2-Verification.apk";
         public const string APK_NAME_MVP1 = "Lattirune-MVP1-Verification.apk";
+        public const string APK_NAME_RELEASE_CANDIDATE = "Lattirune-MVP1-ReleaseCandidate.apk";
         public const string PACKAGE_ID = "com.developer.lattirune";
         public const string BOOTSTRAP_SCENE_PATH = "Assets/_Project/Scenes/Bootstrap.unity";
+
+        [MenuItem("Lattirune/Build/Build Android MVP 1.0 Release Candidate APK")]
+        public static bool BuildAndroidMvp1ReleaseCandidateApk()
+        {
+            return ExecuteAndroidBuild(APK_NAME_RELEASE_CANDIDATE);
+        }
 
         [MenuItem("Lattirune/Build/Build Android MVP 1.0 Verification APK")]
         public static bool BuildAndroidMvp1VerificationApk()
