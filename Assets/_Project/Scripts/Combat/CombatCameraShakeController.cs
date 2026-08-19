@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace Lattirune.Combat
@@ -66,6 +66,7 @@ namespace Lattirune.Combat
                 if (_targetCamera != null)
                 {
                     _targetCamera.transform.localPosition = _originalPosition;
+                    _targetCamera.transform.localRotation = _originalRotation;
                 }
                 return;
             }
@@ -73,12 +74,14 @@ namespace Lattirune.Combat
             float shake = currentTrauma * currentTrauma;
             float offsetX = maxTranslation * shake * (Mathf.PerlinNoise(Time.time * 25f, 0f) * 2f - 1f);
             float offsetY = maxTranslation * shake * (Mathf.PerlinNoise(0f, Time.time * 25f) * 2f - 1f);
+            float rotZ = maxRotation * shake * (Mathf.PerlinNoise(Time.time * 20f, Time.time * 20f) * 2f - 1f);
 
             currentOffset = new Vector3(offsetX, offsetY, 0f);
 
             if (_targetCamera != null)
             {
                 _targetCamera.transform.localPosition = _originalPosition + currentOffset;
+                _targetCamera.transform.localRotation = _originalRotation * Quaternion.Euler(0f, 0f, rotZ);
             }
 
             currentTrauma = Mathf.Max(0f, currentTrauma - traumaDecay * dt);

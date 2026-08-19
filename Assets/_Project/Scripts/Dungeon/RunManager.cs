@@ -113,15 +113,15 @@ namespace Lattirune.Dungeon
             enc.Initialize(
                 id: $"endless_enc_{currentFloorIndex}",
                 name: $"Abyssal Horror Mk.{endlessTier}",
-                desc: $"A monstrous entity warped by deep dungeon ley lines. (Floor {CurrentFloorNumber})",
+                eName: $"Abyssal Horror Mk.{endlessTier}",
                 hp: scaledHp,
                 armor: 4 + endlessTier,
-                atk: scaledAtk,
+                attack: scaledAtk,
                 interval: 2.0f,
-                isBoss: (CurrentFloorNumber % 5 == 0)
+                boss: (CurrentFloorNumber % 5 == 0)
             );
 
-            floor.Initialize(CurrentFloorNumber, $"Abyssal Depths - Level {endlessTier}", new List<EncounterDefinitionSO> { enc });
+            floor.Initialize(CurrentFloorNumber, $"floor_endless_{CurrentFloorNumber}", $"Abyssal Depths - Level {endlessTier}", new List<EncounterDefinitionSO> { enc });
             return floor;
         }
 

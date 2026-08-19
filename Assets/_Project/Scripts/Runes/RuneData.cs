@@ -51,6 +51,7 @@ namespace Lattirune.Runes
 
         public string RuneId => runeId;
         public string DisplayName => displayName;
+        public string RuneName => displayName;
         public ElementType Element => element;
         public ConduitDirection Direction => direction;
         public int Range => range;
