@@ -36,6 +36,11 @@ namespace Lattirune.Save
             return File.Exists(PrimarySavePath) || File.Exists(BackupSavePath);
         }
 
+        public bool HasSaveFile()
+        {
+            return HasSave();
+        }
+
         /// <summary>
         /// Saves player data atomically with AES encryption and backup creation.
         /// </summary>

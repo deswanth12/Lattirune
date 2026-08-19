@@ -172,6 +172,11 @@ namespace Lattirune.Inventory
             return false;
         }
 
+        public bool ExpandStorage()
+        {
+            return ExpandBag();
+        }
+
         public void RestoreState(IEnumerable<Vector2Int> unlockedCoords, int expansionStep)
         {
             EnsureDefaultDefinition();

@@ -28,9 +28,24 @@ namespace Lattirune.Combat.Effects
             SourceRuneAId = runeAId;
             SourceRuneBId = runeBId;
             Target = target;
-            RemainingDuration = definition.Duration;
-            TickTimer = definition.TickInterval;
+            RemainingDuration = definition != null ? definition.Duration : 0f;
+            TickTimer = definition != null ? definition.TickInterval : 0f;
             StackCount = 1;
+        }
+
+        public CombatEffectInstance(
+            CombatEffectDefinitionSO definition,
+            Combatant source,
+            Combatant target)
+            : this(definition, source != null ? source.name : "", "", target)
+        {
+        }
+
+        public CombatEffectInstance(
+            CombatEffectDefinitionSO definition,
+            Combatant target)
+            : this(definition, "", "", target)
+        {
         }
 
         public void RefreshDuration()

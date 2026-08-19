@@ -46,5 +46,7 @@ namespace Lattirune.Save
         public static LoadResult NoSave(SaveData defaultData) => new LoadResult(SaveStatus.NoSave, defaultData, "No save file found; created default profile.");
         public static LoadResult Corrupt(SaveData defaultData, string message) => new LoadResult(SaveStatus.Corrupt, defaultData, message);
         public static LoadResult Failed(string message) => new LoadResult(SaveStatus.Failed, null, message);
+
+        public static implicit operator SaveData(LoadResult result) => result?.Data;
     }
 }

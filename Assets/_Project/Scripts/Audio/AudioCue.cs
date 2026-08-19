@@ -28,7 +28,10 @@ namespace Lattirune.Audio
     public enum SoundEffectType
     {
         ButtonClick,
+        UiClick,
+        UIClick,
         ItemPlaced,
+        ItemPickup,
         InvalidPlacement,
         RewardClaimed,
         Victory,

@@ -121,7 +121,9 @@ namespace Lattirune.Audio
         {
             AudioCueType cue = sound switch
             {
+                SoundEffectType.UiClick or SoundEffectType.UIClick => AudioCueType.ButtonClick,
                 SoundEffectType.ItemPlaced => AudioCueType.ItemValidPlacement,
+                SoundEffectType.ItemPickup => AudioCueType.ItemDragStart,
                 SoundEffectType.InvalidPlacement => AudioCueType.ItemInvalidPlacement,
                 SoundEffectType.RewardClaimed => AudioCueType.RewardApplied,
                 SoundEffectType.Victory => AudioCueType.Victory,

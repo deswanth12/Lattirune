@@ -192,6 +192,14 @@ namespace Lattirune.Items
             SetVisualState(false);
         }
 
+        public void OnPickedUp()
+        {
+            isPlacedOnGrid = false;
+            currentGridPosition = new Vector2Int(-1, -1);
+            SetSynergyState(null);
+            SetVisualState(true);
+        }
+
         public void ReturnToOriginalPosition()
         {
             transform.position = _originalPosition;
