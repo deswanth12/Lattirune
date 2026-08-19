@@ -531,6 +531,25 @@ namespace Lattirune.Core
             var codexManager = codexObj.AddComponent<CodexManager>();
             codexManager.Initialize(BestiaryDatabaseSO.CreateCanonicalDatabase());
 
+            if (synergySystem != null)
+            {
+                synergySystem.OnSynergyActivated += (syn) => codexManager.RecordSynergyDiscovered(syn.SynergyId);
+            }
+            if (reactionSystem != null)
+            {
+                reactionSystem.OnReactionActivated += (rxn) => codexManager.RecordReactionTriggered(rxn.ReactionId);
+            }
+            if (combatSystem != null)
+            {
+                combatSystem.OnVictory += () =>
+                {
+                    if (_enemyCombatant != null && !string.IsNullOrEmpty(_enemyCombatant.CombatantName))
+                    {
+                        codexManager.RecordEnemyDefeat(_enemyCombatant.CombatantName);
+                    }
+                };
+            }
+
             GameObject codexUiObj = new GameObject("CodexUIController");
             codexUiObj.transform.SetParent(transform);
             var codexUI = codexUiObj.AddComponent<CodexUIController>();
