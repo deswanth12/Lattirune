@@ -49,16 +49,36 @@ namespace Lattirune.Combat
                     {
                         calculatedDamage += DEFAULT_BASE_WEAPON_DAMAGE;
 
-                        if (item.HasActiveSynergy && item.ActiveSynergyId == "fire_sword")
+                        if (item.HasActiveSynergy)
                         {
-                            calculatedRuneBonus += DEFAULT_FIRE_SYNERGY_BONUS;
                             foundSynergy = true;
+                            if (item.ActiveSynergyId == "fire_sword")
+                            {
+                                calculatedRuneBonus += DEFAULT_FIRE_SYNERGY_BONUS;
+                            }
+                            else if (item.ActiveSynergyId == "lightning_weapon")
+                            {
+                                calculatedRuneBonus += 8;
+                            }
+                            else if (item.ActiveSynergyId == "poison_blade")
+                            {
+                                calculatedRuneBonus += 3;
+                            }
                         }
                     }
                     // Shield Defense
                     else if (item.Data.Category == ItemCategory.Shield)
                     {
                         calculatedArmor += DEFAULT_GUARD_PLATE_ARMOR;
+
+                        if (item.HasActiveSynergy)
+                        {
+                            foundSynergy = true;
+                            if (item.ActiveSynergyId == "ice_shield")
+                            {
+                                calculatedArmor += 4;
+                            }
+                        }
                     }
                 }
             }

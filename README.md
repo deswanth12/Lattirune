@@ -12,7 +12,22 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** Pre-production / Prototype
 
-> *Note: This project is currently under active development.*
+## Phase 2: 5-Element Synergy Architecture
+
+The elemental synergy matrix maps directional energy conduits to compatible item classes through data-driven ScriptableObjects:
+
+| Element | Prototype Synergy | Target Category | Mechanical Effect | Visual Aura |
+| :--- | :--- | :--- | :--- | :--- |
+| 🔥 **Fire** | `fire_sword` (Flamebound Edge) | Weapon | +5 Flat Rune Damage Bonus | Flame Orange `#FFA61A` |
+| ❄️ **Ice** | `ice_shield` (Glacial Bastion) | Shield | +4 Defense Armor Bonus | Ice Cyan `#33BFFF` |
+| ⚡ **Lightning** | `lightning_weapon` (Storm Surge) | Weapon | +8 Shock Damage Bonus | Electric Yellow `#F2D926` |
+| ☠️ **Poison** | `poison_blade` (Venomous Strike) | Weapon | +3 Ticking Poison Bonus | Toxic Green `#26D940` |
+| ✨ **Light** | `light_relic` (Radiant Dawn) | Relic | +4 Radiant Resonator Power | Radiant Gold `#FFEB73` |
+
+### Architecture Principles:
+* **Static Rules vs. Runtime State:** `SynergyDefinitionSO` defines static rule criteria; runtime state resides strictly on `ItemInstance` and `SynergySystem`.
+* **Zero ScriptableObject Mutation:** Static data assets remain 100% immutable during gameplay and serialization.
+* **Deterministic Recalculation:** Active synergies are dynamically recomputed from placed items and rune rays post-load.
 
 ## Documentation
 

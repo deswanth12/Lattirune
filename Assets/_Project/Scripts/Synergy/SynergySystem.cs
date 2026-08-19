@@ -8,11 +8,14 @@ namespace Lattirune.Synergy
 {
     /// <summary>
     /// Evaluates conduit-to-item intersections on the LatticeGrid and activates elemental synergies.
-    /// Manages clean runtime synergy state transitions without mutating static item data assets.
+    /// Supports the complete 5-element matrix (Fire, Ice, Lightning, Poison, Light) via data-driven SynergyDatabaseSO.
     /// </summary>
     public class SynergySystem : MonoBehaviour
     {
-        [Header("Registered Synergy Definitions")]
+        [Header("Data-Driven Matrix Database")]
+        [SerializeField] private SynergyDatabaseSO synergyDatabase;
+
+        [Header("Legacy / Direct Registrations")]
         [SerializeField] private List<SynergyDefinition> registeredSynergies = new List<SynergyDefinition>();
 
         private readonly Dictionary<string, SynergyResult> _activeSynergiesByInstance = new Dictionary<string, SynergyResult>();
@@ -20,6 +23,7 @@ namespace Lattirune.Synergy
         public event Action<SynergyResult> OnSynergyActivated;
         public event Action<SynergyResult> OnSynergyDeactivated;
 
+        public SynergyDatabaseSO Database => synergyDatabase;
         public IReadOnlyDictionary<string, SynergyResult> ActiveSynergies => _activeSynergiesByInstance;
 
         private void Awake()
@@ -27,8 +31,19 @@ namespace Lattirune.Synergy
             EnsureDefaultDefinitions();
         }
 
+        public void Initialize(SynergyDatabaseSO database)
+        {
+            synergyDatabase = database;
+            EnsureDefaultDefinitions();
+        }
+
         public void EnsureDefaultDefinitions()
         {
+            if (synergyDatabase == null)
+            {
+                synergyDatabase = SynergyDatabaseSO.CreateDefaultDatabase();
+            }
+
             if (registeredSynergies == null || registeredSynergies.Count == 0)
             {
                 registeredSynergies = new List<SynergyDefinition>
@@ -46,6 +61,15 @@ namespace Lattirune.Synergy
             }
         }
 
+        public void RegisterDefinitionSO(SynergyDefinitionSO definitionSO)
+        {
+            if (definitionSO != null)
+            {
+                EnsureDefaultDefinitions();
+                synergyDatabase.Register(definitionSO);
+            }
+        }
+
         /// <summary>
         /// Evaluates whether a single conduit raycast intersects with a target item to produce an active synergy.
         /// </summary>
@@ -55,41 +79,61 @@ namespace Lattirune.Synergy
             RuneConduitResult conduit, 
             ItemInstance targetItem)
         {
-            if (rune == null || !rune.IsActive || conduit == null || conduit.TraversalLength == 0 || targetItem == null || !targetItem.IsPlacedOnGrid)
+            if (rune == null || !rune.IsActive || conduit == null || conduit.TraversalLength == 0 || targetItem == null || !targetItem.IsPlacedOnGrid || targetItem.Data == null)
             {
                 return SynergyResult.CreateInactive(rune?.RuneId, targetItem?.Data?.ItemId, targetItem?.InstanceId);
             }
 
-            // Find matching synergy definition
+            EnsureDefaultDefinitions();
+
+            // 1. Look up in data-driven database first
+            SynergyDefinitionSO matchSO = synergyDatabase != null ? synergyDatabase.FindMatchingDefinition(rune, targetItem.Data) : null;
+            if (matchSO != null)
+            {
+                for (int i = 0; i < conduit.TraversalLength; i++)
+                {
+                    Vector2Int coord = conduit.TraversedCells[i];
+                    if (targetItem.ContainsGridCoordinate(coord))
+                    {
+                        return SynergyResult.CreateActive(
+                            matchSO,
+                            rune.RuneId,
+                            targetItem.Data.ItemId,
+                            targetItem.InstanceId,
+                            runePos,
+                            coord
+                        );
+                    }
+                }
+            }
+
+            // 2. Legacy fallback to registered SynergyDefinition list
             SynergyDefinition matchDef = null;
             for (int i = 0; i < registeredSynergies.Count; i++)
             {
-                if (registeredSynergies[i].IsMatch(rune, targetItem.Data))
+                if (registeredSynergies[i] != null && registeredSynergies[i].IsMatch(rune, targetItem.Data))
                 {
                     matchDef = registeredSynergies[i];
                     break;
                 }
             }
 
-            if (matchDef == null)
+            if (matchDef != null)
             {
-                return SynergyResult.CreateInactive(rune.RuneId, targetItem.Data.ItemId, targetItem.InstanceId);
-            }
-
-            // Check if conduit path physically intersects with the item's grid footprint
-            for (int i = 0; i < conduit.TraversalLength; i++)
-            {
-                Vector2Int coord = conduit.TraversedCells[i];
-                if (targetItem.ContainsGridCoordinate(coord))
+                for (int i = 0; i < conduit.TraversalLength; i++)
                 {
-                    return SynergyResult.CreateActive(
-                        matchDef,
-                        rune.RuneId,
-                        targetItem.Data.ItemId,
-                        targetItem.InstanceId,
-                        runePos,
-                        coord
-                    );
+                    Vector2Int coord = conduit.TraversedCells[i];
+                    if (targetItem.ContainsGridCoordinate(coord))
+                    {
+                        return SynergyResult.CreateActive(
+                            matchDef,
+                            rune.RuneId,
+                            targetItem.Data.ItemId,
+                            targetItem.InstanceId,
+                            runePos,
+                            coord
+                        );
+                    }
                 }
             }
 
@@ -120,7 +164,12 @@ namespace Lattirune.Synergy
                         SynergyResult result = EvaluateConnection(rune, runePos, conduit, item);
                         if (result.IsSynergyActive)
                         {
-                            newlyActiveSynergies[item.InstanceId] = result;
+                            // If an item is already targeted by another synergy, keep the highest priority
+                            if (!newlyActiveSynergies.ContainsKey(item.InstanceId) || 
+                                result.RuneBonus > newlyActiveSynergies[item.InstanceId].RuneBonus)
+                            {
+                                newlyActiveSynergies[item.InstanceId] = result;
+                            }
                         }
                     }
                 }

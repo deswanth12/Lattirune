@@ -16,6 +16,7 @@ namespace Lattirune.Synergy
         public Vector2Int SourcePosition { get; private set; }
         public Vector2Int TargetPosition { get; private set; }
         public Color SynergyColor { get; private set; }
+        public int RuneBonus { get; private set; }
 
         public SynergyResult(
             bool isActive,
@@ -26,7 +27,8 @@ namespace Lattirune.Synergy
             string targetInstanceId,
             Vector2Int sourcePos,
             Vector2Int targetPos,
-            Color color)
+            Color color,
+            int bonus = 0)
         {
             IsSynergyActive = isActive;
             SynergyId = synergyId;
@@ -37,6 +39,7 @@ namespace Lattirune.Synergy
             SourcePosition = sourcePos;
             TargetPosition = targetPos;
             SynergyColor = color;
+            RuneBonus = bonus;
         }
 
         public static SynergyResult CreateActive(
@@ -56,7 +59,30 @@ namespace Lattirune.Synergy
                 targetInstanceId: targetInstanceId,
                 sourcePos: sourcePos,
                 targetPos: targetPos,
-                color: definition.SynergyColor
+                color: definition.SynergyColor,
+                bonus: 5 // Default fire bonus
+            );
+        }
+
+        public static SynergyResult CreateActive(
+            SynergyDefinitionSO definition,
+            string runeId,
+            string targetItemId,
+            string targetInstanceId,
+            Vector2Int sourcePos,
+            Vector2Int targetPos)
+        {
+            return new SynergyResult(
+                isActive: true,
+                synergyId: definition.SynergyId,
+                synergyName: definition.DisplayName,
+                runeId: runeId,
+                targetItemId: targetItemId,
+                targetInstanceId: targetInstanceId,
+                sourcePos: sourcePos,
+                targetPos: targetPos,
+                color: definition.SynergyColor,
+                bonus: definition.RuneBonus
             );
         }
 
@@ -71,7 +97,8 @@ namespace Lattirune.Synergy
                 targetInstanceId: targetInstanceId,
                 sourcePos: new Vector2Int(-1, -1),
                 targetPos: new Vector2Int(-1, -1),
-                color: Color.clear
+                color: Color.clear,
+                bonus: 0
             );
         }
     }
