@@ -120,10 +120,22 @@ namespace Lattirune.Save
         public List<string> unlockedBlueprints = new List<string>();
         public int totalBossClears;
         public int totalRunsAttempted;
+        public string selectedHeroClass = "class_rune_knight";
+        public List<string> unlockedHeroClasses = new List<string>();
 
-        public SavedMetaData() { }
+        public SavedMetaData() 
+        {
+            selectedHeroClass = "class_rune_knight";
+            unlockedHeroClasses = new List<string> { "class_rune_knight" };
+        }
 
-        public SavedMetaData(int emberCount, IEnumerable<string> blueprints, int bossClears = 0, int runs = 0)
+        public SavedMetaData(
+            int emberCount, 
+            IEnumerable<string> blueprints, 
+            int bossClears = 0, 
+            int runs = 0,
+            string selectedClass = "class_rune_knight",
+            IEnumerable<string> unlockedClasses = null)
         {
             embers = Mathf.Max(0, emberCount);
             if (blueprints != null)
@@ -132,6 +144,8 @@ namespace Lattirune.Save
             }
             totalBossClears = bossClears;
             totalRunsAttempted = runs;
+            selectedHeroClass = !string.IsNullOrEmpty(selectedClass) ? selectedClass : "class_rune_knight";
+            unlockedHeroClasses = unlockedClasses != null ? new List<string>(unlockedClasses) : new List<string> { "class_rune_knight" };
         }
     }
 
