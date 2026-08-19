@@ -105,11 +105,13 @@
 * **Production Track:** Target for full release (`BLOCKED` pending testing tracks)
 
 ## 18. Manual QA Dependency
-* **Automated Unit & Integration Tests:** 478 / 478 PASS (`PASS`)
+* **Automated Unit & Integration Tests:** 511 / 511 PASS (`PASS`)
 * **Physical Android Device Verification:** Pending hardware lab execution (`BLOCKED`)
 
 ## 19. Release Blockers Table
 * **Comprehensive Audit Document:** [`Docs/MVP1.0-Final-Release-Blockers.md`](./MVP1.0-Final-Release-Blockers.md)
+* **External Action Tracker:** [`Docs/MVP1.0-External-Action-Tracker.md`](./MVP1.0-External-Action-Tracker.md)
+* **Final Release Handoff:** [`Docs/MVP1.0-Final-External-Release-Handoff.md`](./MVP1.0-Final-External-Release-Handoff.md)
 
 | Blocker ID | Description | Severity | Remediation Requirement |
 | :--- | :--- | :--- | :--- |
@@ -120,13 +122,15 @@
 
 ## 20. Final Submission Checklist
 * [x] Core gameplay, 10 floors, 20 items, 10 runes, 6 enemies, Lich Lord implemented and verified.
-* [x] 478 automated regression tests passing with 0 compilation and console errors.
+* [x] 511 automated regression tests passing with 0 compilation and console errors.
 * [x] Package identity (`com.developer.lattirune`), version name (`1.0.0`), and version code (`1`) unified.
 * [x] AAB build pipeline configured in `AndroidBuildScript.cs`.
 * [x] Store listing copy finalized in `MVP1.0-Google-Play-Store-Listing.md`.
 * [x] Screenshot capture plan defined in `MVP1.0-Screenshot-Capture-Plan.md`.
 * [x] Privacy policy document and hosting guide created.
 * [x] Release blocker audit completed in `MVP1.0-Final-Release-Blockers.md`.
+* [x] External action tracker created in `MVP1.0-External-Action-Tracker.md`.
+* [x] Final external release handoff completed in `MVP1.0-Final-External-Release-Handoff.md`.
 * [x] Zero ads, zero IAP, zero analytics, zero network permissions.
 * [ ] Physical Android device smoke test executed and signed off.
 * [ ] Android App Bundle (.aab) generated and signed.

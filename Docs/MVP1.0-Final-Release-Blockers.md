@@ -13,7 +13,7 @@
 
 | Blocker | Category | Repo Fix Possible | External Action Required | Evidence in Repository / Environment | Status | Owner |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Physical Android Device QA** | C (Hardware) | No (Automated suites passing) | Connect physical Android device and execute manual smoke checklist | `adb devices` unavailable; 464 automated tests passing | `BLOCKED` | QA Team / Hardware Lab |
+| **Physical Android Device QA** | C (Hardware) | No (Automated suites passing) | Connect physical Android device and execute manual smoke checklist | `adb devices` unavailable; 511 automated tests passing | `BLOCKED` | QA Team / Hardware Lab |
 | **Privacy Policy Public URL** | D (Hosting) | No (Document created) | Host `MVP1.0-Privacy-Policy.md` on GitHub Pages or custom domain | `Docs/MVP1.0-Privacy-Policy.md` ready; URL `NOT HOSTED` | `BLOCKED` | Publisher / Web Ops |
 | **High-Res App Icon** | B (Asset) | No (Spec created) | Finalize 512×512 PNG art pack & mipmap densities | Spec in `Docs/MVP1.0-Store-Asset-Manifest.md` | `BLOCKED` | Art / UI Designer |
 | **Feature Graphic** | B (Asset) | No (Spec created) | Create 1024×500 PNG/JPEG marketing banner | Spec in `Docs/MVP1.0-Store-Asset-Manifest.md` | `BLOCKED` | Art / Marketing |
@@ -27,7 +27,7 @@
 ## 2. Detailed Blocker Analysis
 
 ### A. Physical Android Device QA (`BLOCKED`)
-* **Current State:** 464 / 464 automated EditMode unit/integration tests passing. Zero compilation errors, zero console errors.
+* **Current State:** 511 / 511 automated EditMode unit/integration tests passing. Zero compilation errors, zero console errors.
 * **Limitation:** No physical Android device is connected to the build environment (`adb` not available).
 * **Action Required:** Execute the 26-point manual test procedure in [`Docs/MVP1.0-Manual-QA-Checklist.md`](./MVP1.0-Manual-QA-Checklist.md) on a physical device (e.g. Pixel 7 or Galaxy S22).
 
@@ -37,7 +37,7 @@
 * **Action Required:** Host the privacy policy via GitHub Pages or web server following [`Docs/MVP1.0-Privacy-Policy-Hosting-Guide.md`](./MVP1.0-Privacy-Policy-Hosting-Guide.md).
 
 ### C. Store Visual Assets (`BLOCKED`)
-* **Current State:** Full technical specifications defined in [`Docs/MVP1.0-Store-Asset-Manifest.md`](./MVP1.0-Store-Asset-Manifest.md) and [`Docs/MVP1.0-Screenshot-Capture-Plan.md`](./Docs/MVP1.0-Screenshot-Capture-Plan.md).
+* **Current State:** Full technical specifications defined in [`Docs/MVP1.0-Store-Asset-Manifest.md`](./MVP1.0-Store-Asset-Manifest.md) and [`Docs/MVP1.0-Screenshot-Capture-Plan.md`](./MVP1.0-Screenshot-Capture-Plan.md).
 * **Limitation:** Final $512 \times 512$ icon, $1024 \times 500$ feature graphic, and 12 live gameplay screenshots must be captured from device builds.
 * **Action Required:** Produce and commit visual marketing graphics.
 
