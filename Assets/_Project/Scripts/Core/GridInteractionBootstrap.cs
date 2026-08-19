@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Lattirune.Audio;
 using Lattirune.Combat;
 using Lattirune.Core;
 using Lattirune.Grid;
@@ -11,8 +12,9 @@ using Lattirune.UI;
 namespace Lattirune.Core
 {
     /// <summary>
-    /// Bootstraps the physical 5x5 LatticeGrid interaction, data-driven prototype items,
-    /// Rune Conduit engine, Elemental Synergy system, 1v1 Combat loop, and post-battle Reward selection flow.
+    /// Bootstraps the complete Phase 1 Prototype: 5x5 LatticeGrid, data-driven items,
+    /// Rune Conduit engine, Elemental Synergy system, 1v1 Combat loop, Reward selection,
+    /// and coordinated Audio/Haptic interaction feedback.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -25,6 +27,9 @@ namespace Lattirune.Core
         [SerializeField] private CombatSystem combatSystem;
         [SerializeField] private RewardService rewardService;
         [SerializeField] private CombatEncounterUI combatEncounterUI;
+        [SerializeField] private AudioController audioController;
+        [SerializeField] private HapticFeedback hapticFeedback;
+        [SerializeField] private InteractionFeedbackCoordinator feedbackCoordinator;
         [SerializeField] private Transform stagingAreaParent;
 
         [Header("Staging Layout")]
@@ -50,6 +55,9 @@ namespace Lattirune.Core
         public CombatSystem Combat => combatSystem;
         public RewardService Rewards => rewardService;
         public CombatEncounterUI EncounterUI => combatEncounterUI;
+        public AudioController Audio => audioController;
+        public HapticFeedback Haptics => hapticFeedback;
+        public InteractionFeedbackCoordinator Feedback => feedbackCoordinator;
         public PlayerCombatant Player => _playerCombatant;
         public EnemyCombatant Enemy => _enemyCombatant;
         public IReadOnlyList<ItemInstance> SpawnedItems => _spawnedItemInstances;
@@ -112,12 +120,48 @@ namespace Lattirune.Core
             // 8. Setup Combat Entities & Encounter UI (TASK-007 & TASK-008)
             SetupCombatAndRewardEncounter();
 
-            // 9. Initial recalculation of conduits, synergies, and player stats
+            // 9. Setup Audio, Haptics & Feedback Coordinator (TASK-009)
+            SetupFeedbackSystem();
+
+            // 10. Initial recalculation of conduits, synergies, and player stats
             RecalculateAndRenderConduits();
 
             // Hook into item placement/removal events to dynamically recalculate conduits, synergies, and combat stats
             _grid.OnItemPlaced += (id, origin, size) => RecalculateAndRenderConduits();
             _grid.OnItemRemoved += (id, origin, size) => RecalculateAndRenderConduits();
+        }
+
+        private void SetupFeedbackSystem()
+        {
+            if (audioController == null)
+            {
+                GameObject audioObj = new GameObject("AudioController");
+                audioObj.transform.SetParent(transform);
+                audioController = audioObj.AddComponent<AudioController>();
+            }
+
+            if (hapticFeedback == null)
+            {
+                GameObject hapticsObj = new GameObject("HapticFeedback");
+                hapticsObj.transform.SetParent(transform);
+                hapticFeedback = hapticsObj.AddComponent<HapticFeedback>();
+            }
+
+            if (feedbackCoordinator == null)
+            {
+                GameObject coordObj = new GameObject("InteractionFeedbackCoordinator");
+                coordObj.transform.SetParent(transform);
+                feedbackCoordinator = coordObj.AddComponent<InteractionFeedbackCoordinator>();
+            }
+
+            feedbackCoordinator.Initialize(
+                audioController, 
+                hapticFeedback, 
+                _grid, 
+                synergySystem, 
+                combatSystem, 
+                rewardService
+            );
         }
 
         private void SetupCombatAndRewardEncounter()
