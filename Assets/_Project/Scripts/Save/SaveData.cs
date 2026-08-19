@@ -168,8 +168,34 @@ namespace Lattirune.Save
         }
     }
 
+    [Serializable]
+    public class SavedCodexData
+    {
+        public List<string> discoveredEnemies = new List<string>();
+        public List<string> enemyKillKeys = new List<string>();
+        public List<int> enemyKillValues = new List<int>();
+        public List<string> discoveredSynergies = new List<string>();
+        public List<string> discoveredReactions = new List<string>();
+
+        public SavedCodexData() { }
+
+        public SavedCodexData(
+            IEnumerable<string> enemies,
+            IEnumerable<string> killKeys,
+            IEnumerable<int> killVals,
+            IEnumerable<string> synergies,
+            IEnumerable<string> reactions)
+        {
+            if (enemies != null) discoveredEnemies.AddRange(enemies);
+            if (killKeys != null) enemyKillKeys.AddRange(killKeys);
+            if (killVals != null) enemyKillValues.AddRange(killVals);
+            if (synergies != null) discoveredSynergies.AddRange(synergies);
+            if (reactions != null) discoveredReactions.AddRange(reactions);
+        }
+    }
+
     /// <summary>
-    /// Root serializable data transfer object for player state, inventory expansion, run progression, meta-progression, and settings persistence.
+    /// Root serializable data transfer object for player state, inventory expansion, run progression, meta-progression, codex discovery, and settings persistence.
     /// </summary>
     [Serializable]
     public class SaveData
@@ -181,6 +207,7 @@ namespace Lattirune.Save
         public SavedRunData run = new SavedRunData();
         public SavedInventoryData inventory = new SavedInventoryData();
         public SavedMetaData meta = new SavedMetaData();
+        public SavedCodexData codex = new SavedCodexData();
         public SavedSettingsData settings = new SavedSettingsData();
 
         public SaveData()
@@ -200,6 +227,7 @@ namespace Lattirune.Save
                 run = new SavedRunData(false, 0, 0, 0),
                 inventory = new SavedInventoryData(0, null),
                 meta = new SavedMetaData(0, null, 0, 0),
+                codex = new SavedCodexData(),
                 settings = new SavedSettingsData(1.0f, 1.0f, false, true)
             };
 
