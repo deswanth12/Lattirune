@@ -36,12 +36,21 @@ When two distinct directional rune beams cross at the same discrete grid cell, `
 | **Superconductor** | `reaction_superconductor` | Lightning Beam + Ice Beam | -40% Enemy Resistance |
 | **Frostbite** | `reaction_frostbite` | Ice Beam + Poison Beam | +50% Poison Tick Damage |
 
+## Prism Rune & Directional Refraction
+
+The Prism Rune (`prism_rune`, Light affinity) acts as an optical beam splitter. When an incoming cardinal conduit strikes a Prism cell:
+* **Horizontal Inflow (East/West):** Splits into two perpendicular branches going **North** and **South**.
+* **Vertical Inflow (North/South):** Splits into two perpendicular branches going **East** and **West**.
+* **Beam Abstraction & Parentage:** `ConduitBeamPath` maintains recursive hierarchy (`ParentBeamId`, `Depth`), preserving source elemental affinity.
+* **Full Interoperability:** Refracted split branches participate seamlessly in both Item Synergies and Elemental 2-Beam Cross-Intersections.
+* **Cycle Protection:** Recursive traversal tracks visited prism nodes to eliminate infinite loop configurations.
+
 ## Combat Status & Effect Framework
 
 Elemental reactions resolve dynamically into runtime combat effects:
 
 ```
-Rune Beam A x Rune Beam B
+Rune Beam A x Rune Beam B (or Prism Branches)
         ↓
 ElementalIntersectionEngine
         ↓
@@ -53,11 +62,6 @@ CombatEffectSystem (CombatEffectInstance)
         ↓
 Combatant (Damage Pipeline & Runtime Modifiers)
 ```
-
-### Architecture Principles:
-* **Static Rules vs. Runtime State:** `CombatEffectDefinitionSO` defines immutable rules; `CombatEffectInstance` tracks deterministic runtime durations, stack counts, and periodic tick timers.
-* **Non-Mutating Stat Modifiers:** Runtime effects modify effective combat parameters (Armor, Attack, Damage Intake) dynamically during damage pipeline execution without permanently altering base stats.
-* **Transient vs. Persistent State:** Temporary combat status effects and timers are never written to disk; persistent build state remains isolated in `SaveSystem`.
 
 ## Documentation
 

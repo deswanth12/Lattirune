@@ -9,6 +9,7 @@ namespace Lattirune.Synergy
     /// <summary>
     /// Evaluates conduit-to-item intersections on the LatticeGrid and activates elemental synergies.
     /// Supports the complete 5-element matrix (Fire, Ice, Lightning, Poison, Light) via data-driven SynergyDatabaseSO.
+    /// Compatible with straight and Prism-refracted ConduitBeamPath beams.
     /// </summary>
     public class SynergySystem : MonoBehaviour
     {
@@ -141,6 +142,49 @@ namespace Lattirune.Synergy
         }
 
         /// <summary>
+        /// Evaluates active ConduitBeamPath instances against active items on the grid.
+        /// </summary>
+        public void UpdateSynergies(
+            IReadOnlyList<ConduitBeamPath> activeBeams, 
+            IEnumerable<ItemInstance> activeItems)
+        {
+            EnsureDefaultDefinitions();
+
+            Dictionary<string, SynergyResult> newlyActiveSynergies = new Dictionary<string, SynergyResult>();
+
+            if (activeBeams != null && activeItems != null)
+            {
+                foreach (var beam in activeBeams)
+                {
+                    if (beam == null || beam.TraversalLength == 0) continue;
+
+                    // Temporary rune data proxy for matching
+                    RuneData proxyRune = ScriptableObject.CreateInstance<RuneData>();
+                    proxyRune.Initialize(beam.SourceRuneId, "RuneProxy", beam.Direction, beam.Element, beam.RequestedRange);
+
+                    RuneConduitResult conduitResult = beam.ToConduitResult();
+
+                    foreach (var item in activeItems)
+                    {
+                        if (item == null || !item.IsPlacedOnGrid) continue;
+
+                        SynergyResult result = EvaluateConnection(proxyRune, beam.Origin, conduitResult, item);
+                        if (result.IsSynergyActive)
+                        {
+                            if (!newlyActiveSynergies.ContainsKey(item.InstanceId) || 
+                                result.RuneBonus > newlyActiveSynergies[item.InstanceId].RuneBonus)
+                            {
+                                newlyActiveSynergies[item.InstanceId] = result;
+                            }
+                        }
+                    }
+                }
+            }
+
+            ApplySynergyTransitions(newlyActiveSynergies, activeItems);
+        }
+
+        /// <summary>
         /// Batch evaluates all active conduits against all active items, dispatching activation/deactivation events.
         /// </summary>
         public void UpdateSynergies(
@@ -164,7 +208,6 @@ namespace Lattirune.Synergy
                         SynergyResult result = EvaluateConnection(rune, runePos, conduit, item);
                         if (result.IsSynergyActive)
                         {
-                            // If an item is already targeted by another synergy, keep the highest priority
                             if (!newlyActiveSynergies.ContainsKey(item.InstanceId) || 
                                 result.RuneBonus > newlyActiveSynergies[item.InstanceId].RuneBonus)
                             {
@@ -175,6 +218,11 @@ namespace Lattirune.Synergy
                 }
             }
 
+            ApplySynergyTransitions(newlyActiveSynergies, activeItems);
+        }
+
+        private void ApplySynergyTransitions(Dictionary<string, SynergyResult> newlyActiveSynergies, IEnumerable<ItemInstance> activeItems)
+        {
             // 1. Detect deactivations
             List<string> toDeactivate = new List<string>();
             foreach (var kvp in _activeSynergiesByInstance)
@@ -190,7 +238,6 @@ namespace Lattirune.Synergy
                 SynergyResult prevResult = _activeSynergiesByInstance[instanceId];
                 _activeSynergiesByInstance.Remove(instanceId);
 
-                // Update visual on item instance if still in activeItems
                 if (activeItems != null)
                 {
                     foreach (var item in activeItems)
@@ -214,7 +261,6 @@ namespace Lattirune.Synergy
                 bool wasAlreadyActive = _activeSynergiesByInstance.ContainsKey(instanceId);
                 _activeSynergiesByInstance[instanceId] = newResult;
 
-                // Update visual on item instance
                 if (activeItems != null)
                 {
                     foreach (var item in activeItems)

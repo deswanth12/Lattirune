@@ -6,7 +6,7 @@ using Lattirune.Grid;
 namespace Lattirune.Runes
 {
     /// <summary>
-    /// Development visualization for active directional rune conduits using Unity LineRenderers.
+    /// Development visualization for active directional rune conduits and Prism branches using Unity LineRenderers.
     /// [DEVELOPMENT / DEBUG ONLY]
     /// </summary>
     public class RuneConduitDebugView : MonoBehaviour
@@ -14,6 +14,7 @@ namespace Lattirune.Runes
         [Header("Visualization Settings")]
         [SerializeField] private Color defaultLaserColor = new Color(0f, 0.9f, 1f, 0.9f); // Electric Cyan
         [SerializeField] private Color targetHitColor = new Color(1f, 0.85f, 0.2f, 1f);   // Bright Gold
+        [SerializeField] private Color prismRefractColor = new Color(1f, 0.7f, 1f, 0.9f); // Magenta/Rainbow
         [SerializeField] private float laserLineWidth = 0.15f;
 
         private GridView _gridView;
@@ -33,6 +34,50 @@ namespace Lattirune.Runes
                 Shader shader = Shader.Find("Sprites/Default");
                 if (shader == null) shader = Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");
                 _lineMaterial = new Material(shader != null ? shader : Shader.Find("Unlit/Color"));
+            }
+        }
+
+        public void RenderBeamPaths(IReadOnlyList<ConduitBeamPath> beamPaths)
+        {
+            ClearConduitVisuals();
+
+            if (beamPaths == null || _gridView == null) return;
+
+            for (int i = 0; i < beamPaths.Count; i++)
+            {
+                ConduitBeamPath beam = beamPaths[i];
+                if (beam.TraversalLength == 0) continue;
+
+                LineRenderer line = GetOrCreateLineRenderer(i);
+                line.gameObject.SetActive(true);
+
+                Vector3 startWorldPos = GridCoordinateUtility.GridToWorldPosition(
+                    beam.Origin.x, 
+                    beam.Origin.y, 
+                    _gridView.GridOrigin, 
+                    _gridView.CellSize, 
+                    _gridView.CellSpacing
+                );
+
+                Vector2Int endCoord = beam.TraversedCells[beam.TraversalLength - 1];
+                Vector3 endWorldPos = GridCoordinateUtility.GridToWorldPosition(
+                    endCoord.x, 
+                    endCoord.y, 
+                    _gridView.GridOrigin, 
+                    _gridView.CellSize, 
+                    _gridView.CellSpacing
+                );
+
+                line.positionCount = 2;
+                line.SetPosition(0, startWorldPos);
+                line.SetPosition(1, endWorldPos);
+
+                Color color = beam.IsSplitBranch 
+                    ? prismRefractColor 
+                    : (beam.TargetCell.HasValue ? targetHitColor : defaultLaserColor);
+
+                line.startColor = color;
+                line.endColor = color;
             }
         }
 
@@ -99,7 +144,7 @@ namespace Lattirune.Runes
                 lr.material = _lineMaterial;
                 lr.startWidth = laserLineWidth;
                 lr.endWidth = laserLineWidth;
-                lr.sortingOrder = 15; // In front of grid, behind dragged items
+                lr.sortingOrder = 15;
                 lr.useWorldSpace = true;
 
                 _activeLines.Add(lr);

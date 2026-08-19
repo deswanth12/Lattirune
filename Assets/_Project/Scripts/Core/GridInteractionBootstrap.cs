@@ -16,7 +16,7 @@ namespace Lattirune.Core
 {
     /// <summary>
     /// Bootstraps the complete Phase 2 Prototype: 5x5 LatticeGrid, data-driven items,
-    /// Rune Conduit engine, 5-Element Synergy system, 2-Beam Elemental Reactions,
+    /// Prism Rune refraction & beam splitting, 5-Element Synergy system, 2-Beam Elemental Reactions,
     /// Combat Effect / Status Framework, 1v1 Combat loop, Reward selection, Audio/Haptics,
     /// and Encrypted Local Save persistence.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
@@ -46,8 +46,9 @@ namespace Lattirune.Core
         [Header("Item Catalogue (TASK-005 Prototype Items)")]
         [SerializeField] private List<ItemDataSO> prototypeItemCatalogue = new List<ItemDataSO>();
 
-        [Header("Development Runes & Targets (TASK-004, TASK-006 & TASK-013 Demo)")]
+        [Header("Development Runes & Targets (TASK-004, TASK-006, TASK-013 & TASK-015 Demo)")]
         [SerializeField] private bool enableConduitDemo = true;
+        [SerializeField] private PrismRuneDataSO defaultPrismData;
 
         private LatticeGrid _grid;
         private PlayerCombatant _playerCombatant;
@@ -55,6 +56,7 @@ namespace Lattirune.Core
         private readonly List<ItemInstance> _spawnedItemInstances = new List<ItemInstance>();
         private readonly List<(RuneData rune, Vector2Int origin, ConduitDirection dir, int range)> _activeRunesWithData = new List<(RuneData, Vector2Int, ConduitDirection, int)>();
         private readonly List<ConduitTarget> _activeTargets = new List<ConduitTarget>();
+        private readonly Dictionary<Vector2Int, PrismRuneDataSO> _placedPrisms = new Dictionary<Vector2Int, PrismRuneDataSO>();
 
         public LatticeGrid Grid => _grid;
         public GridView View => gridView;
@@ -71,6 +73,7 @@ namespace Lattirune.Core
         public PlayerCombatant Player => _playerCombatant;
         public EnemyCombatant Enemy => _enemyCombatant;
         public IReadOnlyList<ItemInstance> SpawnedItems => _spawnedItemInstances;
+        public IReadOnlyDictionary<Vector2Int, PrismRuneDataSO> PlacedPrisms => _placedPrisms;
 
         private void Start()
         {
@@ -118,7 +121,7 @@ namespace Lattirune.Core
             }
             synergySystem.EnsureDefaultDefinitions();
 
-            // 6. Ensure ElementalReactionSystem exists and initialize (TASK-013)
+            // 6. Ensure ElementalReactionSystem exists and initialize
             if (reactionSystem == null)
             {
                 GameObject reactionObj = new GameObject("ElementalReactionSystem");
@@ -144,16 +147,16 @@ namespace Lattirune.Core
             // 9. Spawn Prototype Items or Restore from Save
             LoadOrCreateState();
 
-            // 10. Setup Development Runes
+            // 10. Setup Development Runes & Prism Refraction (TASK-015)
             if (enableConduitDemo && _activeRunesWithData.Count == 0)
             {
                 SetupDevelopmentRunesAndTargets();
             }
 
-            // 11. Setup Combat Entities, Effects & Encounter UI (TASK-007, TASK-008 & TASK-014)
+            // 11. Setup Combat Entities, Effects & Encounter UI
             SetupCombatAndRewardEncounter();
 
-            // 12. Setup Audio, Haptics & Feedback Coordinator (TASK-009)
+            // 12. Setup Audio, Haptics & Feedback Coordinator
             SetupFeedbackSystem();
 
             // 13. Initial recalculation of conduits, synergies, reactions, and player stats
@@ -327,7 +330,7 @@ namespace Lattirune.Core
             _enemyCombatant = enemyObj.AddComponent<EnemyCombatant>();
             _enemyCombatant.SetupTrainingDummy(hp: 50, baseArmor: 2, attack: 4, interval: 1.5f);
 
-            // Combat Effect System (TASK-014)
+            // Combat Effect System
             if (combatEffectSystem == null)
             {
                 GameObject effectObj = new GameObject("CombatEffectSystem");
@@ -421,13 +424,12 @@ namespace Lattirune.Core
 
         private void SetupDevelopmentRunesAndTargets()
         {
-            // 1. Demo Fire Rune: Position (2,1) emitting North with range 3 (passes through 2,2; 2,3; 2,4)
+            // 1. Demo Fire Rune: Position (2,1) emitting North with range 3
             RuneData fireRune = ScriptableObject.CreateInstance<RuneData>();
             fireRune.Initialize("fire_rune_01", "Fire Rune", ConduitDirection.North, ElementType.Fire, 3);
             _activeRunesWithData.Add((fireRune, new Vector2Int(2, 1), ConduitDirection.North, 3));
 
-            // 2. Demo Ice Rune: Position (0,3) emitting East with range 4 (passes through 1,3; 2,3; 3,3; 4,3)
-            // Crossing with Fire Rune at (2,3) -> Triggers Steam Reaction!
+            // 2. Demo Ice Rune: Position (0,3) emitting East with range 4
             RuneData iceRune = ScriptableObject.CreateInstance<RuneData>();
             iceRune.Initialize("ice_rune_01", "Ice Rune", ConduitDirection.East, ElementType.Ice, 4);
             _activeRunesWithData.Add((iceRune, new Vector2Int(0, 3), ConduitDirection.East, 4));
@@ -438,6 +440,24 @@ namespace Lattirune.Core
             ConduitTarget target = targetObj.AddComponent<ConduitTarget>();
             target.Initialize("target_dummy_boss", new Vector2Int(2, 4));
             _activeTargets.Add(target);
+
+            // Demo Prism setup
+            defaultPrismData = ScriptableObject.CreateInstance<PrismRuneDataSO>();
+            defaultPrismData.Initialize("prism_demo", "Prism Rune", branchCount: 2, maxDepth: 3);
+        }
+
+        public void PlacePrismAt(Vector2Int coord, PrismRuneDataSO data = null)
+        {
+            _placedPrisms[coord] = data ?? defaultPrismData ?? ScriptableObject.CreateInstance<PrismRuneDataSO>();
+            RecalculateAndRenderConduits();
+        }
+
+        public void RemovePrismAt(Vector2Int coord)
+        {
+            if (_placedPrisms.Remove(coord))
+            {
+                RecalculateAndRenderConduits();
+            }
         }
 
         public void RecalculateAndRenderConduits()
@@ -453,32 +473,46 @@ namespace Lattirune.Core
                 return false;
             }
 
-            var runeSpecs = new List<(Vector2Int, ConduitDirection, int)>();
-            var activeConduitData = new List<(RuneData, Vector2Int, RuneConduitResult)>();
+            (bool isPrism, PrismRuneDataSO data) GetPrism(Vector2Int coord)
+            {
+                if (_placedPrisms.TryGetValue(coord, out var pData))
+                {
+                    return (true, pData);
+                }
+                return (false, null);
+            }
+
+            List<ConduitBeamPath> allBeams = new List<ConduitBeamPath>();
 
             for (int i = 0; i < _activeRunesWithData.Count; i++)
             {
                 var (rune, origin, dir, range) = _activeRunesWithData[i];
-                RuneConduitResult result = RuneConduitEngine.CalculateConduit(_grid, origin, dir, range, IsTarget, stopOnTarget: false);
-                activeConduitData.Add((rune, origin, result));
-                runeSpecs.Add((origin, dir, range));
+                List<ConduitBeamPath> paths = RuneConduitEngine.CalculateConduitWithRefraction(
+                    _grid, 
+                    rune, 
+                    origin, 
+                    dir, 
+                    range, 
+                    GetPrism, 
+                    IsTarget, 
+                    stopOnTarget: false
+                );
+                allBeams.AddRange(paths);
             }
 
-            List<RuneConduitResult> results = new List<RuneConduitResult>();
-            foreach (var item in activeConduitData) results.Add(item.Item3);
-
-            conduitDebugView.RenderConduits(results);
+            // Render all beam paths including refracted branches
+            conduitDebugView.RenderBeamPaths(allBeams);
 
             // Update Synergies (Rune + Item)
             if (synergySystem != null)
             {
-                synergySystem.UpdateSynergies(activeConduitData, _spawnedItemInstances);
+                synergySystem.UpdateSynergies(allBeams, _spawnedItemInstances);
             }
 
-            // Update Elemental Reactions (Rune Beam x Rune Beam) (TASK-013)
+            // Update Elemental Reactions (Rune Beam x Rune Beam)
             if (reactionSystem != null)
             {
-                reactionSystem.UpdateReactions(activeConduitData);
+                reactionSystem.UpdateReactions(allBeams);
             }
 
             // Update Player Combat Stats from the Grid build
@@ -491,7 +525,7 @@ namespace Lattirune.Core
         private void OnGUI()
         {
             // Development persistence & reaction telemetry in top right
-            GUILayout.BeginArea(new Rect(Screen.width - 180, 20, 160, 260), GUI.skin.box);
+            GUILayout.BeginArea(new Rect(Screen.width - 180, 20, 160, 290), GUI.skin.box);
             GUILayout.Label("<size=11><b>DEV CONTROLS</b></size>");
             if (GUILayout.Button("SAVE"))
             {
