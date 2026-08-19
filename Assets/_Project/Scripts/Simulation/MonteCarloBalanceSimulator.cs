@@ -99,6 +99,7 @@ namespace Lattirune.Simulation
                 int gold = 0;
                 int floorReached = 1;
                 bool runWon = true;
+                bool hasRevived = false;
 
                 // Simulate 10 Floors
                 for (int floor = 1; floor <= 10; floor++)
@@ -106,8 +107,8 @@ namespace Lattirune.Simulation
                     floorReached = floor;
 
                     // In-Run scaling: Player acquires items, upgrades, and synergies across floors
-                    playerAttack += 2.5f;
-                    if (floor % 2 == 0) playerArmor += 2;
+                    playerAttack += 2.0f;
+                    if (floor % 2 == 0) playerArmor += 1;
 
                     // Floor 8: Campfire heal
                     if (floor == 8)
@@ -116,24 +117,24 @@ namespace Lattirune.Simulation
                     }
 
                     // Enemy stats per floor
-                    int enemyHp = 35 + (floor - 1) * 20;
-                    int enemyArmor = floor >= 5 ? 4 + (floor - 5) * 2 : 0;
-                    float enemyAttack = 4 + (floor - 1) * 2.0f;
+                    int enemyHp = 40 + (floor - 1) * 25;
+                    int enemyArmor = floor >= 5 ? 3 + (floor - 5) * 2 : 0;
+                    float enemyAttack = 5 + (floor - 1) * 2.2f;
                     float enemySpeed = 1.5f;
 
-                    if (floor == 5) { enemyHp = 140; enemyArmor = 6; enemyAttack = 10; } // Mid-Boss
-                    if (floor == 10) { enemyHp = 350; enemyArmor = 8; enemyAttack = 14; } // Boss: The Lich Lord
+                    if (floor == 5) { enemyHp = 150; enemyArmor = 6; enemyAttack = 12; } // Mid-Boss
+                    if (floor == 10) { enemyHp = 380; enemyArmor = 9; enemyAttack = 17; } // Boss: The Lich Lord
 
                     // Battle Simulation with Synergies and Combos
-                    float synergyMultiplier = 1.0f + 0.12f * floor;
+                    float synergyMultiplier = 1.0f + 0.10f * floor;
                     float playerDps = (playerAttack * synergyMultiplier) / attackInterval;
                     totalDpsAccumulator += playerDps;
 
                     float effectiveEnemyArmor = Mathf.Max(0, enemyArmor - 2);
                     float playerDamagePerSec = Mathf.Max(3f, playerDps - (effectiveEnemyArmor * 0.4f));
 
-                    float effectivePlayerArmor = playerArmor + (floor >= 3 ? 3 : 0);
-                    float enemyDps = Mathf.Max(1f, enemyAttack - (effectivePlayerArmor * 0.6f));
+                    float effectivePlayerArmor = playerArmor + (floor >= 3 ? 2 : 0);
+                    float enemyDps = Mathf.Max(1.5f, enemyAttack - (effectivePlayerArmor * 0.5f));
                     float enemyDamagePerSec = enemyDps / enemySpeed;
 
                     float timeToKillEnemy = enemyHp / playerDamagePerSec;
@@ -147,11 +148,20 @@ namespace Lattirune.Simulation
 
                     if (currentHp <= 0)
                     {
-                        // 1-Time Revive (Offline Monetization / Ad Revive at 50% HP)
-                        currentHp = Mathf.RoundToInt(playerMaxHp * 0.5f);
+                        if (!hasRevived)
+                        {
+                            hasRevived = true;
+                            // 1-Time Revive (Offline Monetization / Ad Revive at 50% HP)
+                            currentHp = Mathf.RoundToInt(playerMaxHp * 0.5f);
 
-                        // If player takes lethal damage again in the same floor -> Defeat!
-                        if (damageTakenInFight > currentHp * 1.5f)
+                            if (damageTakenInFight > playerMaxHp * 0.85f)
+                            {
+                                runWon = false;
+                                metrics.deathsPerFloor[floor]++;
+                                break;
+                            }
+                        }
+                        else
                         {
                             runWon = false;
                             metrics.deathsPerFloor[floor]++;
@@ -161,7 +171,7 @@ namespace Lattirune.Simulation
                     else
                     {
                         gold += 15 + floor * 5;
-                        currentHp = Mathf.Min(playerMaxHp, currentHp + 25);
+                        currentHp = Mathf.Min(playerMaxHp, currentHp + 20);
                     }
                 }
 
