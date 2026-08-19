@@ -124,9 +124,9 @@ namespace Lattirune.Dungeon
             f4.Initialize(4, "floor_04", "Floor 4: Merchant Stall", new List<EncounterDefinitionSO> { enc4 });
             floorList.Add(f4);
 
-            // Floor 5: Mid-Boss Challenge: Armored Skeleton
+            // Floor 5: Mid-Boss Challenge: Grave Goliath
             DungeonFloorDefinitionSO f5 = ScriptableObject.CreateInstance<DungeonFloorDefinitionSO>();
-            f5.Initialize(5, "floor_05", "Floor 5: Armory Gate", new List<EncounterDefinitionSO> { EncounterDefinitionSO.CreateArmoredSkeleton() });
+            f5.Initialize(5, "floor_05", "Floor 5: Armory Gate", new List<EncounterDefinitionSO> { EncounterDefinitionSO.CreateGraveGoliath() });
             floorList.Add(f5);
 
             // Floor 6: Treasure Vault Guard: Sewer Rat Pack

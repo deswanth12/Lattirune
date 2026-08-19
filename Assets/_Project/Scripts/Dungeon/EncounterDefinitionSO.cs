@@ -153,6 +153,14 @@ namespace Lattirune.Dungeon
             isBoss = boss != null;
         }
 
+        public static EncounterDefinitionSO CreateGraveGoliath()
+        {
+            EncounterDefinitionSO enc = ScriptableObject.CreateInstance<EncounterDefinitionSO>();
+            enc.Initialize("enc_f05_goliath", "Mid-Boss: Grave Goliath", "Grave Goliath", hp: 320, armor: 12, attack: 7, interval: 2.2f, boss: true);
+            enc.SetBossDefinition(Lattirune.Boss.BossDefinitionSO.CreateGraveGoliathDefinition());
+            return enc;
+        }
+
         public static EncounterDefinitionSO CreateLichLord()
         {
             EncounterDefinitionSO enc = ScriptableObject.CreateInstance<EncounterDefinitionSO>();
