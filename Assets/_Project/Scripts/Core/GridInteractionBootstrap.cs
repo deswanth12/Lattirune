@@ -608,7 +608,15 @@ namespace Lattirune.Core
                 metaObj.transform.SetParent(transform);
                 metaProgressionManager = metaObj.AddComponent<MetaProgressionManager>();
             }
-            metaProgressionManager.Initialize(saveSystem);
+            metaProgressionManager.Initialize();
+            if (saveSystem != null && saveSystem.HasSaveFile())
+            {
+                SaveData loaded = saveSystem.Load();
+                if (loaded != null && loaded.meta != null)
+                {
+                    metaProgressionManager.ImportMetaData(loaded.meta);
+                }
+            }
 
             if (navigationController == null)
             {
