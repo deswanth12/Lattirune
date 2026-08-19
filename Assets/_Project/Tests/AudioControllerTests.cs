@@ -91,5 +91,21 @@ namespace Lattirune.Tests
 
             Assert.AreEqual((int)AudioCueType.Continue + 1, _audioController.TotalSfxPlayed);
         }
+
+        [Test]
+        public void AudioController_BgmPlaybackAndMusicVolume_ControlsTrack()
+        {
+            Assert.AreEqual(0.7f, _audioController.MusicVolume);
+            Assert.AreEqual(0.7f, _audioController.EffectiveMusicVolume);
+
+            _audioController.SetMusicVolume(0.5f);
+            Assert.AreEqual(0.5f, _audioController.MusicVolume);
+
+            _audioController.PlayBgm(AudioCueType.BgmDungeonLoop);
+            Assert.IsTrue(_audioController.IsBgmPlaying);
+
+            _audioController.StopBgm();
+            Assert.IsFalse(_audioController.IsBgmPlaying);
+        }
     }
 }

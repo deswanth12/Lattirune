@@ -14,6 +14,7 @@ namespace Lattirune.Audio
         [Header("Volume Configuration")]
         [SerializeField] [Range(0f, 1f)] private float masterVolume = 1.0f;
         [SerializeField] [Range(0f, 1f)] private float sfxVolume = 1.0f;
+        [SerializeField] [Range(0f, 1f)] private float musicVolume = 0.7f;
         [SerializeField] private bool isMuted = false;
 
         [Header("Telemetry")]
@@ -21,16 +22,20 @@ namespace Lattirune.Audio
         [SerializeField] private AudioCueType lastCuePlayed = AudioCueType.ButtonClick;
 
         private AudioSource _audioSource;
+        private AudioSource _bgmSource;
         private readonly Dictionary<AudioCueType, AudioClip> _cueClips = new Dictionary<AudioCueType, AudioClip>();
         private AudioClip _syntheticFallbackClip;
 
         public float MasterVolume => masterVolume;
         public float SfxVolume => sfxVolume;
+        public float MusicVolume => musicVolume;
         public bool IsMuted => isMuted;
         public int TotalSfxPlayed => totalSfxPlayed;
         public AudioCueType LastCuePlayed => lastCuePlayed;
 
         public float EffectiveSfxVolume => isMuted ? 0f : masterVolume * sfxVolume;
+        public float EffectiveMusicVolume => isMuted ? 0f : masterVolume * musicVolume;
+        public bool IsBgmPlaying => _bgmSource != null && _bgmSource.isPlaying;
 
         public static AudioController Instance { get; private set; }
 
@@ -46,8 +51,15 @@ namespace Lattirune.Audio
             {
                 _audioSource = gameObject.AddComponent<AudioSource>();
             }
-
             _audioSource.playOnAwake = false;
+
+            // Dedicated looping BGM source
+            GameObject bgmObj = new GameObject("BGM_Source");
+            bgmObj.transform.SetParent(transform);
+            _bgmSource = bgmObj.AddComponent<AudioSource>();
+            _bgmSource.playOnAwake = false;
+            _bgmSource.loop = true;
+
             CreateSyntheticFallbackClip();
         }
 
@@ -62,6 +74,7 @@ namespace Lattirune.Audio
         public void SetMasterVolume(float volume)
         {
             masterVolume = Mathf.Clamp01(volume);
+            if (_bgmSource != null) _bgmSource.volume = EffectiveMusicVolume;
         }
 
         public void SetSfxVolume(float volume)
@@ -69,9 +82,47 @@ namespace Lattirune.Audio
             sfxVolume = Mathf.Clamp01(volume);
         }
 
+        public void SetMusicVolume(float volume)
+        {
+            musicVolume = Mathf.Clamp01(volume);
+            if (_bgmSource != null) _bgmSource.volume = EffectiveMusicVolume;
+        }
+
         public void SetMuted(bool muted)
         {
             isMuted = muted;
+            if (_bgmSource != null) _bgmSource.volume = EffectiveMusicVolume;
+        }
+
+        public void PlayBgm(AudioCueType cue = AudioCueType.BgmDungeonLoop)
+        {
+            if (_bgmSource == null) return;
+
+            AudioClip clip = null;
+            if (_cueClips.TryGetValue(cue, out AudioClip registeredClip) && registeredClip != null)
+            {
+                clip = registeredClip;
+            }
+            else
+            {
+                clip = ProceduralAudioSynthesizer.CreateClipForCue(cue);
+                _cueClips[cue] = clip;
+            }
+
+            if (clip != null)
+            {
+                _bgmSource.clip = clip;
+                _bgmSource.volume = EffectiveMusicVolume;
+                _bgmSource.Play();
+            }
+        }
+
+        public void StopBgm()
+        {
+            if (_bgmSource != null)
+            {
+                _bgmSource.Stop();
+            }
         }
 
         public void RegisterClip(AudioCueType cue, AudioClip clip)

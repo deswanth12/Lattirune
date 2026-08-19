@@ -394,6 +394,8 @@ namespace Lattirune.Core
                 rewardService,
                 reactionSystem
             );
+
+            audioController.PlayBgm(AudioCueType.BgmDungeonLoop);
         }
 
         private void SetupCombatAndRewardEncounter()
