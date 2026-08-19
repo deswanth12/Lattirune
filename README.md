@@ -12,7 +12,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** MVP 1.0.0 — Repository Complete · Blocked Pending External Actions
 
-## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-047)
+## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-048)
 
 * **Build Target (RC):** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
 * **Build Target (v1.0.0 APK):** `Builds/Android/Lattirune-1.0.0.apk`
@@ -21,12 +21,14 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Version Name:** `1.0.0`
 * **Version Code:** `1`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 552 / 552 passing ($100\%$)
+* **EditMode Tests:** 571 / 571 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
 * **Final Release Audit:** [`Docs/MVP1.0-Final-External-Release-Audit.md`](./Docs/MVP1.0-Final-External-Release-Audit.md)
 * **Blocker Execution Record:** [`Docs/MVP1.0-Release-Blocker-Execution-Record.md`](./Docs/MVP1.0-Release-Blocker-Execution-Record.md)
+* **Final External Action Handoff:** [`Docs/MVP1.0-Final-External-Action-Handoff.md`](./Docs/MVP1.0-Final-External-Action-Handoff.md)
+* **External Release Checklist:** [`Docs/MVP1.0-External-Release-Checklist.md`](./Docs/MVP1.0-External-Release-Checklist.md)
 * **Physical Android QA Record:** [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./Docs/MVP1.0-Physical-Android-QA-Record.md)
 * **Final Release Handoff:** [`Docs/MVP1.0-Final-External-Release-Handoff.md`](./Docs/MVP1.0-Final-External-Release-Handoff.md)
 * **External Action Tracker:** [`Docs/MVP1.0-External-Action-Tracker.md`](./Docs/MVP1.0-External-Action-Tracker.md)
@@ -61,7 +63,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 
 | Item | Status |
 | :--- | :--- |
-| **MVP 1.0 Automated QA** | `PASS (552 / 552)` |
+| **MVP 1.0 Automated QA** | `PASS (571 / 571)` |
 | **Automated Release Readiness** | `PASS` |
 | **Physical Android QA** | `NOT COMPLETED (BLOCKED - No Hardware Available)` |
 | **App Icon** | `EXTERNAL ASSET REQUIRED` |

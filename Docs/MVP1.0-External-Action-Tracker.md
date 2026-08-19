@@ -5,9 +5,11 @@
 **Target Package:** `com.developer.lattirune`  
 **Version:** `1.0.0` (Build `1`)  
 **Save Version:** `1` (AES-256 Encrypted)  
-**Repository State:** `READY` (552 / 552 tests passing)  
+**Repository State:** `READY` (571 / 571 tests passing)  
 **External Release Gate:** `BLOCKED`  
-**Blocker Execution Record:** [`Docs/MVP1.0-Release-Blocker-Execution-Record.md`](./MVP1.0-Release-Blocker-Execution-Record.md)
+**Blocker Execution Record:** [`Docs/MVP1.0-Release-Blocker-Execution-Record.md`](./MVP1.0-Release-Blocker-Execution-Record.md)  
+**Final External Action Handoff:** [`Docs/MVP1.0-Final-External-Action-Handoff.md`](./MVP1.0-Final-External-Action-Handoff.md)  
+**External Release Checklist:** [`Docs/MVP1.0-External-Release-Checklist.md`](./MVP1.0-External-Release-Checklist.md)
 
 ---
 
