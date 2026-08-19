@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Lattirune.Combat
 {
     /// <summary>
-    /// Base entity managing health points, defense armor, attack cooldown timers, and damage events.
+    /// Base entity managing health points, defense armor, attack cooldown timers, damage and healing events.
     /// </summary>
     public class Combatant : MonoBehaviour
     {
@@ -19,6 +19,7 @@ namespace Lattirune.Combat
         [SerializeField] private float cooldownTimer = 0f;
 
         public event Action<DamageResult> OnDamaged;
+        public event Action<int> OnHealed;
         public event Action OnDied;
         public event Action OnHpChanged;
 
@@ -76,6 +77,21 @@ namespace Lattirune.Combat
             if (currentHp == 0)
             {
                 OnDied?.Invoke();
+            }
+        }
+
+        public virtual void Heal(int amount)
+        {
+            if (!IsAlive || amount <= 0) return;
+
+            int prevHp = currentHp;
+            currentHp = Mathf.Min(maxHp, currentHp + amount);
+            int actualHeal = currentHp - prevHp;
+
+            if (actualHeal > 0)
+            {
+                OnHealed?.Invoke(actualHeal);
+                OnHpChanged?.Invoke();
             }
         }
 

@@ -12,6 +12,31 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** Pre-production / Phase 3 Content Build
 
+## Combat Simulation Agency & Speed Control
+
+* **Speed Multipliers:** Toggleable $1.0\times$ (Standard), $2.0\times$ (Fast), and $3.0\times$ (Instant) battle simulation speeds scaling execution delta time without altering the deterministic damage formula.
+* **Manual Emergency Potion Tap:** Player can tap an active consumable during combat to force an immediate emergency restorative drink (e.g. +35 HP, clamped to Max HP).
+
+## In-Run Economy & Merchant Stall
+
+The in-run Gold and Embers economy derived from PLAN.md Section 13.1:
+
+| Economy Feature | Cost / Value | Trigger Condition / Location |
+| :--- | :--- | :--- |
+| **Normal Mob Gold Drop** | $6 - 12$ Gold | Awarded on defeating Normal tier mobs |
+| **Elite Mob Gold Drop** | $20 - 35$ Gold | Awarded on defeating Elite tier mobs |
+| **Boss Embers Drop** | $80 - 120$ Embers | Awarded on clearing Floor 10 Boss Sanctum |
+| **Common Item Purchase** | $20$ Gold | Available at Merchant Stalls (Floor 4 & Floor 9) |
+| **Rare Item Purchase** | $40$ Gold | Available at Merchant Stalls (Floor 4 & Floor 9) |
+| **Rune Purchase** | $35$ Gold | Available at Merchant Stalls (Floor 4 & Floor 9) |
+| **Bag Slot Expansion** | $40$ Gold | Available at Merchant Stalls (Floor 4 & Floor 9) |
+
+## Campfire Rest Site (Floor 8)
+
+Upon reaching Floor 8, players choose exactly one of two mutually exclusive resting benefits:
+* **Option A (Rest & Heal):** Restores $40\%$ of Max HP (clamped to full).
+* **Option B (Rune Reforge):** Reforges and upgrades 1 active Rune (+2 runtime power bonus) without mutating static ScriptableObject assets.
+
 ## Master Item Combinations (MVP)
 
 The canonical named master combinations defined in PLAN.md Section 7.1 (specific item synergies override broad category rules):
@@ -95,12 +120,12 @@ The 10-floor dungeon expands across Biome 1 with data-driven enemy archetypes an
 1. **Floor 1:** Sewer Entry (Sewer Rat Skirmish)
 2. **Floor 2:** Drain Basin (Goblin Thief Ambush)
 3. **Floor 3:** Slime Cavern (Elite: Acid Slime)
-4. **Floor 4:** Merchant Stall
+4. **Floor 4:** Merchant Stall (Buy Items, Runes, Bag Expansion)
 5. **Floor 5:** Armory Gate (Mid-Boss: Armored Skeleton)
 6. **Floor 6:** Treasure Vault
 7. **Floor 7:** Bone Crypt (Elite: Necromancer)
-8. **Floor 8:** Campfire Rest Site
-9. **Floor 9:** Spider Nest (Venomous Spider)
+8. **Floor 8:** Campfire Rest Site (Heal 40% HP OR Upgrade 1 Rune)
+9. **Floor 9:** Spider Nest (Pre-Boss)
 10. **Floor 10:** Boss Sanctum (The Lich Lord - 3 Phases)
 
 ## Phase 2: 5-Element Synergy Architecture

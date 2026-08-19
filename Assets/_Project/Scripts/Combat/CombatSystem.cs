@@ -6,7 +6,9 @@ namespace Lattirune.Combat
 {
     /// <summary>
     /// Coordinates 1v1 auto-battle encounters, execution cooldowns, damage application,
+    /// dynamic battle speed multipliers (1x, 2x, 3x), emergency consumable taps,
     /// dynamic runtime stat modifiers from CombatEffectSystem, and victory/defeat resolution.
+    /// Derived strictly from PLAN.md Section 9.1 and Section 9.2.
     /// </summary>
     public class CombatSystem : MonoBehaviour
     {
@@ -18,9 +20,12 @@ namespace Lattirune.Combat
         [Header("State")]
         [SerializeField] private CombatState currentState = CombatState.Preparing;
         [SerializeField] private bool autoUpdateInMonoBehaviour = true;
+        [SerializeField] private float speedMultiplier = 1.0f;
 
         public event Action<CombatState> OnStateChanged;
         public event Action<DamageResult> OnAttackExecuted;
+        public event Action<float> OnSpeedMultiplierChanged;
+        public event Action<int> OnEmergencyPotionUsed;
         public event Action OnVictory;
         public event Action OnDefeat;
 
@@ -28,6 +33,7 @@ namespace Lattirune.Combat
         public PlayerCombatant Player => player;
         public EnemyCombatant Enemy => enemy;
         public CombatEffectSystem Effects => effectSystem;
+        public float SpeedMultiplier => speedMultiplier;
 
         public void Initialize(
             PlayerCombatant playerCombatant, 
@@ -38,6 +44,40 @@ namespace Lattirune.Combat
             enemy = enemyCombatant;
             effectSystem = effects;
             currentState = CombatState.Preparing;
+            speedMultiplier = 1.0f;
+        }
+
+        /// <summary>
+        /// Sets the battle simulation speed multiplier. Strictly accepts 1.0x, 2.0x, or 3.0x per PLAN.md Section 9.1.
+        /// </summary>
+        public bool SetSpeedMultiplier(float multiplier)
+        {
+            if (Mathf.Approximately(multiplier, 1.0f) || 
+                Mathf.Approximately(multiplier, 2.0f) || 
+                Mathf.Approximately(multiplier, 3.0f))
+            {
+                speedMultiplier = multiplier;
+                OnSpeedMultiplierChanged?.Invoke(speedMultiplier);
+                return true;
+            }
+
+            Debug.LogWarning($"[Lattirune.Combat] Unsupported combat speed multiplier: {multiplier}. Only 1.0x, 2.0x, and 3.0x are supported.");
+            return false;
+        }
+
+        /// <summary>
+        /// Manual emergency potion tap allowing player agency to immediately drink a consumable during combat.
+        /// </summary>
+        public bool UseEmergencyPotion(PlayerCombatant targetPlayer, int healAmount)
+        {
+            if (targetPlayer == null || !targetPlayer.IsAlive || healAmount <= 0)
+            {
+                return false;
+            }
+
+            targetPlayer.Heal(healAmount);
+            OnEmergencyPotionUsed?.Invoke(healAmount);
+            return true;
         }
 
         private void Update()
@@ -70,10 +110,12 @@ namespace Lattirune.Combat
                 return;
             }
 
+            float scaledDelta = deltaTime * speedMultiplier;
+
             // 0. Update Active Combat Status Effects & DoTs
             if (effectSystem != null)
             {
-                effectSystem.UpdateEffects(deltaTime);
+                effectSystem.UpdateEffects(scaledDelta);
 
                 if (!enemy.IsAlive)
                 {
@@ -88,7 +130,7 @@ namespace Lattirune.Combat
             }
 
             // 1. Player Attack Turn
-            if (player.IsAlive && player.TickCooldown(deltaTime))
+            if (player.IsAlive && player.TickCooldown(scaledDelta))
             {
                 int effectiveEnemyArmor = enemy.Armor;
                 float damageModifier = 1.0f;
@@ -123,7 +165,7 @@ namespace Lattirune.Combat
             }
 
             // 2. Enemy Attack Turn
-            if (enemy.IsAlive && enemy.TickCooldown(deltaTime))
+            if (enemy.IsAlive && enemy.TickCooldown(scaledDelta))
             {
                 int effectivePlayerArmor = player.Armor;
                 float damageModifier = 1.0f;
@@ -161,6 +203,7 @@ namespace Lattirune.Combat
         public void ResetCombat()
         {
             currentState = CombatState.Preparing;
+            speedMultiplier = 1.0f;
 
             if (player != null) player.ResetHpToFull();
             if (enemy != null) enemy.ResetHpToFull();
