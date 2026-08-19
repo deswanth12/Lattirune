@@ -13,7 +13,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""AudioTestHolder"");
+            _holder = new GameObject("AudioTestHolder");
         }
 
         [TearDown]
@@ -46,7 +46,7 @@ namespace Lattirune.Tests
             foreach (var cue in cues)
             {
                 AudioClip clip = ProceduralAudioSynthesizer.CreateClipForCue(cue);
-                Assert.IsNotNull(clip, $""Failed to synthesize clip for cue {cue}"");
+                Assert.IsNotNull(clip, $"Failed to synthesize clip for cue {cue}");
                 Assert.AreEqual(1, clip.channels);
                 Assert.AreEqual(44100, clip.frequency);
                 Assert.Greater(clip.samples, 0);
@@ -66,7 +66,7 @@ namespace Lattirune.Tests
                         hasNonZeroSample = true;
                     }
                 }
-                Assert.IsTrue(hasNonZeroSample, $""Synthesized clip for {cue} was completely silent!"");
+                Assert.IsTrue(hasNonZeroSample, $"Synthesized clip for {cue} was completely silent!");
             }
         }
 

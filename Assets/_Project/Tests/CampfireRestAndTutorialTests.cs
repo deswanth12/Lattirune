@@ -19,7 +19,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""CampfireTutorialTestHolder"");
+            _holder = new GameObject("CampfireTutorialTestHolder");
         }
 
         [TearDown]
@@ -34,7 +34,7 @@ namespace Lattirune.Tests
         [Test]
         public void CampfireRest_Heal40Percent_RestoresPlayerHealth()
         {
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
@@ -56,15 +56,15 @@ namespace Lattirune.Tests
         [Test]
         public void CampfireRest_CleanseCurse_RemovesVulnerabilityModifier()
         {
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
 
             var modManager = _holder.AddComponent<RunModifierManager>();
             modManager.Initialize();
-            modManager.AddModifierById(""mod_curse_vulnerability"");
-            Assert.IsTrue(modManager.HasModifier(""mod_curse_vulnerability""));
+            modManager.AddModifierById("mod_curse_vulnerability");
+            Assert.IsTrue(modManager.HasModifier("mod_curse_vulnerability"));
 
             var runManager = _holder.AddComponent<RunManager>();
             var campfireUI = _holder.AddComponent<CampfireRestUIController>();
@@ -72,7 +72,7 @@ namespace Lattirune.Tests
 
             bool cleansed = campfireUI.ChooseCleanseCurse();
             Assert.IsTrue(cleansed);
-            Assert.IsFalse(modManager.HasModifier(""mod_curse_vulnerability""));
+            Assert.IsFalse(modManager.HasModifier("mod_curse_vulnerability"));
         }
 
         [Test]

@@ -19,7 +19,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""RunEventTestHolder"");
+            _holder = new GameObject("RunEventTestHolder");
         }
 
         [TearDown]
@@ -40,21 +40,21 @@ namespace Lattirune.Tests
         {
             var ev = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
             ev.Initialize(
-                ""event_custom"",
-                ""Custom Event"",
-                ""Custom description."",
+                "event_custom",
+                "Custom Event",
+                "Custom description.",
                 RunEventType.Mystery,
                 eventWeight: 10,
                 minFloor: 1,
                 maxFloor: 5,
                 choiceList: new List<RunEventChoice>
                 {
-                    new RunEventChoice(""c1"", ""Choice 1"", ""Desc 1"", 0, 10)
+                    new RunEventChoice("c1", "Choice 1", "Desc 1", 0, 10)
                 }
             );
 
-            Assert.IsTrue(ev.IsValid(out string error), $""Validation failed: {error}"");
-            Assert.AreEqual(""event_custom"", ev.EventId);
+            Assert.IsTrue(ev.IsValid(out string error), $"Validation failed: {error}");
+            Assert.AreEqual("event_custom", ev.EventId);
             Assert.AreEqual(RunEventType.Mystery, ev.EventType);
             Assert.AreEqual(10, ev.Weight);
             Assert.AreEqual(1, ev.MinimumFloor);
@@ -66,14 +66,14 @@ namespace Lattirune.Tests
         public void EventDefinition_InvalidMetadata_IsProperlyRejected()
         {
             var ev = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev.Initialize("""", ""No ID"", ""Desc"", RunEventType.Mystery, 10, 1, 5, new List<RunEventChoice>());
+            ev.Initialize("", "No ID", "Desc", RunEventType.Mystery, 10, 1, 5, new List<RunEventChoice>());
             Assert.IsFalse(ev.IsValid(out _));
 
             // Min floor > max floor
             var ev2 = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev2.Initialize(""ev2"", ""Title"", ""Desc"", RunEventType.Mystery, 10, 8, 2, new List<RunEventChoice>
+            ev2.Initialize("ev2", "Title", "Desc", RunEventType.Mystery, 10, 8, 2, new List<RunEventChoice>
             {
-                new RunEventChoice(""c1"", ""Choice"", ""Desc"")
+                new RunEventChoice("c1", "Choice", "Desc")
             });
             // Auto-clamped in Initialize
             Assert.GreaterOrEqual(ev2.MaximumFloor, ev2.MinimumFloor);
@@ -87,19 +87,19 @@ namespace Lattirune.Tests
 
             string[] expectedEvents = new string[]
             {
-                ""event_ancient_shrine"",
-                ""event_blood_altar"",
-                ""event_cursed_treasury"",
-                ""event_elemental_forge"",
-                ""event_ember_well"",
-                ""event_mysterious_chest""
+                "event_ancient_shrine",
+                "event_blood_altar",
+                "event_cursed_treasury",
+                "event_elemental_forge",
+                "event_ember_well",
+                "event_mysterious_chest"
             };
 
             foreach (var eventId in expectedEvents)
             {
                 var ev = db.GetEvent(eventId);
-                Assert.IsNotNull(ev, $""Missing canonical event '{eventId}'."");
-                Assert.IsTrue(ev.IsValid(out string error), $""Event '{eventId}' failed validation: {error}"");
+                Assert.IsNotNull(ev, $"Missing canonical event '{eventId}'.");
+                Assert.IsTrue(ev.IsValid(out string error), $"Event '{eventId}' failed validation: {error}");
                 Assert.Greater(ev.ChoiceCount, 0);
             }
         }
@@ -111,11 +111,11 @@ namespace Lattirune.Tests
 
             // Floor 0 (Dungeon Floor 1): Blood Altar is minFloor 2, so it shouldn't appear
             List<RunEventDefinitionSO> floor1Events = db.GetEligibleEventsForFloor(0);
-            Assert.IsNull(floor1Events.Find(e => e.EventId == ""event_blood_altar""));
+            Assert.IsNull(floor1Events.Find(e => e.EventId == "event_blood_altar"));
 
             // Floor 1 (Dungeon Floor 2): Blood Altar should be eligible
             List<RunEventDefinitionSO> floor2Events = db.GetEligibleEventsForFloor(1);
-            Assert.IsNotNull(floor2Events.Find(e => e.EventId == ""event_blood_altar""));
+            Assert.IsNotNull(floor2Events.Find(e => e.EventId == "event_blood_altar"));
         }
 
         // ==========================================
@@ -138,7 +138,7 @@ namespace Lattirune.Tests
 
                 Assert.IsNotNull(ev1);
                 Assert.IsNotNull(ev2);
-                Assert.AreEqual(ev1.EventId, ev2.EventId, $""Divergence at floor {floor} with seed 42."");
+                Assert.AreEqual(ev1.EventId, ev2.EventId, $"Divergence at floor {floor} with seed 42.");
             }
         }
 
@@ -147,15 +147,15 @@ namespace Lattirune.Tests
         {
             var db = ScriptableObject.CreateInstance<RunEventDatabaseSO>();
             var ev1 = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev1.Initialize(""zero_weight"", ""Zero"", """", RunEventType.Mystery, 0, 1, 10, new List<RunEventChoice>
+            ev1.Initialize("zero_weight", "Zero", "", RunEventType.Mystery, 0, 1, 10, new List<RunEventChoice>
             {
-                new RunEventChoice(""c1"", ""C"", ""D"")
+                new RunEventChoice("c1", "C", "D")
             });
 
             var ev2 = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev2.Initialize(""has_weight"", ""Weight"", """", RunEventType.Mystery, 10, 1, 10, new List<RunEventChoice>
+            ev2.Initialize("has_weight", "Weight", "", RunEventType.Mystery, 10, 1, 10, new List<RunEventChoice>
             {
-                new RunEventChoice(""c2"", ""C"", ""D"")
+                new RunEventChoice("c2", "C", "D")
             });
 
             db.Initialize(new List<RunEventDefinitionSO> { ev1, ev2 });
@@ -167,7 +167,7 @@ namespace Lattirune.Tests
             {
                 var selected = service.SelectEligibleEvent(1);
                 Assert.IsNotNull(selected);
-                Assert.AreEqual(""has_weight"", selected.EventId);
+                Assert.AreEqual("has_weight", selected.EventId);
             }
         }
 
@@ -179,8 +179,8 @@ namespace Lattirune.Tests
         public void RunEventResolver_IsPure_DoesNotMutateInputs()
         {
             var db = RunEventDatabaseSO.CreateCanonicalEventDatabase();
-            var shrine = db.GetEvent(""event_ancient_shrine"");
-            var touchChoice = shrine.GetChoice(""choice_shrine_touch"");
+            var shrine = db.GetEvent("event_ancient_shrine");
+            var touchChoice = shrine.GetChoice("choice_shrine_touch");
 
             var activeMods = new List<string>();
             var consumedChoices = new List<string>();
@@ -198,15 +198,15 @@ namespace Lattirune.Tests
             Assert.IsTrue(result.IsSuccess);
             Assert.AreEqual(0, activeMods.Count); // Unchanged
             Assert.AreEqual(0, consumedChoices.Count); // Unchanged
-            Assert.Contains(""mod_sharpened_runes"", (List<string>)result.GrantedModifierIds);
+            Assert.Contains("mod_sharpened_runes", (List<string>)result.GrantedModifierIds);
         }
 
         [Test]
         public void RunEventResolver_GoldCostAndReward_CalculatesAccurateDelta()
         {
-            var choice = new RunEventChoice(""test_gold"", ""Gold Trade"", ""Desc"", costGold: 20, rewardGold: 50);
+            var choice = new RunEventChoice("test_gold", "Gold Trade", "Desc", costGold: 20, rewardGold: 50);
             var ev = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev.Initialize(""test_ev"", ""Title"", ""Desc"", RunEventType.GoldReward, 10, 1, 10, new List<RunEventChoice> { choice });
+            ev.Initialize("test_ev", "Title", "Desc", RunEventType.GoldReward, 10, 1, 10, new List<RunEventChoice> { choice });
 
             var result = RunEventResolver.ResolveChoice(ev, choice, currentGold: 30, currentHp: 100, maxHp: 100, activeModifierIds: null);
             Assert.IsTrue(result.IsSuccess);
@@ -216,21 +216,21 @@ namespace Lattirune.Tests
         [Test]
         public void RunEventResolver_InsufficientGold_ReturnsFailure()
         {
-            var choice = new RunEventChoice(""test_expensive"", ""Costly"", ""Desc"", costGold: 50);
+            var choice = new RunEventChoice("test_expensive", "Costly", "Desc", costGold: 50);
             var ev = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev.Initialize(""test_ev"", ""Title"", ""Desc"", RunEventType.GoldReward, 10, 1, 10, new List<RunEventChoice> { choice });
+            ev.Initialize("test_ev", "Title", "Desc", RunEventType.GoldReward, 10, 1, 10, new List<RunEventChoice> { choice });
 
             var result = RunEventResolver.ResolveChoice(ev, choice, currentGold: 20, currentHp: 100, maxHp: 100, activeModifierIds: null);
             Assert.IsFalse(result.IsSuccess);
-            Assert.IsTrue(result.FailureReason.Contains(""Insufficient gold""));
+            Assert.IsTrue(result.FailureReason.Contains("Insufficient gold"));
         }
 
         [Test]
         public void RunEventResolver_HealthSacrificeAndLethalRejection()
         {
-            var choice = new RunEventChoice(""test_sacrifice"", ""Sacrifice"", ""Desc"", costHpPct: 0.25f);
+            var choice = new RunEventChoice("test_sacrifice", "Sacrifice", "Desc", costHpPct: 0.25f);
             var ev = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev.Initialize(""test_ev"", ""Title"", ""Desc"", RunEventType.HealthTrade, 10, 1, 10, new List<RunEventChoice> { choice });
+            ev.Initialize("test_ev", "Title", "Desc", RunEventType.HealthTrade, 10, 1, 10, new List<RunEventChoice> { choice });
 
             // Max HP 100 -> Cost is 25 HP. Hero has 50 HP -> Survives (remaining 25)
             var validResult = RunEventResolver.ResolveChoice(ev, choice, currentGold: 0, currentHp: 50, maxHp: 100, activeModifierIds: null);
@@ -240,15 +240,15 @@ namespace Lattirune.Tests
             // Hero has 20 HP -> Cannot survive 25 HP sacrifice
             var lethalResult = RunEventResolver.ResolveChoice(ev, choice, currentGold: 0, currentHp: 20, maxHp: 100, activeModifierIds: null);
             Assert.IsFalse(lethalResult.IsSuccess);
-            Assert.IsTrue(lethalResult.FailureReason.Contains(""Hero health is too low""));
+            Assert.IsTrue(lethalResult.FailureReason.Contains("Hero health is too low"));
         }
 
         [Test]
         public void RunEventResolver_HealthRestoration_CalculatesPositiveHpDelta()
         {
-            var choice = new RunEventChoice(""test_heal"", ""Rest"", ""Desc"", restoreHpPct: 0.35f);
+            var choice = new RunEventChoice("test_heal", "Rest", "Desc", restoreHpPct: 0.35f);
             var ev = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev.Initialize(""test_ev"", ""Title"", ""Desc"", RunEventType.Healing, 10, 1, 10, new List<RunEventChoice> { choice });
+            ev.Initialize("test_ev", "Title", "Desc", RunEventType.Healing, 10, 1, 10, new List<RunEventChoice> { choice });
 
             var result = RunEventResolver.ResolveChoice(ev, choice, currentGold: 0, currentHp: 50, maxHp: 100, activeModifierIds: null);
             Assert.IsTrue(result.IsSuccess);
@@ -258,29 +258,29 @@ namespace Lattirune.Tests
         [Test]
         public void RunEventResolver_DuplicateModifier_IsRejected()
         {
-            var choice = new RunEventChoice(""test_mod"", ""Gain Mod"", ""Desc"", grantModId: ""mod_sharpened_runes"");
+            var choice = new RunEventChoice("test_mod", "Gain Mod", "Desc", grantModId: "mod_sharpened_runes");
             var ev = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev.Initialize(""test_ev"", ""Title"", ""Desc"", RunEventType.ModifierReward, 10, 1, 10, new List<RunEventChoice> { choice });
+            ev.Initialize("test_ev", "Title", "Desc", RunEventType.ModifierReward, 10, 1, 10, new List<RunEventChoice> { choice });
 
-            var activeMods = new HashSet<string> { ""mod_sharpened_runes"" };
+            var activeMods = new HashSet<string> { "mod_sharpened_runes" };
             var result = RunEventResolver.ResolveChoice(ev, choice, currentGold: 0, currentHp: 100, maxHp: 100, activeModifierIds: activeMods);
 
             Assert.IsFalse(result.IsSuccess);
-            Assert.IsTrue(result.FailureReason.Contains(""already has the granted modifier""));
+            Assert.IsTrue(result.FailureReason.Contains("already has the granted modifier"));
         }
 
         [Test]
         public void RunEventResolver_OneTimeUseChoice_IsRejectedIfAlreadyConsumed()
         {
-            var choice = new RunEventChoice(""test_onetime"", ""One Time"", ""Desc"", oneTime: true);
+            var choice = new RunEventChoice("test_onetime", "One Time", "Desc", oneTime: true);
             var ev = ScriptableObject.CreateInstance<RunEventDefinitionSO>();
-            ev.Initialize(""test_ev"", ""Title"", ""Desc"", RunEventType.Mystery, 10, 1, 10, new List<RunEventChoice> { choice });
+            ev.Initialize("test_ev", "Title", "Desc", RunEventType.Mystery, 10, 1, 10, new List<RunEventChoice> { choice });
 
-            var consumed = new HashSet<string> { ""test_onetime"" };
+            var consumed = new HashSet<string> { "test_onetime" };
             var result = RunEventResolver.ResolveChoice(ev, choice, currentGold: 0, currentHp: 100, maxHp: 100, activeModifierIds: null, consumedChoiceIds: consumed);
 
             Assert.IsFalse(result.IsSuccess);
-            Assert.IsTrue(result.FailureReason.Contains(""already been consumed""));
+            Assert.IsTrue(result.FailureReason.Contains("already been consumed"));
         }
 
         // ==========================================
@@ -296,27 +296,27 @@ namespace Lattirune.Tests
             var modManager = _holder.AddComponent<RunModifierManager>();
             modManager.Initialize();
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(initialHp: 100);
 
-            var econObj = new GameObject(""Economy"");
+            var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
             var economy = econObj.AddComponent<EconomyManager>();
             economy.Initialize(startingGold: 50);
 
             // Present Ancient Shrine
-            var shrine = service.Database.GetEvent(""event_ancient_shrine"");
+            var shrine = service.Database.GetEvent("event_ancient_shrine");
             service.PresentEvent(shrine);
             Assert.IsTrue(service.HasActiveEvent);
 
             // Select Touch Rune choice
-            bool executed = service.SelectChoice(""choice_shrine_touch"", economy, player, modManager);
+            bool executed = service.SelectChoice("choice_shrine_touch", economy, player, modManager);
             Assert.IsTrue(executed);
             Assert.IsFalse(service.HasActiveEvent); // Cleared after resolution
-            Assert.IsTrue(modManager.HasModifier(""mod_sharpened_runes""));
-            Assert.IsTrue(service.ConsumedChoiceIds.Contains(""choice_shrine_touch""));
+            Assert.IsTrue(modManager.HasModifier("mod_sharpened_runes"));
+            Assert.IsTrue(service.ConsumedChoiceIds.Contains("choice_shrine_touch"));
         }
 
         [Test]
@@ -328,23 +328,23 @@ namespace Lattirune.Tests
             var modManager = _holder.AddComponent<RunModifierManager>();
             modManager.Initialize();
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(initialHp: 100);
 
-            var econObj = new GameObject(""Economy"");
+            var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
             var economy = econObj.AddComponent<EconomyManager>();
             economy.Initialize(startingGold: 10);
 
-            var treasury = service.Database.GetEvent(""event_cursed_treasury"");
+            var treasury = service.Database.GetEvent("event_cursed_treasury");
             service.PresentEvent(treasury);
 
-            bool executed = service.SelectChoice(""choice_treasury_pillage"", economy, player, modManager);
+            bool executed = service.SelectChoice("choice_treasury_pillage", economy, player, modManager);
             Assert.IsTrue(executed);
             Assert.AreEqual(85, economy.GoldBalance); // 10 + 75 = 85
-            Assert.IsTrue(modManager.HasModifier(""mod_curse_vulnerability""));
+            Assert.IsTrue(modManager.HasModifier("mod_curse_vulnerability"));
         }
 
         // ==========================================
@@ -360,21 +360,21 @@ namespace Lattirune.Tests
         [Test]
         public void SaveCompatibility_LegacySave_LoadsWithoutEventSystemErrors()
         {
-            string legacyJson = @""{
-                \""version\"": 1,
-                \""timestamp\"": \""2026-08-19T12:00:00Z\"",
-                \""items\"": [],
-                \""runes\"": [],
-                \""run\"": {
-                    \""hasActiveRun\"": true,
-                    \""currentFloorIndex\"": 1,
-                    \""currentEncounterIndex\"": 0,
-                    \""runState\"": 1
+            string legacyJson = @"{
+                ""version"": 1,
+                ""timestamp"": ""2026-08-19T12:00:00Z"",
+                ""items"": [],
+                ""runes"": [],
+                ""run"": {
+                    ""hasActiveRun"": true,
+                    ""currentFloorIndex"": 1,
+                    ""currentEncounterIndex"": 0,
+                    ""runState"": 1
                 },
-                \""inventory\"": { \""expansionStep\"": 0, \""unlockedX\"": [], \""unlockedY\"": [] },
-                \""meta\"": { \""embers\"": 50, \""unlockedBlueprints\"": [], \""totalBossClears\"": 0, \""totalRunsAttempted\"": 1 },
-                \""settings\"": { \""masterVolume\"": 1.0, \""sfxVolume\"": 1.0, \""isMuted\"": false, \""hapticsEnabled\"": true }
-            }"";
+                ""inventory"": { ""expansionStep"": 0, ""unlockedX"": [], ""unlockedY"": [] },
+                ""meta"": { ""embers"": 50, ""unlockedBlueprints"": [], ""totalBossClears"": 0, ""totalRunsAttempted"": 1 },
+                ""settings"": { ""masterVolume"": 1.0, ""sfxVolume"": 1.0, ""isMuted"": false, ""hapticsEnabled"": true }
+            }";
 
             SaveData data = SaveSerializer.DeserializeFromJson(legacyJson);
             Assert.IsNotNull(data);

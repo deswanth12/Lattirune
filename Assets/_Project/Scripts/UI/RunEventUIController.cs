@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Lattirune.Combat;
 using Lattirune.Economy;
@@ -65,14 +65,14 @@ namespace Lattirune.UI
 
         private void HandleEventResolved(RunEventDefinitionSO ev, RunEventChoice choice, RunEventResolutionResult result)
         {
-            _lastOutcomeMessage = $""Outcome: {choice.DisplayName} applied successfully."";
+            _lastOutcomeMessage = $"Outcome: {choice.DisplayName} applied successfully.";
             _isShowingModal = false;
             _activeEvent = null;
         }
 
         private void HandleEventFailed(RunEventDefinitionSO ev, RunEventChoice choice, string reason)
         {
-            _lastOutcomeMessage = $""Cannot proceed: {reason}"";
+            _lastOutcomeMessage = $"Cannot proceed: {reason}";
         }
 
         public void CloseModal()
@@ -117,7 +117,7 @@ namespace Lattirune.UI
             int currentGold = economyManager != null ? economyManager.GoldBalance : 0;
             int currentHp = playerCombatant != null ? playerCombatant.CurrentHp : 100;
             int maxHp = playerCombatant != null ? playerCombatant.MaxHp : 100;
-            GUILayout.Label($""[ HERO HP: {currentHp}/{maxHp} | GOLD: {currentGold} ]"", bodyStyle);
+            GUILayout.Label($"[ HERO HP: {currentHp}/{maxHp} | GOLD: {currentGold} ]", bodyStyle);
 
             GUILayout.Space(6);
             GUILayout.Label(_activeEvent.Description, bodyStyle);

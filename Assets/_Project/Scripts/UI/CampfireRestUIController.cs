@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Combat;
@@ -23,7 +23,7 @@ namespace Lattirune.UI
 
         [Header("State")]
         [SerializeField] private bool isVisible = false;
-        private string _feedbackMessage = """";
+        private string _feedbackMessage = "";
         private bool _hasChosenOption = false;
 
         public bool IsVisible => isVisible;
@@ -39,7 +39,7 @@ namespace Lattirune.UI
             modifierManager = modifiers;
             navigation = nav;
             _hasChosenOption = false;
-            _feedbackMessage = ""The warmth of the campfire soothes your weary soul. Choose how to spend your rest."";
+            _feedbackMessage = "The warmth of the campfire soothes your weary soul. Choose how to spend your rest.";
 
             if (navigation != null)
             {
@@ -71,7 +71,7 @@ namespace Lattirune.UI
         {
             isVisible = true;
             _hasChosenOption = false;
-            _feedbackMessage = ""The warmth of the campfire soothes your weary soul. Choose how to spend your rest."";
+            _feedbackMessage = "The warmth of the campfire soothes your weary soul. Choose how to spend your rest.";
         }
 
         public void Hide()
@@ -86,17 +86,17 @@ namespace Lattirune.UI
             int healAmount = Mathf.Max(1, Mathf.RoundToInt(playerCombatant.MaxHp * 0.40f));
             playerCombatant.Heal(healAmount);
             _hasChosenOption = true;
-            _feedbackMessage = $""You rested quietly by the flames, restoring {healAmount} Health points."";
+            _feedbackMessage = $"You rested quietly by the flames, restoring {healAmount} Health points.";
             return true;
         }
 
-        public bool ChooseUpgradeRune(string runeId = ""fire_rune_01"")
+        public bool ChooseUpgradeRune(string runeId = "fire_rune_01")
         {
             if (_hasChosenOption || runManager == null) return false;
 
             runManager.UpgradeRune(runeId, 3);
             _hasChosenOption = true;
-            _feedbackMessage = $""You attuned your rune in the embers! +3 Elemental Power granted for the remainder of this run."";
+            _feedbackMessage = $"You attuned your rune in the embers! +3 Elemental Power granted for the remainder of this run.";
             return true;
         }
 
@@ -104,11 +104,11 @@ namespace Lattirune.UI
         {
             if (_hasChosenOption || modifierManager == null) return false;
 
-            if (modifierManager.HasModifier(""mod_curse_vulnerability""))
+            if (modifierManager.HasModifier("mod_curse_vulnerability"))
             {
-                modifierManager.RemoveModifier(""mod_curse_vulnerability"");
+                modifierManager.RemoveModifier("mod_curse_vulnerability");
                 _hasChosenOption = true;
-                _feedbackMessage = ""The sacred flame dispelled the Curse of Vulnerability!"";
+                _feedbackMessage = "The sacred flame dispelled the Curse of Vulnerability!";
                 return true;
             }
             else
@@ -119,7 +119,7 @@ namespace Lattirune.UI
                     playerCombatant.Heal(15);
                 }
                 _hasChosenOption = true;
-                _feedbackMessage = ""With no active curses to cleanse, the sacred light granted you a minor blessing (+15 HP)."";
+                _feedbackMessage = "With no active curses to cleanse, the sacred light granted you a minor blessing (+15 HP).";
                 return true;
             }
         }
@@ -157,7 +157,7 @@ namespace Lattirune.UI
             titleStyle.alignment = TextAnchor.MiddleCenter;
             titleStyle.normal.textColor = new Color(1f, 0.45f, 0.15f); // Magma Ember
 
-            GUILayout.Label(""🔥 CAMPFIRE REST SANCTUARY 🔥"", titleStyle);
+            GUILayout.Label("🔥 CAMPFIRE REST SANCTUARY 🔥", titleStyle);
             GUILayout.Space(10);
 
             // Subheader: Hero Status

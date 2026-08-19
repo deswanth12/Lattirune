@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -19,8 +19,13 @@ namespace Lattirune.Editor
 
         static SceneAutoLoader()
         {
+            EditorApplication.delayCall += OnEditorReady;
+        }
+
+        private static void OnEditorReady()
+        {
             SetPlayModeStartScene();
-            EditorApplication.delayCall += EnsureBootstrapSceneOpened;
+            EnsureBootstrapSceneOpened();
         }
 
         [MenuItem("Lattirune/Scenes/Open Bootstrap Scene")]

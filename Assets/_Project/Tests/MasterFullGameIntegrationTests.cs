@@ -37,7 +37,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""MasterFullGameTestHolder"");
+            _holder = new GameObject("MasterFullGameTestHolder");
         }
 
         [TearDown]
@@ -53,22 +53,22 @@ namespace Lattirune.Tests
         public void FullGame_UnifiedLoop_ExecutesSeamlesslyWithZeroExceptions()
         {
             // 1. Grid & Inventory
-            var gridObj = new GameObject(""LatticeGrid"");
+            var gridObj = new GameObject("LatticeGrid");
             gridObj.transform.SetParent(_holder.transform);
             var grid = gridObj.AddComponent<LatticeGrid>();
             grid.Initialize();
 
-            var invObj = new GameObject(""InventorySystem"");
+            var invObj = new GameObject("InventorySystem");
             invObj.transform.SetParent(_holder.transform);
             var inventory = invObj.AddComponent<InventorySystem>();
             inventory.Initialize(grid);
 
             // 2. Combat & Modifiers & Combos
-            var playerObj = new GameObject(""PlayerCombatant"");
+            var playerObj = new GameObject("PlayerCombatant");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
 
-            var enemyObj = new GameObject(""EnemyCombatant"");
+            var enemyObj = new GameObject("EnemyCombatant");
             enemyObj.transform.SetParent(_holder.transform);
             var enemy = enemyObj.AddComponent<EnemyCombatant>();
 
@@ -104,8 +104,8 @@ namespace Lattirune.Tests
             // 4. Hero Classes
             var heroClassManager = _holder.AddComponent<HeroClassManager>();
             heroClassManager.Initialize();
-            heroClassManager.UnlockClass(""class_elementalist"", meta);
-            heroClassManager.SelectClass(""class_elementalist"");
+            heroClassManager.UnlockClass("class_elementalist", meta);
+            heroClassManager.SelectClass("class_elementalist");
             heroClassManager.ApplyStartingLoadout(player, inventory, grid);
 
             Assert.AreEqual(85, player.MaxHp);
@@ -114,7 +114,7 @@ namespace Lattirune.Tests
 
             // 5. Map DAG Navigation
             var mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
-            Assert.IsTrue(mapGraph.SelectAndEnterNode(""node_f1_entry""));
+            Assert.IsTrue(mapGraph.SelectAndEnterNode("node_f1_entry"));
 
             // 6. Combat Juice & Floaty Pool
             var floatyPool = _holder.AddComponent<FloatingCombatTextPool>();
@@ -139,12 +139,12 @@ namespace Lattirune.Tests
             Assert.Greater(comboTracker.CurrentCombo, 0);
 
             // Defeat Sewer Rat
-            codex.RecordEnemyDefeat(""enemy_sewer_rat"");
+            codex.RecordEnemyDefeat("enemy_sewer_rat");
             enemy.TakeDirectDamage(200);
             combat.Tick(0.1f);
 
             Assert.AreEqual(RunState.RewardSelection, runManager.CurrentState);
-            Assert.AreEqual(1, codex.GetEnemyKillCount(""enemy_sewer_rat""));
+            Assert.AreEqual(1, codex.GetEnemyKillCount("enemy_sewer_rat"));
             Assert.IsTrue(mapGraph.CompleteCurrentNode());
 
             // 9. Merchant Stall (Floor 4)
@@ -189,8 +189,8 @@ namespace Lattirune.Tests
             SaveData loaded = SaveSerializer.DeserializeFromJson(serializedJson);
             Assert.IsNotNull(loaded);
             Assert.AreEqual(1, loaded.version);
-            Assert.AreEqual(""class_elementalist"", loaded.meta.selectedHeroClass);
-            Assert.Contains(""enemy_sewer_rat"", loaded.codex.discoveredEnemies);
+            Assert.AreEqual("class_elementalist", loaded.meta.selectedHeroClass);
+            Assert.Contains("enemy_sewer_rat", loaded.codex.discoveredEnemies);
         }
     }
 }

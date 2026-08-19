@@ -16,7 +16,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""MonetizationTestHolder"");
+            _holder = new GameObject("MonetizationTestHolder");
         }
 
         [TearDown]
@@ -66,12 +66,12 @@ namespace Lattirune.Tests
             var runManager = _holder.AddComponent<RunManager>();
             var combat = _holder.AddComponent<CombatSystem>();
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
 
-            var enemyObj = new GameObject(""Enemy"");
+            var enemyObj = new GameObject("Enemy");
             enemyObj.transform.SetParent(_holder.transform);
             var enemy = enemyObj.AddComponent<EnemyCombatant>();
             enemy.SetupTrainingDummy(100, 0, 10, 1.0f);

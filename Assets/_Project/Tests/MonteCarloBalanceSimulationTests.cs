@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Lattirune.Simulation;
@@ -26,8 +26,8 @@ namespace Lattirune.Tests
             Assert.Greater(upgradedMetrics.winRatePercent, rawMetrics.winRatePercent);
             Assert.Greater(upgradedMetrics.averageFloorReached, rawMetrics.averageFloorReached);
 
-            Debug.Log($""[MONTE CARLO STATS] Base: {rawMetrics}"");
-            Debug.Log($""[MONTE CARLO STATS] Upgraded: {upgradedMetrics}"");
+            Debug.Log($"[MONTE CARLO STATS] Base: {rawMetrics}");
+            Debug.Log($"[MONTE CARLO STATS] Upgraded: {upgradedMetrics}");
         }
     }
 }

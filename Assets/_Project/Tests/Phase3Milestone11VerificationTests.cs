@@ -26,7 +26,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""Milestone11VerificationHolder"");
+            _holder = new GameObject("Milestone11VerificationHolder");
         }
 
         [TearDown]
@@ -42,13 +42,13 @@ namespace Lattirune.Tests
         public void Lattirune11_CompleteEndToEndRunFlow_ExecutesWithHighFidelity()
         {
             // 1. Initialize Subsystems
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
             player.SetExplicitStats(baseDamage: 10, runeBonus: 5, armorValue: 2);
 
-            var enemyObj = new GameObject(""Enemy"");
+            var enemyObj = new GameObject("Enemy");
             enemyObj.transform.SetParent(_holder.transform);
             var enemy = enemyObj.AddComponent<EnemyCombatant>();
 
@@ -74,7 +74,7 @@ namespace Lattirune.Tests
                 tracker
             );
 
-            var econObj = new GameObject(""Economy"");
+            var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
             var economy = econObj.AddComponent<EconomyManager>();
             economy.Initialize(startingGold: 20);
@@ -95,12 +95,12 @@ namespace Lattirune.Tests
             Assert.AreEqual(1, runManager.CurrentFloorNumber);
 
             // 3. Resolve Procedural Event (Ancient Shrine -> Gain Sharpened Runes)
-            var shrine = eventService.Database.GetEvent(""event_ancient_shrine"");
+            var shrine = eventService.Database.GetEvent("event_ancient_shrine");
             Assert.IsNotNull(shrine);
             eventService.PresentEvent(shrine);
-            bool eventResolved = eventService.SelectChoice(""choice_shrine_touch"", economy, player, modManager);
+            bool eventResolved = eventService.SelectChoice("choice_shrine_touch", economy, player, modManager);
             Assert.IsTrue(eventResolved);
-            Assert.IsTrue(modManager.HasModifier(""mod_sharpened_runes""));
+            Assert.IsTrue(modManager.HasModifier("mod_sharpened_runes"));
 
             // 4. Start Combat Encounter
             runManager.StartEncounterCombat();
@@ -138,7 +138,7 @@ namespace Lattirune.Tests
             SaveData restored = SaveSerializer.DeserializeFromJson(json);
             Assert.IsNotNull(restored);
             Assert.AreEqual(1, restored.version);
-            Assert.Contains(""mod_sharpened_runes"", restored.run.activeModifierIds);
+            Assert.Contains("mod_sharpened_runes", restored.run.activeModifierIds);
             Assert.AreEqual(tracker.HighestCombo, restored.run.highestCombo);
         }
     }

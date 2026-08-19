@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -53,31 +53,31 @@ namespace Lattirune.Events
         {
             if (string.IsNullOrEmpty(eventId))
             {
-                error = ""Event ID cannot be empty."";
+                error = "Event ID cannot be empty.";
                 return false;
             }
 
             if (string.IsNullOrEmpty(title))
             {
-                error = ""Event title cannot be empty."";
+                error = "Event title cannot be empty.";
                 return false;
             }
 
             if (weight < 0)
             {
-                error = ""Event weight cannot be negative."";
+                error = "Event weight cannot be negative.";
                 return false;
             }
 
             if (minimumFloor > maximumFloor)
             {
-                error = $""Minimum floor ({minimumFloor}) cannot exceed maximum floor ({maximumFloor})."";
+                error = $"Minimum floor ({minimumFloor}) cannot exceed maximum floor ({maximumFloor}).";
                 return false;
             }
 
             if (choices == null || choices.Count == 0)
             {
-                error = ""Event must contain at least one choice."";
+                error = "Event must contain at least one choice.";
                 return false;
             }
 
@@ -85,7 +85,7 @@ namespace Lattirune.Events
             {
                 if (choices[i] == null || string.IsNullOrEmpty(choices[i].ChoiceId))
                 {
-                    error = $""Choice at index {i} is null or has an empty ChoiceId."";
+                    error = $"Choice at index {i} is null or has an empty ChoiceId.";
                     return false;
                 }
             }

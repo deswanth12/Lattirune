@@ -106,7 +106,7 @@ namespace Lattirune.UI
             titleStyle.alignment = TextAnchor.MiddleCenter;
             titleStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f); // Burnished Brass
 
-            GUILayout.Label(""📜 ARCANE CODEX & BESTIARY 📜"", titleStyle);
+            GUILayout.Label("📜 ARCANE CODEX & BESTIARY 📜", titleStyle);
             GUILayout.Space(12);
 
             // Tab Selector Row
@@ -116,14 +116,14 @@ namespace Lattirune.UI
             int discoveredCount = codexManager.DiscoveredEnemies.Count;
 
             GUI.color = (_currentTab == CodexTab.Bestiary) ? Color.yellow : Color.white;
-            if (GUILayout.Button($""💀 BESTIARY ({discoveredCount}/{totalEnemies})"", GUILayout.Height(55)))
+            if (GUILayout.Button($"💀 BESTIARY ({discoveredCount}/{totalEnemies})", GUILayout.Height(55)))
             {
                 _currentTab = CodexTab.Bestiary;
                 _scrollPos = Vector2.zero;
             }
 
             GUI.color = (_currentTab == CodexTab.SynergiesAndReactions) ? Color.yellow : Color.white;
-            if (GUILayout.Button(""⚡ SYNERGIES & REACTIONS"", GUILayout.Height(55)))
+            if (GUILayout.Button("⚡ SYNERGIES & REACTIONS", GUILayout.Height(55)))
             {
                 _currentTab = CodexTab.SynergiesAndReactions;
                 _scrollPos = Vector2.zero;
@@ -151,7 +151,7 @@ namespace Lattirune.UI
             GUILayout.FlexibleSpace();
 
             // Return / Close Button
-            if (GUILayout.Button(""RETURN TO CAMPFIRE HUB"", GUILayout.Height(65)))
+            if (GUILayout.Button("RETURN TO CAMPFIRE HUB", GUILayout.Height(65)))
             {
                 Hide();
                 if (navigation != null)

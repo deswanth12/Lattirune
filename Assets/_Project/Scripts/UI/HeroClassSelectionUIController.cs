@@ -19,7 +19,7 @@ namespace Lattirune.UI
         [Header("State")]
         [SerializeField] private bool isVisible = false;
         private int _selectedPreviewIndex = 0;
-        private string _feedbackMessage = """";
+        private string _feedbackMessage = "";
 
         public bool IsVisible => isVisible;
 
@@ -107,7 +107,7 @@ namespace Lattirune.UI
             titleStyle.alignment = TextAnchor.MiddleCenter;
             titleStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f); // Burnished Brass
 
-            GUILayout.Label(""⚔ HERO CLASS SELECTION ⚔"", titleStyle);
+            GUILayout.Label("⚔ HERO CLASS SELECTION ⚔", titleStyle);
             GUILayout.Space(10);
 
             // Embers Display
@@ -117,7 +117,7 @@ namespace Lattirune.UI
             embersStyle.normal.textColor = new Color(1f, 0.45f, 0.15f); // Magma Ember
 
             int embers = metaProgression != null ? metaProgression.CurrentEmbers : 0;
-            GUILayout.Label($""Persistent Embers: {embers} 🔥"", embersStyle);
+            GUILayout.Label($"Persistent Embers: {embers} 🔥", embersStyle);
             GUILayout.Space(15);
 
             // Class Tabs / Selector Row
@@ -132,8 +132,8 @@ namespace Lattirune.UI
                 bool isActiveHero = (def.ClassId == classManager.SelectedClassId);
 
                 string tabText = def.ClassName;
-                if (isActiveHero) tabText = $""★ {def.ClassName}"";
-                else if (!isUnlocked) tabText = $""🔒 {def.ClassName}"";
+                if (isActiveHero) tabText = $"★ {def.ClassName}";
+                else if (!isUnlocked) tabText = $"🔒 {def.ClassName}";
 
                 GUI.color = isSelectedPreview ? Color.yellow : (isUnlocked ? Color.white : Color.gray);
                 if (GUILayout.Button(tabText, GUILayout.Height(50)))
@@ -160,8 +160,8 @@ namespace Lattirune.UI
                 headerStyle.fontStyle = FontStyle.Bold;
                 headerStyle.normal.textColor = isActive ? Color.green : (isUnlocked ? Color.white : Color.gray);
 
-                string badge = isActive ? ""[CURRENTLY SELECTED]"" : (isUnlocked ? ""[UNLOCKED]"" : $""[LOCKED - {currentDef.EmbersCost} Embers]"");
-                GUILayout.Label($""{currentDef.ClassName}  {badge}"", headerStyle);
+                string badge = isActive ? "[CURRENTLY SELECTED]" : (isUnlocked ? "[UNLOCKED]" : $"[LOCKED - {currentDef.EmbersCost} Embers]");
+                GUILayout.Label($"{currentDef.ClassName}  {badge}", headerStyle);
                 GUILayout.Space(8);
 
                 GUIStyle descStyle = new GUIStyle(GUI.skin.label);
@@ -176,7 +176,7 @@ namespace Lattirune.UI
                 statStyle.fontStyle = FontStyle.Bold;
                 statStyle.normal.textColor = Color.cyan;
 
-                GUILayout.Label($""Base Stats: ❤️ HP: {currentDef.BaseHp}  |  🛡 Armor: {currentDef.BaseArmor}  |  ⚔ Attack: {currentDef.BaseAttack}  |  ⏱ Speed: {currentDef.AttackInterval:0.0}s"", statStyle);
+                GUILayout.Label($"Base Stats: ❤️ HP: {currentDef.BaseHp}  |  🛡 Armor: {currentDef.BaseArmor}  |  ⚔ Attack: {currentDef.BaseAttack}  |  ⏱ Speed: {currentDef.AttackInterval:0.0}s", statStyle);
                 GUILayout.Space(14);
 
                 // Starting Loadout
@@ -184,10 +184,10 @@ namespace Lattirune.UI
                 loadoutStyle.fontSize = 16;
                 loadoutStyle.normal.textColor = new Color(0.75f, 0.75f, 0.75f);
 
-                string itemsList = string.Join("", "", currentDef.StartingItemIds);
-                string runesList = string.Join("", "", currentDef.StartingRuneIds);
-                GUILayout.Label($""Starting Gear: {itemsList}"", loadoutStyle);
-                GUILayout.Label($""Starting Runes: {runesList}"", loadoutStyle);
+                string itemsList = string.Join(", ", currentDef.StartingItemIds);
+                string runesList = string.Join(", ", currentDef.StartingRuneIds);
+                GUILayout.Label($"Starting Gear: {itemsList}", loadoutStyle);
+                GUILayout.Label($"Starting Runes: {runesList}", loadoutStyle);
 
                 GUILayout.Space(20);
 
@@ -197,12 +197,12 @@ namespace Lattirune.UI
                     bool canAfford = metaProgression != null && metaProgression.CurrentEmbers >= currentDef.EmbersCost;
                     GUI.enabled = canAfford;
 
-                    if (GUILayout.Button($""🔥 UNLOCK CLASS ({currentDef.EmbersCost} Embers)"", GUILayout.Height(60)))
+                    if (GUILayout.Button($"🔥 UNLOCK CLASS ({currentDef.EmbersCost} Embers)", GUILayout.Height(60)))
                     {
                         if (classManager.UnlockClass(currentDef.ClassId, metaProgression))
                         {
                             classManager.SelectClass(currentDef.ClassId);
-                            _feedbackMessage = $""Unlocked and selected {currentDef.ClassName}!"";
+                            _feedbackMessage = $"Unlocked and selected {currentDef.ClassName}!";
                         }
                     }
 
@@ -210,7 +210,7 @@ namespace Lattirune.UI
                 }
                 else if (!isActive)
                 {
-                    if (GUILayout.Button(""SELECT THIS HERO"", GUILayout.Height(60)))
+                    if (GUILayout.Button("SELECT THIS HERO", GUILayout.Height(60)))
                     {
                         classManager.SelectClass(currentDef.ClassId);
                         _feedbackMessage = $"Selected {currentDef.ClassName} as active champion!";
@@ -219,7 +219,7 @@ namespace Lattirune.UI
                 else
                 {
                     GUI.enabled = false;
-                    GUILayout.Button(""★ ACTIVE CHAMPION SELECTED"", GUILayout.Height(60));
+                    GUILayout.Button("★ ACTIVE CHAMPION SELECTED", GUILayout.Height(60));
                     GUI.enabled = true;
                 }
 

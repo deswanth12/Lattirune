@@ -49,9 +49,9 @@ namespace Lattirune.Events
             // 1. Ancient Shrine (Floor 1-10, Weight 15)
             var e1 = CreateInstance<RunEventDefinitionSO>();
             e1.Initialize(
-                ""event_ancient_shrine"",
-                ""Ancient Shrine"",
-                ""An ancient basalt altar pulses with latent magical resonance. Carved runic inscriptions invite your touch."",
+                "event_ancient_shrine",
+                "Ancient Shrine",
+                "An ancient basalt altar pulses with latent magical resonance. Carved runic inscriptions invite your touch.",
                 RunEventType.ModifierReward,
                 eventWeight: 15,
                 minFloor: 1,
@@ -59,22 +59,22 @@ namespace Lattirune.Events
                 choiceList: new List<RunEventChoice>
                 {
                     new RunEventChoice(
-                        ""choice_shrine_touch"",
-                        ""Touch the Rune"",
-                        ""Attune your soul to the relic. Gain Sharpened Runes (+15% Damage)."",
+                        "choice_shrine_touch",
+                        "Touch the Rune",
+                        "Attune your soul to the relic. Gain Sharpened Runes (+15% Damage).",
                         costGold: 0,
                         rewardGold: 0,
                         costHpPct: 0f,
                         restoreHpPct: 0f,
-                        grantModId: ""mod_sharpened_runes"",
+                        grantModId: "mod_sharpened_runes",
                         curseModId: null,
                         reqGold: 0,
                         oneTime: true
                     ),
                     new RunEventChoice(
-                        ""choice_shrine_leave"",
-                        ""Leave Safely"",
-                        ""Bow respectfully and continue down the dungeon corridor without disturbing the ancient magic."",
+                        "choice_shrine_leave",
+                        "Leave Safely",
+                        "Bow respectfully and continue down the dungeon corridor without disturbing the ancient magic.",
                         costGold: 0,
                         rewardGold: 0,
                         costHpPct: 0f,
@@ -91,9 +91,9 @@ namespace Lattirune.Events
             // 2. Blood Altar (Floor 2-10, Weight 12)
             var e2 = CreateInstance<RunEventDefinitionSO>();
             e2.Initialize(
-                ""event_blood_altar"",
-                ""Blood Altar"",
-                ""A crimson monolith demands a blood tithe in exchange for devastating offensive might."",
+                "event_blood_altar",
+                "Blood Altar",
+                "A crimson monolith demands a blood tithe in exchange for devastating offensive might.",
                 RunEventType.HealthTrade,
                 eventWeight: 12,
                 minFloor: 2,
@@ -101,22 +101,22 @@ namespace Lattirune.Events
                 choiceList: new List<RunEventChoice>
                 {
                     new RunEventChoice(
-                        ""choice_altar_sacrifice"",
-                        ""Sacrifice Vitality"",
-                        ""Bleed upon the stone. Suffer 20% Max HP sacrifice to forge Sharpened Runes (+15% Damage)."",
+                        "choice_altar_sacrifice",
+                        "Sacrifice Vitality",
+                        "Bleed upon the stone. Suffer 20% Max HP sacrifice to forge Sharpened Runes (+15% Damage).",
                         costGold: 0,
                         rewardGold: 0,
                         costHpPct: 0.20f,
                         restoreHpPct: 0f,
-                        grantModId: ""mod_sharpened_runes"",
+                        grantModId: "mod_sharpened_runes",
                         curseModId: null,
                         reqGold: 0,
                         oneTime: true
                     ),
                     new RunEventChoice(
-                        ""choice_altar_refuse"",
-                        ""Refuse Altar"",
-                        ""Keep your lifeblood intact and walk past the sinister stones."",
+                        "choice_altar_refuse",
+                        "Refuse Altar",
+                        "Keep your lifeblood intact and walk past the sinister stones.",
                         costGold: 0,
                         rewardGold: 0,
                         costHpPct: 0f,
@@ -133,9 +133,9 @@ namespace Lattirune.Events
             // 3. Cursed Treasury (Floor 2-9, Weight 10)
             var e3 = CreateInstance<RunEventDefinitionSO>();
             e3.Initialize(
-                ""event_cursed_treasury"",
-                ""Cursed Treasury"",
-                ""A gilded chest overflowing with gleaming dungeon coins sits beneath a shadowy hex."",
+                "event_cursed_treasury",
+                "Cursed Treasury",
+                "A gilded chest overflowing with gleaming dungeon coins sits beneath a shadowy hex.",
                 RunEventType.RiskReward,
                 eventWeight: 10,
                 minFloor: 2,
@@ -143,22 +143,22 @@ namespace Lattirune.Events
                 choiceList: new List<RunEventChoice>
                 {
                     new RunEventChoice(
-                        ""choice_treasury_pillage"",
-                        ""Pillage Coffers"",
-                        ""Claim 75 Gold, but contract the Curse of Vulnerability (-20% Defense)."",
+                        "choice_treasury_pillage",
+                        "Pillage Coffers",
+                        "Claim 75 Gold, but contract the Curse of Vulnerability (-20% Defense).",
                         costGold: 0,
                         rewardGold: 75,
                         costHpPct: 0f,
                         restoreHpPct: 0f,
                         grantModId: null,
-                        curseModId: ""mod_curse_vulnerability"",
+                        curseModId: "mod_curse_vulnerability",
                         reqGold: 0,
                         oneTime: true
                     ),
                     new RunEventChoice(
-                        ""choice_treasury_leave"",
-                        ""Walk Away"",
-                        ""Resist temptation and leave the cursed hoard undisturbed."",
+                        "choice_treasury_leave",
+                        "Walk Away",
+                        "Resist temptation and leave the cursed hoard undisturbed.",
                         costGold: 0,
                         rewardGold: 0,
                         costHpPct: 0f,
@@ -175,9 +175,9 @@ namespace Lattirune.Events
             // 4. Elemental Forge (Floor 1-8, Weight 14)
             var e4 = CreateInstance<RunEventDefinitionSO>();
             e4.Initialize(
-                ""event_elemental_forge"",
-                ""Elemental Forge"",
-                ""A dormant conduit smithy still glows with primordial elemental heat."",
+                "event_elemental_forge",
+                "Elemental Forge",
+                "A dormant conduit smithy still glows with primordial elemental heat.",
                 RunEventType.GoldReward,
                 eventWeight: 14,
                 minFloor: 1,
@@ -185,22 +185,22 @@ namespace Lattirune.Events
                 choiceList: new List<RunEventChoice>
                 {
                     new RunEventChoice(
-                        ""choice_forge_infuse"",
-                        ""Infuse Runes (30 Gold)"",
-                        ""Pay 30 Gold to ignite your conduit matrix with Elemental Surge (+25% Elemental Damage)."",
+                        "choice_forge_infuse",
+                        "Infuse Runes (30 Gold)",
+                        "Pay 30 Gold to ignite your conduit matrix with Elemental Surge (+25% Elemental Damage).",
                         costGold: 30,
                         rewardGold: 0,
                         costHpPct: 0f,
                         restoreHpPct: 0f,
-                        grantModId: ""mod_elemental_surge"",
+                        grantModId: "mod_elemental_surge",
                         curseModId: null,
                         reqGold: 30,
                         oneTime: true
                     ),
                     new RunEventChoice(
-                        ""choice_forge_pass"",
-                        ""Pass By"",
-                        ""Conserve your gold and move forward."",
+                        "choice_forge_pass",
+                        "Pass By",
+                        "Conserve your gold and move forward.",
                         costGold: 0,
                         rewardGold: 0,
                         costHpPct: 0f,
@@ -217,9 +217,9 @@ namespace Lattirune.Events
             // 5. Ember Well (Floor 1-10, Weight 18)
             var e5 = CreateInstance<RunEventDefinitionSO>();
             e5.Initialize(
-                ""event_ember_well"",
-                ""Ember Well"",
-                ""A soothing spring radiating pure celestial warmth wells up through the sewer floor."",
+                "event_ember_well",
+                "Ember Well",
+                "A soothing spring radiating pure celestial warmth wells up through the sewer floor.",
                 RunEventType.Healing,
                 eventWeight: 18,
                 minFloor: 1,
@@ -227,9 +227,9 @@ namespace Lattirune.Events
                 choiceList: new List<RunEventChoice>
                 {
                     new RunEventChoice(
-                        ""choice_well_drink"",
-                        ""Drink Deeply"",
-                        ""Sip the soothing waters to restore 35% of your Max HP."",
+                        "choice_well_drink",
+                        "Drink Deeply",
+                        "Sip the soothing waters to restore 35% of your Max HP.",
                         costGold: 0,
                         rewardGold: 0,
                         costHpPct: 0f,
@@ -240,9 +240,9 @@ namespace Lattirune.Events
                         oneTime: true
                     ),
                     new RunEventChoice(
-                        ""choice_well_leave"",
-                        ""Leave"",
-                        ""Save your thirst and march onwards."",
+                        "choice_well_leave",
+                        "Leave",
+                        "Save your thirst and march onwards.",
                         costGold: 0,
                         rewardGold: 0,
                         costHpPct: 0f,
@@ -259,9 +259,9 @@ namespace Lattirune.Events
             // 6. Mysterious Chest (Floor 1-10, Weight 16)
             var e6 = CreateInstance<RunEventDefinitionSO>();
             e6.Initialize(
-                ""event_mysterious_chest"",
-                ""Mysterious Chest"",
-                ""An ornate ironbound chest sits unlocked in an alcove."",
+                "event_mysterious_chest",
+                "Mysterious Chest",
+                "An ornate ironbound chest sits unlocked in an alcove.",
                 RunEventType.Mystery,
                 eventWeight: 16,
                 minFloor: 1,
@@ -269,9 +269,9 @@ namespace Lattirune.Events
                 choiceList: new List<RunEventChoice>
                 {
                     new RunEventChoice(
-                        ""choice_chest_unlock"",
-                        ""Open Chest"",
-                        ""Loot the contents. Discover 40 Gold and a rejuvenating tonic restoring 15% HP."",
+                        "choice_chest_unlock",
+                        "Open Chest",
+                        "Loot the contents. Discover 40 Gold and a rejuvenating tonic restoring 15% HP.",
                         costGold: 0,
                         rewardGold: 40,
                         costHpPct: 0f,
@@ -282,9 +282,9 @@ namespace Lattirune.Events
                         oneTime: true
                     ),
                     new RunEventChoice(
-                        ""choice_chest_leave"",
-                        ""Leave Unopened"",
-                        ""Avoid potential trap triggers and proceed cautiously."",
+                        "choice_chest_leave",
+                        "Leave Unopened",
+                        "Avoid potential trap triggers and proceed cautiously.",
                         costGold: 0,
                         rewardGold: 0,
                         costHpPct: 0f,

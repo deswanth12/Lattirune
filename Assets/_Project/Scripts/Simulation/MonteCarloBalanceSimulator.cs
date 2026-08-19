@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Dungeon;
@@ -20,7 +20,7 @@ namespace Lattirune.Simulation
 
         public override string ToString()
         {
-            return $""Monte Carlo Results: {successfulClears}/{totalRuns} Cleared ({winRatePercent:0.1}%) | Avg Floor: {averageFloorReached:0.2} | Avg DPS: {averageDps:0.1}"";
+            return $"Monte Carlo Results: {successfulClears}/{totalRuns} Cleared ({winRatePercent:0.1}%) | Avg Floor: {averageFloorReached:0.2} | Avg DPS: {averageDps:0.1}";
         }
     }
 
@@ -43,7 +43,7 @@ namespace Lattirune.Simulation
                 metrics.deathsPerFloor[f] = 0;
             }
 
-            string[] heroClasses = new[] { ""class_rune_knight"", ""class_elementalist"", ""class_shadow_rogue"", ""class_iron_juggernaut"" };
+            string[] heroClasses = new[] { "class_rune_knight", "class_elementalist", "class_shadow_rogue", "class_iron_juggernaut" };
             foreach (var c in heroClasses)
             {
                 metrics.classClears[c] = 0;
@@ -69,19 +69,19 @@ namespace Lattirune.Simulation
 
                 switch (selectedClass)
                 {
-                    case ""class_elementalist"":
+                    case "class_elementalist":
                         playerMaxHp = 85;
                         playerArmor = 0;
                         playerAttack = 12; // Wand + spark rune
                         attackInterval = 1.4f;
                         break;
-                    case ""class_shadow_rogue"":
+                    case "class_shadow_rogue":
                         playerMaxHp = 90;
                         playerArmor = 1;
                         playerAttack = 14;
                         attackInterval = 1.0f;
                         break;
-                    case ""class_iron_juggernaut"":
+                    case "class_iron_juggernaut":
                         playerMaxHp = 140;
                         playerArmor = 6;
                         playerAttack = 14;

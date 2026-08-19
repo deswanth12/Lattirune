@@ -24,7 +24,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""MerchantTestHolder"");
+            _holder = new GameObject("MerchantTestHolder");
 
             _merchant = _holder.AddComponent<MerchantSystem>();
             _merchant.Initialize(
@@ -42,7 +42,7 @@ namespace Lattirune.Tests
             _inventory = _holder.AddComponent<InventorySystem>();
             _inventory.Initialize(_grid);
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             _player = playerObj.AddComponent<PlayerCombatant>();
             _player.SetupDefaultPlayer(100);

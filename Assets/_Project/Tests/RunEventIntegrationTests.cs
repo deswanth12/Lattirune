@@ -20,7 +20,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""RunEventIntegrationTestHolder"");
+            _holder = new GameObject("RunEventIntegrationTestHolder");
         }
 
         [TearDown]
@@ -39,21 +39,21 @@ namespace Lattirune.Tests
         [Test]
         public void EventTrigger_NeverTriggersDuringActiveCombat()
         {
-            var triggerObj = new GameObject(""Trigger"");
+            var triggerObj = new GameObject("Trigger");
             triggerObj.transform.SetParent(_holder.transform);
             var trigger = triggerObj.AddComponent<RunEventTrigger>();
             trigger.Configure(1.0f, cadence: true); // 100% chance
 
-            var combatObj = new GameObject(""Combat"");
+            var combatObj = new GameObject("Combat");
             combatObj.transform.SetParent(_holder.transform);
             var combat = combatObj.AddComponent<CombatSystem>();
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
 
-            var enemyObj = new GameObject(""Enemy"");
+            var enemyObj = new GameObject("Enemy");
             enemyObj.transform.SetParent(_holder.transform);
             var enemy = enemyObj.AddComponent<EnemyCombatant>();
             enemy.SetupTrainingDummy(50, 0, 5, 1.5f);
@@ -64,7 +64,7 @@ namespace Lattirune.Tests
 
             // While Fighting, trigger MUST return false
             bool shouldTrigger = trigger.ShouldTriggerEvent(floorIndex: 1, encounterIndex: 0, combat, new SystemRandomSource(42));
-            Assert.IsFalse(shouldTrigger, ""Event trigger fired while CombatSystem was in Fighting state!"");
+            Assert.IsFalse(shouldTrigger, "Event trigger fired while CombatSystem was in Fighting state!");
 
             combat.ResetCombat();
             Assert.AreEqual(CombatState.Preparing, combat.CurrentState);
@@ -77,7 +77,7 @@ namespace Lattirune.Tests
         [Test]
         public void EventTrigger_ExcludesMerchantCampfireAndBossFloors()
         {
-            var triggerObj = new GameObject(""Trigger"");
+            var triggerObj = new GameObject("Trigger");
             triggerObj.transform.SetParent(_holder.transform);
             var trigger = triggerObj.AddComponent<RunEventTrigger>();
             trigger.Configure(1.0f, cadence: true);
@@ -104,21 +104,21 @@ namespace Lattirune.Tests
         [Test]
         public void RunEventPresenter_PausesRunAndPresentsEligibleEvent()
         {
-            var managerObj = new GameObject(""RunManager"");
+            var managerObj = new GameObject("RunManager");
             managerObj.transform.SetParent(_holder.transform);
             var runManager = managerObj.AddComponent<RunManager>();
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
 
-            var enemyObj = new GameObject(""Enemy"");
+            var enemyObj = new GameObject("Enemy");
             enemyObj.transform.SetParent(_holder.transform);
             var enemy = enemyObj.AddComponent<EnemyCombatant>();
             enemy.SetupTrainingDummy(50, 0, 5, 1.5f);
 
-            var combatObj = new GameObject(""Combat"");
+            var combatObj = new GameObject("Combat");
             combatObj.transform.SetParent(_holder.transform);
             var combat = combatObj.AddComponent<CombatSystem>();
             combat.Initialize(player, enemy);
@@ -133,7 +133,7 @@ namespace Lattirune.Tests
             trigger.Configure(1.0f, true);
 
             var panel = _holder.AddComponent<RunEventMobilePanel>();
-            var econObj = new GameObject(""Economy"");
+            var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
             var economy = econObj.AddComponent<EconomyManager>();
             economy.Initialize(50);
@@ -167,12 +167,12 @@ namespace Lattirune.Tests
 
             var panel = _holder.AddComponent<RunEventMobilePanel>();
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
 
-            var econObj = new GameObject(""Economy"");
+            var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
             var economy = econObj.AddComponent<EconomyManager>();
             economy.Initialize(30);
@@ -183,18 +183,18 @@ namespace Lattirune.Tests
             panel.Initialize(service, economy, player, modManager);
 
             // Show Elemental Forge (costs 30 Gold, grants mod_elemental_surge)
-            var forge = service.Database.GetEvent(""event_elemental_forge"");
+            var forge = service.Database.GetEvent("event_elemental_forge");
             Assert.IsNotNull(forge);
             service.PresentEvent(forge);
             panel.Show(forge);
 
             // Simulate selecting "Infuse Runes"
-            bool success = service.SelectChoice(""choice_forge_infuse"", economy, player, modManager);
+            bool success = service.SelectChoice("choice_forge_infuse", economy, player, modManager);
             Assert.IsTrue(success);
             Assert.AreEqual(0, economy.GoldBalance); // 30 - 30 = 0
-            Assert.IsTrue(modManager.HasModifier(""mod_elemental_surge""));
+            Assert.IsTrue(modManager.HasModifier("mod_elemental_surge"));
 
-            panel.SetOutcomeFeedback(""Outcome: Infuse Runes applied."", resolved: true);
+            panel.SetOutcomeFeedback("Outcome: Infuse Runes applied.", resolved: true);
             Assert.IsTrue(panel.IsResolved);
 
             // Continue exploration
@@ -232,21 +232,21 @@ namespace Lattirune.Tests
         {
             Assert.AreEqual(1, SaveVersion.CURRENT_VERSION);
 
-            string legacyJson = @""{
-                \""version\"": 1,
-                \""timestamp\"": \""2026-08-19T14:00:00Z\"",
-                \""items\"": [],
-                \""runes\"": [],
-                \""run\"": {
-                    \""hasActiveRun\"": true,
-                    \""currentFloorIndex\"": 3,
-                    \""currentEncounterIndex\"": 0,
-                    \""runState\"": 1
+            string legacyJson = @"{
+                \"version\": 1,
+                \"timestamp\": \"2026-08-19T14:00:00Z\",
+                \"items\": [],
+                \"runes\": [],
+                \"run\": {
+                    \"hasActiveRun\": true,
+                    \"currentFloorIndex\": 3,
+                    \"currentEncounterIndex\": 0,
+                    \"runState\": 1
                 },
-                \""inventory\"": { \""expansionStep\"": 0, \""unlockedX\"": [], \""unlockedY\"": [] },
-                \""meta\"": { \""embers\"": 20, \""unlockedBlueprints\"": [], \""totalBossClears\"": 0, \""totalRunsAttempted\"": 2 },
-                \""settings\"": { \""masterVolume\"": 1.0, \""sfxVolume\"": 1.0, \""isMuted\"": false, \""hapticsEnabled\"": true }
-            }"";
+                \"inventory\": { \"expansionStep\": 0, \"unlockedX\": [], \"unlockedY\": [] },
+                \"meta\": { \"embers\": 20, \"unlockedBlueprints\": [], \"totalBossClears\": 0, \"totalRunsAttempted\": 2 },
+                \"settings\": { \"masterVolume\": 1.0, \"sfxVolume\": 1.0, \"isMuted\": false, \"hapticsEnabled\": true }
+            }";
 
             SaveData loaded = SaveSerializer.DeserializeFromJson(legacyJson);
             Assert.IsNotNull(loaded);

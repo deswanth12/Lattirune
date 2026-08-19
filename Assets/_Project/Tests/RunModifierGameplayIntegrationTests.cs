@@ -18,7 +18,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""ModifierIntegrationTestHolder"");
+            _holder = new GameObject("ModifierIntegrationTestHolder");
         }
 
         [TearDown]
@@ -33,13 +33,13 @@ namespace Lattirune.Tests
         [Test]
         public void DamageMultiplier_IncreasesPlayerDamageInCombat()
         {
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
             player.SetExplicitStats(baseDamage: 20, runeBonus: 0, armorValue: 0);
 
-            var enemyObj = new GameObject(""Enemy"");
+            var enemyObj = new GameObject("Enemy");
             enemyObj.transform.SetParent(_holder.transform);
             var enemy = enemyObj.AddComponent<EnemyCombatant>();
             enemy.SetupTrainingDummy(hp: 200, baseArmor: 0, attack: 0, interval: 10f);
@@ -60,8 +60,8 @@ namespace Lattirune.Tests
             enemy.ResetHpToFull();
             player.ResetCooldown();
 
-            modManager.AddModifierById(""mod_sharpened_runes"");
-            modManager.AddModifierById(""mod_glass_cannon"");
+            modManager.AddModifierById("mod_sharpened_runes");
+            modManager.AddModifierById("mod_glass_cannon");
 
             combat.StartCombat();
             combat.Tick(1.5f);
@@ -73,20 +73,20 @@ namespace Lattirune.Tests
         [Test]
         public void ElementalDamageBonus_ScalesActiveRuneBonus()
         {
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
             player.SetExplicitStats(baseDamage: 10, runeBonus: 10, armorValue: 0);
 
-            var enemyObj = new GameObject(""Enemy"");
+            var enemyObj = new GameObject("Enemy");
             enemyObj.transform.SetParent(_holder.transform);
             var enemy = enemyObj.AddComponent<EnemyCombatant>();
             enemy.SetupTrainingDummy(hp: 200, baseArmor: 0, attack: 0, interval: 10f);
 
             var modManager = _holder.AddComponent<RunModifierManager>();
             modManager.Initialize();
-            modManager.AddModifierById(""mod_elemental_surge""); // +25% Elemental Damage
+            modManager.AddModifierById("mod_elemental_surge"); // +25% Elemental Damage
 
             var combat = _holder.AddComponent<CombatSystem>();
             combat.Initialize(player, enemy, null, modManager);
@@ -102,20 +102,20 @@ namespace Lattirune.Tests
         [Test]
         public void CurseOfVulnerability_ReducesEffectivePlayerArmor()
         {
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
             player.SetExplicitStats(baseDamage: 0, runeBonus: 0, armorValue: 10); // 10 Armor
 
-            var enemyObj = new GameObject(""Enemy"");
+            var enemyObj = new GameObject("Enemy");
             enemyObj.transform.SetParent(_holder.transform);
             var enemy = enemyObj.AddComponent<EnemyCombatant>();
             enemy.SetupTrainingDummy(hp: 100, baseArmor: 0, attack: 20, interval: 0.1f);
 
             var modManager = _holder.AddComponent<RunModifierManager>();
             modManager.Initialize();
-            modManager.AddModifierById(""mod_curse_vulnerability""); // -20% Defense -> Effective armor = 10 * 0.8 = 8
+            modManager.AddModifierById("mod_curse_vulnerability"); // -20% Defense -> Effective armor = 10 * 0.8 = 8
 
             var combat = _holder.AddComponent<CombatSystem>();
             combat.Initialize(player, enemy, null, modManager);
@@ -134,14 +134,14 @@ namespace Lattirune.Tests
             var combat = _holder.AddComponent<CombatSystem>();
             var modManager = _holder.AddComponent<RunModifierManager>();
             modManager.Initialize();
-            modManager.AddModifierById(""mod_midas_touch""); // +50% Gold Multiplier (1.5x)
+            modManager.AddModifierById("mod_midas_touch"); // +50% Gold Multiplier (1.5x)
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(100);
 
-            var enemyObj = new GameObject(""Enemy"");
+            var enemyObj = new GameObject("Enemy");
             enemyObj.transform.SetParent(_holder.transform);
             var enemy = enemyObj.AddComponent<EnemyCombatant>();
             enemy.SetupTrainingDummy(10, 0, 1, 10f);

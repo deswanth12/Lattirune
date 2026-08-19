@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Combat;
@@ -119,14 +119,14 @@ namespace Lattirune.Events
         {
             if (_currentActiveEvent == null)
             {
-                OnEventFailed?.Invoke(null, null, ""No event is currently active."");
+                OnEventFailed?.Invoke(null, null, "No event is currently active.");
                 return false;
             }
 
             RunEventChoice choice = _currentActiveEvent.GetChoice(choiceId);
             if (choice == null)
             {
-                OnEventFailed?.Invoke(_currentActiveEvent, null, $""Choice '{choiceId}' not found in active event."");
+                OnEventFailed?.Invoke(_currentActiveEvent, null, $"Choice '{choiceId}' not found in active event.");
                 return false;
             }
 

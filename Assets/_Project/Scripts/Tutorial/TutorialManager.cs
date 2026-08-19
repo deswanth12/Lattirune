@@ -69,13 +69,13 @@ namespace Lattirune.Tutorial
             switch (currentStep)
             {
                 case TutorialStep.DragWeaponToGrid:
-                    return ""1. DRAG TO ARRANGE: Pick up your sword from the staging tray and place it into the 5x5 Lattice Grid."";
+                    return "1. DRAG TO ARRANGE: Pick up your sword from the staging tray and place it into the 5x5 Lattice Grid.";
                 case TutorialStep.ConnectRuneLaser:
-                    return ""2. EMIT CONDUIT: Position a directional Rune pointing at your sword to cast a glowing elemental laser!"";
+                    return "2. EMIT CONDUIT: Position a directional Rune pointing at your sword to cast a glowing elemental laser!";
                 case TutorialStep.StartFirstBattle:
-                    return ""3. RESOLVE COMBAT: Tap START BATTLE to unleash automatic weapon attacks and elemental reactions!"";
+                    return "3. RESOLVE COMBAT: Tap START BATTLE to unleash automatic weapon attacks and elemental reactions!";
                 default:
-                    return ""Tutorial Completed!"";
+                    return "Tutorial Completed!";
             }
         }
     }

@@ -19,7 +19,7 @@ namespace Lattirune.UI
         [Header("State")]
         [SerializeField] private bool isVisible = false;
         private DungeonMapGraph _mapGraph;
-        private string _selectedNodeId = ""node_f1_entry"";
+        private string _selectedNodeId = "node_f1_entry";
         private Vector2 _scrollPos = Vector2.zero;
 
         public bool IsVisible => isVisible;
@@ -113,14 +113,14 @@ namespace Lattirune.UI
             titleStyle.alignment = TextAnchor.MiddleCenter;
             titleStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f); // Burnished Brass
 
-            GUILayout.Label(""🗺 DUNGEON MAP: THE CURSED SEWERS 🗺"", titleStyle);
+            GUILayout.Label("🗺 DUNGEON MAP: THE CURSED SEWERS 🗺", titleStyle);
             GUILayout.Space(8);
 
             GUIStyle subStyle = new GUIStyle(GUI.skin.label);
             subStyle.fontSize = 18;
             subStyle.alignment = TextAnchor.MiddleCenter;
             subStyle.normal.textColor = Color.gray;
-            GUILayout.Label(""Select an available room to advance your descent."", subStyle);
+            GUILayout.Label("Select an available room to advance your descent.", subStyle);
             GUILayout.Space(14);
 
             // Scrollable Map Nodes List (Floors 1 to 10)

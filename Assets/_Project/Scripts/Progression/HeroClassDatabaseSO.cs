@@ -84,16 +84,16 @@ namespace Lattirune.Progression
             // 1. Rune Knight (Default Melee)
             var knight = ScriptableObject.CreateInstance<HeroClassDefinitionSO>();
             knight.Initialize(
-                id: ""class_rune_knight"",
-                name: ""Rune Knight"",
-                desc: ""Balanced frontline warrior channeling fire conduits through broadswords."",
+                id: "class_rune_knight",
+                name: "Rune Knight",
+                desc: "Balanced frontline warrior channeling fire conduits through broadswords.",
                 type: HeroClassType.RuneKnight,
                 hp: 100,
                 armor: 2,
                 atk: 10,
                 interval: 1.8f,
-                items: new List<string> { ""item_iron_broadsword"", ""item_wooden_buckler"", ""item_health_potion"" },
-                runes: new List<string> { ""fire_rune_01"" },
+                items: new List<string> { "item_iron_broadsword", "item_wooden_buckler", "item_health_potion" },
+                runes: new List<string> { "fire_rune_01" },
                 cost: 0,
                 unlocked: true
             );
@@ -102,16 +102,16 @@ namespace Lattirune.Progression
             // 2. Elementalist (Mage)
             var mage = ScriptableObject.CreateInstance<HeroClassDefinitionSO>();
             mage.Initialize(
-                id: ""class_elementalist"",
-                name: ""Elementalist"",
-                desc: ""Arcane spellcaster refracting lightning and ice beams across multi-rune matrices."",
+                id: "class_elementalist",
+                name: "Elementalist",
+                desc: "Arcane spellcaster refracting lightning and ice beams across multi-rune matrices.",
                 type: HeroClassType.Elementalist,
                 hp: 85,
                 armor: 0,
                 atk: 8,
                 interval: 1.5f,
-                items: new List<string> { ""item_apprentice_wand"", ""item_lucky_clover"", ""item_stamina_flask"" },
-                runes: new List<string> { ""spark_rune_01"", ""prism_rune_01"" },
+                items: new List<string> { "item_apprentice_wand", "item_lucky_clover", "item_stamina_flask" },
+                runes: new List<string> { "spark_rune_01", "prism_rune_01" },
                 cost: 80,
                 unlocked: false
             );
@@ -120,16 +120,16 @@ namespace Lattirune.Progression
             // 3. Shadow Rogue (Speed & Crit)
             var rogue = ScriptableObject.CreateInstance<HeroClassDefinitionSO>();
             rogue.Initialize(
-                id: ""class_shadow_rogue"",
-                name: ""Shadow Rogue"",
-                desc: ""Agile assassin delivering venomous rapid strikes from dark grid corners."",
+                id: "class_shadow_rogue",
+                name: "Shadow Rogue",
+                desc: "Agile assassin delivering venomous rapid strikes from dark grid corners.",
                 type: HeroClassType.ShadowRogue,
                 hp: 90,
                 armor: 1,
                 atk: 12,
                 interval: 1.0f,
-                items: new List<string> { ""item_rusty_dagger"", ""item_shortbow"", ""item_poison_vial"" },
-                runes: new List<string> { ""venom_rune_01"" },
+                items: new List<string> { "item_rusty_dagger", "item_shortbow", "item_poison_vial" },
+                runes: new List<string> { "venom_rune_01" },
                 cost: 120,
                 unlocked: false
             );
@@ -138,16 +138,16 @@ namespace Lattirune.Progression
             // 4. Iron Juggernaut (Tank Defense)
             var tank = ScriptableObject.CreateInstance<HeroClassDefinitionSO>();
             tank.Initialize(
-                id: ""class_iron_juggernaut"",
-                name: ""Iron Juggernaut"",
-                desc: ""Heavily armored titan wielding massive tower shields and crushing battleaxes."",
+                id: "class_iron_juggernaut",
+                name: "Iron Juggernaut",
+                desc: "Heavily armored titan wielding massive tower shields and crushing battleaxes.",
                 type: HeroClassType.IronJuggernaut,
                 hp: 140,
                 armor: 6,
                 atk: 14,
                 interval: 2.5f,
-                items: new List<string> { ""item_iron_tower_shield"", ""item_battleaxe"", ""item_chainmail_coat"" },
-                runes: new List<string> { ""iron_rune_01"" },
+                items: new List<string> { "item_iron_tower_shield", "item_battleaxe", "item_chainmail_coat" },
+                runes: new List<string> { "iron_rune_01" },
                 cost: 150,
                 unlocked: false
             );

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Combat;
@@ -40,7 +40,7 @@ namespace Lattirune.Choices
 
             if (choice.GoldCost > 0 && currentGold < choice.GoldCost)
             {
-                reason = $""Insufficient gold (requires {choice.GoldCost}, have {currentGold})."";
+                reason = $"Insufficient gold (requires {choice.GoldCost}, have {currentGold}).";
                 return false;
             }
 

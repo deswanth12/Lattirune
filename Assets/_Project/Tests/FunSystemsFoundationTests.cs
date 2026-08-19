@@ -21,7 +21,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""FunSystemsTestHolder"");
+            _holder = new GameObject("FunSystemsTestHolder");
         }
 
         [TearDown]
@@ -42,9 +42,9 @@ namespace Lattirune.Tests
         {
             var mod = ScriptableObject.CreateInstance<RunModifierDefinitionSO>();
             mod.Initialize(
-                ""mod_test"",
-                ""Test Modifier"",
-                ""Increases damage by 20%"",
+                "mod_test",
+                "Test Modifier",
+                "Increases damage by 20%",
                 RunModifierRarity.Rare,
                 RunModifierPolarity.Positive,
                 RunModifierType.DamageMultiplier,
@@ -52,9 +52,9 @@ namespace Lattirune.Tests
                 Color.red
             );
 
-            Assert.AreEqual(""mod_test"", mod.ModifierId);
-            Assert.AreEqual(""Test Modifier"", mod.DisplayName);
-            Assert.AreEqual(""Increases damage by 20%"", mod.Description);
+            Assert.AreEqual("mod_test", mod.ModifierId);
+            Assert.AreEqual("Test Modifier", mod.DisplayName);
+            Assert.AreEqual("Increases damage by 20%", mod.Description);
             Assert.AreEqual(RunModifierRarity.Rare, mod.Rarity);
             Assert.AreEqual(RunModifierPolarity.Positive, mod.Polarity);
             Assert.AreEqual(RunModifierType.DamageMultiplier, mod.ModifierType);
@@ -68,17 +68,17 @@ namespace Lattirune.Tests
             var db = RunModifierDatabaseSO.CreateCanonicalDatabase();
             Assert.GreaterOrEqual(db.Count, 5);
 
-            var sharpened = db.GetModifier(""mod_sharpened_runes"");
+            var sharpened = db.GetModifier("mod_sharpened_runes");
             Assert.IsNotNull(sharpened);
             Assert.AreEqual(RunModifierPolarity.Positive, sharpened.Polarity);
             Assert.AreEqual(RunModifierRarity.Common, sharpened.Rarity);
 
-            var glassCannon = db.GetModifier(""mod_glass_cannon"");
+            var glassCannon = db.GetModifier("mod_glass_cannon");
             Assert.IsNotNull(glassCannon);
             Assert.AreEqual(RunModifierPolarity.Hybrid, glassCannon.Polarity);
             Assert.AreEqual(RunModifierRarity.Epic, glassCannon.Rarity);
 
-            var curse = db.GetModifier(""mod_curse_vulnerability"");
+            var curse = db.GetModifier("mod_curse_vulnerability");
             Assert.IsNotNull(curse);
             Assert.AreEqual(RunModifierPolarity.Negative, curse.Polarity);
             Assert.AreEqual(RunModifierRarity.Curse, curse.Rarity);
@@ -91,12 +91,12 @@ namespace Lattirune.Tests
             manager.Initialize();
 
             var db = RunModifierDatabaseSO.CreateCanonicalDatabase();
-            var mod1 = db.GetModifier(""mod_sharpened_runes"");
-            var mod2 = db.GetModifier(""mod_midas_touch"");
+            var mod1 = db.GetModifier("mod_sharpened_runes");
+            var mod2 = db.GetModifier("mod_midas_touch");
 
             Assert.IsTrue(manager.AddModifier(mod1));
             Assert.AreEqual(1, manager.ActiveCount);
-            Assert.IsTrue(manager.HasModifier(""mod_sharpened_runes""));
+            Assert.IsTrue(manager.HasModifier("mod_sharpened_runes"));
 
             // Duplicate prevention
             Assert.IsFalse(manager.AddModifier(mod1));
@@ -107,12 +107,12 @@ namespace Lattirune.Tests
             Assert.AreEqual(2, manager.ActiveCount);
 
             // Remove
-            Assert.IsTrue(manager.RemoveModifier(""mod_sharpened_runes""));
+            Assert.IsTrue(manager.RemoveModifier("mod_sharpened_runes"));
             Assert.AreEqual(1, manager.ActiveCount);
-            Assert.IsFalse(manager.HasModifier(""mod_sharpened_runes""));
+            Assert.IsFalse(manager.HasModifier("mod_sharpened_runes"));
 
             // Remove non-existent
-            Assert.IsFalse(manager.RemoveModifier(""mod_non_existent""));
+            Assert.IsFalse(manager.RemoveModifier("mod_non_existent"));
         }
 
         [Test]
@@ -122,10 +122,10 @@ namespace Lattirune.Tests
             manager.Initialize();
 
             var mod1 = ScriptableObject.CreateInstance<RunModifierDefinitionSO>();
-            mod1.Initialize(""mod1"", ""Buff 1"", """", RunModifierRarity.Common, RunModifierPolarity.Positive, RunModifierType.DamageMultiplier, 0.15f);
+            mod1.Initialize("mod1", "Buff 1", "", RunModifierRarity.Common, RunModifierPolarity.Positive, RunModifierType.DamageMultiplier, 0.15f);
 
             var mod2 = ScriptableObject.CreateInstance<RunModifierDefinitionSO>();
-            mod2.Initialize(""mod2"", ""Buff 2"", """", RunModifierRarity.Rare, RunModifierPolarity.Positive, RunModifierType.DamageMultiplier, 0.25f);
+            mod2.Initialize("mod2", "Buff 2", "", RunModifierRarity.Rare, RunModifierPolarity.Positive, RunModifierType.DamageMultiplier, 0.25f);
 
             manager.AddModifier(mod1);
             manager.AddModifier(mod2);
@@ -214,23 +214,23 @@ namespace Lattirune.Tests
         {
             // Low score
             var r0 = ChainReactionRewardCalculator.CalculateReward(comboDepth: 1, reactionChainDepth: 0);
-            Assert.AreEqual(""Standard"", r0.TierName);
+            Assert.AreEqual("Standard", r0.TierName);
             Assert.AreEqual(0, r0.BonusGold);
             Assert.AreEqual(0, r0.BonusEmbers);
 
             // Minor Synergy Surge (score >= 4)
             var r1 = ChainReactionRewardCalculator.CalculateReward(comboDepth: 4, reactionChainDepth: 0);
-            Assert.AreEqual(""Synergy Surge"", r1.TierName);
+            Assert.AreEqual("Synergy Surge", r1.TierName);
             Assert.Greater(r1.BonusGold, 0);
 
             // Greater Chain (score >= 10, e.g. 4 combo + 2 reactions = 4 + 6 = 10)
             var r2 = ChainReactionRewardCalculator.CalculateReward(comboDepth: 4, reactionChainDepth: 2);
-            Assert.AreEqual(""Greater Chain"", r2.TierName);
+            Assert.AreEqual("Greater Chain", r2.TierName);
             Assert.AreEqual(2, r2.BonusEmbers);
 
             // Legendary Cascade (score >= 20, e.g. 5 combo + 5 reactions = 5 + 15 = 20)
             var r3 = ChainReactionRewardCalculator.CalculateReward(comboDepth: 5, reactionChainDepth: 5);
-            Assert.AreEqual(""Legendary Cascade"", r3.TierName);
+            Assert.AreEqual("Legendary Cascade", r3.TierName);
             Assert.AreEqual(5, r3.BonusEmbers);
             Assert.AreEqual(0.50f, r3.QualityUpgradeChance, 0.001f);
         }
@@ -246,25 +246,25 @@ namespace Lattirune.Tests
             var modManager = _holder.AddComponent<RunModifierManager>();
             modManager.Initialize();
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(initialHp: 100);
 
-            var econObj = new GameObject(""Economy"");
+            var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
             var economy = econObj.AddComponent<EconomyManager>();
             economy.Initialize(startingGold: 50);
 
             var db = RunChoiceDatabaseSO.CreateCanonicalChoiceDatabase();
-            var bloodPact = db.GetChoice(""choice_blood_pact"");
+            var bloodPact = db.GetChoice("choice_blood_pact");
             Assert.IsNotNull(bloodPact);
 
             // Apply Blood Pact (costs 20% HP = 20 HP, grants Sharpened Runes)
             bool applied = choiceService.ApplyChoice(bloodPact, economy, player, modManager);
             Assert.IsTrue(applied);
             Assert.AreEqual(80, player.CurrentHp);
-            Assert.IsTrue(modManager.HasModifier(""mod_sharpened_runes""));
+            Assert.IsTrue(modManager.HasModifier("mod_sharpened_runes"));
 
             // Second attempt is rejected because one-time use
             bool second = choiceService.ApplyChoice(bloodPact, economy, player, modManager);
@@ -278,23 +278,23 @@ namespace Lattirune.Tests
             var modManager = _holder.AddComponent<RunModifierManager>();
             modManager.Initialize();
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
             player.SetupDefaultPlayer(initialHp: 100);
 
-            var econObj = new GameObject(""Economy"");
+            var econObj = new GameObject("Economy");
             econObj.transform.SetParent(_holder.transform);
             var economy = econObj.AddComponent<EconomyManager>();
             economy.Initialize(startingGold: 10); // Has 10, choice needs 30
 
             var db = RunChoiceDatabaseSO.CreateCanonicalChoiceDatabase();
-            var transmutation = db.GetChoice(""choice_alchemical_transmutation"");
+            var transmutation = db.GetChoice("choice_alchemical_transmutation");
 
             bool applied = choiceService.ApplyChoice(transmutation, economy, player, modManager);
             Assert.IsFalse(applied);
             Assert.AreEqual(10, economy.GoldBalance); // Untouched
-            Assert.IsFalse(modManager.HasModifier(""mod_elemental_surge""));
+            Assert.IsFalse(modManager.HasModifier("mod_elemental_surge"));
         }
 
         // ==========================================
@@ -310,7 +310,7 @@ namespace Lattirune.Tests
                 floorIdx: 3,
                 encIdx: 2,
                 state: 1,
-                modifierIds: new List<string> { ""mod_sharpened_runes"", ""mod_midas_touch"" },
+                modifierIds: new List<string> { "mod_sharpened_runes", "mod_midas_touch" },
                 combo: 14
             );
 
@@ -323,29 +323,29 @@ namespace Lattirune.Tests
             Assert.AreEqual(3, restored.run.currentFloorIndex);
             Assert.AreEqual(14, restored.run.highestCombo);
             Assert.AreEqual(2, restored.run.activeModifierIds.Count);
-            Assert.Contains(""mod_sharpened_runes"", restored.run.activeModifierIds);
-            Assert.Contains(""mod_midas_touch"", restored.run.activeModifierIds);
+            Assert.Contains("mod_sharpened_runes", restored.run.activeModifierIds);
+            Assert.Contains("mod_midas_touch", restored.run.activeModifierIds);
         }
 
         [Test]
         public void SaveCompatibility_LegacySave_LoadsWithSafeDefaults()
         {
             // Simulate legacy JSON produced in MVP 1.0 without activeModifierIds and highestCombo
-            string legacyJson = @""{
-                \""version\"": 1,
-                \""timestamp\"": \""2026-08-19T12:00:00Z\"",
-                \""items\"": [],
-                \""runes\"": [],
-                \""run\"": {
-                    \""hasActiveRun\"": true,
-                    \""currentFloorIndex\"": 2,
-                    \""currentEncounterIndex\"": 1,
-                    \""runState\"": 1
+            string legacyJson = @"{
+                \"version\": 1,
+                \"timestamp\": \"2026-08-19T12:00:00Z\",
+                \"items\": [],
+                \"runes\": [],
+                \"run\": {
+                    \"hasActiveRun\": true,
+                    \"currentFloorIndex\": 2,
+                    \"currentEncounterIndex\": 1,
+                    \"runState\": 1
                 },
-                \""inventory\"": { \""expansionStep\"": 0, \""unlockedX\"": [], \""unlockedY\"": [] },
-                \""meta\"": { \""embers\"": 100, \""unlockedBlueprints\"": [], \""totalBossClears\"": 1, \""totalRunsAttempted\"": 3 },
-                \""settings\"": { \""masterVolume\"": 1.0, \""sfxVolume\"": 1.0, \""isMuted\"": false, \""hapticsEnabled\"": true }
-            }"";
+                \"inventory\": { \"expansionStep\": 0, \"unlockedX\": [], \"unlockedY\": [] },
+                \"meta\": { \"embers\": 100, \"unlockedBlueprints\": [], \"totalBossClears\": 1, \"totalRunsAttempted\": 3 },
+                \"settings\": { \"masterVolume\": 1.0, \"sfxVolume\": 1.0, \"isMuted\": false, \"hapticsEnabled\": true }
+            }";
 
             SaveData legacySave = SaveSerializer.DeserializeFromJson(legacyJson);
             Assert.IsNotNull(legacySave);
@@ -366,8 +366,8 @@ namespace Lattirune.Tests
 
             var modManager = _holder.AddComponent<RunModifierManager>();
             modManager.Initialize();
-            modManager.AddModifierById(""mod_sharpened_runes"");
-            modManager.AddModifierById(""mod_midas_touch"");
+            modManager.AddModifierById("mod_sharpened_runes");
+            modManager.AddModifierById("mod_midas_touch");
 
             var tracker = _holder.AddComponent<ComboTracker>();
             tracker.Initialize();

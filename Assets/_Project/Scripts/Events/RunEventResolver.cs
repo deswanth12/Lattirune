@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -64,44 +64,44 @@ namespace Lattirune.Events
         {
             if (eventDef == null)
             {
-                return RunEventResolutionResult.CreateFailure(""Event definition is null."");
+                return RunEventResolutionResult.CreateFailure("Event definition is null.");
             }
 
             if (choice == null || string.IsNullOrEmpty(choice.ChoiceId))
             {
-                return RunEventResolutionResult.CreateFailure(""Selected choice is null or invalid."");
+                return RunEventResolutionResult.CreateFailure("Selected choice is null or invalid.");
             }
 
             if (consumedChoiceIds != null && choice.OneTimeUse && consumedChoiceIds.Contains(choice.ChoiceId))
             {
-                return RunEventResolutionResult.CreateFailure(""This choice has already been consumed for this run."");
+                return RunEventResolutionResult.CreateFailure("This choice has already been consumed for this run.");
             }
 
             if (choice.GoldCost > 0 && currentGold < choice.GoldCost)
             {
-                return RunEventResolutionResult.CreateFailure($""Insufficient gold (requires {choice.GoldCost}, have {currentGold})."");
+                return RunEventResolutionResult.CreateFailure($"Insufficient gold (requires {choice.GoldCost}, have {currentGold}).");
             }
 
             if (choice.RequiredGold > 0 && currentGold < choice.RequiredGold)
             {
-                return RunEventResolutionResult.CreateFailure($""Requires at least {choice.RequiredGold} gold in purse (have {currentGold})."");
+                return RunEventResolutionResult.CreateFailure($"Requires at least {choice.RequiredGold} gold in purse (have {currentGold}).");
             }
 
             if (maxHp <= 0) maxHp = 1;
             int hpCost = Mathf.RoundToInt(maxHp * choice.HealthCostPercentage);
             if (hpCost > 0 && currentHp <= hpCost)
             {
-                return RunEventResolutionResult.CreateFailure(""Hero health is too low to survive the sacrifice."");
+                return RunEventResolutionResult.CreateFailure("Hero health is too low to survive the sacrifice.");
             }
 
             if (!string.IsNullOrEmpty(choice.GrantedModifierId) && activeModifierIds != null && activeModifierIds.Contains(choice.GrantedModifierId))
             {
-                return RunEventResolutionResult.CreateFailure(""Hero already has the granted modifier active."");
+                return RunEventResolutionResult.CreateFailure("Hero already has the granted modifier active.");
             }
 
             if (!string.IsNullOrEmpty(choice.CurseModifierId) && activeModifierIds != null && activeModifierIds.Contains(choice.CurseModifierId))
             {
-                return RunEventResolutionResult.CreateFailure(""Hero already has the curse active."");
+                return RunEventResolutionResult.CreateFailure("Hero already has the curse active.");
             }
 
             int goldDelta = choice.GoldReward - choice.GoldCost;

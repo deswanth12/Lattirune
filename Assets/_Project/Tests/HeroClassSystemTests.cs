@@ -24,7 +24,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""HeroClassTestHolder"");
+            _holder = new GameObject("HeroClassTestHolder");
 
             _itemDb = ItemDatabaseSO.CreateCanonicalDatabase();
             _runeDb = RuneDatabaseSO.CreateCanonicalDatabase();
@@ -56,14 +56,14 @@ namespace Lattirune.Tests
             Assert.IsNotNull(db);
             Assert.AreEqual(4, db.TotalClassCount);
 
-            Assert.IsTrue(db.HasClass(""class_rune_knight""));
-            Assert.IsTrue(db.HasClass(""class_elementalist""));
-            Assert.IsTrue(db.HasClass(""class_shadow_rogue""));
-            Assert.IsTrue(db.HasClass(""class_iron_juggernaut""));
+            Assert.IsTrue(db.HasClass("class_rune_knight"));
+            Assert.IsTrue(db.HasClass("class_elementalist"));
+            Assert.IsTrue(db.HasClass("class_shadow_rogue"));
+            Assert.IsTrue(db.HasClass("class_iron_juggernaut"));
 
             foreach (var c in db.AllClasses)
             {
-                Assert.IsTrue(c.IsValid(out string err), $""Invalid class: {err}"");
+                Assert.IsTrue(c.IsValid(out string err), $"Invalid class: {err}");
                 Assert.Greater(c.BaseHp, 0);
                 Assert.Greater(c.StartingItemIds.Count, 0);
             }
@@ -72,9 +72,9 @@ namespace Lattirune.Tests
         [Test]
         public void HeroClassManager_DefaultUnlockedClass_IsRuneKnight()
         {
-            Assert.AreEqual(""class_rune_knight"", _classManager.SelectedClassId);
-            Assert.IsTrue(_classManager.IsClassUnlocked(""class_rune_knight""));
-            Assert.IsFalse(_classManager.IsClassUnlocked(""class_elementalist""));
+            Assert.AreEqual("class_rune_knight", _classManager.SelectedClassId);
+            Assert.IsTrue(_classManager.IsClassUnlocked("class_rune_knight"));
+            Assert.IsFalse(_classManager.IsClassUnlocked("class_elementalist"));
         }
 
         [Test]
@@ -83,14 +83,14 @@ namespace Lattirune.Tests
             Assert.AreEqual(200, _meta.CurrentEmbers);
 
             // Elementalist costs 80 Embers
-            bool unlocked = _classManager.UnlockClass(""class_elementalist"", _meta);
+            bool unlocked = _classManager.UnlockClass("class_elementalist", _meta);
             Assert.IsTrue(unlocked);
             Assert.AreEqual(120, _meta.CurrentEmbers); // 200 - 80 = 120
-            Assert.IsTrue(_classManager.IsClassUnlocked(""class_elementalist""));
+            Assert.IsTrue(_classManager.IsClassUnlocked("class_elementalist"));
 
-            bool selected = _classManager.SelectClass(""class_elementalist"");
+            bool selected = _classManager.SelectClass("class_elementalist");
             Assert.IsTrue(selected);
-            Assert.AreEqual(""class_elementalist"", _classManager.SelectedClassId);
+            Assert.AreEqual("class_elementalist", _classManager.SelectedClassId);
         }
 
         [Test]
@@ -100,32 +100,32 @@ namespace Lattirune.Tests
             Assert.AreEqual(10, _meta.CurrentEmbers);
 
             // Shadow Rogue costs 120
-            bool unlocked = _classManager.UnlockClass(""class_shadow_rogue"", _meta);
+            bool unlocked = _classManager.UnlockClass("class_shadow_rogue", _meta);
             Assert.IsFalse(unlocked);
-            Assert.IsFalse(_classManager.IsClassUnlocked(""class_shadow_rogue""));
+            Assert.IsFalse(_classManager.IsClassUnlocked("class_shadow_rogue"));
             Assert.AreEqual(10, _meta.CurrentEmbers);
         }
 
         [Test]
         public void ApplyStartingLoadout_ConfiguresPlayerAndStagingInventory()
         {
-            var gridObj = new GameObject(""Grid"");
+            var gridObj = new GameObject("Grid");
             gridObj.transform.SetParent(_holder.transform);
             var grid = gridObj.AddComponent<LatticeGrid>();
             grid.Initialize();
 
-            var invObj = new GameObject(""Inventory"");
+            var invObj = new GameObject("Inventory");
             invObj.transform.SetParent(_holder.transform);
             var inventory = invObj.AddComponent<InventorySystem>();
             inventory.Initialize(grid);
 
-            var playerObj = new GameObject(""Player"");
+            var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
             var player = playerObj.AddComponent<PlayerCombatant>();
 
             // Unlock and Select Iron Juggernaut (140 HP, 6 Armor, 14 Attack)
-            _classManager.UnlockClass(""class_iron_juggernaut"", _meta);
-            _classManager.SelectClass(""class_iron_juggernaut"");
+            _classManager.UnlockClass("class_iron_juggernaut", _meta);
+            _classManager.SelectClass("class_iron_juggernaut");
 
             _classManager.ApplyStartingLoadout(player, inventory, grid);
 
@@ -141,8 +141,8 @@ namespace Lattirune.Tests
         [Test]
         public void SaveLoadPersistence_PreservesSelectedAndUnlockedClasses()
         {
-            _classManager.UnlockClass(""class_shadow_rogue"", _meta);
-            _classManager.SelectClass(""class_shadow_rogue"");
+            _classManager.UnlockClass("class_shadow_rogue", _meta);
+            _classManager.SelectClass("class_shadow_rogue");
 
             SaveData save = SaveData.CreateDefault();
             save.meta = new SavedMetaData(
@@ -160,8 +160,8 @@ namespace Lattirune.Tests
             SaveData restored = SaveSerializer.DeserializeFromJson(json);
             Assert.IsNotNull(restored);
             Assert.AreEqual(1, restored.version);
-            Assert.AreEqual(""class_shadow_rogue"", restored.meta.selectedHeroClass);
-            Assert.Contains(""class_shadow_rogue"", restored.meta.unlockedHeroClasses);
+            Assert.AreEqual("class_shadow_rogue", restored.meta.selectedHeroClass);
+            Assert.Contains("class_shadow_rogue", restored.meta.unlockedHeroClasses);
         }
     }
 }

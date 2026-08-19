@@ -13,7 +13,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""JuiceTestHolder"");
+            _holder = new GameObject("JuiceTestHolder");
         }
 
         [TearDown]
@@ -34,7 +34,7 @@ namespace Lattirune.Tests
             Assert.AreEqual(FloatingCombatTextPool.POOL_SIZE, pool.ActivePool.Count);
 
             // Spawn critical floaty
-            var f1 = pool.SpawnText(""CRIT! -45"", new Vector2(500, 500), FloatingTextType.CriticalDamage, duration: 1.0f);
+            var f1 = pool.SpawnText("CRIT! -45", new Vector2(500, 500), FloatingTextType.CriticalDamage, duration: 1.0f);
             Assert.IsNotNull(f1);
             Assert.IsTrue(f1.IsActive);
             Assert.AreEqual(Color.red.r, f1.TextColor.r);

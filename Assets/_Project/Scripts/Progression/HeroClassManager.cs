@@ -23,8 +23,8 @@ namespace Lattirune.Progression
         [SerializeField] private RuneDatabaseSO runeDatabase;
 
         [Header("State")]
-        [SerializeField] private string selectedClassId = ""class_rune_knight"";
-        [SerializeField] private List<string> unlockedClassIds = new List<string> { ""class_rune_knight"" };
+        [SerializeField] private string selectedClassId = "class_rune_knight";
+        [SerializeField] private List<string> unlockedClassIds = new List<string> { "class_rune_knight" };
 
         private readonly HashSet<string> _unlockedSet = new HashSet<string>();
 
@@ -67,7 +67,7 @@ namespace Lattirune.Progression
 
             if (string.IsNullOrEmpty(selectedClassId) || !_unlockedSet.Contains(selectedClassId))
             {
-                selectedClassId = ""class_rune_knight"";
+                selectedClassId = "class_rune_knight";
             }
         }
 
@@ -188,7 +188,7 @@ namespace Lattirune.Progression
             }
             else
             {
-                selectedClassId = ""class_rune_knight"";
+                selectedClassId = "class_rune_knight";
             }
         }
 

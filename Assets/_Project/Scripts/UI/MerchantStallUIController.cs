@@ -26,7 +26,7 @@ namespace Lattirune.UI
 
         [Header("State")]
         [SerializeField] private bool isVisible = false;
-        private string _feedbackMessage = """";
+        private string _feedbackMessage = "";
 
         public bool IsVisible => isVisible;
 
@@ -123,7 +123,7 @@ namespace Lattirune.UI
             titleStyle.alignment = TextAnchor.MiddleCenter;
             titleStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f); // Burnished Brass
 
-            GUILayout.Label(""⚜ WANDERING MERCHANT ⚜"", titleStyle);
+            GUILayout.Label("⚜ WANDERING MERCHANT ⚜", titleStyle);
             GUILayout.Space(10);
 
             // Subheader: Gold & Floor
@@ -134,7 +134,7 @@ namespace Lattirune.UI
 
             int currentGold = economyManager != null ? economyManager.CurrentGold : 0;
             int floorNum = runManager != null ? runManager.CurrentFloorNumber : 1;
-            GUILayout.Label($""Floor {floorNum}  |  Your Gold: {currentGold} 🪙"", goldStyle);
+            GUILayout.Label($"Floor {floorNum}  |  Your Gold: {currentGold} 🪙", goldStyle);
             GUILayout.Space(10);
 
             // Feedback / Dialogue
@@ -143,7 +143,7 @@ namespace Lattirune.UI
             dialogueStyle.fontStyle = FontStyle.Italic;
             dialogueStyle.alignment = TextAnchor.MiddleCenter;
             dialogueStyle.normal.textColor = Color.white;
-            GUILayout.Label($""\""{_feedbackMessage}\"""", dialogueStyle);
+            GUILayout.Label($"\"{_feedbackMessage}\"", dialogueStyle);
             GUILayout.Space(20);
 
             // Offers List
@@ -160,8 +160,8 @@ namespace Lattirune.UI
                 offerHeader.fontStyle = FontStyle.Bold;
                 offerHeader.normal.textColor = offer.IsSold ? Color.gray : Color.white;
 
-                string statusText = offer.IsSold ? ""[SOLD OUT]"" : $""{offer.CurrentPrice} Gold"";
-                GUILayout.Label($""{offer.Title}  -  {statusText}"", offerHeader);
+                string statusText = offer.IsSold ? "[SOLD OUT]" : $"{offer.CurrentPrice} Gold";
+                GUILayout.Label($"{offer.Title}  -  {statusText}", offerHeader);
 
                 GUIStyle descStyle = new GUIStyle(GUI.skin.label);
                 descStyle.fontSize = 16;
@@ -175,11 +175,11 @@ namespace Lattirune.UI
                     bool canAfford = economyManager != null && economyManager.CanAfford(offer.CurrentPrice);
                     GUI.enabled = canAfford;
 
-                    if (GUILayout.Button($""PURCHASE ({offer.CurrentPrice}g)"", GUILayout.Height(55)))
+                    if (GUILayout.Button($"PURCHASE ({offer.CurrentPrice}g)", GUILayout.Height(55)))
                     {
                         if (merchantSystem.BuyOffer(i, economyManager, inventorySystem, latticeGrid, playerCombatant))
                         {
-                            _feedbackMessage = $""Pleasure doing business! You acquired {offer.Title}."";
+                            _feedbackMessage = $"Pleasure doing business! You acquired {offer.Title}.";
                         }
                     }
 
@@ -195,11 +195,11 @@ namespace Lattirune.UI
             // Reroll Button (10 Gold)
             bool canReroll = economyManager != null && economyManager.CanAfford(10);
             GUI.enabled = canReroll;
-            if (GUILayout.Button(""🔄 REROLL STOCK (10 Gold)"", GUILayout.Height(60)))
+            if (GUILayout.Button("🔄 REROLL STOCK (10 Gold)", GUILayout.Height(60)))
             {
                 if (merchantSystem.RerollOffers(economyManager, 10, floorNum))
                 {
-                    _feedbackMessage = ""The merchant reveals a fresh crate of wares!"";
+                    _feedbackMessage = "The merchant reveals a fresh crate of wares!";
                 }
             }
             GUI.enabled = true;
@@ -211,7 +211,7 @@ namespace Lattirune.UI
             leaveBtnStyle.fontSize = 22;
             leaveBtnStyle.fontStyle = FontStyle.Bold;
 
-            if (GUILayout.Button(""LEAVE MERCHANT & CONTINUE"", leaveBtnStyle, GUILayout.Height(65)))
+            if (GUILayout.Button("LEAVE MERCHANT & CONTINUE", leaveBtnStyle, GUILayout.Height(65)))
             {
                 Hide();
                 if (runManager != null)

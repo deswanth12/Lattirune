@@ -15,7 +15,7 @@ namespace Lattirune.Tests
         [SetUp]
         public void SetUp()
         {
-            _holder = new GameObject(""CodexTestHolder"");
+            _holder = new GameObject("CodexTestHolder");
             _codex = _holder.AddComponent<CodexManager>();
             _codex.Initialize(BestiaryDatabaseSO.CreateCanonicalDatabase());
         }
@@ -36,13 +36,13 @@ namespace Lattirune.Tests
             Assert.IsNotNull(db);
             Assert.AreEqual(7, db.TotalCount);
 
-            Assert.IsTrue(db.GetEntry(""enemy_sewer_rat"") != null);
-            Assert.IsTrue(db.GetEntry(""enemy_goblin_thief"") != null);
-            Assert.IsTrue(db.GetEntry(""enemy_armored_skeleton"") != null);
-            Assert.IsTrue(db.GetEntry(""enemy_venomous_spider"") != null);
-            Assert.IsTrue(db.GetEntry(""enemy_acid_slime"") != null);
-            Assert.IsTrue(db.GetEntry(""enemy_necromancer"") != null);
-            Assert.IsTrue(db.GetEntry(""enemy_lich_lord"") != null);
+            Assert.IsTrue(db.GetEntry("enemy_sewer_rat") != null);
+            Assert.IsTrue(db.GetEntry("enemy_goblin_thief") != null);
+            Assert.IsTrue(db.GetEntry("enemy_armored_skeleton") != null);
+            Assert.IsTrue(db.GetEntry("enemy_venomous_spider") != null);
+            Assert.IsTrue(db.GetEntry("enemy_acid_slime") != null);
+            Assert.IsTrue(db.GetEntry("enemy_necromancer") != null);
+            Assert.IsTrue(db.GetEntry("enemy_lich_lord") != null);
 
             foreach (var enemy in db.AllEntries)
             {
@@ -56,23 +56,23 @@ namespace Lattirune.Tests
         [Test]
         public void RecordEnemyEncounterAndDefeat_IncrementsTelemetryAccurately()
         {
-            Assert.IsFalse(_codex.IsEnemyDiscovered(""enemy_sewer_rat""));
-            Assert.AreEqual(0, _codex.GetEnemyKillCount(""enemy_sewer_rat""));
+            Assert.IsFalse(_codex.IsEnemyDiscovered("enemy_sewer_rat"));
+            Assert.AreEqual(0, _codex.GetEnemyKillCount("enemy_sewer_rat"));
 
-            _codex.RecordEnemyEncounter(""enemy_sewer_rat"");
-            Assert.IsTrue(_codex.IsEnemyDiscovered(""enemy_sewer_rat""));
-            Assert.AreEqual(0, _codex.GetEnemyKillCount(""enemy_sewer_rat""));
+            _codex.RecordEnemyEncounter("enemy_sewer_rat");
+            Assert.IsTrue(_codex.IsEnemyDiscovered("enemy_sewer_rat"));
+            Assert.AreEqual(0, _codex.GetEnemyKillCount("enemy_sewer_rat"));
 
-            _codex.RecordEnemyDefeat(""enemy_sewer_rat"");
-            _codex.RecordEnemyDefeat(""enemy_sewer_rat"");
-            Assert.AreEqual(2, _codex.GetEnemyKillCount(""enemy_sewer_rat""));
+            _codex.RecordEnemyDefeat("enemy_sewer_rat");
+            _codex.RecordEnemyDefeat("enemy_sewer_rat");
+            Assert.AreEqual(2, _codex.GetEnemyKillCount("enemy_sewer_rat"));
         }
 
         [Test]
         public void RecordSynergiesAndReactions_TracksUniqueDiscoveries()
         {
-            _codex.RecordSynergyDiscovered(""syn_flaming_blade"");
-            _codex.RecordSynergyDiscovered(""syn_venom_shiv"");
+            _codex.RecordSynergyDiscovered("syn_flaming_blade");
+            _codex.RecordSynergyDiscovered("syn_venom_shiv");
             _codex.RecordReactionTriggered("react_plasma");
             _codex.RecordReactionTriggered("react_steam");
 
@@ -85,9 +85,9 @@ namespace Lattirune.Tests
         [Test]
         public void SaveLoadPersistence_PreservesCompleteCodexState()
         {
-            _codex.RecordEnemyDefeat(""enemy_lich_lord"");
-            _codex.RecordEnemyDefeat(""enemy_lich_lord"");
-            _codex.RecordSynergyDiscovered(""syn_molten_wall"");
+            _codex.RecordEnemyDefeat("enemy_lich_lord");
+            _codex.RecordEnemyDefeat("enemy_lich_lord");
+            _codex.RecordSynergyDiscovered("syn_molten_wall");
             _codex.RecordReactionTriggered("react_toxic_flame");
 
             var killCounts = _codex.ExportKillCounts();
@@ -107,9 +107,9 @@ namespace Lattirune.Tests
             SaveData restored = SaveSerializer.DeserializeFromJson(json);
             Assert.IsNotNull(restored);
             Assert.AreEqual(1, restored.version);
-            Assert.Contains(""enemy_lich_lord"", restored.codex.discoveredEnemies);
-            Assert.Contains(""syn_molten_wall"", restored.codex.discoveredSynergies);
-            Assert.Contains(""react_toxic_flame"", restored.codex.discoveredReactions);
+            Assert.Contains("enemy_lich_lord", restored.codex.discoveredEnemies);
+            Assert.Contains("syn_molten_wall", restored.codex.discoveredSynergies);
+            Assert.Contains("react_toxic_flame", restored.codex.discoveredReactions);
         }
     }
 }
