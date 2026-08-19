@@ -19,13 +19,7 @@ namespace Lattirune.Editor
 
         static SceneAutoLoader()
         {
-            EditorApplication.delayCall += OnEditorReady;
-        }
-
-        private static void OnEditorReady()
-        {
-            SetPlayModeStartScene();
-            EnsureBootstrapSceneOpened();
+            EditorApplication.delayCall += SetPlayModeStartScene;
         }
 
         [MenuItem("Lattirune/Scenes/Open Bootstrap Scene")]
@@ -43,18 +37,6 @@ namespace Lattirune.Editor
             if (bootstrapScene != null)
             {
                 EditorSceneManager.playModeStartScene = bootstrapScene;
-            }
-        }
-
-        private static void EnsureBootstrapSceneOpened()
-        {
-            Scene activeScene = SceneManager.GetActiveScene();
-            if (string.IsNullOrEmpty(activeScene.path) || !activeScene.path.EndsWith("Bootstrap.unity"))
-            {
-                if (System.IO.File.Exists(BOOTSTRAP_SCENE_PATH))
-                {
-                    EditorSceneManager.OpenScene(BOOTSTRAP_SCENE_PATH, OpenSceneMode.Single);
-                }
             }
         }
     }
