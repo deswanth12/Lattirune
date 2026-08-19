@@ -75,7 +75,7 @@ namespace Lattirune.UI
 
             if (navigation != null)
             {
-                navigation.NavigateTo(ScreenState.GRID_BUILD);
+                navigation.NavigateTo(ScreenState.HERO_SELECTION);
             }
         }
 
@@ -146,65 +146,87 @@ namespace Lattirune.UI
 
         private void DrawMainMenuWindow()
         {
-            float modalWidth = 360f;
-            float modalHeight = 400f;
-            float startX = 20f;
-            float startY = 120f;
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
 
-            GUIStyle modalStyle = new GUIStyle(GUI.skin.box);
-            modalStyle.fontSize = 13;
-            modalStyle.alignment = TextAnchor.UpperCenter;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+
+            float panelWidth = 920f;
+            float panelHeight = 1100f;
+            float posX = (1080f - panelWidth) * 0.5f;
+            float posY = (1920f - panelHeight) * 0.5f;
+
+            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
+            boxStyle.normal.background = Texture2D.whiteTexture;
+
+            Color oldColor = GUI.color;
+            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
+            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
+            GUI.color = oldColor;
+
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 50, panelWidth - 80, panelHeight - 100));
 
             GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 24;
+            titleStyle.fontSize = 44;
             titleStyle.fontStyle = FontStyle.Bold;
             titleStyle.alignment = TextAnchor.MiddleCenter;
+            titleStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f); // Burnished Brass
 
             GUIStyle subtitleStyle = new GUIStyle(GUI.skin.label);
-            subtitleStyle.fontSize = 12;
+            subtitleStyle.fontSize = 20;
             subtitleStyle.fontStyle = FontStyle.Italic;
             subtitleStyle.alignment = TextAnchor.MiddleCenter;
+            subtitleStyle.normal.textColor = new Color(0.85f, 0.85f, 0.85f);
 
-            GUILayout.BeginArea(new Rect(startX, startY, modalWidth, modalHeight), modalStyle);
-
-            GUILayout.Label("LATTIRUNE", titleStyle);
+            GUILayout.Label("⚔️ LATTIRUNE ⚔️", titleStyle);
+            GUILayout.Space(6);
             GUILayout.Label("Align the Lattice. Awaken the Runes.", subtitleStyle);
-            GUILayout.Space(16);
+            GUILayout.Space(36);
 
-            // Minimum touch target height 52dp compliant
+            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
+            btnStyle.fontSize = 24;
+            btnStyle.fontStyle = FontStyle.Bold;
+
+            // Minimum touch target height 52dp compliant (65px in 1080x1920 portrait)
             if (hasSavedRun)
             {
-                if (GUILayout.Button("CONTINUE RUN", GUILayout.Height(52)))
+                GUI.color = Color.cyan;
+                if (GUILayout.Button("RESUME ACTIVE DESCENT", btnStyle, GUILayout.Height(65)))
                 {
                     ContinueRun();
                 }
-                GUILayout.Space(6);
+                GUI.color = oldColor;
+                GUILayout.Space(14);
             }
 
-            if (GUILayout.Button("START NEW RUN", GUILayout.Height(52)))
+            GUI.color = Color.yellow;
+            if (GUILayout.Button("START NEW RUN", btnStyle, GUILayout.Height(65)))
             {
                 StartNewRun();
             }
-            GUILayout.Space(6);
+            GUI.color = oldColor;
+            GUILayout.Space(14);
 
-            if (GUILayout.Button("CAMPFIRE META-HUB", GUILayout.Height(52)))
+            if (GUILayout.Button("CAMPFIRE META-HUB", btnStyle, GUILayout.Height(65)))
             {
                 OpenCampfireHub();
             }
-            GUILayout.Space(6);
+            GUILayout.Space(14);
 
-            if (GUILayout.Button("SETTINGS", GUILayout.Height(52)))
+            if (GUILayout.Button("AUDIO & SETTINGS", btnStyle, GUILayout.Height(65)))
             {
                 OpenSettings();
             }
-            GUILayout.Space(6);
+            GUILayout.Space(14);
 
-            if (GUILayout.Button("EXIT", GUILayout.Height(52)))
+            if (GUILayout.Button("EXIT GAME", btnStyle, GUILayout.Height(65)))
             {
                 ExitGame();
             }
 
             GUILayout.EndArea();
+            GUI.matrix = oldMatrix;
         }
     }
 }

@@ -98,57 +98,78 @@ namespace Lattirune.UI
 
         private void DrawHubWindow()
         {
-            float modalWidth = 360f;
-            float modalHeight = 440f;
-            float startX = 20f;
-            float startY = 100f;
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
 
-            GUIStyle modalStyle = new GUIStyle(GUI.skin.box);
-            modalStyle.fontSize = 13;
-            modalStyle.alignment = TextAnchor.UpperCenter;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+
+            float panelWidth = 920f;
+            float panelHeight = 1200f;
+            float posX = (1080f - panelWidth) * 0.5f;
+            float posY = (1920f - panelHeight) * 0.5f;
+
+            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
+            boxStyle.normal.background = Texture2D.whiteTexture;
+
+            Color oldColor = GUI.color;
+            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
+            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
+            GUI.color = oldColor;
+
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 50, panelWidth - 80, panelHeight - 100));
 
             GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 18;
+            titleStyle.fontSize = 36;
             titleStyle.fontStyle = FontStyle.Bold;
             titleStyle.alignment = TextAnchor.MiddleCenter;
+            titleStyle.normal.textColor = new Color(1f, 0.55f, 0.1f); // Magma Amber
 
-            GUILayout.BeginArea(new Rect(startX, startY, modalWidth, modalHeight), modalStyle);
+            GUILayout.Label("🔥 CAMPFIRE META-HUB 🔥", titleStyle);
+            GUILayout.Space(14);
 
-            GUILayout.Label("CAMPFIRE META-HUB", titleStyle);
-            GUILayout.Space(6);
+            GUIStyle statStyle = new GUIStyle(GUI.skin.label);
+            statStyle.fontSize = 20;
+            statStyle.normal.textColor = Color.white;
 
-            GUILayout.Label($"🔥 Dungeon Embers: <b>{DisplayedEmbers}</b>");
-            GUILayout.Label($"📜 Blueprints Unlocked: <b>{UnlockedBlueprintCount} / {TotalBlueprintCount}</b>");
-            GUILayout.Label($"⚔️ Runs Attempted: {metaManager.TotalRunsAttempted} | Boss Clears: {metaManager.TotalBossClears}");
+            GUILayout.BeginVertical(GUI.skin.box);
+            GUILayout.Label($"🔥 Dungeon Embers: <b>{DisplayedEmbers}</b>", statStyle);
+            GUILayout.Label($"📜 Blueprints Unlocked: <b>{UnlockedBlueprintCount} / {TotalBlueprintCount}</b>", statStyle);
+            GUILayout.Label($"⚔️ Runs Attempted: <b>{metaManager.TotalRunsAttempted}</b> | Boss Clears: <b>{metaManager.TotalBossClears}</b>", statStyle);
+            GUILayout.EndVertical();
 
-            GUILayout.Space(12);
+            GUILayout.Space(24);
 
-            // Minimum touch target height 52dp compliant (52px in reference canvas GUI)
-            if (GUILayout.Button("ENTER BLUEPRINT FORGE", GUILayout.Height(52)))
+            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
+            btnStyle.fontSize = 22;
+            btnStyle.fontStyle = FontStyle.Bold;
+
+            if (GUILayout.Button("ENTER BLUEPRINT FORGE", btnStyle, GUILayout.Height(65)))
             {
                 OpenBlueprintForge();
             }
-            GUILayout.Space(6);
+            GUILayout.Space(14);
 
-            if (GUILayout.Button("HERO ROSTER & LOADOUTS", GUILayout.Height(52)))
+            if (GUILayout.Button("HERO ROSTER & LOADOUTS", btnStyle, GUILayout.Height(65)))
             {
                 if (navigation != null) navigation.NavigateTo(ScreenState.HERO_SELECTION);
             }
-            GUILayout.Space(6);
+            GUILayout.Space(14);
 
-            if (GUILayout.Button("ARCANE CODEX & BESTIARY", GUILayout.Height(52)))
+            if (GUILayout.Button("ARCANE CODEX & BESTIARY", btnStyle, GUILayout.Height(65)))
             {
                 if (navigation != null) navigation.NavigateTo(ScreenState.CODEX);
             }
-            GUILayout.Space(6);
+            GUILayout.Space(14);
 
-            if (GUILayout.Button("BACK TO MAIN MENU", GUILayout.Height(52)))
+            if (GUILayout.Button("RETURN TO MAIN MENU", btnStyle, GUILayout.Height(65)))
             {
                 if (navigation != null) navigation.NavigateTo(ScreenState.MAIN_MENU);
                 else HideHub();
             }
 
             GUILayout.EndArea();
+            GUI.matrix = oldMatrix;
         }
     }
 }

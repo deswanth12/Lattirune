@@ -189,23 +189,23 @@ namespace Lattirune.Core
             // 10. Spawn Prototype Items or Restore from Save
             LoadOrCreateState();
 
-            // 11. Setup Development Runes, Crossfire & Prism Refraction (TASK-015 & TASK-016)
+            // 11. Setup Meta Progression and UI Navigation Flow (PLAN.md Section 14 & 19)
+            SetupUINavigationFlow();
+
+            // 12. Setup Development Runes, Crossfire & Prism Refraction (TASK-015 & TASK-016)
             if (enableConduitDemo && _activeRunesWithData.Count == 0)
             {
                 SetupDevelopmentRunesAndTargets();
             }
 
-            // 12. Setup Combat Entities, Effects, Boss & Run Manager (TASK-017 & TASK-018)
+            // 13. Setup Combat Entities, Effects, Boss & Run Manager (TASK-017 & TASK-018)
             SetupCombatAndRewardEncounter();
 
-            // 13. Setup Audio, Haptics & Feedback Coordinator
+            // 14. Setup Audio, Haptics & Feedback Coordinator
             SetupFeedbackSystem();
 
-            // 14. Initial recalculation of conduits, synergies, reactions, and player stats
+            // 15. Initial recalculation of conduits, synergies, reactions, and player stats
             RecalculateAndRenderConduits();
-
-            // 15. Setup Meta Progression and UI Navigation Flow (PLAN.md Section 14 & 19)
-            SetupUINavigationFlow();
 
             // Hook into item placement/removal events to dynamically recalculate conduits, synergies, and combat stats
             _grid.OnItemPlaced += (id, origin, size) => RecalculateAndRenderConduits();
@@ -511,7 +511,7 @@ namespace Lattirune.Core
             GameObject merchantUiObj = new GameObject("MerchantStallUIController");
             merchantUiObj.transform.SetParent(transform);
             var merchantUI = merchantUiObj.AddComponent<MerchantStallUIController>();
-            merchantUI.Initialize(merchantSystem, economyManager, inventorySystem, grid, _playerCombatant, runManager, navigation);
+            merchantUI.Initialize(merchantSystem, economyManager, inventorySystem, _grid, _playerCombatant, runManager, navigationController);
 
             // Hero Classes & Loadouts Subsystem (TASK-057)
             GameObject heroObj = new GameObject("HeroClassManager");
@@ -522,13 +522,13 @@ namespace Lattirune.Core
             GameObject heroUiObj = new GameObject("HeroClassSelectionUIController");
             heroUiObj.transform.SetParent(transform);
             var heroClassUI = heroUiObj.AddComponent<HeroClassSelectionUIController>();
-            heroClassUI.Initialize(heroClassManager, metaProgression, navigation);
+            heroClassUI.Initialize(heroClassManager, metaProgressionManager, navigationController);
 
             // Dungeon Map Topology Subsystem (TASK-058)
             GameObject mapUiObj = new GameObject("DungeonMapScreenController");
             mapUiObj.transform.SetParent(transform);
             var mapUI = mapUiObj.AddComponent<DungeonMapScreenController>();
-            mapUI.Initialize(runManager, navigation);
+            mapUI.Initialize(runManager, navigationController);
 
             // Bestiary & Codex Subsystem (TASK-059)
             GameObject codexObj = new GameObject("CodexManager");
@@ -539,7 +539,7 @@ namespace Lattirune.Core
             GameObject codexUiObj = new GameObject("CodexUIController");
             codexUiObj.transform.SetParent(transform);
             var codexUI = codexUiObj.AddComponent<CodexUIController>();
-            codexUI.Initialize(codexManager, navigation);
+            codexUI.Initialize(codexManager, navigationController);
 
             // Combat Juice: Floating Text & Camera Shake (TASK-060)
             GameObject floatyObj = new GameObject("FloatingCombatTextPool");
@@ -562,7 +562,7 @@ namespace Lattirune.Core
             GameObject restUiObj = new GameObject("CampfireRestUIController");
             restUiObj.transform.SetParent(transform);
             var campfireRestUI = restUiObj.AddComponent<CampfireRestUIController>();
-            campfireRestUI.Initialize(runManager, _playerCombatant, null, navigation);
+            campfireRestUI.Initialize(runManager, _playerCombatant, null, navigationController);
 
             // Tutorial System Subsystem (TASK-063)
             GameObject tutObj = new GameObject("TutorialManager");

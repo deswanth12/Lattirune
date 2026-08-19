@@ -152,31 +152,64 @@ namespace Lattirune.UI
 
         private void DrawForgeWindow()
         {
-            float modalWidth = 360f;
-            float modalHeight = 520f;
-            float startX = 20f;
-            float startY = 100f;
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
 
-            GUIStyle modalStyle = new GUIStyle(GUI.skin.box);
-            modalStyle.fontSize = 13;
-            modalStyle.alignment = TextAnchor.UpperCenter;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+
+            float panelWidth = 960f;
+            float panelHeight = 1500f;
+            float posX = (1080f - panelWidth) * 0.5f;
+            float posY = (1920f - panelHeight) * 0.5f;
+
+            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
+            boxStyle.normal.background = Texture2D.whiteTexture;
+
+            Color oldColor = GUI.color;
+            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
+            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
+            GUI.color = oldColor;
+
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
             GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 18;
+            titleStyle.fontSize = 36;
             titleStyle.fontStyle = FontStyle.Bold;
             titleStyle.alignment = TextAnchor.MiddleCenter;
+            titleStyle.normal.textColor = new Color(1f, 0.55f, 0.1f); // Magma Amber
 
-            GUILayout.BeginArea(new Rect(startX, startY, modalWidth, modalHeight), modalStyle);
+            GUILayout.Label("⚒️ BLUEPRINT FORGE ⚒️", titleStyle);
+            GUILayout.Space(8);
 
-            GUILayout.Label("BLUEPRINT FORGE", titleStyle);
-            GUILayout.Label($"Embers: <b>{metaManager.EmbersBalance}</b> 🔥", GUI.skin.label);
-            GUILayout.Space(6);
+            GUIStyle emberStyle = new GUIStyle(GUI.skin.label);
+            emberStyle.fontSize = 22;
+            emberStyle.fontStyle = FontStyle.Bold;
+            emberStyle.alignment = TextAnchor.MiddleCenter;
+            emberStyle.normal.textColor = Color.yellow;
+            GUILayout.Label($"Dungeon Embers: <b>{metaManager.EmbersBalance}</b> 🔥", emberStyle);
+            GUILayout.Space(16);
 
-            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, GUILayout.Height(360));
+            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, GUILayout.Height(1150));
 
             var list = blueprintDatabase.AllBlueprints;
             if (list != null)
             {
+                GUIStyle cardBoxStyle = new GUIStyle(GUI.skin.box);
+                GUIStyle cardTitleStyle = new GUIStyle(GUI.skin.label);
+                cardTitleStyle.fontSize = 22;
+                cardTitleStyle.fontStyle = FontStyle.Bold;
+                cardTitleStyle.normal.textColor = Color.white;
+
+                GUIStyle descStyle = new GUIStyle(GUI.skin.label);
+                descStyle.fontSize = 18;
+                descStyle.wordWrap = true;
+                descStyle.normal.textColor = new Color(0.85f, 0.85f, 0.85f);
+
+                GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
+                btnStyle.fontSize = 20;
+                btnStyle.fontStyle = FontStyle.Bold;
+
                 for (int i = 0; i < list.Count; i++)
                 {
                     var bp = list[i];
@@ -185,52 +218,61 @@ namespace Lattirune.UI
                     BlueprintUIState state = GetBlueprintState(bp);
                     bool isSelected = selectedBlueprint == bp;
 
-                    GUILayout.BeginVertical(GUI.skin.box);
+                    GUILayout.BeginVertical(cardBoxStyle);
 
                     string stateText = state switch
                     {
-                        BlueprintUIState.Unlocked => "<color=green>[UNLOCKED]</color>",
-                        BlueprintUIState.Available => "<color=yellow>[AVAILABLE]</color>",
-                        BlueprintUIState.InsufficientEmbers => "<color=orange>[NEED EMBERS]</color>",
-                        BlueprintUIState.Locked => "<color=grey>[LOCKED]</color>",
+                        BlueprintUIState.Unlocked => "<color=#4ade80>[UNLOCKED]</color>",
+                        BlueprintUIState.Available => "<color=#facc15>[AVAILABLE]</color>",
+                        BlueprintUIState.InsufficientEmbers => "<color=#fb923c>[NEED EMBERS]</color>",
+                        BlueprintUIState.Locked => "<color=#94a3b8>[LOCKED]</color>",
                         _ => ""
                     };
 
-                    GUILayout.Label($"<b>{bp.DisplayName}</b> - {bp.EmberCost} Embers {stateText}");
-                    GUILayout.Label($"<size=11>{bp.Description}</size>");
+                    GUILayout.Label($"<b>{bp.DisplayName}</b> — {bp.EmberCost} 🔥 {stateText}", cardTitleStyle);
+                    GUILayout.Space(4);
+                    GUILayout.Label(bp.Description, descStyle);
+                    GUILayout.Space(8);
 
-                    // Touch target compliant (>= 52 dp)
+                    // Touch target compliant (>= 52 dp -> 65px)
                     if (isSelected)
                     {
                         GUI.enabled = state == BlueprintUIState.Available && !_isProcessingPurchase;
-                        if (GUILayout.Button(state == BlueprintUIState.Unlocked ? "UNLOCKED" : "FORGE BLUEPRINT", GUILayout.Height(52)))
+                        GUI.color = state == BlueprintUIState.Available ? Color.green : Color.white;
+                        if (GUILayout.Button(state == BlueprintUIState.Unlocked ? "ALREADY UNLOCKED" : $"FORGE ({bp.EmberCost} EMBERS)", btnStyle, GUILayout.Height(65)))
                         {
                             TryPurchaseSelectedBlueprint();
                         }
+                        GUI.color = oldColor;
                         GUI.enabled = true;
                     }
                     else
                     {
-                        if (GUILayout.Button("INSPECT", GUILayout.Height(52)))
+                        if (GUILayout.Button("SELECT & INSPECT", btnStyle, GUILayout.Height(65)))
                         {
                             SelectBlueprint(bp);
                         }
                     }
 
                     GUILayout.EndVertical();
-                    GUILayout.Space(4);
+                    GUILayout.Space(8);
                 }
             }
 
             GUILayout.EndScrollView();
-            GUILayout.Space(8);
+            GUILayout.Space(14);
 
-            if (GUILayout.Button("CLOSE FORGE", GUILayout.Height(52)))
+            GUIStyle closeBtnStyle = new GUIStyle(GUI.skin.button);
+            closeBtnStyle.fontSize = 22;
+            closeBtnStyle.fontStyle = FontStyle.Bold;
+
+            if (GUILayout.Button("CLOSE FORGE", closeBtnStyle, GUILayout.Height(65)))
             {
                 CloseForge();
             }
 
             GUILayout.EndArea();
+            GUI.matrix = oldMatrix;
         }
     }
 }

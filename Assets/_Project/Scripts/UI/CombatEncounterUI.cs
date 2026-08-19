@@ -140,95 +140,175 @@ namespace Lattirune.UI
 
             if (combatSystem == null || combatSystem.Player == null || combatSystem.Enemy == null) return;
 
-            GUIStyle panelStyle = new GUIStyle(GUI.skin.box);
-            panelStyle.fontSize = 13;
-            panelStyle.alignment = TextAnchor.UpperLeft;
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
 
-            GUIStyle headerStyle = new GUIStyle(GUI.skin.label);
-            headerStyle.fontSize = 16;
-            headerStyle.fontStyle = FontStyle.Bold;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
 
-            // 1. Top Combat HUD Panel (360x220)
-            GUILayout.BeginArea(new Rect(20, 20, 360, 220), panelStyle);
+            DrawCombatTopHUD();
 
-            GUILayout.Label($"[STATUS: {combatSystem.CurrentState.ToString().ToUpper()}]", headerStyle);
-            GUILayout.Space(4);
+            // Victory Reward Selection Overlay
+            if (_isShowingRewards && _currentRewardOptions != null && _currentRewardOptions.Count > 0)
+            {
+                DrawRewardSelectionModal();
+            }
+
+            GUI.matrix = oldMatrix;
+        }
+
+        private void DrawCombatTopHUD()
+        {
+            float hudWidth = 1000f;
+            float hudHeight = 320f;
+            float posX = (1080f - hudWidth) * 0.5f;
+            float posY = 20f;
+
+            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
+            boxStyle.normal.background = Texture2D.whiteTexture;
+
+            Color oldColor = GUI.color;
+            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.94f); // Slate Obsidian
+            GUI.Box(new Rect(posX, posY, hudWidth, hudHeight), GUIContent.none, boxStyle);
+            GUI.color = oldColor;
+
+            GUILayout.BeginArea(new Rect(posX + 24, posY + 16, hudWidth - 48, hudHeight - 32));
+
+            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
+            titleStyle.fontSize = 22;
+            titleStyle.fontStyle = FontStyle.Bold;
+            titleStyle.normal.textColor = Color.white;
+
+            GUIStyle textStyle = new GUIStyle(GUI.skin.label);
+            textStyle.fontSize = 18;
+            textStyle.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
+
+            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
+            btnStyle.fontSize = 20;
+            btnStyle.fontStyle = FontStyle.Bold;
 
             PlayerCombatant player = combatSystem.Player;
-            string flameNote = player.HasActiveSynergy ? " [🔥 FLAMEBOUND EDGE ACTIVE]" : "";
-            GUILayout.Label($"Hero HP: {player.CurrentHp}/{player.MaxHp} | DEF: {player.Armor} | ATK: {player.BaseAttackDamage}+{player.ActiveRuneBonus}{flameNote}");
-
             EnemyCombatant enemy = combatSystem.Enemy;
-            GUILayout.Label($"{enemy.CombatantName} HP: {enemy.CurrentHp}/{enemy.MaxHp} | DEF: {enemy.Armor} | ATK: {enemy.BaseAttackDamage}");
+
+            string flameNote = player.HasActiveSynergy ? " <color=#f97316>[🔥 FLAME SYNERGY]</color>" : "";
+            GUILayout.Label($"<b>HERO HP:</b> {player.CurrentHp}/{player.MaxHp} | <b>DEF:</b> {player.Armor} | <b>ATK:</b> {player.BaseAttackDamage}+{player.ActiveRuneBonus}{flameNote}", textStyle);
+            GUILayout.Label($"<b>{enemy.CombatantName} HP:</b> {enemy.CurrentHp}/{enemy.MaxHp} | <b>DEF:</b> {enemy.Armor} | <b>ATK:</b> {enemy.BaseAttackDamage}", textStyle);
 
             if (combatSystem.Combo != null && combatSystem.Combo.CurrentCombo > 0)
             {
                 GUIStyle comboStyle = new GUIStyle(GUI.skin.label);
-                comboStyle.fontSize = 13;
+                comboStyle.fontSize = 18;
                 comboStyle.fontStyle = FontStyle.Bold;
                 comboStyle.normal.textColor = Color.yellow;
                 GUILayout.Label($"⚡ COMBO: {combatSystem.Combo.CurrentCombo}x  |  MULT: {combatSystem.Combo.ComboMultiplier:0.00}x", comboStyle);
             }
 
-            if (combatSystem.Modifiers != null && combatSystem.Modifiers.ActiveCount > 0)
-            {
-                GUIStyle modStyle = new GUIStyle(GUI.skin.label);
-                modStyle.fontSize = 11;
-                modStyle.normal.textColor = Color.cyan;
-                GUILayout.Label($"✨ Active Modifiers ({combatSystem.Modifiers.ActiveCount})", modStyle);
-            }
+            GUILayout.Label($"<size=15><i>Log: {_combatLog}</i></size>", textStyle);
+            GUILayout.Space(8);
 
-            GUILayout.Space(4);
-            GUILayout.Label($"Log: {_combatLog}");
-            GUILayout.Space(4);
+            GUILayout.BeginHorizontal();
 
             // Battle Start Button (in Preparing State)
             if (combatSystem.CurrentState == CombatState.Preparing && !_isShowingRewards)
             {
-                if (GUILayout.Button("START BATTLE", GUILayout.Height(40)))
+                GUI.color = Color.green;
+                if (GUILayout.Button("⚔️ START BATTLE", btnStyle, GUILayout.Height(65), GUILayout.Width(320)))
                 {
                     combatSystem.StartCombat();
+                }
+                GUI.color = oldColor;
+            }
+            // Active Fighting Controls: Speed Multiplier & Emergency Heal
+            else if (combatSystem.CurrentState == CombatState.Fighting)
+            {
+                string speedLabel = combatSystem.SpeedMultiplier switch
+                {
+                    >= 3.0f => "⏩ SPEED: 3.0x",
+                    >= 2.0f => "⏩ SPEED: 2.0x",
+                    _ => "▶️ SPEED: 1.0x"
+                };
+
+                if (GUILayout.Button(speedLabel, btnStyle, GUILayout.Height(65), GUILayout.Width(240)))
+                {
+                    float nextSpeed = combatSystem.SpeedMultiplier switch
+                    {
+                        >= 3.0f => 1.0f,
+                        >= 2.0f => 3.0f,
+                        _ => 2.0f
+                    };
+                    combatSystem.SetSpeedMultiplier(nextSpeed);
+                }
+
+                GUILayout.Space(12);
+
+                if (GUILayout.Button("🧪 POTION (+25 HP)", btnStyle, GUILayout.Height(65), GUILayout.Width(260)))
+                {
+                    combatSystem.UseEmergencyPotion(player, 25);
                 }
             }
             // Retry Button (in Defeat State)
             else if (combatSystem.CurrentState == CombatState.Defeat)
             {
-                if (GUILayout.Button("RETRY ENCOUNTER", GUILayout.Height(40)))
+                GUI.color = Color.red;
+                if (GUILayout.Button("🔄 RETRY ENCOUNTER", btnStyle, GUILayout.Height(65), GUILayout.Width(320)))
                 {
                     combatSystem.ResetCombat();
                 }
+                GUI.color = oldColor;
             }
+
+            GUILayout.EndHorizontal();
 
             GUILayout.EndArea();
-
-            // 2. Victory Reward Selection Overlay (Portrait Center Modal)
-            if (_isShowingRewards && _currentRewardOptions != null && _currentRewardOptions.Count > 0)
-            {
-                DrawRewardSelectionModal();
-            }
         }
 
         private void DrawRewardSelectionModal()
         {
-            float modalWidth = 360f;
-            float modalHeight = 440f;
-            float startX = 20f;
-            float startY = 250f;
+            float modalWidth = 960f;
+            float modalHeight = 1200f;
+            float posX = (1080f - modalWidth) * 0.5f;
+            float posY = 380f;
 
-            GUIStyle modalStyle = new GUIStyle(GUI.skin.box);
-            modalStyle.fontSize = 13;
-            modalStyle.alignment = TextAnchor.UpperCenter;
+            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
+            boxStyle.normal.background = Texture2D.whiteTexture;
+
+            Color oldColor = GUI.color;
+            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.98f); // Slate Obsidian
+            GUI.Box(new Rect(posX, posY, modalWidth, modalHeight), GUIContent.none, boxStyle);
+            GUI.color = oldColor;
+
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, modalWidth - 80, modalHeight - 80));
 
             GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 18;
+            titleStyle.fontSize = 36;
             titleStyle.fontStyle = FontStyle.Bold;
             titleStyle.alignment = TextAnchor.MiddleCenter;
+            titleStyle.normal.textColor = new Color(0.95f, 0.8f, 0.2f); // Gold
 
-            GUILayout.BeginArea(new Rect(startX, startY, modalWidth, modalHeight), modalStyle);
-
-            GUILayout.Label("VICTORY REWARDS", titleStyle);
-            GUILayout.Label("Select ONE reward to reinforce your build:", GUI.skin.label);
+            GUILayout.Label("🏆 VICTORY REWARDS 🏆", titleStyle);
             GUILayout.Space(8);
+
+            GUIStyle subStyle = new GUIStyle(GUI.skin.label);
+            subStyle.fontSize = 20;
+            subStyle.alignment = TextAnchor.MiddleCenter;
+            subStyle.normal.textColor = Color.white;
+            GUILayout.Label("Select ONE reward to reinforce your build:", subStyle);
+            GUILayout.Space(24);
+
+            GUIStyle cardBoxStyle = new GUIStyle(GUI.skin.box);
+            GUIStyle cardTitleStyle = new GUIStyle(GUI.skin.label);
+            cardTitleStyle.fontSize = 22;
+            cardTitleStyle.fontStyle = FontStyle.Bold;
+            cardTitleStyle.normal.textColor = Color.white;
+
+            GUIStyle descStyle = new GUIStyle(GUI.skin.label);
+            descStyle.fontSize = 18;
+            descStyle.wordWrap = true;
+            descStyle.normal.textColor = new Color(0.85f, 0.85f, 0.85f);
+
+            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
+            btnStyle.fontSize = 20;
+            btnStyle.fontStyle = FontStyle.Bold;
 
             for (int i = 0; i < _currentRewardOptions.Count; i++)
             {
@@ -238,33 +318,38 @@ namespace Lattirune.UI
                 bool isSelected = _selectedRewardOption == opt;
                 bool isLocked = _selectedRewardOption != null;
 
-                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.BeginVertical(cardBoxStyle);
 
-                string selectState = isSelected ? " [SELECTED]" : "";
-                GUILayout.Label($"<b>{opt.DisplayName}</b> ({opt.Footprint.x}x{opt.Footprint.y} {opt.Category}){selectState}");
-                GUILayout.Label($"<size=11>{opt.Description}</size>");
+                string selectState = isSelected ? " <color=#4ade80>[SELECTED]</color>" : "";
+                GUILayout.Label($"<b>{opt.DisplayName}</b> ({opt.Footprint.x}x{opt.Footprint.y} {opt.Category}){selectState}", cardTitleStyle);
+                GUILayout.Space(4);
+                GUILayout.Label(opt.Description, descStyle);
+                GUILayout.Space(8);
 
                 GUI.enabled = !isLocked;
-                // Minimum touch target height 52dp compliant (52px in reference canvas GUI)
-                if (GUILayout.Button(isSelected ? "SELECTED" : "CHOOSE REWARD", GUILayout.Height(48)))
+                if (isSelected) GUI.color = Color.green;
+                if (GUILayout.Button(isSelected ? "REWARD CHOSEN" : "CLAIM REWARD", btnStyle, GUILayout.Height(65)))
                 {
                     SelectReward(opt);
                 }
+                GUI.color = oldColor;
                 GUI.enabled = true;
 
                 GUILayout.EndVertical();
-                GUILayout.Space(4);
+                GUILayout.Space(12);
             }
 
-            GUILayout.Space(8);
+            GUILayout.Space(20);
 
             // Continue Button (enabled after a reward is chosen)
             if (_selectedRewardOption != null)
             {
-                if (GUILayout.Button("CONTINUE", GUILayout.Height(44)))
+                GUI.color = Color.cyan;
+                if (GUILayout.Button("PROCEED TO NEXT FLOOR ➔", btnStyle, GUILayout.Height(65)))
                 {
                     CloseRewardScreenAndContinue();
                 }
+                GUI.color = oldColor;
             }
 
             GUILayout.EndArea();

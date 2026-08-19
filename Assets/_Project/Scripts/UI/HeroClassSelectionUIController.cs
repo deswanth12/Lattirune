@@ -237,8 +237,23 @@ namespace Lattirune.UI
             GUILayout.Label(_feedbackMessage, feedbackStyle);
             GUILayout.Space(15);
 
-            // Close / Return Button
-            if (GUILayout.Button(""CONFIRM & RETURN"", GUILayout.Height(65)))
+            // Action / Navigation Buttons
+            GUILayout.BeginHorizontal();
+
+            GUI.color = Color.green;
+            if (GUILayout.Button("DESCEND INTO DUNGEON ➔", GUILayout.Height(65)))
+            {
+                Hide();
+                if (navigation != null)
+                {
+                    navigation.NavigateTo(ScreenState.RUN_START);
+                }
+            }
+            GUI.color = oldColor;
+
+            GUILayout.Space(12);
+
+            if (GUILayout.Button("RETURN", GUILayout.Height(65), GUILayout.Width(240)))
             {
                 Hide();
                 if (navigation != null)
@@ -246,6 +261,8 @@ namespace Lattirune.UI
                     navigation.NavigateBack();
                 }
             }
+
+            GUILayout.EndHorizontal();
 
             GUILayout.EndArea();
             GUI.matrix = oldMatrix;

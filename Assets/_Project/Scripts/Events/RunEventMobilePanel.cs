@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Lattirune.Combat;
 using Lattirune.Economy;
@@ -70,44 +70,59 @@ namespace Lattirune.Events
         {
             if (!isVisible || _activeEvent == null) return;
 
-            GUIStyle cardStyle = new GUIStyle(GUI.skin.box);
-            cardStyle.fontSize = 14;
-            cardStyle.alignment = TextAnchor.UpperLeft;
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
+
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+
+            float panelWidth = 960f;
+            float panelHeight = 1200f;
+            float posX = (1080f - panelWidth) * 0.5f;
+            float posY = (1920f - panelHeight) * 0.5f;
+
+            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
+            boxStyle.normal.background = Texture2D.whiteTexture;
+
+            Color oldColor = GUI.color;
+            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.98f); // Slate Obsidian
+            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
+            GUI.color = oldColor;
+
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
             GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 18;
+            titleStyle.fontSize = 36;
             titleStyle.fontStyle = FontStyle.Bold;
             titleStyle.alignment = TextAnchor.MiddleCenter;
+            titleStyle.normal.textColor = new Color(0.95f, 0.8f, 0.2f); // Gold
 
             GUIStyle loreStyle = new GUIStyle(GUI.skin.label);
-            loreStyle.fontSize = 13;
+            loreStyle.fontSize = 20;
             loreStyle.wordWrap = true;
+            loreStyle.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
 
             GUIStyle statusStyle = new GUIStyle(GUI.skin.box);
-            statusStyle.fontSize = 12;
+            statusStyle.fontSize = 20;
             statusStyle.fontStyle = FontStyle.Bold;
             statusStyle.alignment = TextAnchor.MiddleCenter;
 
-            int panelWidth = Mathf.Min(480, Screen.width - 32);
-            int panelHeight = 440;
-            int posX = (Screen.width - panelWidth) / 2;
-            int posY = (Screen.height - panelHeight) / 2;
-
-            GUILayout.BeginArea(new Rect(posX, posY, panelWidth, panelHeight), cardStyle);
-
-            GUILayout.Space(8);
             GUILayout.Label(_activeEvent.Title, titleStyle);
-            GUILayout.Space(6);
+            GUILayout.Space(12);
 
             // Resource indicators
             int currentGold = _economyManager != null ? _economyManager.GoldBalance : 0;
             int currentHp = _playerCombatant != null ? _playerCombatant.CurrentHp : 100;
             int maxHp = _playerCombatant != null ? _playerCombatant.MaxHp : 100;
-            GUILayout.Box($""❤️ HP: {currentHp}/{maxHp}   |   💰 GOLD: {currentGold}"", statusStyle, GUILayout.Height(28));
-            GUILayout.Space(8);
+            GUILayout.Box($"❤️ HP: {currentHp}/{maxHp}   |   💰 GOLD: {currentGold}", statusStyle, GUILayout.Height(44));
+            GUILayout.Space(16);
 
             GUILayout.Label(_activeEvent.Description, loreStyle);
-            GUILayout.Space(12);
+            GUILayout.Space(24);
+
+            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
+            btnStyle.fontSize = 20;
+            btnStyle.fontStyle = FontStyle.Bold;
 
             if (!_isResolved)
             {
@@ -117,53 +132,57 @@ namespace Lattirune.Events
                     var choice = _activeEvent.Choices[i];
                     if (choice == null) continue;
 
-                    string buttonText = $""<b>{choice.DisplayName}</b>\n<size=11>{choice.Description}</size>"";
-                    if (GUILayout.Button(buttonText, GUILayout.MinHeight(54)))
+                    string buttonText = $"<b>{choice.DisplayName}</b>\n<size=16>{choice.Description}</size>";
+                    if (GUILayout.Button(buttonText, btnStyle, GUILayout.MinHeight(75)))
                     {
                         if (_eventService != null)
                         {
                             bool success = _eventService.SelectChoice(choice.ChoiceId, _economyManager, _playerCombatant, _modifierManager);
                             if (success)
                             {
-                                SetOutcomeFeedback($""✓ Outcome applied: {choice.DisplayName}"", resolved: true);
+                                SetOutcomeFeedback($"✓ Outcome applied: {choice.DisplayName}", resolved: true);
                             }
                             else
                             {
-                                SetOutcomeFeedback($""✕ Cannot choose: Resource requirement not met."", resolved: false);
+                                SetOutcomeFeedback($"✕ Cannot choose: Resource requirement not met.", resolved: false);
                             }
                         }
                     }
-                    GUILayout.Space(4);
+                    GUILayout.Space(10);
                 }
             }
             else
             {
                 // Resolution view with Continue button
                 GUIStyle successStyle = new GUIStyle(GUI.skin.label);
-                successStyle.fontSize = 14;
+                successStyle.fontSize = 22;
                 successStyle.fontStyle = FontStyle.Bold;
                 successStyle.normal.textColor = Color.green;
                 successStyle.alignment = TextAnchor.MiddleCenter;
 
                 GUILayout.Label(_outcomeFeedback, successStyle);
-                GUILayout.Space(16);
+                GUILayout.Space(24);
 
-                if (GUILayout.Button(""CONTINUE DUNGEON EXPLORATION"", GUILayout.MinHeight(54)))
+                GUI.color = Color.cyan;
+                if (GUILayout.Button("CONTINUE DUNGEON EXPLORATION", btnStyle, GUILayout.Height(65)))
                 {
                     Hide();
                 }
+                GUI.color = oldColor;
             }
 
             if (!_isResolved && !string.IsNullOrEmpty(_outcomeFeedback))
             {
-                GUILayout.Space(6);
+                GUILayout.Space(10);
                 GUIStyle warnStyle = new GUIStyle(GUI.skin.label);
+                warnStyle.fontSize = 18;
                 warnStyle.normal.textColor = Color.yellow;
                 warnStyle.alignment = TextAnchor.MiddleCenter;
                 GUILayout.Label(_outcomeFeedback, warnStyle);
             }
 
             GUILayout.EndArea();
+            GUI.matrix = oldMatrix;
         }
     }
 }
