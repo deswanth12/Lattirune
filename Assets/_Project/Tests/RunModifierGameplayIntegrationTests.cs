@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Lattirune.Combat;
@@ -155,8 +155,8 @@ namespace Lattirune.Tests
             enemy.TakeDirectDamage(100); // Enemy perishes
             combat.Tick(0.1f); // Resolves victory
 
-            // Base gold for non-elite is 10-15 -> 1.5x gives 15-22
-            Assert.GreaterOrEqual(runManager.CurrentGold, 15);
+            // Base gold for non-elite is 6-12 -> 1.5x gives 9-18
+            Assert.GreaterOrEqual(runManager.CurrentGold, 9);
         }
     }
 }
