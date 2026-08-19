@@ -52,12 +52,9 @@ namespace Lattirune.UI
 
             if (combatSystem != null)
             {
-                combatSystem.OnStateChanged += HandleCombatStateChanged;
-            }
-
-            if (rewardService != null)
-            {
-                rewardService.OnRewardApplied += HandleRewardApplied;
+                combatSystem.OnAttackExecuted += HandleAttackExecuted;
+                combatSystem.OnVictory += HandleVictory;
+                combatSystem.OnDefeat += HandleDefeat;
             }
         }
 
