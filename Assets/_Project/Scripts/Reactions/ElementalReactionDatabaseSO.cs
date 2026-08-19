@@ -120,7 +120,6 @@ namespace Lattirune.Reactions
             error = valid ? null : string.Join("; ", list);
             return valid;
         }
-        public bool IsValid(out List<string> errors) => ValidateDatabase(out errors);
 
         public ElementalReactionDefinitionSO GetReaction(ElementType a, ElementType b) => FindReaction(a, b);
         public ElementalReactionDefinitionSO GetReaction(Lattirune.Runes.RuneElement a, Lattirune.Runes.RuneElement b) => FindReaction((ElementType)(int)a, (ElementType)(int)b);

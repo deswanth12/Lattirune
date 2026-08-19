@@ -23,6 +23,9 @@ namespace Lattirune.Combat
 
         public int BaseAttackDamage => baseAttackDamage;
         public int BaseDamage => baseAttackDamage;
+        public int GoldStealPerHit => 3;
+        public float ReflectPercentage => 0.20f;
+        public int PoisonStacksOnHit => 2;
         public IReadOnlyList<EnemyTraitDefinitionSO> ActiveTraits => _activeTraits;
 
         public void SetupTrainingDummy(int hp = 50, int baseArmor = 2, int attack = 4, float interval = 1.5f)

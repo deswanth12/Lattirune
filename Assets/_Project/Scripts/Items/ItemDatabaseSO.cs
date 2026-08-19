@@ -109,6 +109,19 @@ namespace Lattirune.Items
             return true;
         }
 
+        public bool ValidateDatabase(out List<string> errors)
+        {
+            errors = new List<string>();
+            if (!IsValid(out string err))
+            {
+                if (!string.IsNullOrEmpty(err)) errors.Add(err);
+                return false;
+            }
+            return true;
+        }
+
+        public bool ValidateDatabase() => IsValid(out _);
+
         /// <summary>
         /// Creates the complete canonical MVP 1.0 20-Item Database specified in PLAN.md Section 6.1.
         /// </summary>

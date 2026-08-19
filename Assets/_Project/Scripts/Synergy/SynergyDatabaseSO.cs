@@ -110,7 +110,6 @@ namespace Lattirune.Synergy
             error = valid ? null : string.Join("; ", list);
             return valid;
         }
-        public bool IsValid(out List<string> errors) => ValidateDatabase(out errors);
 
         public static SynergyDatabaseSO CreateCanonicalDatabase() => CreateDefaultDatabase();
         public static SynergyDatabaseSO CreateCanonicalSynergyDatabase() => CreateDefaultDatabase();
