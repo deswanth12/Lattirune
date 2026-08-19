@@ -10,23 +10,23 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Engine:** Unity 6 LTS (2D URP)
 * **Language:** C#
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
-* **Development Status:** Pre-production / Phase 3 MVP Production Hardened
+* **Development Status:** Pre-production / Phase 3 MVP Balance & Content Audited
 
-## Phase 3 MVP Production Hardening & Release Gate (TASK-030 & TASK-031)
+## Phase 3 MVP Release Gate & Content Balance Verification (TASK-030 - TASK-032)
 
 * **Build Target:** `Builds/Android/Lattirune-MVP1-Verification.apk`
 * **Package ID:** `com.developer.lattirune`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 330 / 330 passing ($100\%$)
+* **EditMode Tests:** 342 / 342 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
-* **Hardening & Immutability Coverage:**
-  * **Data Uniqueness:** 20 Item IDs, 10 Rune IDs, 5 Synergy IDs, 5 Reaction IDs, 12 Blueprint IDs verified distinct and valid.
-  * **SO Immutability:** ScriptableObject definition assets are strictly read-only and preserved across combat, reward, and forge operations.
-  * **Combat Boundaries:** Dead combatants cannot attack, zero HP triggers clean defeat evaluation, non-negative damage clamping, and single-use emergency potion consumption.
-  * **Economy Safeguards:** Currency balances protected against overdrafts and single-use Floor 8 Campfire Rest options enforced.
-  * **Meta-Progression Isolation:** Starting bonuses apply deterministically once per run without runaway accumulation.
+* **Content Balance & Numerical Audit:**
+  * **20 Canonical Items:** Exact footprint, damage, cooldown, shield, and traits audited against PLAN.md Section 6.1.
+  * **10 Canonical Runes:** Direction, element, damage bonus, and special mechanics audited against PLAN.md Section 5.1.
+  * **5 Master Synergies & 5 Elemental Reactions:** Priority overrides and symmetric pair resolution ($A + B == B + A$) verified.
+  * **6-Enemy Bestiary & 3-Phase Lich Lord:** Stats, cooldown intervals, poison ticks, enrage thresholds, and reflect traits verified.
+  * **Economy Balance Sheet:** In-run mob gold drops ($6-12$ normal, $20-35$ elite), boss embers ($80-120$), and shop prices verified.
 * **Performance Baseline:**
   * Cold Startup: $1.1\text{s}$ (Target $< 2.0\text{s}$)
   * Peak Memory: $82\text{ MB}$ (Target $< 180\text{ MB}$)
