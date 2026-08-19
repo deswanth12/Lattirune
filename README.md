@@ -12,6 +12,23 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** Pre-production / Phase 3 Content Build
 
+## MVP 1.0 10-Rune Catalogue
+
+The complete rune catalogue defined in PLAN.md Section 5.1:
+
+| # | Rune Name | ID | Element | Direction | Mechanical In-Combat Effect | Compatible Setup |
+| :- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | **Ember Rune** | `rune_ember` | Fire | East ($\rightarrow$) | +6 Fire Dmg; Burn (3 dmg/s for 4s) | Blades, Bows, Wands |
+| 2 | **Frost Rune** | `rune_frost` | Ice | South ($\downarrow$) | +4 Ice Dmg; Enemy speed -15% | Shields, Daggers |
+| 3 | **Spark Rune** | `rune_spark` | Lightning | North ($\uparrow$) | +8 Shock Dmg; 25% chain arc chance | Fast weapons (<1.5s) |
+| 4 | **Venom Rune** | `rune_venom` | Poison | West ($\leftarrow$) | 2 Poison stacks/sec (ignores shields) | Daggers, Bows |
+| 5 | **Crossfire Rune** | `rune_crossfire` | Fire | Cross ($+$) | +3 Fire Dmg in all 4 cardinal vectors | Multi-weapon setups |
+| 6 | **Prism Rune** | `rune_prism` | Light | Split ($\backslash$) | Splits incoming beam into 2 branches | Runes & optical setups |
+| 7 | **Amplifier Node** | `rune_amplifier` | Force | Omni ($\circ$) | Doubles power of adjacent runes | Concentrated rune clusters |
+| 8 | **Iron Rune** | `rune_iron` | Earth | South ($\downarrow$) | +15 Shield at battle start | Armor, Shields |
+| 9 | **Vampire Rune** | `rune_vampire` | Shadow | North ($\uparrow$) | Heals player for 12% of damage dealt | Bladed weapons |
+| 10 | **Haste Rune** | `rune_haste` | Wind | East ($\rightarrow$) | +25% Attack Speed to weapons in line | Heavy weapons (>2.5s) |
+
 ## MVP 1.0 Item Catalogue (20 Items)
 
 The complete item catalogue defined in PLAN.md Section 6.1:

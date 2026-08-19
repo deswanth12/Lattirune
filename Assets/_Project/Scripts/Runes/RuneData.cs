@@ -4,9 +4,10 @@ using Lattirune.Core;
 namespace Lattirune.Runes
 {
     /// <summary>
-    /// Data-driven definition for a magical Rune.
-    /// Stores core directional conduit properties and elemental affinity for the 5x5 LatticeGrid.
+    /// Data-driven ScriptableObject definition for a magical Rune.
+    /// Stores core directional conduit properties, elemental affinity, and combat bonuses for the 5x5 LatticeGrid.
     /// Supports Cardinal, Crossfire (Cross), Refracting (Split), and Omnidirectional (Omni) emitter modes.
+    /// Derived strictly from PLAN.md Section 5.1.
     /// </summary>
     [CreateAssetMenu(fileName = "Rune_", menuName = "Lattirune/Data/Rune")]
     public class RuneData : ScriptableObject
@@ -23,6 +24,17 @@ namespace Lattirune.Runes
         [SerializeField] [Range(1, 5)] private int range = 5;
         [SerializeField] private bool isActive = true;
 
+        [Header("Combat & Status Attributes (PLAN.md Section 5.1)")]
+        [SerializeField] private int flatDamageBonus = 0;
+        [SerializeField] private float burnDamagePerSec = 0f;
+        [SerializeField] private float burnDuration = 0f;
+        [SerializeField] private float speedReductionPercent = 0f;
+        [SerializeField] private float chainChance = 0f;
+        [SerializeField] private int poisonStacksPerSec = 0;
+        [SerializeField] private int shieldBonus = 0;
+        [SerializeField] private float lifestealPercent = 0f;
+        [SerializeField] private float hastePercent = 0f;
+
         public string RuneId => runeId;
         public string DisplayName => displayName;
         public ElementType Element => element;
@@ -30,13 +42,32 @@ namespace Lattirune.Runes
         public int Range => range;
         public bool IsActive => isActive;
 
+        public int FlatDamageBonus => flatDamageBonus;
+        public float BurnDamagePerSec => burnDamagePerSec;
+        public float BurnDuration => burnDuration;
+        public float SpeedReductionPercent => speedReductionPercent;
+        public float ChainChance => chainChance;
+        public int PoisonStacksPerSec => poisonStacksPerSec;
+        public int ShieldBonus => shieldBonus;
+        public float LifestealPercent => lifestealPercent;
+        public float HastePercent => hastePercent;
+
         public void Initialize(
             string id, 
             string name, 
             ConduitDirection dir, 
             ElementType elem = ElementType.Fire, 
             int maxRange = 5, 
-            bool active = true)
+            bool active = true,
+            int damageBonus = 0,
+            float burnDmg = 0f,
+            float burnDur = 0f,
+            float speedReduction = 0f,
+            float chain = 0f,
+            int poisonRate = 0,
+            int shield = 0,
+            float lifesteal = 0f,
+            float haste = 0f)
         {
             runeId = id;
             displayName = name;
@@ -44,6 +75,16 @@ namespace Lattirune.Runes
             element = elem;
             range = Mathf.Clamp(maxRange, 1, 5);
             isActive = active;
+
+            flatDamageBonus = Mathf.Max(0, damageBonus);
+            burnDamagePerSec = Mathf.Max(0f, burnDmg);
+            burnDuration = Mathf.Max(0f, burnDur);
+            speedReductionPercent = Mathf.Clamp01(speedReduction);
+            chainChance = Mathf.Clamp01(chain);
+            poisonStacksPerSec = Mathf.Max(0, poisonRate);
+            shieldBonus = Mathf.Max(0, shield);
+            lifestealPercent = Mathf.Clamp01(lifesteal);
+            hastePercent = Mathf.Clamp01(haste);
         }
 
         public bool IsValid(out string error)
