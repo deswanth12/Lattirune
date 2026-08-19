@@ -106,6 +106,28 @@ namespace Lattirune.Save
     }
 
     [Serializable]
+    public class SavedMetaData
+    {
+        public int embers;
+        public List<string> unlockedBlueprints = new List<string>();
+        public int totalBossClears;
+        public int totalRunsAttempted;
+
+        public SavedMetaData() { }
+
+        public SavedMetaData(int emberCount, IEnumerable<string> blueprints, int bossClears = 0, int runs = 0)
+        {
+            embers = Mathf.Max(0, emberCount);
+            if (blueprints != null)
+            {
+                unlockedBlueprints.AddRange(blueprints);
+            }
+            totalBossClears = bossClears;
+            totalRunsAttempted = runs;
+        }
+    }
+
+    [Serializable]
     public class SavedSettingsData
     {
         public float masterVolume = 1.0f;
@@ -125,7 +147,7 @@ namespace Lattirune.Save
     }
 
     /// <summary>
-    /// Root serializable data transfer object for player state, inventory expansion, run progression, and settings persistence.
+    /// Root serializable data transfer object for player state, inventory expansion, run progression, meta-progression, and settings persistence.
     /// </summary>
     [Serializable]
     public class SaveData
@@ -136,6 +158,7 @@ namespace Lattirune.Save
         public List<SavedRuneData> runes = new List<SavedRuneData>();
         public SavedRunData run = new SavedRunData();
         public SavedInventoryData inventory = new SavedInventoryData();
+        public SavedMetaData meta = new SavedMetaData();
         public SavedSettingsData settings = new SavedSettingsData();
 
         public SaveData()
@@ -154,6 +177,7 @@ namespace Lattirune.Save
                 timestamp = DateTime.UtcNow.ToString("o"),
                 run = new SavedRunData(false, 0, 0, 0),
                 inventory = new SavedInventoryData(0, null),
+                meta = new SavedMetaData(0, null, 0, 0),
                 settings = new SavedSettingsData(1.0f, 1.0f, false, true)
             };
 
