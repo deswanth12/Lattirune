@@ -67,10 +67,18 @@ The multi-floor roguelite dungeon progression coordinates encounters, reward dra
 [Floor 3: Boss Sanctum (Lich Lord)] → [Combat] → [Victory] → [Reward Draft] → [RUN COMPLETE]
 ```
 
-### State Machine Lifecycle:
-* **Explicit State Model:** `RunState` (`NotStarted`, `Starting`, `FloorPreparing`, `EncounterActive`, `RewardSelection`, `FloorTransition`, `RunComplete`, `Defeated`).
-* **Data-Driven Architecture:** `DungeonDefinitionSO`, `DungeonFloorDefinitionSO`, and `EncounterDefinitionSO` encapsulate immutable level definitions.
-* **Run Persistence & Resume:** `SavedRunData` cleanly serializes active floor and encounter indexes into local encrypted JSON saves.
+## Boss Encounter Mechanics & The Lich Lord
+
+The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic dynamic enrage thresholds:
+
+| Phase # | Phase Name | HP% Threshold | Effective Armor | Effective Attack | Attack Interval |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Phase 1** | Frost Warden | $100\% \rightarrow 66\%$ | 10 | 8 | 2.5s |
+| **Phase 2** | Soul Harvest | $66\% \rightarrow 33\%$ | 15 (+5) | 12 (+4) | 2.0s (0.8×) |
+| **Phase 3** | Necrotic Inversion | $33\% \rightarrow 0\%$ | 20 (+10) | 16 (+8) | 1.6s (0.64×) |
+
+* **BossSystem:** Coordinates phase threshold detection, stat modifications, and lifecycle events (`OnPhaseChanged`, `OnBossEnraged`).
+* **BossTelemetry:** Exposes real-time read-only status and phase telemetry without mutating ScriptableObject definitions.
 
 ## Combat Status & Effect Framework
 

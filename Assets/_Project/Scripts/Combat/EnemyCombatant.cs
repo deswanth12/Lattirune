@@ -24,5 +24,11 @@ namespace Lattirune.Combat
             baseAttackDamage = attack;
             Initialize(name, hp, baseArmor, interval);
         }
+
+        public void SetEffectiveStats(int newArmor, int newAttack, float newInterval)
+        {
+            baseAttackDamage = newAttack;
+            SetStats(MaxHp, newArmor, newInterval);
+        }
     }
 }

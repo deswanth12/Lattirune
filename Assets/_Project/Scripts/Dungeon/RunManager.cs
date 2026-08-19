@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Lattirune.Boss;
 using Lattirune.Combat;
 using Lattirune.Items;
 using Lattirune.UI;
@@ -8,7 +9,7 @@ namespace Lattirune.Dungeon
 {
     /// <summary>
     /// Master state machine coordinator for multi-floor dungeon run progression.
-    /// Manages floor transitions, encounter sequencing, victory/defeat lifecycle, and run completion.
+    /// Manages floor transitions, encounter sequencing, boss encounters, victory/defeat lifecycle, and run completion.
     /// </summary>
     public class RunManager : MonoBehaviour
     {
@@ -17,6 +18,7 @@ namespace Lattirune.Dungeon
 
         [Header("Systems")]
         [SerializeField] private CombatSystem combatSystem;
+        [SerializeField] private BossSystem bossSystem;
         [SerializeField] private RewardService rewardService;
         [SerializeField] private PlayerCombatant playerCombatant;
         [SerializeField] private EnemyCombatant enemyCombatant;
@@ -46,6 +48,7 @@ namespace Lattirune.Dungeon
         public bool IsFinalFloor => dungeonDefinition != null && currentFloorIndex >= dungeonDefinition.TotalFloorCount - 1;
         public bool IsFinalEncounterOnFloor => CurrentFloor != null && currentEncounterIndex >= CurrentFloor.EncounterCount - 1;
         public bool IsRunFinished => currentState == RunState.RunComplete || currentState == RunState.Defeated;
+        public BossSystem Boss => bossSystem;
 
         private void Awake()
         {
@@ -65,12 +68,14 @@ namespace Lattirune.Dungeon
             CombatSystem combat,
             RewardService rewards,
             PlayerCombatant player,
-            EnemyCombatant enemy)
+            EnemyCombatant enemy,
+            BossSystem boss = null)
         {
             dungeonDefinition = dungeon;
             EnsureDefaultDungeon();
 
             combatSystem = combat;
+            bossSystem = boss;
             rewardService = rewards;
             playerCombatant = player;
             enemyCombatant = enemy;
@@ -114,14 +119,26 @@ namespace Lattirune.Dungeon
         {
             if (CurrentEncounter == null) return;
 
-            if (enemyCombatant != null)
+            if (CurrentEncounter.IsBoss && bossSystem != null)
             {
-                enemyCombatant.SetupTrainingDummy(
-                    hp: CurrentEncounter.EnemyHp,
-                    baseArmor: CurrentEncounter.EnemyArmor,
-                    attack: CurrentEncounter.EnemyAttack,
-                    interval: CurrentEncounter.AttackInterval
-                );
+                bossSystem.StartBossFight();
+            }
+            else
+            {
+                if (bossSystem != null)
+                {
+                    bossSystem.StopBossFight();
+                }
+
+                if (enemyCombatant != null)
+                {
+                    enemyCombatant.SetupTrainingDummy(
+                        hp: CurrentEncounter.EnemyHp,
+                        baseArmor: CurrentEncounter.EnemyArmor,
+                        attack: CurrentEncounter.EnemyAttack,
+                        interval: CurrentEncounter.AttackInterval
+                    );
+                }
             }
 
             if (playerCombatant != null)
@@ -205,6 +222,11 @@ namespace Lattirune.Dungeon
             currentFloorIndex = 0;
             currentEncounterIndex = 0;
             SetState(RunState.NotStarted);
+
+            if (bossSystem != null)
+            {
+                bossSystem.ResetBoss();
+            }
 
             if (combatSystem != null)
             {

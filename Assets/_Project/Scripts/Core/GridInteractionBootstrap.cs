@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Audio;
+using Lattirune.Boss;
 using Lattirune.Combat;
 using Lattirune.Combat.Effects;
 using Lattirune.Core;
@@ -19,8 +20,8 @@ namespace Lattirune.Core
     /// Bootstraps the complete Phase 2 Prototype: 5x5 LatticeGrid, data-driven items,
     /// Crossfire Multi-Directional Emitters & Omnidirectional Nodes, Prism Refraction,
     /// 5-Element Synergy system, 2-Beam Elemental Reactions, Combat Effect / Status Framework,
-    /// Multi-Floor Run Progression State Machine, 1v1 Combat loop, Reward selection, Audio/Haptics,
-    /// and Encrypted Local Save persistence.
+    /// Multi-Floor Run Progression State Machine, Multi-Phase Boss (The Lich Lord), 1v1 Combat loop,
+    /// Reward selection, Audio/Haptics, and Encrypted Local Save persistence.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -33,6 +34,7 @@ namespace Lattirune.Core
         [SerializeField] private ElementalReactionSystem reactionSystem;
         [SerializeField] private CombatEffectSystem combatEffectSystem;
         [SerializeField] private CombatSystem combatSystem;
+        [SerializeField] private BossSystem bossSystem;
         [SerializeField] private RunManager runManager;
         [SerializeField] private RewardService rewardService;
         [SerializeField] private CombatEncounterUI combatEncounterUI;
@@ -67,6 +69,7 @@ namespace Lattirune.Core
         public ElementalReactionSystem Reactions => reactionSystem;
         public CombatEffectSystem Effects => combatEffectSystem;
         public CombatSystem Combat => combatSystem;
+        public BossSystem Boss => bossSystem;
         public RunManager Run => runManager;
         public RewardService Rewards => rewardService;
         public CombatEncounterUI EncounterUI => combatEncounterUI;
@@ -157,7 +160,7 @@ namespace Lattirune.Core
                 SetupDevelopmentRunesAndTargets();
             }
 
-            // 11. Setup Combat Entities, Effects, Run Manager & Encounter UI (TASK-017)
+            // 11. Setup Combat Entities, Effects, Boss & Run Manager (TASK-017 & TASK-018)
             SetupCombatAndRewardEncounter();
 
             // 12. Setup Audio, Haptics & Feedback Coordinator
@@ -363,6 +366,15 @@ namespace Lattirune.Core
             }
             combatSystem.Initialize(_playerCombatant, _enemyCombatant, combatEffectSystem);
 
+            // Boss System coordinator (TASK-018)
+            if (bossSystem == null)
+            {
+                GameObject bossObj = new GameObject("BossSystem");
+                bossObj.transform.SetParent(transform);
+                bossSystem = bossObj.AddComponent<BossSystem>();
+            }
+            bossSystem.Initialize(BossDefinitionSO.CreateLichLordDefinition(), _enemyCombatant, combatEffectSystem);
+
             // Reward Service (TASK-008)
             if (rewardService == null)
             {
@@ -371,7 +383,7 @@ namespace Lattirune.Core
                 rewardService = rewardServiceObj.AddComponent<RewardService>();
             }
 
-            // Run Manager Master State Machine (TASK-017)
+            // Run Manager Master State Machine (TASK-017 & TASK-018)
             if (runManager == null)
             {
                 GameObject runObj = new GameObject("RunManager");
@@ -383,7 +395,8 @@ namespace Lattirune.Core
                 combatSystem,
                 rewardService,
                 _playerCombatant,
-                _enemyCombatant
+                _enemyCombatant,
+                bossSystem
             );
 
             // Apply active elemental reactions to combat when battle starts
@@ -402,7 +415,7 @@ namespace Lattirune.Core
                 }
             };
 
-            // Combat Encounter UI (TASK-008 & TASK-017)
+            // Combat Encounter UI (TASK-008, TASK-017 & TASK-018)
             if (combatEncounterUI == null)
             {
                 GameObject uiObj = new GameObject("CombatEncounterUI");
@@ -563,13 +576,22 @@ namespace Lattirune.Core
         private void OnGUI()
         {
             // Development persistence & run progression telemetry in top right
-            GUILayout.BeginArea(new Rect(Screen.width - 190, 20, 180, 340), GUI.skin.box);
-            GUILayout.Label("<size=11><b>RUN CONTROLS</b></size>");
+            GUILayout.BeginArea(new Rect(Screen.width - 200, 20, 190, 370), GUI.skin.box);
+            GUILayout.Label("<size=11><b>RUN & BOSS CONTROLS</b></size>");
 
             if (runManager != null)
             {
                 GUILayout.Label($"<size=10><b>Floor:</b> {runManager.CurrentFloorNumber} / {runManager.TotalFloors}</size>");
                 GUILayout.Label($"<size=10><b>State:</b> {runManager.CurrentState}</size>");
+
+                if (bossSystem != null && bossSystem.IsBossActive)
+                {
+                    BossTelemetry telem = bossSystem.GetTelemetry();
+                    GUILayout.Label($"<size=10><b>BOSS:</b> {telem.BossName}</size>");
+                    GUILayout.Label($"<size=9>HP: {telem.CurrentHp}/{telem.MaxHp} ({telem.HpPercentage:P0})</size>");
+                    GUILayout.Label($"<size=9>Phase: {telem.CurrentPhaseIndex + 1}/{bossSystem.TotalPhases} ({telem.PhaseName})</size>");
+                    GUILayout.Label($"<size=9>Atk: {telem.EffectiveAttack} | Arm: {telem.EffectiveArmor} | Spd: {telem.EffectiveAttackInterval:F1}s</size>");
+                }
 
                 if (runManager.CurrentState == RunState.NotStarted || runManager.IsRunFinished)
                 {
