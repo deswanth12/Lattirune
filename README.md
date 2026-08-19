@@ -12,15 +12,21 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** Pre-production / Phase 4 Meta-Progression
 
-## Meta-Progression: Campfire Hub, Blueprint Forge & Permanent Upgrades
+## Meta-Progression: Campfire Hub UI & Blueprint Forge Screen
 
 * **Progression Separation (PLAN.md Section 12):**
   * **In-Run Temporary:** In-run Gold, equipped grid items, temporary rune upgrades, combat status effects, and temporary merchant purchases reset upon death/run complete.
   * **Persistent Meta-Hub:** Dungeon Embers currency, permanent Blueprint unlocks, lifetime boss clear statistics, and codex entries persist permanently across runs.
-* **Blueprint Forge & Effect Integration (PLAN.md Section 12 & 22):**
-  * Players spend persistent *Dungeon Embers* (awarded on clearing the Floor 10 Boss Sanctum, $80 - 120$ Embers) to permanently unlock new weapons, shields, armor, relics, runes, and starting stat upgrades.
-  * **Reward Pool Injection:** Unlocked item and rune blueprints dynamically expand the 3-card reward draft candidate pool without mutating baseline ScriptableObject assets.
-  * **Permanent Starting Bonuses:** Utility upgrades (e.g. `Mercenary Purse` for $+15$ Starting Gold, `Vitality Infusion` for $+20$ Starting Max HP) apply deterministically exactly once at the beginning of each run.
+* **Campfire Meta-Hub UI (`CampfireHubController`):**
+  * Authoritative event-driven display of persistent Dungeon Embers, lifetime boss clears, total runs, and unlocked blueprint counts.
+  * Provides direct navigation into the Blueprint Forge interface with $\ge 52\text{ dp}$ touch targets.
+* **Blueprint Forge UI (`BlueprintForgeController`):**
+  * Dynamically renders canonical blueprints from `BlueprintDatabaseSO` with categorized status badges:
+    * `Locked`: Prerequisite blueprint not yet unlocked.
+    * `Available`: Prerequisite met and player has sufficient Embers.
+    * `InsufficientEmbers`: Prerequisite met but more Embers needed.
+    * `Unlocked`: Already permanently unlocked and active in reward pools.
+  * One-tap purchase validation with double-click protection, audio feedback, and haptic response.
 
 ## Combat Simulation Agency & Speed Control
 
