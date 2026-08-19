@@ -12,6 +12,26 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** Pre-production / Phase 3 Content Build
 
+## Master Item Combinations (MVP)
+
+The canonical named master combinations defined in PLAN.md Section 7.1 (specific item synergies override broad category rules):
+
+| Synergy Name | ID | Required Rune | Required Item | In-Combat Mechanical Effect |
+| :--- | :--- | :--- | :--- | :--- |
+| **Flaming Blade** | `combo_flaming_blade` | Ember Rune (Fire $\rightarrow$) | Iron Broadsword | +6 Fire Damage; applies Burn (3 dmg/s for 4s) |
+| **Venom Shiv** | `combo_venom_shiv` | Venom Rune (Poison $\leftarrow$) | Rusty Dagger | Applies 2 Poison stacks every 0.8s (ignores shields) |
+| **Thunder Bow** | `combo_thunder_bow` | Spark Rune (Lightning $\uparrow$) | Shortbow | Arrows chain 8 Shock Damage to backline enemies |
+| **Molten Wall** | `combo_molten_wall` | Ember Rune (Fire $\downarrow$) | Iron Tower Shield | Attackers take 8 Burn Damage counter upon striking shield |
+| **Shatterstrike** | `combo_shatterstrike` | Frost Rune (Ice $\downarrow$) | Battleaxe | Battleaxe deals $2\times$ damage against chilled/frozen targets |
+
+## Chain Reaction Engine & Loop Prevention
+
+The execution engine enforcing deterministic cascading triggers as specified in PLAN.md Section 8.1:
+* **Sequential Queue Execution:** Chain events are enqueued in `Queue<ChainEvent>` and processed sequentially, eliminating recursive stack overflows.
+* **Recursion Depth Limit:** Hard-coded maximum call depth of $N = 4$ chain links per root trigger ($\text{Depth} \le 4$). Depth 5+ events are rejected.
+* **Frame-Tick Propagation Cap:** A source item/rune can trigger downstream events at most once per physics tick ($0.02\text{s}$).
+* **Cycle Protection:** Event history and root IDs prevent infinite recursive feedback loops.
+
 ## MVP 1.0 10-Rune Catalogue
 
 The complete rune catalogue defined in PLAN.md Section 5.1:

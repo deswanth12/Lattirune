@@ -7,8 +7,8 @@ using Lattirune.Runes;
 namespace Lattirune.Synergy
 {
     /// <summary>
-    /// Data-driven database holding all registered elemental synergy rules.
-    /// Provides fast, deterministic rule evaluation and validation against duplicate IDs.
+    /// Data-driven database holding all registered elemental synergy rules and master item combinations.
+    /// Provides fast, deterministic rule evaluation and priority resolution (specific item combos override generic categories).
     /// </summary>
     [CreateAssetMenu(fileName = "SynergyDatabase", menuName = "Lattirune/Data/Synergy Database")]
     public class SynergyDatabaseSO : ScriptableObject
@@ -98,14 +98,97 @@ namespace Lattirune.Synergy
         }
 
         /// <summary>
-        /// Creates a complete prototype 5-element synergy matrix matching PLAN.md Phase 2 requirements.
+        /// Creates a complete prototype 5-element synergy matrix + 5 Master Item Combinations matching PLAN.md Section 7.1.
         /// </summary>
         public static SynergyDatabaseSO CreateDefaultDatabase()
         {
             SynergyDatabaseSO db = ScriptableObject.CreateInstance<SynergyDatabaseSO>();
             List<SynergyDefinitionSO> list = new List<SynergyDefinitionSO>();
 
-            // 1. Fire + Weapon (Flamebound Edge)
+            // ==========================================
+            // 1. MASTER ITEM COMBINATIONS (PLAN.md Section 7.1)
+            // ==========================================
+
+            // Combo 1: Flaming Blade (Ember Rune + Iron Broadsword)
+            SynergyDefinitionSO flamingBlade = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
+            flamingBlade.Initialize(
+                "combo_flaming_blade",
+                "Flaming Blade",
+                "Ember Rune + Iron Broadsword: Deals +6 Fire Damage and applies Burn.",
+                ElementType.Fire,
+                ItemCategory.Weapon,
+                6,
+                new Color(1f, 0.35f, 0.05f, 1f),
+                prio: 100,
+                specificItem: "item_iron_broadsword"
+            );
+            list.Add(flamingBlade);
+
+            // Combo 2: Venom Shiv (Venom Rune + Rusty Dagger)
+            SynergyDefinitionSO venomShiv = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
+            venomShiv.Initialize(
+                "combo_venom_shiv",
+                "Venom Shiv",
+                "Venom Rune + Rusty Dagger: Applies 2 Poison stacks every 0.8s.",
+                ElementType.Poison,
+                ItemCategory.Weapon,
+                3,
+                new Color(0.1f, 0.9f, 0.2f, 1f),
+                prio: 100,
+                specificItem: "item_rusty_dagger"
+            );
+            list.Add(venomShiv);
+
+            // Combo 3: Thunder Bow (Spark Rune + Shortbow)
+            SynergyDefinitionSO thunderBow = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
+            thunderBow.Initialize(
+                "combo_thunder_bow",
+                "Thunder Bow",
+                "Spark Rune + Shortbow: Arrows chain 8 Lightning Damage to backline targets.",
+                ElementType.Lightning,
+                ItemCategory.Weapon,
+                8,
+                new Color(0.95f, 0.9f, 0.1f, 1f),
+                prio: 100,
+                specificItem: "item_shortbow"
+            );
+            list.Add(thunderBow);
+
+            // Combo 4: Molten Wall (Ember Rune + Iron Tower Shield)
+            SynergyDefinitionSO moltenWall = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
+            moltenWall.Initialize(
+                "combo_molten_wall",
+                "Molten Wall",
+                "Ember Rune + Iron Tower Shield: Attackers take 8 Burn Damage upon striking shield.",
+                ElementType.Fire,
+                ItemCategory.Shield,
+                8,
+                new Color(1f, 0.25f, 0.1f, 1f),
+                prio: 100,
+                specificItem: "item_iron_tower_shield"
+            );
+            list.Add(moltenWall);
+
+            // Combo 5: Shatterstrike (Frost Rune + Battleaxe)
+            SynergyDefinitionSO shatterstrike = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
+            shatterstrike.Initialize(
+                "combo_shatterstrike",
+                "Shatterstrike",
+                "Frost Rune + Battleaxe: Axe deals 2x damage against chilled/frozen targets.",
+                ElementType.Ice,
+                ItemCategory.Weapon,
+                6,
+                new Color(0.3f, 0.8f, 1f, 1f),
+                prio: 100,
+                specificItem: "item_battleaxe"
+            );
+            list.Add(shatterstrike);
+
+            // ==========================================
+            // 2. GENERIC 5-ELEMENT MATRIX FALLBACKS
+            // ==========================================
+
+            // Fire + Weapon (Flamebound Edge)
             SynergyDefinitionSO fireSword = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
             fireSword.Initialize(
                 "fire_sword", 
@@ -114,11 +197,12 @@ namespace Lattirune.Synergy
                 ElementType.Fire, 
                 ItemCategory.Weapon, 
                 5, 
-                new Color(1f, 0.45f, 0.1f, 1f)
+                new Color(1f, 0.45f, 0.1f, 1f),
+                prio: 0
             );
             list.Add(fireSword);
 
-            // 2. Ice + Shield (Glacial Bastion)
+            // Ice + Shield (Glacial Bastion)
             SynergyDefinitionSO iceShield = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
             iceShield.Initialize(
                 "ice_shield", 
@@ -127,11 +211,12 @@ namespace Lattirune.Synergy
                 ElementType.Ice, 
                 ItemCategory.Shield, 
                 4, 
-                new Color(0.2f, 0.75f, 1.0f, 1f)
+                new Color(0.2f, 0.75f, 1.0f, 1f),
+                prio: 0
             );
             list.Add(iceShield);
 
-            // 3. Lightning + Weapon (Storm Surge)
+            // Lightning + Weapon (Storm Surge)
             SynergyDefinitionSO lightningWeapon = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
             lightningWeapon.Initialize(
                 "lightning_weapon", 
@@ -140,11 +225,12 @@ namespace Lattirune.Synergy
                 ElementType.Lightning, 
                 ItemCategory.Weapon, 
                 8, 
-                new Color(0.95f, 0.85f, 0.15f, 1f)
+                new Color(0.95f, 0.85f, 0.15f, 1f),
+                prio: 0
             );
             list.Add(lightningWeapon);
 
-            // 4. Poison + Weapon (Venomous Strike)
+            // Poison + Weapon (Venomous Strike)
             SynergyDefinitionSO poisonBlade = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
             poisonBlade.Initialize(
                 "poison_blade", 
@@ -153,11 +239,12 @@ namespace Lattirune.Synergy
                 ElementType.Poison, 
                 ItemCategory.Weapon, 
                 3, 
-                new Color(0.15f, 0.85f, 0.25f, 1f)
+                new Color(0.15f, 0.85f, 0.25f, 1f),
+                prio: 0
             );
             list.Add(poisonBlade);
 
-            // 5. Light + Relic (Radiant Dawn)
+            // Light + Relic (Radiant Dawn)
             SynergyDefinitionSO lightRelic = ScriptableObject.CreateInstance<SynergyDefinitionSO>();
             lightRelic.Initialize(
                 "light_relic", 
@@ -166,7 +253,8 @@ namespace Lattirune.Synergy
                 ElementType.Light, 
                 ItemCategory.Relic, 
                 4, 
-                new Color(1f, 0.92f, 0.45f, 1f)
+                new Color(1f, 0.92f, 0.45f, 1f),
+                prio: 0
             );
             list.Add(lightRelic);
 
