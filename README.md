@@ -12,7 +12,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** MVP 1.0.0 Release Package Finalized (Release Ready)
 
-## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 & TASK-036)
+## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-037)
 
 * **Build Target (RC):** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
 * **Build Target (v1.0.0):** `Builds/Android/Lattirune-1.0.0.apk`
@@ -20,10 +20,11 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Version Name:** `1.0.0`
 * **Version Code:** `1`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 401 / 401 passing ($100\%$)
+* **EditMode Tests:** 413 / 413 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
+* **Manual QA Checklist:** [`Docs/MVP1.0-Manual-QA-Checklist.md`](./Docs/MVP1.0-Manual-QA-Checklist.md)
 * **Changelog:** [`CHANGELOG.md`](./CHANGELOG.md)
 * **Release Notes:** [`Docs/MVP1.0-Release-Notes.md`](./Docs/MVP1.0-Release-Notes.md)
 * **Release Manifest:** [`Docs/MVP1.0-Release-Manifest.md`](./Docs/MVP1.0-Release-Manifest.md)
@@ -40,6 +41,17 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
   * Peak Memory: $82\text{ MB}$ (Target $< 180\text{ MB}$)
   * Frame Rate: $60\text{ FPS}$ (Target $60\text{ FPS}$)
   * Draw Calls: $14$ (Target $< 25$)
+
+## Manual QA Status
+
+* **Automated Regression:** `413 / 413 PASS`
+* **Android Device:** `NOT TESTED`
+* **Installation:** `NOT TESTED`
+* **Physical Touch:** `NOT TESTED`
+* **Audio:** `NOT TESTED`
+* **Haptics:** `NOT TESTED`
+* **Performance:** `NOT TESTED`
+* **Manual QA Checklist:** [`Docs/MVP1.0-Manual-QA-Checklist.md`](./Docs/MVP1.0-Manual-QA-Checklist.md)
 
 ## Full Mobile Screen Navigation Flow & UI Architecture
 
@@ -284,3 +296,4 @@ The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic 
 * [`MVP1.0-Release-Notes.md`](./Docs/MVP1.0-Release-Notes.md) — Comprehensive MVP 1.0.0 Release Notes.
 * [`MVP1.0-Release-Manifest.md`](./Docs/MVP1.0-Release-Manifest.md) — Official MVP 1.0 Release Manifest and build specifications.
 * [`MVP1.0-Release-Traceability.md`](./Docs/MVP1.0-Release-Traceability.md) — Complete requirements traceability matrix.
+* [`MVP1.0-Manual-QA-Checklist.md`](./Docs/MVP1.0-Manual-QA-Checklist.md) — Official Manual QA Checklist & Hardware Verification Matrix.

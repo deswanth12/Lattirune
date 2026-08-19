@@ -50,7 +50,7 @@ Lattirune MVP 1.0 marks the completion of the core tactical auto-battler rogueli
 
 ## 4. Verification & QA Status
 
-* **Automated EditMode Test Suite:** 400+ tests passing ($100\%$ pass rate).
+* **Automated EditMode Test Suite:** 413 / 413 tests passing ($100\%$ pass rate).
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Android Build Status:** PASS
@@ -60,7 +60,21 @@ Lattirune MVP 1.0 marks the completion of the core tactical auto-battler rogueli
 
 ---
 
-## 5. Known Limitations & Future Scope
+## 5. Manual QA Status
+
+* **Automated Regression:** `413 / 413 PASS`
+* **Android Device Testing:** `NOT TESTED`
+* **Clean APK Installation:** `NOT TESTED`
+* **Cold Launch & Resume:** `NOT TESTED`
+* **Physical Touch & Drag Ergonomics:** `NOT TESTED`
+* **Device Audio Output:** `NOT TESTED`
+* **Device Vibration / Haptics:** `NOT TESTED`
+* **Thermal & Battery Profiling:** `NOT TESTED`
+* **Manual QA Checklist Reference:** [`Docs/MVP1.0-Manual-QA-Checklist.md`](./MVP1.0-Manual-QA-Checklist.md)
+
+---
+
+## 6. Known Limitations & Future Scope
 
 * **Physical Device Testing:** Physical hardware testing on Android retail devices (Samsung Galaxy, Google Pixel) remains pending manual QA lab verification.
 * **Google Play Publishing:** Store listing assets, signed AAB bundles, and Google Play Console submissions are scheduled for post-MVP Phase 4.
