@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Lattirune.Combat.Effects;
+using Lattirune.Combo;
 using Lattirune.Modifiers;
 
 namespace Lattirune.Combat
@@ -8,7 +9,7 @@ namespace Lattirune.Combat
     /// <summary>
     /// Coordinates 1v1 auto-battle encounters, execution cooldowns, damage application,
     /// dynamic battle speed multipliers (1x, 2x, 3x), emergency consumable taps,
-    /// dynamic runtime stat modifiers from CombatEffectSystem and RunModifierManager, and victory/defeat resolution.
+    /// dynamic runtime stat modifiers from CombatEffectSystem, RunModifierManager, and ComboTracker, and victory/defeat resolution.
     /// Derived strictly from PLAN.md Section 9.1 and Section 9.2.
     /// </summary>
     public class CombatSystem : MonoBehaviour
@@ -18,6 +19,7 @@ namespace Lattirune.Combat
         [SerializeField] private EnemyCombatant enemy;
         [SerializeField] private CombatEffectSystem effectSystem;
         [SerializeField] private RunModifierManager modifierManager;
+        [SerializeField] private ComboTracker comboTracker;
 
         [Header("State")]
         [SerializeField] private CombatState currentState = CombatState.Preparing;
@@ -36,18 +38,21 @@ namespace Lattirune.Combat
         public EnemyCombatant Enemy => enemy;
         public CombatEffectSystem Effects => effectSystem;
         public RunModifierManager Modifiers => modifierManager;
+        public ComboTracker Combo => comboTracker;
         public float SpeedMultiplier => speedMultiplier;
 
         public void Initialize(
             PlayerCombatant playerCombatant, 
             EnemyCombatant enemyCombatant, 
             CombatEffectSystem effects = null,
-            RunModifierManager modifiers = null)
+            RunModifierManager modifiers = null,
+            ComboTracker tracker = null)
         {
             player = playerCombatant;
             enemy = enemyCombatant;
             effectSystem = effects;
             modifierManager = modifiers;
+            comboTracker = tracker;
             currentState = CombatState.Preparing;
             speedMultiplier = 1.0f;
         }
@@ -148,6 +153,11 @@ namespace Lattirune.Combat
                     effectiveRuneBonus = Mathf.RoundToInt(player.ActiveRuneBonus * modifierManager.GetAggregateMultiplier(RunModifierType.ElementalDamageBonus, 1.0f));
                 }
 
+                if (comboTracker != null)
+                {
+                    damageModifier *= comboTracker.ComboMultiplier;
+                }
+
                 if (effectSystem != null)
                 {
                     effectiveEnemyArmor = Mathf.RoundToInt(enemy.Armor * effectSystem.GetArmorMultiplier(enemy));
@@ -167,6 +177,12 @@ namespace Lattirune.Combat
 
                 enemy.TakeDamage(playerDamage);
                 player.ResetCooldown();
+
+                if (comboTracker != null && playerDamage.FinalDamage > 0)
+                {
+                    comboTracker.RecordHit();
+                }
+
                 OnAttackExecuted?.Invoke(playerDamage);
 
                 if (!enemy.IsAlive)

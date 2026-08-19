@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Boss;
 using Lattirune.Combat;
+using Lattirune.Combo;
 using Lattirune.Economy;
 using Lattirune.Inventory;
 using Lattirune.Items;
@@ -16,7 +17,7 @@ namespace Lattirune.Dungeon
     /// <summary>
     /// Master state machine coordinator for multi-floor dungeon run progression.
     /// Manages floor transitions, encounter sequencing, in-run economy (Gold/Embers),
-    /// Merchant Stall transactions, Campfire Rest Site decisions, boss encounters, run modifiers, and run lifecycle.
+    /// Merchant Stall transactions, Campfire Rest Site decisions, boss encounters, run modifiers, combo rewards, and run lifecycle.
     /// Strictly adheres to PLAN.md Sections 9.1, 11, and 13.1.
     /// </summary>
     public class RunManager : MonoBehaviour
@@ -32,6 +33,7 @@ namespace Lattirune.Dungeon
         [SerializeField] private EnemyCombatant enemyCombatant;
         [SerializeField] private MetaProgressionManager metaProgression;
         [SerializeField] private RunModifierManager modifierManager;
+        [SerializeField] private ComboTracker comboTracker;
 
         [Header("Runtime State")]
         [SerializeField] private RunState currentState = RunState.NotStarted;
@@ -104,7 +106,8 @@ namespace Lattirune.Dungeon
             EnemyCombatant enemy,
             BossSystem boss = null,
             MetaProgressionManager meta = null,
-            RunModifierManager modifiers = null)
+            RunModifierManager modifiers = null,
+            ComboTracker tracker = null)
         {
             dungeonDefinition = dungeon;
             EnsureDefaultDungeon();
@@ -116,6 +119,7 @@ namespace Lattirune.Dungeon
             enemyCombatant = enemy;
             metaProgression = meta;
             modifierManager = modifiers;
+            comboTracker = tracker;
 
             currentState = RunState.NotStarted;
             currentFloorIndex = 0;
@@ -266,6 +270,20 @@ namespace Lattirune.Dungeon
                         goldDrop = Mathf.RoundToInt(goldDrop * goldMult);
                     }
                     AddGold(goldDrop);
+                }
+
+                // Grant Combo and Elemental Chain Reaction Bonus Rewards (TASK-050 & TASK-054)
+                if (comboTracker != null)
+                {
+                    var chainOutcome = ChainReactionRewardCalculator.CalculateReward(comboTracker.CurrentCombo, comboTracker.ConsecutiveReactions);
+                    if (chainOutcome.BonusGold > 0)
+                    {
+                        AddGold(chainOutcome.BonusGold);
+                    }
+                    if (chainOutcome.BonusEmbers > 0)
+                    {
+                        AddEmbers(chainOutcome.BonusEmbers);
+                    }
                 }
             }
 
