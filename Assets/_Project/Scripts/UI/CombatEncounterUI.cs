@@ -161,9 +161,26 @@ namespace Lattirune.UI
             EnemyCombatant enemy = combatSystem.Enemy;
             GUILayout.Label($"{enemy.CombatantName} HP: {enemy.CurrentHp}/{enemy.MaxHp} | DEF: {enemy.Armor} | ATK: {enemy.BaseAttackDamage}");
 
-            GUILayout.Space(6);
+            if (combatSystem.Combo != null && combatSystem.Combo.CurrentCombo > 0)
+            {
+                GUIStyle comboStyle = new GUIStyle(GUI.skin.label);
+                comboStyle.fontSize = 13;
+                comboStyle.fontStyle = FontStyle.Bold;
+                comboStyle.normal.textColor = Color.yellow;
+                GUILayout.Label($"⚡ COMBO: {combatSystem.Combo.CurrentCombo}x  |  MULT: {combatSystem.Combo.ComboMultiplier:0.00}x", comboStyle);
+            }
+
+            if (combatSystem.Modifiers != null && combatSystem.Modifiers.ActiveCount > 0)
+            {
+                GUIStyle modStyle = new GUIStyle(GUI.skin.label);
+                modStyle.fontSize = 11;
+                modStyle.normal.textColor = Color.cyan;
+                GUILayout.Label($"✨ Active Modifiers ({combatSystem.Modifiers.ActiveCount})", modStyle);
+            }
+
+            GUILayout.Space(4);
             GUILayout.Label($"Log: {_combatLog}");
-            GUILayout.Space(6);
+            GUILayout.Space(4);
 
             // Battle Start Button (in Preparing State)
             if (combatSystem.CurrentState == CombatState.Preparing && !_isShowingRewards)
