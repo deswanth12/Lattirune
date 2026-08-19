@@ -13,6 +13,7 @@ namespace Lattirune.UI
     public class CampfireHubController : MonoBehaviour
     {
         [Header("System References")]
+        [SerializeField] private ScreenNavigationController navigation;
         [SerializeField] private MetaProgressionManager metaManager;
         [SerializeField] private BlueprintForgeController forgeController;
 
@@ -22,6 +23,7 @@ namespace Lattirune.UI
         public event Action OnHubOpened;
         public event Action OnHubClosed;
 
+        public ScreenNavigationController Navigation => navigation;
         public MetaProgressionManager MetaManager => metaManager;
         public BlueprintForgeController Forge => forgeController;
         public bool IsHubVisible => isHubVisible;
@@ -39,6 +41,12 @@ namespace Lattirune.UI
             {
                 forgeController.Initialize(metaManager);
             }
+        }
+
+        public void Initialize(ScreenNavigationController nav, MetaProgressionManager meta, BlueprintForgeController forge)
+        {
+            navigation = nav;
+            Initialize(meta, forge);
         }
 
         public void ShowHub()
@@ -77,6 +85,7 @@ namespace Lattirune.UI
         private void OnGUI()
         {
             if (!isHubVisible || metaManager == null) return;
+            if (navigation != null && navigation.CurrentScreen != ScreenState.CAMPFIRE_HUB) return;
 
             // If Forge is currently open, let Forge render its modal window
             if (forgeController != null && forgeController.IsOpen)
@@ -90,9 +99,9 @@ namespace Lattirune.UI
         private void DrawHubWindow()
         {
             float modalWidth = 360f;
-            float modalHeight = 240f;
+            float modalHeight = 310f;
             float startX = 20f;
-            float startY = 20f;
+            float startY = 100f;
 
             GUIStyle modalStyle = new GUIStyle(GUI.skin.box);
             modalStyle.fontSize = 13;
@@ -118,6 +127,13 @@ namespace Lattirune.UI
             if (GUILayout.Button("ENTER BLUEPRINT FORGE", GUILayout.Height(52)))
             {
                 OpenBlueprintForge();
+            }
+            GUILayout.Space(6);
+
+            if (GUILayout.Button("BACK TO MAIN MENU", GUILayout.Height(52)))
+            {
+                if (navigation != null) navigation.NavigateTo(ScreenState.MAIN_MENU);
+                else HideHub();
             }
 
             GUILayout.EndArea();

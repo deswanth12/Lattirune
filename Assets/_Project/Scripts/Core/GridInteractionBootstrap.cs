@@ -14,6 +14,7 @@ using Lattirune.Runes;
 using Lattirune.Save;
 using Lattirune.Synergy;
 using Lattirune.UI;
+using Lattirune.Progression;
 
 namespace Lattirune.Core
 {
@@ -45,6 +46,14 @@ namespace Lattirune.Core
         [SerializeField] private InteractionFeedbackCoordinator feedbackCoordinator;
         [SerializeField] private SaveSystem saveSystem;
         [SerializeField] private Transform stagingAreaParent;
+
+        [Header("UI Screen Controllers (PLAN.md Section 14 & 19)")]
+        [SerializeField] private ScreenNavigationController navigationController;
+        [SerializeField] private MainMenuController mainMenuController;
+        [SerializeField] private CampfireHubController campfireHubController;
+        [SerializeField] private SettingsUIController settingsUIController;
+        [SerializeField] private BlueprintForgeController blueprintForgeController;
+        [SerializeField] private MetaProgressionManager metaProgressionManager;
 
         [Header("Staging Layout")]
         [SerializeField] private Vector3 stagingOrigin = new Vector3(-2.2f, -4f, 0f);
@@ -82,6 +91,12 @@ namespace Lattirune.Core
         public HapticFeedback Haptics => hapticFeedback;
         public InteractionFeedbackCoordinator Feedback => feedbackCoordinator;
         public SaveSystem Save => saveSystem;
+        public ScreenNavigationController Navigation => navigationController;
+        public MainMenuController MainMenu => mainMenuController;
+        public CampfireHubController CampfireHub => campfireHubController;
+        public SettingsUIController SettingsUI => settingsUIController;
+        public BlueprintForgeController BlueprintForge => blueprintForgeController;
+        public MetaProgressionManager MetaProgression => metaProgressionManager;
         public PlayerCombatant Player => _playerCombatant;
         public EnemyCombatant Enemy => _enemyCombatant;
         public IReadOnlyList<ItemInstance> SpawnedItems => _spawnedItemInstances;
@@ -182,6 +197,9 @@ namespace Lattirune.Core
 
             // 14. Initial recalculation of conduits, synergies, reactions, and player stats
             RecalculateAndRenderConduits();
+
+            // 15. Setup Meta Progression and UI Navigation Flow (PLAN.md Section 14 & 19)
+            SetupUINavigationFlow();
 
             // Hook into item placement/removal events to dynamically recalculate conduits, synergies, and combat stats
             _grid.OnItemPlaced += (id, origin, size) => RecalculateAndRenderConduits();
@@ -582,8 +600,65 @@ namespace Lattirune.Core
             }
         }
 
+        private void SetupUINavigationFlow()
+        {
+            if (metaProgressionManager == null)
+            {
+                GameObject metaObj = new GameObject("MetaProgressionManager");
+                metaObj.transform.SetParent(transform);
+                metaProgressionManager = metaObj.AddComponent<MetaProgressionManager>();
+            }
+            metaProgressionManager.Initialize(saveSystem);
+
+            if (navigationController == null)
+            {
+                GameObject navObj = new GameObject("ScreenNavigationController");
+                navObj.transform.SetParent(transform);
+                navigationController = navObj.AddComponent<ScreenNavigationController>();
+            }
+            navigationController.Initialize(ScreenState.MAIN_MENU);
+
+            if (blueprintForgeController == null)
+            {
+                GameObject forgeObj = new GameObject("BlueprintForgeController");
+                forgeObj.transform.SetParent(transform);
+                blueprintForgeController = forgeObj.AddComponent<BlueprintForgeController>();
+            }
+            blueprintForgeController.Initialize(metaProgressionManager);
+
+            if (campfireHubController == null)
+            {
+                GameObject campObj = new GameObject("CampfireHubController");
+                campObj.transform.SetParent(transform);
+                campfireHubController = campObj.AddComponent<CampfireHubController>();
+            }
+            campfireHubController.Initialize(navigationController, metaProgressionManager, blueprintForgeController);
+
+            if (settingsUIController == null)
+            {
+                GameObject setObj = new GameObject("SettingsUIController");
+                setObj.transform.SetParent(transform);
+                settingsUIController = setObj.AddComponent<SettingsUIController>();
+            }
+            settingsUIController.Initialize(navigationController, audioController, saveSystem);
+
+            if (mainMenuController == null)
+            {
+                GameObject menuObj = new GameObject("MainMenuController");
+                menuObj.transform.SetParent(transform);
+                mainMenuController = menuObj.AddComponent<MainMenuController>();
+            }
+            mainMenuController.Initialize(navigationController, runManager, metaProgressionManager, saveSystem);
+        }
+
         private void OnGUI()
         {
+            // Only show developer HUD overlay during active gameplay (GRID_BUILD / COMBAT)
+            if (navigationController != null && navigationController.CurrentScreen != ScreenState.GRID_BUILD && navigationController.CurrentScreen != ScreenState.COMBAT)
+            {
+                return;
+            }
+
             // Development persistence, inventory & run telemetry in top right
             GUILayout.BeginArea(new Rect(Screen.width - 210, 20, 200, 420), GUI.skin.box);
             GUILayout.Label("<size=11><b>DEV CONTROLS & HUD</b></size>");
