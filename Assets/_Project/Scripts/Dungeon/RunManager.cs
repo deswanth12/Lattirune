@@ -89,6 +89,7 @@ namespace Lattirune.Dungeon
         public bool HasUsedReviveThisRun => hasUsedReviveThisRun;
         public bool CanRevivePlayer => currentState == RunState.Defeated && !hasUsedReviveThisRun;
         public bool IsEndlessMode => isEndlessMode;
+        public int EndlessTier => isEndlessMode ? Mathf.Max(1, currentFloorIndex - 9) : 0;
 
         public void EnableEndlessMode()
         {

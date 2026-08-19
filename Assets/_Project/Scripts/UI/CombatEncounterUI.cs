@@ -181,7 +181,7 @@ namespace Lattirune.UI
         private void DrawCombatTopHUD()
         {
             float hudWidth = 1000f;
-            float hudHeight = 320f;
+            float hudHeight = 360f;
             float posX = (1080f - hudWidth) * 0.5f;
             float posY = 20f;
 
@@ -211,9 +211,35 @@ namespace Lattirune.UI
             PlayerCombatant player = combatSystem.Player;
             EnemyCombatant enemy = combatSystem.Enemy;
 
+            string floorTitle = runManager != null 
+                ? (runManager.IsEndlessMode ? $"DUNGEON FLOOR {runManager.CurrentFloorNumber} [ENDLESS TIER {runManager.EndlessTier}]" : $"DUNGEON FLOOR {runManager.CurrentFloorNumber}")
+                : "DUNGEON ENCOUNTER";
+
+            string eliteAffixBadge = "";
+            if (enemy != null && enemy.EliteAffix != EliteAffixType.None)
+            {
+                string affixDesc = enemy.EliteAffix switch
+                {
+                    EliteAffixType.Vampiric => "Leeches 25% DMG as HP",
+                    EliteAffixType.Juggernaut => "+40% Max HP & +8 Base Armor",
+                    EliteAffixType.Frenzied => "+35% Attack Speed",
+                    EliteAffixType.MoltenAura => "+2 ATK & 25% Thorns Reflection",
+                    EliteAffixType.ToxicThorns => "Inflicts Poison On Hit",
+                    _ => ""
+                };
+                eliteAffixBadge = $" <color=#ef4444>[💀 {enemy.EliteAffix.ToString().ToUpper()}: {affixDesc}]</color>";
+            }
+
+            GUIStyle floorHeaderStyle = new GUIStyle(GUI.skin.label);
+            floorHeaderStyle.fontSize = 18;
+            floorHeaderStyle.fontStyle = FontStyle.Bold;
+            floorHeaderStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f);
+
+            GUILayout.Label($"── {floorTitle} ──", floorHeaderStyle);
+
             string flameNote = player.HasActiveSynergy ? " <color=#f97316>[🔥 FLAME SYNERGY]</color>" : "";
             GUILayout.Label($"<b>HERO HP:</b> {player.CurrentHp}/{player.MaxHp} | <b>DEF:</b> {player.Armor} | <b>ATK:</b> {player.BaseAttackDamage}+{player.ActiveRuneBonus}{flameNote}", textStyle);
-            GUILayout.Label($"<b>{enemy.CombatantName} HP:</b> {enemy.CurrentHp}/{enemy.MaxHp} | <b>DEF:</b> {enemy.Armor} | <b>ATK:</b> {enemy.BaseAttackDamage}", textStyle);
+            GUILayout.Label($"<b>{enemy.CombatantName} HP:</b> {enemy.CurrentHp}/{enemy.MaxHp} | <b>DEF:</b> {enemy.Armor} | <b>ATK:</b> {enemy.BaseAttackDamage}{eliteAffixBadge}", textStyle);
 
             if (combatSystem.Combo != null && combatSystem.Combo.CurrentCombo > 0)
             {
@@ -225,7 +251,7 @@ namespace Lattirune.UI
             }
 
             GUILayout.Label($"<size=15><i>Log: {_combatLog}</i></size>", textStyle);
-            GUILayout.Space(8);
+            GUILayout.Space(6);
 
             GUILayout.BeginHorizontal();
 

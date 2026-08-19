@@ -15,14 +15,17 @@ namespace Lattirune.Combat
         [Header("State")]
         [SerializeField] private CombatSystem combatSystem;
 
+        [SerializeField] private Lattirune.Reactions.ElementalReactionSystem reactionSystem;
+
         private readonly FloatingCombatText[] _pool = new FloatingCombatText[POOL_SIZE];
         private int _nextSpawnIndex = 0;
 
         public IReadOnlyList<FloatingCombatText> ActivePool => _pool;
 
-        public void Initialize(CombatSystem combat = null)
+        public void Initialize(CombatSystem combat = null, Lattirune.Reactions.ElementalReactionSystem reactions = null)
         {
             combatSystem = combat;
+            reactionSystem = reactions;
 
             for (int i = 0; i < POOL_SIZE; i++)
             {
@@ -39,6 +42,11 @@ namespace Lattirune.Combat
                     combatSystem.Effects.OnEffectTicked += HandleEffectTicked;
                 }
             }
+
+            if (reactionSystem != null)
+            {
+                reactionSystem.OnReactionActivated += HandleReactionActivated;
+            }
         }
 
         private void OnDestroy()
@@ -53,6 +61,19 @@ namespace Lattirune.Combat
                     combatSystem.Effects.OnEffectTicked -= HandleEffectTicked;
                 }
             }
+
+            if (reactionSystem != null)
+            {
+                reactionSystem.OnReactionActivated -= HandleReactionActivated;
+            }
+        }
+
+        private void HandleReactionActivated(Lattirune.Reactions.ElementalReactionResult result)
+        {
+            if (result == null || !result.IsActive) return;
+
+            Vector2 spawnPos = new Vector2(540f + UnityEngine.Random.Range(-50f, 50f), 520f + UnityEngine.Random.Range(-30f, 30f));
+            SpawnText($"✨ {result.ReactionName.ToUpper()}! ✨", spawnPos, FloatingTextType.ElementalDamage, duration: 1.2f);
         }
 
         private void HandleAttackExecuted(DamageResult damage)
