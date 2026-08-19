@@ -6,6 +6,7 @@ using Lattirune.Core;
 using Lattirune.Grid;
 using Lattirune.Items;
 using Lattirune.Runes;
+using Lattirune.Save;
 using Lattirune.Synergy;
 using Lattirune.UI;
 
@@ -14,7 +15,7 @@ namespace Lattirune.Core
     /// <summary>
     /// Bootstraps the complete Phase 1 Prototype: 5x5 LatticeGrid, data-driven items,
     /// Rune Conduit engine, Elemental Synergy system, 1v1 Combat loop, Reward selection,
-    /// and coordinated Audio/Haptic interaction feedback.
+    /// coordinated Audio/Haptic interaction feedback, and Encrypted Local Save persistence.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -30,6 +31,7 @@ namespace Lattirune.Core
         [SerializeField] private AudioController audioController;
         [SerializeField] private HapticFeedback hapticFeedback;
         [SerializeField] private InteractionFeedbackCoordinator feedbackCoordinator;
+        [SerializeField] private SaveSystem saveSystem;
         [SerializeField] private Transform stagingAreaParent;
 
         [Header("Staging Layout")]
@@ -58,6 +60,7 @@ namespace Lattirune.Core
         public AudioController Audio => audioController;
         public HapticFeedback Haptics => hapticFeedback;
         public InteractionFeedbackCoordinator Feedback => feedbackCoordinator;
+        public SaveSystem Save => saveSystem;
         public PlayerCombatant Player => _playerCombatant;
         public EnemyCombatant Enemy => _enemyCombatant;
         public IReadOnlyList<ItemInstance> SpawnedItems => _spawnedItemInstances;
@@ -108,27 +111,157 @@ namespace Lattirune.Core
             }
             synergySystem.EnsureDefaultDefinitions();
 
-            // 6. Spawn Prototype Data-Driven Items
-            SpawnPrototypeCatalogue();
+            // 6. Ensure Catalogue Exists
+            if (prototypeItemCatalogue == null || prototypeItemCatalogue.Count == 0)
+            {
+                BuildDefaultItemDefinitions();
+            }
 
-            // 7. Setup Development Runes
-            if (enableConduitDemo)
+            // 7. Setup Save System (TASK-010)
+            if (saveSystem == null)
+            {
+                GameObject saveObj = new GameObject("SaveSystem");
+                saveObj.transform.SetParent(transform);
+                saveSystem = saveObj.AddComponent<SaveSystem>();
+            }
+
+            // 8. Spawn Prototype Items or Restore from Save
+            LoadOrCreateState();
+
+            // 9. Setup Development Runes
+            if (enableConduitDemo && _activeRunesWithData.Count == 0)
             {
                 SetupDevelopmentRunesAndTargets();
             }
 
-            // 8. Setup Combat Entities & Encounter UI (TASK-007 & TASK-008)
+            // 10. Setup Combat Entities & Encounter UI (TASK-007 & TASK-008)
             SetupCombatAndRewardEncounter();
 
-            // 9. Setup Audio, Haptics & Feedback Coordinator (TASK-009)
+            // 11. Setup Audio, Haptics & Feedback Coordinator (TASK-009)
             SetupFeedbackSystem();
 
-            // 10. Initial recalculation of conduits, synergies, and player stats
+            // 12. Initial recalculation of conduits, synergies, and player stats
             RecalculateAndRenderConduits();
 
             // Hook into item placement/removal events to dynamically recalculate conduits, synergies, and combat stats
             _grid.OnItemPlaced += (id, origin, size) => RecalculateAndRenderConduits();
             _grid.OnItemRemoved += (id, origin, size) => RecalculateAndRenderConduits();
+        }
+
+        private void LoadOrCreateState()
+        {
+            if (stagingAreaParent == null)
+            {
+                GameObject stagingObj = new GameObject("StagingArea");
+                stagingObj.transform.SetParent(transform);
+                stagingAreaParent = stagingObj.transform;
+            }
+
+            LoadResult loadResult = saveSystem.Load();
+            SaveData data = loadResult.Data ?? SaveData.CreateDefault();
+
+            // Clear any previous spawned items
+            for (int i = _spawnedItemInstances.Count - 1; i >= 0; i--)
+            {
+                if (_spawnedItemInstances[i] != null)
+                {
+                    DestroyImmediate(_spawnedItemInstances[i].gameObject);
+                }
+            }
+            _spawnedItemInstances.Clear();
+
+            // Restore items
+            foreach (var savedItem in data.items)
+            {
+                ItemDataSO itemData = prototypeItemCatalogue.Find(x => x != null && x.ItemId == savedItem.itemId);
+                if (itemData == null) continue;
+
+                Vector3 spawnPos = savedItem.isPlacedOnGrid 
+                    ? GridCoordinateUtility.GridToWorld(new Vector2Int(savedItem.gridX, savedItem.gridY))
+                    : new Vector3(savedItem.stagingPosX, savedItem.stagingPosY, 0f);
+
+                ItemInstance instance = ItemFactory.CreateInstance(itemData, spawnPos, stagingAreaParent);
+                if (instance != null)
+                {
+                    if (savedItem.rotationDegrees > 0)
+                    {
+                        int steps = savedItem.rotationDegrees / 90;
+                        for (int s = 0; s < steps; s++) instance.RotateClockwise();
+                    }
+
+                    if (savedItem.isPlacedOnGrid)
+                    {
+                        Vector2Int gridCoord = new Vector2Int(savedItem.gridX, savedItem.gridY);
+                        if (_grid.PlaceItem(instance.InstanceId, gridCoord, instance.CurrentDimensions))
+                        {
+                            instance.OnPlaced(gridCoord, GridCoordinateUtility.GridToWorld(gridCoord));
+                        }
+                    }
+
+                    _spawnedItemInstances.Add(instance);
+                }
+            }
+
+            // Restore settings if present
+            if (data.settings != null)
+            {
+                if (audioController != null)
+                {
+                    audioController.SetMasterVolume(data.settings.masterVolume);
+                    audioController.SetSfxVolume(data.settings.sfxVolume);
+                    audioController.SetMuted(data.settings.isMuted);
+                }
+                if (hapticFeedback != null)
+                {
+                    hapticFeedback.HapticsEnabled = data.settings.hapticsEnabled;
+                }
+            }
+        }
+
+        public void SaveCurrentState()
+        {
+            if (saveSystem == null) return;
+
+            SaveData data = new SaveData();
+
+            // Save Items
+            foreach (var item in _spawnedItemInstances)
+            {
+                if (item == null || item.Data == null) continue;
+
+                SavedItemData sItem = new SavedItemData(
+                    id: item.Data.ItemId,
+                    x: item.IsPlacedOnGrid ? item.GridPosition.x : -1,
+                    y: item.IsPlacedOnGrid ? item.GridPosition.y : -1,
+                    rot: item.CurrentRotationAngle,
+                    placed: item.IsPlacedOnGrid,
+                    stageX: item.transform.position.x,
+                    stageY: item.transform.position.y
+                );
+                data.items.Add(sItem);
+            }
+
+            // Save Runes
+            foreach (var runeTuple in _activeRunesWithData)
+            {
+                data.runes.Add(new SavedRuneData(
+                    id: runeTuple.rune.RuneId,
+                    x: runeTuple.origin.x,
+                    y: runeTuple.origin.y,
+                    dir: (int)runeTuple.dir,
+                    elem: (int)runeTuple.rune.Element,
+                    r: runeTuple.range
+                ));
+            }
+
+            // Save Settings
+            float masterVol = audioController != null ? audioController.MasterVolume : 1.0f;
+            float sfxVol = audioController != null ? audioController.SfxVolume : 1.0f;
+            bool muted = audioController != null ? audioController.IsMuted : false;
+            bool haptics = hapticFeedback != null ? hapticFeedback.HapticsEnabled : true;
+            data.settings = new SavedSettingsData(masterVol, sfxVol, muted, haptics);
+
+            saveSystem.Save(data);
         }
 
         private void SetupFeedbackSystem()
@@ -204,42 +337,15 @@ namespace Lattirune.Core
             }
             combatEncounterUI.Initialize(combatSystem, synergySystem, rewardService, prototypeItemCatalogue, stagingAreaParent);
 
-            // Register newly rewarded items into active spawned item tracking
+            // Register newly rewarded items and trigger auto-save
             rewardService.OnRewardApplied += (option, instance) =>
             {
                 if (instance != null && !_spawnedItemInstances.Contains(instance))
                 {
                     _spawnedItemInstances.Add(instance);
+                    SaveCurrentState();
                 }
             };
-        }
-
-        private void SpawnPrototypeCatalogue()
-        {
-            if (stagingAreaParent == null)
-            {
-                GameObject stagingObj = new GameObject("StagingArea");
-                stagingObj.transform.SetParent(transform);
-                stagingAreaParent = stagingObj.transform;
-            }
-
-            if (prototypeItemCatalogue == null || prototypeItemCatalogue.Count == 0)
-            {
-                BuildDefaultItemDefinitions();
-            }
-
-            for (int i = 0; i < prototypeItemCatalogue.Count; i++)
-            {
-                ItemDataSO data = prototypeItemCatalogue[i];
-                if (data == null) continue;
-
-                Vector3 spawnPos = stagingOrigin + new Vector3(i * itemSpacing, 0f, 0f);
-                ItemInstance instance = ItemFactory.CreateInstance(data, spawnPos, stagingAreaParent);
-                if (instance != null)
-                {
-                    _spawnedItemInstances.Add(instance);
-                }
-            }
         }
 
         private void BuildDefaultItemDefinitions()
@@ -327,6 +433,29 @@ namespace Lattirune.Core
             {
                 _playerCombatant.UpdateStatsFromBuild(_spawnedItemInstances);
             }
+        }
+
+        private void OnGUI()
+        {
+            // Development persistence controls in top right
+            GUILayout.BeginArea(new Rect(Screen.width - 140, 20, 120, 130), GUI.skin.box);
+            GUILayout.Label("<size=11><b>DEV SAVE</b></size>");
+            if (GUILayout.Button("SAVE"))
+            {
+                SaveCurrentState();
+            }
+            if (GUILayout.Button("LOAD"))
+            {
+                LoadOrCreateState();
+                RecalculateAndRenderConduits();
+            }
+            if (GUILayout.Button("RESET SAVE"))
+            {
+                saveSystem.DeleteSave();
+                LoadOrCreateState();
+                RecalculateAndRenderConduits();
+            }
+            GUILayout.EndArea();
         }
     }
 }
