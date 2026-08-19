@@ -125,6 +125,17 @@ namespace Lattirune.Combat
                 return;
             }
 
+            if (!enemy.IsAlive)
+            {
+                ResolveVictory();
+                return;
+            }
+            if (!player.IsAlive)
+            {
+                ResolveDefeat();
+                return;
+            }
+
             float scaledDelta = deltaTime * speedMultiplier;
 
             // 0. Update Active Combat Status Effects & DoTs

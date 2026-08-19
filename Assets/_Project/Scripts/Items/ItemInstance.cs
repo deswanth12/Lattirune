@@ -144,6 +144,15 @@ namespace Lattirune.Items
             tex.filterMode = FilterMode.Point;
             tex.Apply();
 
+            if (_spriteRenderer == null)
+            {
+                _spriteRenderer = GetComponent<SpriteRenderer>();
+                if (_spriteRenderer == null)
+                {
+                    _spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+                }
+            }
+
             _spriteRenderer.sprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 32);
             _spriteRenderer.color = hasActiveSynergy ? new Color(1f, 0.45f, 0.1f, 1f) : Color.white;
             _spriteRenderer.sortingOrder = 10;
