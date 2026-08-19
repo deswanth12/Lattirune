@@ -5,7 +5,7 @@
 **Target Package:** `com.developer.lattirune`  
 **Version:** `1.0.0` (Build `1`)  
 **Save Version:** `1` (AES-256 Encrypted)  
-**Repository State:** `READY` (524 / 524 tests passing)  
+**Repository State:** `READY` (538 / 538 tests passing)  
 **External Release Gate:** `BLOCKED`
 
 ---
@@ -27,8 +27,9 @@
 
 ## Action Verification Notes
 
-- **EXT-01 (Android QA):** Hardware test gate attempted in TASK-045. ADB and physical hardware were unavailable in the execution environment; results recorded in [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./MVP1.0-Physical-Android-QA-Record.md). Status remains `BLOCKED` until hardware pass is signed off.
-- **EXT-02 (Privacy Hosting):** Must be hosted prior to submission in Google Play Console Data Safety & App Content sections.
-- **EXT-03 to EXT-05 (Store Visuals):** Required mandatory graphics for Google Play Store listing publication.
-- **EXT-06 & EXT-07 (Binary & Signing):** AAB must be built from the clean repository state and signed using an isolated keystore.
-- **EXT-08 (Play Submission):** Final manual step after EXT-01 through EXT-07 are completed.
+- **EXT-01 (Android QA):** Hardware test gate attempted; ADB and physical hardware unavailable. Documented in [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./MVP1.0-Physical-Android-QA-Record.md). Status: `BLOCKED`.
+- **EXT-02 (Privacy Hosting):** Must be hosted prior to submission in Google Play Console Data Safety & App Content sections. Status: `BLOCKED`.
+- **EXT-03 to EXT-05 (Store Visuals):** Required mandatory graphics for Google Play Store listing publication. Status: `BLOCKED`.
+- **EXT-06 & EXT-07 (Binary & Signing):** AAB must be built from the clean repository state and signed using an isolated keystore. Status: `BLOCKED`.
+- **EXT-08 (Play Submission):** Final manual step after EXT-01 through EXT-07 are completed. Status: `BLOCKED`.
+- **Audit Reference:** [`Docs/MVP1.0-Final-External-Release-Audit.md`](./MVP1.0-Final-External-Release-Audit.md).

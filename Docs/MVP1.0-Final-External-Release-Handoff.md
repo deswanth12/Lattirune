@@ -15,7 +15,7 @@
 `1`
 
 **Automated Tests:**  
-`524 / 524` (100% PASS across 59 test suites)
+`538 / 538` (100% PASS across 60 test suites)
 
 **Compilation Errors:**  
 `0`
@@ -42,7 +42,7 @@ The following items are verified and fully completed within the codebase reposit
   - Persistent Blueprint Forge meta-progression with 6 permanent blueprints.
   - Procedural bag expansion and multi-tile spatial inventory.
   - Mobile UI navigation coordinator with Android Back-button routing and $\ge 52\text{ dp}$ touch targets.
-- **Automated Regression:** 524 automated Unit & Integration tests passing with 0 compilation and 0 console errors.
+- **Automated Regression:** 538 automated Unit & Integration tests passing with 0 compilation and 0 console errors.
 - **Release Documentation:** Complete set of release notes, manifest, changelog, and traceability documentation.
 - **Store Listing Copy:** English (US) title, 75-char short description, and full description prepared in [`Docs/MVP1.0-Google-Play-Store-Listing.md`](./MVP1.0-Google-Play-Store-Listing.md).
 - **Privacy Policy Document:** Comprehensive offline privacy policy created in [`Docs/MVP1.0-Privacy-Policy.md`](./Docs/MVP1.0-Privacy-Policy.md).
@@ -51,6 +51,7 @@ The following items are verified and fully completed within the codebase reposit
 - **Release Traceability:** Matrix mapping all PLAN.md requirements to code and test suites in [`Docs/MVP1.0-Release-Traceability.md`](./Docs/MVP1.0-Release-Traceability.md).
 - **Release Manifest:** Comprehensive build specification and asset register in [`Docs/MVP1.0-Release-Manifest.md`](./Docs/MVP1.0-Release-Manifest.md).
 - **Physical QA Gate Attempt & Record:** Documented in [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./Docs/MVP1.0-Physical-Android-QA-Record.md).
+- **Final External Release Audit:** Documented in [`Docs/MVP1.0-Final-External-Release-Audit.md`](./Docs/MVP1.0-Final-External-Release-Audit.md).
 
 ---
 
@@ -60,7 +61,7 @@ The following tasks cannot be performed within the repository and require extern
 
 1. **Physical Android QA**
    - **Owner:** External (QA Team / Device Lab)
-   - **Status:** `BLOCKED` (Attempted in TASK-045; no hardware device connected)
+   - **Status:** `BLOCKED` (Attempted; no hardware device connected)
    - **Required Evidence:** Signed-off 26-point execution record of [`Docs/MVP1.0-Manual-QA-Checklist.md`](./Docs/MVP1.0-Manual-QA-Checklist.md) on physical Android hardware (API Level $\ge 24$).
 
 2. **Public Privacy Policy Hosting**

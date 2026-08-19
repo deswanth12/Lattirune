@@ -105,7 +105,7 @@
 * **Production Track:** Target for full release (`BLOCKED` pending testing tracks)
 
 ## 18. Manual QA Dependency
-* **Automated Unit & Integration Tests:** 524 / 524 PASS (`PASS`)
+* **Automated Unit & Integration Tests:** 538 / 538 PASS (`PASS`)
 * **Physical Android Device Verification:** Pending hardware lab execution (`BLOCKED` / Recorded in [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./MVP1.0-Physical-Android-QA-Record.md))
 
 ## 19. Release Blockers Table
@@ -113,6 +113,7 @@
 * **External Action Tracker:** [`Docs/MVP1.0-External-Action-Tracker.md`](./MVP1.0-External-Action-Tracker.md)
 * **Final Release Handoff:** [`Docs/MVP1.0-Final-External-Release-Handoff.md`](./MVP1.0-Final-External-Release-Handoff.md)
 * **Physical QA Record:** [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./MVP1.0-Physical-Android-QA-Record.md)
+* **Final Release Audit:** [`Docs/MVP1.0-Final-External-Release-Audit.md`](./MVP1.0-Final-External-Release-Audit.md)
 
 | Blocker ID | Description | Severity | Remediation Requirement |
 | :--- | :--- | :--- | :--- |
@@ -123,7 +124,7 @@
 
 ## 20. Final Submission Checklist
 * [x] Core gameplay, 10 floors, 20 items, 10 runes, 6 enemies, Lich Lord implemented and verified.
-* [x] 524 automated regression tests passing with 0 compilation and console errors.
+* [x] 538 automated regression tests passing with 0 compilation and console errors.
 * [x] Package identity (`com.developer.lattirune`), version name (`1.0.0`), and version code (`1`) unified.
 * [x] AAB build pipeline configured in `AndroidBuildScript.cs`.
 * [x] Store listing copy finalized in `MVP1.0-Google-Play-Store-Listing.md`.
@@ -133,6 +134,7 @@
 * [x] External action tracker created in `MVP1.0-External-Action-Tracker.md`.
 * [x] Final external release handoff completed in `MVP1.0-Final-External-Release-Handoff.md`.
 * [x] Physical Android QA gate recorded in `MVP1.0-Physical-Android-QA-Record.md`.
+* [x] Final external release audit documented in `MVP1.0-Final-External-Release-Audit.md`.
 * [x] Zero ads, zero IAP, zero analytics, zero network permissions.
 * [ ] Physical Android device smoke test executed and signed off.
 * [ ] Android App Bundle (.aab) generated and signed.

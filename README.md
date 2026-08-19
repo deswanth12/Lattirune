@@ -12,7 +12,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** MVP 1.0.0 — Repository Complete · Blocked Pending External Actions
 
-## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-045)
+## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-046)
 
 * **Build Target (RC):** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
 * **Build Target (v1.0.0 APK):** `Builds/Android/Lattirune-1.0.0.apk`
@@ -21,10 +21,11 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Version Name:** `1.0.0`
 * **Version Code:** `1`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 524 / 524 passing ($100\%$)
+* **EditMode Tests:** 538 / 538 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
+* **Final Release Audit:** [`Docs/MVP1.0-Final-External-Release-Audit.md`](./Docs/MVP1.0-Final-External-Release-Audit.md)
 * **Physical Android QA Record:** [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./Docs/MVP1.0-Physical-Android-QA-Record.md)
 * **Final Release Handoff:** [`Docs/MVP1.0-Final-External-Release-Handoff.md`](./Docs/MVP1.0-Final-External-Release-Handoff.md)
 * **External Action Tracker:** [`Docs/MVP1.0-External-Action-Tracker.md`](./Docs/MVP1.0-External-Action-Tracker.md)
@@ -59,7 +60,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 
 | Item | Status |
 | :--- | :--- |
-| **MVP 1.0 Automated QA** | `PASS (524 / 524)` |
+| **MVP 1.0 Automated QA** | `PASS (538 / 538)` |
 | **Automated Release Readiness** | `PASS` |
 | **Physical Android QA** | `NOT COMPLETED (BLOCKED - No Hardware Available)` |
 | **App Icon** | `EXTERNAL ASSET REQUIRED` |
@@ -288,6 +289,7 @@ The execution engine enforcing deterministic cascading triggers as specified in 
 
 * [`PLAN.md`](./PLAN.md) — Master project planning and technical architecture blueprint (v1.0.1).
 * [`CHANGELOG.md`](./CHANGELOG.md) — Official project changelog and release history.
+* [`MVP1.0-Final-External-Release-Audit.md`](./Docs/MVP1.0-Final-External-Release-Audit.md) — Final external release audit.
 * [`MVP1.0-Physical-Android-QA-Record.md`](./Docs/MVP1.0-Physical-Android-QA-Record.md) — Physical Android hardware QA record.
 * [`MVP1.0-Final-External-Release-Handoff.md`](./Docs/MVP1.0-Final-External-Release-Handoff.md) — Final external release handoff and operational boundaries.
 * [`MVP1.0-External-Action-Tracker.md`](./Docs/MVP1.0-External-Action-Tracker.md) — External action register and dependency blocker tracker.
