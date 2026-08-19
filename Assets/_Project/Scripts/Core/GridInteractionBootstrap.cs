@@ -18,6 +18,8 @@ using Lattirune.Progression;
 using Lattirune.Economy;
 using Lattirune.Events;
 using Lattirune.Modifiers;
+using Lattirune.Monetization;
+using Lattirune.Combo;
 
 namespace Lattirune.Core
 {
@@ -498,6 +500,62 @@ namespace Lattirune.Core
             eventObj.transform.SetParent(transform);
             var eventIntegration = eventObj.AddComponent<RunEventIntegration>();
             eventIntegration.Initialize(runManager, economyManager, _playerCombatant, combatSystem);
+
+            // Merchant Stall Subsystem (TASK-056)
+            GameObject merchantObj = new GameObject("MerchantSystem");
+            merchantObj.transform.SetParent(transform);
+            var merchantSystem = merchantObj.AddComponent<MerchantSystem>();
+            merchantSystem.Initialize(ItemDatabaseSO.CreateCanonicalDatabase(), RuneDatabaseSO.CreateCanonicalDatabase());
+
+            GameObject merchantUiObj = new GameObject("MerchantStallUIController");
+            merchantUiObj.transform.SetParent(transform);
+            var merchantUI = merchantUiObj.AddComponent<MerchantStallUIController>();
+            merchantUI.Initialize(merchantSystem, economyManager, inventorySystem, grid, _playerCombatant, runManager, navigation);
+
+            // Hero Classes & Loadouts Subsystem (TASK-057)
+            GameObject heroObj = new GameObject("HeroClassManager");
+            heroObj.transform.SetParent(transform);
+            var heroClassManager = heroObj.AddComponent<HeroClassManager>();
+            heroClassManager.Initialize();
+
+            GameObject heroUiObj = new GameObject("HeroClassSelectionUIController");
+            heroUiObj.transform.SetParent(transform);
+            var heroClassUI = heroUiObj.AddComponent<HeroClassSelectionUIController>();
+            heroClassUI.Initialize(heroClassManager, metaProgression, navigation);
+
+            // Dungeon Map Topology Subsystem (TASK-058)
+            GameObject mapUiObj = new GameObject("DungeonMapScreenController");
+            mapUiObj.transform.SetParent(transform);
+            var mapUI = mapUiObj.AddComponent<DungeonMapScreenController>();
+            mapUI.Initialize(runManager, navigation);
+
+            // Bestiary & Codex Subsystem (TASK-059)
+            GameObject codexObj = new GameObject("CodexManager");
+            codexObj.transform.SetParent(transform);
+            var codexManager = codexObj.AddComponent<CodexManager>();
+            codexManager.Initialize(BestiaryDatabaseSO.CreateCanonicalDatabase());
+
+            GameObject codexUiObj = new GameObject("CodexUIController");
+            codexUiObj.transform.SetParent(transform);
+            var codexUI = codexUiObj.AddComponent<CodexUIController>();
+            codexUI.Initialize(codexManager, navigation);
+
+            // Combat Juice: Floating Text & Camera Shake (TASK-060)
+            GameObject floatyObj = new GameObject("FloatingCombatTextPool");
+            floatyObj.transform.SetParent(transform);
+            var floatyPool = floatyObj.AddComponent<FloatingCombatTextPool>();
+            floatyPool.Initialize(combatSystem);
+
+            GameObject shakeObj = new GameObject("CombatCameraShakeController");
+            shakeObj.transform.SetParent(transform);
+            var shakeController = shakeObj.AddComponent<CombatCameraShakeController>();
+            shakeController.Initialize(Camera.main, combatSystem);
+
+            // Offline Monetization Service (TASK-061)
+            GameObject monObj = new GameObject("OfflineMonetizationService");
+            monObj.transform.SetParent(transform);
+            var monetizationService = monObj.AddComponent<OfflineMonetizationService>();
+            monetizationService.Initialize();
         }
 
         private void BuildDefaultItemDefinitions()
