@@ -49,6 +49,11 @@ namespace Lattirune.Combat
             attackInterval = Mathf.Max(0.1f, interval);
         }
 
+        public void SetCombatantName(string name)
+        {
+            combatantName = name;
+        }
+
         public bool TickCooldown(float deltaTime)
         {
             if (!IsAlive) return false;

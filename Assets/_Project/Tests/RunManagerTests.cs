@@ -134,5 +134,36 @@ namespace Lattirune.Tests
 
             Object.DestroyImmediate(freshObj);
         }
+
+        [Test]
+        public void RunManager_EndlessMode_ScalesEnemyHpAndAttack()
+        {
+            _runManager.EnableEndlessMode();
+            Assert.IsTrue(_runManager.IsEndlessMode);
+
+            _runManager.StartRun();
+            // Restore state to Endless Floor 12 (FloorIndex 11)
+            _runManager.RestoreRunState(floorIdx: 11, encIdx: 0, state: RunState.FloorPreparing);
+
+            // Base Sewer Rat is 35 HP, 3 ATK.
+            // On Floor 12 (tier = 2):
+            // HP: 35 * (1.18)^2 ≈ 49 HP
+            // ATK: 3 * (1.12)^2 ≈ 4 ATK
+            // Armor: 0 + 2*3 = 6 Armor
+            Assert.Greater(_enemy.MaxHp, 35);
+            Assert.GreaterOrEqual(_enemy.BaseAttackDamage, 3);
+            Assert.Greater(_enemy.Armor, 0);
+        }
+
+        [Test]
+        public void RunManager_EliteEncounter_AssignsEliteAffix()
+        {
+            _runManager.StartRun();
+            // Restore state to Floor 5 (Elite floor)
+            _runManager.RestoreRunState(floorIdx: 4, encIdx: 0, state: RunState.FloorPreparing);
+
+            Assert.IsTrue(_enemy.IsElite, "Floor 5 enemy must have an active Elite Affix.");
+            Assert.AreNotEqual(EliteAffixType.None, _enemy.EliteAffix);
+        }
     }
 }

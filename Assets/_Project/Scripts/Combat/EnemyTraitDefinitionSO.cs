@@ -18,6 +18,19 @@ namespace Lattirune.Combat
     }
 
     /// <summary>
+    /// Specialized affixes randomly applied to Elite encounters and Endless mode champions.
+    /// </summary>
+    public enum EliteAffixType
+    {
+        None,
+        Vampiric,     // Heals 25% of damage dealt
+        Juggernaut,   // +40% Max HP, +10 Armor
+        Frenzied,     // +35% Attack Speed (faster cooldown)
+        MoltenAura,   // Reflects 25% damage back as flame thorns
+        ToxicThorns   // Inflicts virulent poison on hit
+    }
+
+    /// <summary>
     /// Static ScriptableObject defining an enemy combat/grid trait.
     /// Configures mechanics and values without holding runtime state.
     /// </summary>

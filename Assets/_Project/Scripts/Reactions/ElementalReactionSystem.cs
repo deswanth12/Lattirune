@@ -129,4 +129,61 @@ namespace Lattirune.Reactions
             UpdateReactions(beamPaths);
         }
     }
+
+    /// <summary>
+    /// Visual FX component that renders animated elemental starbursts and pulsing halos
+    /// at 2-beam crossing coordinates whenever an elemental reaction is active.
+    /// </summary>
+    public class ElementalReactionVFXController : MonoBehaviour
+    {
+        [SerializeField] private ElementalReactionSystem reactionSystem;
+        [SerializeField] private Grid.GridView gridView;
+
+        public void Initialize(ElementalReactionSystem system, Grid.GridView view)
+        {
+            reactionSystem = system;
+            gridView = view;
+        }
+
+        private void OnGUI()
+        {
+            if (reactionSystem == null || gridView == null || Camera.main == null) return;
+            if (reactionSystem.ActiveReactionCount == 0) return;
+
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
+
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+
+            GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
+            labelStyle.alignment = TextAnchor.MiddleCenter;
+            labelStyle.fontStyle = FontStyle.Bold;
+            labelStyle.fontSize = 20;
+
+            float pulse = 0.85f + 0.15f * Mathf.Sin(Time.time * 8.0f);
+
+            foreach (var rxn in reactionSystem.ActiveReactions)
+            {
+                Vector3 worldPos = Grid.GridCoordinateUtility.GridToWorldPosition(
+                    rxn.GridCoordinate.x,
+                    rxn.GridCoordinate.y,
+                    gridView.GridOrigin,
+                    gridView.CellSize,
+                    gridView.CellSpacing
+                );
+
+                Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
+                float guiX = (screenPos.x / scale) - 90f;
+                float guiY = ((Screen.height - screenPos.y) / scale) - 30f;
+
+                Color oldColor = GUI.color;
+                GUI.color = new Color(rxn.ReactionColor.r, rxn.ReactionColor.g, rxn.ReactionColor.b, pulse);
+                GUI.Label(new Rect(guiX, guiY, 180f, 60f), $"✨ {rxn.ReactionName} ✨", labelStyle);
+                GUI.color = oldColor;
+            }
+
+            GUI.matrix = oldMatrix;
+        }
+    }
 }

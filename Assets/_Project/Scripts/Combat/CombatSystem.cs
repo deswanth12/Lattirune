@@ -269,6 +269,12 @@ namespace Lattirune.Combat
                 // Trigger enemy attack traits (Poison, Gold Steal, Minions)
                 enemy.TriggerAttackTraits(player, enemyDamage);
 
+                if (enemy.EliteAffix == EliteAffixType.Vampiric && enemyDamage.FinalDamage > 0)
+                {
+                    int leech = Mathf.Max(1, Mathf.RoundToInt(enemyDamage.FinalDamage * 0.25f));
+                    enemy.Heal(leech);
+                }
+
                 if (effectSystem != null && effectSystem.Database != null)
                 {
                     for (int t = 0; t < enemy.ActiveTraits.Count; t++)

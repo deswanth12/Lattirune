@@ -246,20 +246,54 @@ namespace Lattirune.Dungeon
                 if (enemyCombatant != null)
                 {
                     int effectiveHp = CurrentEncounter.EnemyHp;
+                    int effectiveAttack = CurrentEncounter.EnemyAttack;
+                    int effectiveArmor = CurrentEncounter.EnemyArmor;
+                    float effectiveInterval = CurrentEncounter.AttackInterval;
+
+                    // Endless Mode Post-Floor 10 Exponential Stat Scaling (TASK B)
+                    if (isEndlessMode && currentFloorIndex >= 10)
+                    {
+                        int endlessTier = currentFloorIndex - 9;
+                        float hpScale = Mathf.Pow(1.18f, endlessTier);
+                        float atkScale = Mathf.Pow(1.12f, endlessTier);
+                        effectiveHp = Mathf.RoundToInt(effectiveHp * hpScale);
+                        effectiveAttack = Mathf.RoundToInt(effectiveAttack * atkScale);
+                        effectiveArmor += endlessTier * 3;
+                    }
+
                     if (modifierManager != null)
                     {
                         float hpMultiplier = modifierManager.GetAggregateMultiplier(RunModifierType.EnemyHealthMultiplier, 1.0f);
-                        effectiveHp = Mathf.RoundToInt(CurrentEncounter.EnemyHp * hpMultiplier);
+                        effectiveHp = Mathf.RoundToInt(effectiveHp * hpMultiplier);
                     }
 
                     enemyCombatant.SetupCustom(
                         name: CurrentEncounter.EnemyName,
                         hp: effectiveHp,
-                        baseArmor: CurrentEncounter.EnemyArmor,
-                        attack: CurrentEncounter.EnemyAttack,
-                        interval: CurrentEncounter.AttackInterval,
+                        baseArmor: effectiveArmor,
+                        attack: effectiveAttack,
+                        interval: effectiveInterval,
                         traits: CurrentEncounter.EnemyTraits
                     );
+
+                    // Apply Randomized Elite Affix to Elites & Endless Champions (TASK A)
+                    bool isEliteEncounter = CurrentFloorNumber == 5 || CurrentFloorNumber == 7 || 
+                                           (CurrentEncounter.DisplayName != null && CurrentEncounter.DisplayName.Contains("Elite")) ||
+                                           (isEndlessMode && currentFloorIndex >= 10 && currentEncounterIndex > 0);
+
+                    if (isEliteEncounter && !CurrentEncounter.IsBoss)
+                    {
+                        EliteAffixType[] affixPool = new[]
+                        {
+                            EliteAffixType.Vampiric,
+                            EliteAffixType.Juggernaut,
+                            EliteAffixType.Frenzied,
+                            EliteAffixType.MoltenAura,
+                            EliteAffixType.ToxicThorns
+                        };
+                        int affixIndex = (currentFloorIndex + currentEncounterIndex) % affixPool.Length;
+                        enemyCombatant.ApplyEliteAffix(affixPool[affixIndex]);
+                    }
                 }
             }
 
@@ -304,8 +338,18 @@ namespace Lattirune.Dungeon
                 }
                 else
                 {
-                    bool isElite = CurrentFloorNumber == 3 || CurrentFloorNumber == 7 || (CurrentEncounter != null && CurrentEncounter.EnemyHp >= 100);
+                    bool isElite = CurrentFloorNumber == 3 || CurrentFloorNumber == 5 || CurrentFloorNumber == 7 || 
+                                   (CurrentEncounter != null && (CurrentEncounter.EnemyHp >= 100 || CurrentEncounter.DisplayName.Contains("Elite")));
                     int goldDrop = EconomyManager.GetGoldDrop(isElite);
+
+                    // Endless scaling bonus drops
+                    if (isEndlessMode && currentFloorIndex >= 10)
+                    {
+                        int endlessTier = currentFloorIndex - 9;
+                        goldDrop = Mathf.RoundToInt(goldDrop * Mathf.Pow(1.15f, endlessTier));
+                        AddEmbers(Mathf.RoundToInt(2 * endlessTier));
+                    }
+
                     if (modifierManager != null)
                     {
                         float goldMult = modifierManager.GetAggregateMultiplier(RunModifierType.GoldMultiplier, 1.0f);

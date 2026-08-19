@@ -160,6 +160,8 @@ namespace Lattirune.Core
                 GameObject reactionObj = new GameObject("ElementalReactionSystem");
                 reactionObj.transform.SetParent(transform);
                 reactionSystem = reactionObj.AddComponent<ElementalReactionSystem>();
+                var reactionVFX = reactionObj.AddComponent<ElementalReactionVFXController>();
+                reactionVFX.Initialize(reactionSystem, gridView);
             }
             reactionSystem.EnsureDefaultDefinitions();
 

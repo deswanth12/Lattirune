@@ -12,6 +12,7 @@ namespace Lattirune.Combat
     {
         [Header("Enemy Attack Stats")]
         [SerializeField] private int baseAttackDamage = 4;
+        [SerializeField] private EliteAffixType eliteAffix = EliteAffixType.None;
 
         private readonly List<EnemyTraitDefinitionSO> _activeTraits = new List<EnemyTraitDefinitionSO>();
 
@@ -26,11 +27,48 @@ namespace Lattirune.Combat
         public int GoldStealPerHit => 3;
         public float ReflectPercentage => 0.20f;
         public int PoisonStacksOnHit => 2;
+        public EliteAffixType EliteAffix => eliteAffix;
+        public bool IsElite => eliteAffix != EliteAffixType.None;
         public IReadOnlyList<EnemyTraitDefinitionSO> ActiveTraits => _activeTraits;
+
+        public void ApplyEliteAffix(EliteAffixType affix)
+        {
+            eliteAffix = affix;
+            switch (affix)
+            {
+                case EliteAffixType.Vampiric:
+                    SetCombatantName($"Vampiric {CombatantName}");
+                    break;
+                case EliteAffixType.Juggernaut:
+                    SetCombatantName($"Juggernaut {CombatantName}");
+                    int bonusHp = Mathf.RoundToInt(MaxHp * 0.40f);
+                    SetStats(MaxHp + bonusHp, Armor + 8, AttackInterval);
+                    ResetHpToFull();
+                    break;
+                case EliteAffixType.Frenzied:
+                    SetCombatantName($"Frenzied {CombatantName}");
+                    SetStats(MaxHp, Armor, Mathf.Max(0.5f, AttackInterval * 0.65f));
+                    break;
+                case EliteAffixType.MoltenAura:
+                    SetCombatantName($"Molten {CombatantName}");
+                    baseAttackDamage += 2;
+                    var reflect = ScriptableObject.CreateInstance<EnemyTraitDefinitionSO>();
+                    reflect.Initialize("trait_molten_reflect", "Molten Reflect", EnemyTraitType.DamageReflect, 0.25f);
+                    AddTrait(reflect);
+                    break;
+                case EliteAffixType.ToxicThorns:
+                    SetCombatantName($"Toxic {CombatantName}");
+                    var poison = ScriptableObject.CreateInstance<EnemyTraitDefinitionSO>();
+                    poison.Initialize("trait_toxic_thorns", "Toxic Thorns", EnemyTraitType.ApplyPoisonOnHit, 2f);
+                    AddTrait(poison);
+                    break;
+            }
+        }
 
         public void SetupTrainingDummy(int hp = 50, int baseArmor = 2, int attack = 4, float interval = 1.5f)
         {
             baseAttackDamage = attack;
+            eliteAffix = EliteAffixType.None;
             _activeTraits.Clear();
             Initialize("Training Dummy", hp, baseArmor, interval);
         }

@@ -249,8 +249,53 @@ namespace Lattirune.Tests
             _enemy.SetupCustom("Acid Slime", 100, 0, 5, 2.0f, new[] { acidTrait });
             _enemy.OnBagSlotDisabled += () => bagSlotDisabled = true;
 
+            _combatSystem.Initialize(_player, _enemy);
             _combatSystem.StartCombat();
-            Assert.IsTrue(bagSlotDisabled, "Encounter start trait should be invoked when battle begins.");
+
+            Assert.IsTrue(bagSlotDisabled, "Acid Spit trait must trigger on encounter start.");
+        }
+
+        [Test]
+        public void Combat_EliteAffix_Juggernaut_IncreasesHpAndArmor()
+        {
+            _enemy.SetupCustom("Acid Slime", 100, 2, 6, 2.0f);
+            _enemy.ApplyEliteAffix(EliteAffixType.Juggernaut);
+
+            Assert.IsTrue(_enemy.IsElite);
+            Assert.AreEqual(EliteAffixType.Juggernaut, _enemy.EliteAffix);
+            Assert.AreEqual(140, _enemy.MaxHp);
+            Assert.AreEqual(140, _enemy.CurrentHp);
+            Assert.AreEqual(10, _enemy.Armor);
+            Assert.IsTrue(_enemy.CombatantName.Contains("Juggernaut"));
+        }
+
+        [Test]
+        public void Combat_EliteAffix_Vampiric_LeechesHealthOnHit()
+        {
+            _enemy.SetupCustom("Goblin Thief", 100, 0, 20, 1.0f);
+            _enemy.TakeDirectDamage(40); // 60 HP remaining
+            _enemy.ApplyEliteAffix(EliteAffixType.Vampiric);
+
+            _player.SetExplicitStats(baseDamage: 0, runeBonus: 0, armorValue: 0, interval: 99f);
+
+            _combatSystem.Initialize(_player, _enemy);
+            _combatSystem.StartCombat();
+
+            // Enemy deals 20 damage to player -> leeches 25% of 20 = 5 HP
+            _combatSystem.UpdateCombat(1.0f);
+
+            Assert.AreEqual(80, _player.CurrentHp);
+            Assert.AreEqual(65, _enemy.CurrentHp, "Vampiric enemy should heal 5 HP on hit.");
+        }
+
+        [Test]
+        public void Combat_EliteAffix_Frenzied_IncreasesAttackSpeed()
+        {
+            _enemy.SetupCustom("Sewer Rat", 50, 0, 4, 1.0f);
+            _enemy.ApplyEliteAffix(EliteAffixType.Frenzied);
+
+            Assert.AreEqual(0.65f, _enemy.AttackInterval, 0.01f);
+            Assert.IsTrue(_enemy.CombatantName.Contains("Frenzied"));
         }
     }
 }
