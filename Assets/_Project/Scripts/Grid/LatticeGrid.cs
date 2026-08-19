@@ -235,6 +235,24 @@ namespace Lattirune.Grid
             return false;
         }
 
+        /// <summary>
+        /// Unlocks the first found locked tile in the grid.
+        /// </summary>
+        public bool UnlockFirstAvailableLockedSlot()
+        {
+            for (int y = 0; y < HEIGHT; y++)
+            {
+                for (int x = 0; x < WIDTH; x++)
+                {
+                    if (_cells[x, y].IsLocked())
+                    {
+                        return UnlockTile(x, y);
+                    }
+                }
+            }
+            return false;
+        }
+
         public int GetActiveCount()
         {
             int count = 0;
