@@ -230,8 +230,8 @@ namespace Lattirune.Tests
             HashSet<string> seen = new HashSet<string>();
             foreach (var r in rewards)
             {
-                Assert.IsFalse(seen.Contains(r.ItemId));
-                seen.Add(r.ItemId);
+                Assert.IsFalse(seen.Contains(r.ItemData.ItemId));
+                seen.Add(r.ItemData.ItemId);
             }
         }
 

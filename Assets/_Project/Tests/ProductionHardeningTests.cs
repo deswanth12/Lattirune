@@ -231,19 +231,19 @@ namespace Lattirune.Tests
         {
             var rewardService = _holderObj.AddComponent<RewardService>();
             rewardService.ResetSelectionLock();
-            Assert.IsFalse(rewardService.IsRewardSelected);
+            Assert.IsFalse(rewardService.IsSelectionLocked);
 
             var itemDb = ItemDatabaseSO.CreateCanonicalDatabase();
             var dagger = itemDb.GetItem("item_rusty_dagger");
             var option = RewardOption.FromItemData(dagger);
 
-            bool applied1 = rewardService.ApplyReward(option, Vector3.zero, _holderObj.transform);
-            Assert.IsTrue(applied1);
-            Assert.IsTrue(rewardService.IsRewardSelected);
+            ItemInstance applied1 = rewardService.ApplyReward(option, Vector3.zero, _holderObj.transform);
+            Assert.IsNotNull(applied1);
+            Assert.IsTrue(rewardService.IsSelectionLocked);
 
             // Second attempt is blocked
-            bool applied2 = rewardService.ApplyReward(option, Vector3.zero, _holderObj.transform);
-            Assert.IsFalse(applied2);
+            ItemInstance applied2 = rewardService.ApplyReward(option, Vector3.zero, _holderObj.transform);
+            Assert.IsNull(applied2);
         }
 
         [Test]

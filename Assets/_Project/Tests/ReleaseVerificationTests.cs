@@ -118,11 +118,11 @@ namespace Lattirune.Tests
             original.meta.unlockedBlueprints.Add("bp_battleaxe");
 
             string json = SaveSerializer.SerializeToJson(original);
-            byte[] encrypted = SaveEncryption.EncryptStringToBytes_Aes(json);
+            byte[] encrypted = SaveEncryption.EncryptStringToBytes(json);
             Assert.IsNotNull(encrypted);
             Assert.Greater(encrypted.Length, 0);
 
-            string decryptedJson = SaveEncryption.DecryptStringFromBytes_Aes(encrypted);
+            string decryptedJson = SaveEncryption.DecryptBytesToString(encrypted);
             SaveData restored = SaveSerializer.DeserializeFromJson(decryptedJson);
 
             Assert.AreEqual(original.version, restored.version);

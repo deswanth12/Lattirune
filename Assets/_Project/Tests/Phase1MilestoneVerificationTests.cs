@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using Lattirune.Audio;
@@ -79,7 +80,7 @@ namespace Lattirune.Tests
             RuneData fireRune = ScriptableObject.CreateInstance<RuneData>();
             fireRune.Initialize("fire_rune_01", "Fire Rune", ConduitDirection.North, ElementType.Fire, 3);
             RuneConduitResult conduitResult = RuneConduitEngine.CalculateConduit(grid, new Vector2Int(2, 1), ConduitDirection.North, 3);
-            Assert.IsTrue(conduitResult.PathCoordinates.Contains(new Vector2Int(2, 2)));
+            Assert.IsTrue(conduitResult.TraversedCells.Contains(new Vector2Int(2, 2)));
 
             // 5. SYNERGY SYSTEM (Flamebound Edge activation)
             SynergySystem synergy = _holderObj.AddComponent<SynergySystem>();

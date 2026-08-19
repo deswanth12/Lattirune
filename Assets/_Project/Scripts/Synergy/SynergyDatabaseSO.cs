@@ -16,6 +16,7 @@ namespace Lattirune.Synergy
         [SerializeField] private List<SynergyDefinitionSO> synergyDefinitions = new List<SynergyDefinitionSO>();
 
         public IReadOnlyList<SynergyDefinitionSO> Definitions => synergyDefinitions;
+        public IReadOnlyList<SynergyDefinitionSO> AllSynergies => synergyDefinitions;
         public int Count => synergyDefinitions != null ? synergyDefinitions.Count : 0;
         public int TotalSynergyCount => Count;
 

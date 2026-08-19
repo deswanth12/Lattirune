@@ -192,7 +192,7 @@ namespace Lattirune.Tests
             var venom = db.GetRune("rune_venom");
             Assert.AreEqual(RuneElement.Poison, venom.Element);
             Assert.AreEqual(ConduitDirection.West, venom.Direction);
-            Assert.AreEqual(2, venom.PoisonStacksPerSecond);
+            Assert.AreEqual(2, venom.PoisonStacksPerSec);
 
             // 5. Crossfire Rune: Fire, Cross (All 4 cardinal vectors)
             var crossfire = db.GetRune("rune_crossfire");
