@@ -46,6 +46,7 @@ namespace Lattirune.Dungeon
 
         [Header("Campfire State (PLAN.md Section 11)")]
         [SerializeField] private bool campfireChoiceResolved = false;
+        [SerializeField] private bool hasUsedReviveThisRun = false;
         private readonly Dictionary<string, int> _runtimeRuneUpgrades = new Dictionary<string, int>();
         private bool _victoryRewardsGranted = false;
 
@@ -84,6 +85,7 @@ namespace Lattirune.Dungeon
         public bool IsCampfireResolved => campfireChoiceResolved;
         public bool IsMerchantFloor => CurrentFloorNumber == 4 || CurrentFloorNumber == 9;
         public bool IsCampfireFloor => CurrentFloorNumber == 8;
+        public bool HasUsedReviveThisRun => hasUsedReviveThisRun;
 
         private void Awake()
         {
@@ -162,6 +164,7 @@ namespace Lattirune.Dungeon
             currentGold = metaProgression != null ? metaProgression.GetStartingGoldBonus() : 0;
             currentEmbers = 0;
             campfireChoiceResolved = false;
+            hasUsedReviveThisRun = false;
             _victoryRewardsGranted = false;
             _runtimeRuneUpgrades.Clear();
 
@@ -298,6 +301,34 @@ namespace Lattirune.Dungeon
 
             SetState(RunState.Defeated);
             OnRunDefeated?.Invoke();
+        }
+
+        /// <summary>
+        /// Revives the player during a Defeated state (e.g. via rewarded ad or No-Ads revive perk).
+        /// Restores a percentage of Max HP and resumes the encounter. Strictly limited to once per run.
+        /// Adheres strictly to PLAN.md Section 27.
+        /// </summary>
+        public bool RevivePlayer(float hpFraction = 0.5f)
+        {
+            if (currentState != RunState.Defeated || hasUsedReviveThisRun)
+            {
+                return false;
+            }
+
+            hasUsedReviveThisRun = true;
+            if (playerCombatant != null)
+            {
+                int restoreHp = Mathf.Max(1, Mathf.RoundToInt(playerCombatant.MaxHp * hpFraction));
+                playerCombatant.Heal(restoreHp);
+            }
+
+            SetState(RunState.EncounterActive);
+            if (combatSystem != null)
+            {
+                combatSystem.StartCombat();
+            }
+
+            return true;
         }
 
         public void ContinueAfterReward()
