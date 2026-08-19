@@ -10,7 +10,56 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Engine:** Unity 6 LTS (2D URP)
 * **Language:** C#
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
-* **Development Status:** Pre-production / Phase 4 Meta-Progression
+* **Development Status:** Pre-production / Phase 4 Mobile Screen Flow Integration
+
+## Full Mobile Screen Navigation Flow & UI Architecture
+
+The centralized navigation coordinator (`ScreenNavigationController`) enforces single-active-screen safety, history back-stacking, and Android hardware back button routing:
+
+```
+┌─────────────┐
+│  MAIN MENU  │◄─────────────────────────────┐
+└──────┬──────┘                              │
+       │                                     │
+       ├─────────────────┐                   │
+       ▼                 ▼                   │
+┌──────────────┐  ┌──────────────┐           │
+│ CAMPFIRE HUB │  │   SETTINGS   │           │
+└──────┬───────┘  └──────────────┘           │
+       │                                     │
+       ▼                                     │
+┌──────────────┐                             │
+│BLUEPRINTFORGE│                             │
+└──────────────┘                             │
+       │ (Start Run)                         │
+       ▼                                     │
+┌──────────────┐                             │
+│  GRID BUILD  │◄─────────────────┐          │
+└──────┬───────┘                  │          │
+       │ (Start Battle)           │          │
+       ▼                          │          │
+┌──────────────┐                  │          │
+│    COMBAT    │                  │          │
+└──────┬───────┘                  │          │
+       │ (Victory)                │          │
+       ▼                          │          │
+┌──────────────┐                  │          │
+│REWARD / SHOP │──────────────────┘          │
+└──────┬───────┘                             │
+       │ (Floor 10 Lich Cleared)             │
+       ▼                                     │
+┌──────────────┐                             │
+│ RUN COMPLETE │─────────────────────────────┘
+└──────────────┘
+```
+
+* **Screen States (`ScreenState`):** `MAIN_MENU`, `CAMPFIRE_HUB`, `BLUEPRINT_FORGE`, `RUN_START`, `GRID_BUILD`, `COMBAT`, `REWARD_SELECTION`, `INVENTORY`, `MERCHANT`, `CAMPFIRE_REST`, `BOSS`, `RUN_COMPLETE`, `SETTINGS`.
+* **Safe Android Back Handling:**
+  * **Combat Screen:** Accidental back navigation is strictly blocked during active battle to prevent run state corruption.
+  * **Blueprint Forge:** Returns safely to `CAMPFIRE_HUB`.
+  * **Campfire Meta-Hub:** Returns safely to `MAIN_MENU`.
+  * **Merchant / Rest / Inventory:** Returns safely to `GRID_BUILD`.
+* **Touch Target Standards:** All buttons and interactive controls strictly satisfy the mobile $\ge 52\text{ dp}$ touch target threshold.
 
 ## Meta-Progression: Campfire Hub UI & Blueprint Forge Screen
 
@@ -21,11 +70,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
   * Authoritative event-driven display of persistent Dungeon Embers, lifetime boss clears, total runs, and unlocked blueprint counts.
   * Provides direct navigation into the Blueprint Forge interface with $\ge 52\text{ dp}$ touch targets.
 * **Blueprint Forge UI (`BlueprintForgeController`):**
-  * Dynamically renders canonical blueprints from `BlueprintDatabaseSO` with categorized status badges:
-    * `Locked`: Prerequisite blueprint not yet unlocked.
-    * `Available`: Prerequisite met and player has sufficient Embers.
-    * `InsufficientEmbers`: Prerequisite met but more Embers needed.
-    * `Unlocked`: Already permanently unlocked and active in reward pools.
+  * Dynamically renders canonical blueprints from `BlueprintDatabaseSO` with categorized status badges (`Locked`, `Available`, `InsufficientEmbers`, `Unlocked`).
   * One-tap purchase validation with double-click protection, audio feedback, and haptic response.
 
 ## Combat Simulation Agency & Speed Control
