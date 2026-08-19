@@ -14,6 +14,7 @@ namespace Lattirune.Combat
         public int TargetArmor { get; private set; }
         public int FinalDamage { get; private set; }
         public bool IsCritical { get; private set; }
+        public bool IsReflected { get; private set; }
         public bool HasSynergyBonus => RuneBonus > 0;
 
         public DamageResult(
@@ -25,7 +26,8 @@ namespace Lattirune.Combat
             float damageModifiers,
             int targetArmor,
             int finalDamage,
-            bool isCritical)
+            bool isCritical,
+            bool isReflected = false)
         {
             SourceName = source;
             TargetName = target;
@@ -36,6 +38,7 @@ namespace Lattirune.Combat
             TargetArmor = targetArmor;
             FinalDamage = finalDamage;
             IsCritical = isCritical;
+            IsReflected = isReflected;
         }
     }
 }

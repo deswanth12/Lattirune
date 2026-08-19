@@ -10,7 +10,34 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Engine:** Unity 6 LTS (2D URP)
 * **Language:** C#
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
-* **Development Status:** Pre-production / Vertical Slice Complete (Phase 2)
+* **Development Status:** Pre-production / Phase 3 Content Build
+
+## Phase 3: Biome 1 ("The Cursed Sewers") & 6-Enemy Bestiary
+
+The 10-floor dungeon expands across Biome 1 with data-driven enemy archetypes and tactical grid-disrupting traits:
+
+| Enemy Name | Tier | HP | Armor | Interval | Unique Trait / Mechanic | Tactical Counterplay |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Sewer Rat** | Normal | 35 | 0 | 1.2s | High attack rate swarm | High shield or fast daggers |
+| **Goblin Thief** | Normal | 45 | 0 | 1.0s | Steals 3 Gold on every hit | Burst down before 5 seconds |
+| **Armored Skeleton** | Normal | 75 | 15 | 2.0s | Reflects 20% physical damage | Elemental wands & poison runes |
+| **Venomous Spider** | Normal | 50 | 0 | 1.4s | Inflicts 2 ticking Poison stacks | Sun runes & healing potions |
+| **Acid Slime** | Elite | 160 | 2 | 2.0s | Acid spit: disables 1 bag slot | Redundant weapon arrays |
+| **Necromancer** | Elite | 140 | 0 | 3.0s | Summons 2 Skeletons every 4.0s | Lightning arc & piercing bows |
+| **The Lich Lord** | BOSS | 750 | 10 | 2.5s | 3-Phase dynamic enrage | Multi-beam reaction synergies |
+
+### 10-Floor Topology (Biome 1)
+
+1. **Floor 1:** Sewer Entry (Sewer Rat Skirmish)
+2. **Floor 2:** Drain Basin (Goblin Thief Ambush)
+3. **Floor 3:** Slime Cavern (Elite: Acid Slime)
+4. **Floor 4:** Merchant Stall
+5. **Floor 5:** Armory Gate (Mid-Boss: Armored Skeleton)
+6. **Floor 6:** Treasure Vault
+7. **Floor 7:** Bone Crypt (Elite: Necromancer)
+8. **Floor 8:** Campfire Rest Site
+9. **Floor 9:** Spider Nest (Venomous Spider)
+10. **Floor 10:** Boss Sanctum (The Lich Lord - 3 Phases)
 
 ## Phase 2: 5-Element Synergy Architecture
 
@@ -61,20 +88,6 @@ The player's backpack storage operates as a discrete 2D spatial grid completely 
 * **Multi-Tile Footprint Support:** Validates multi-tile items ($1 \times 1$, $1 \times 2$, $2 \times 1$, $2 \times 2$) and dynamic $90^\circ$ rotation states.
 * **Persistence:** Serializes unlocked cell coordinates and expansion stage to encrypted JSON save data.
 
-## Dungeon Run Progression & Master State Machine
-
-The multi-floor roguelite dungeon progression coordinates encounters, reward drafts, and floor transitions:
-
-```
-[RUN START]
-    ↓
-[Floor 1: Sewer Entry (Rat)] → [Combat] → [Victory] → [Reward Draft] → [Continue]
-    ↓
-[Floor 2: Armory Cellar (Skeleton)] → [Combat] → [Victory] → [Reward Draft] → [Continue]
-    ↓
-[Floor 3: Boss Sanctum (Lich Lord)] → [Combat] → [Victory] → [Reward Draft] → [RUN COMPLETE]
-```
-
 ## Boss Encounter Mechanics & The Lich Lord
 
 The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic dynamic enrage thresholds:
@@ -84,31 +97,6 @@ The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic 
 | **Phase 1** | Frost Warden | $100\% \rightarrow 66\%$ | 10 | 8 | 2.5s |
 | **Phase 2** | Soul Harvest | $66\% \rightarrow 33\%$ | 15 (+5) | 12 (+4) | 2.0s (0.8×) |
 | **Phase 3** | Necrotic Inversion | $33\% \rightarrow 0\%$ | 20 (+10) | 16 (+8) | 1.6s (0.64×) |
-
-## Phase 2 Milestone Verification
-
-* **Automated Unit & Integration Tests:** 191 / 191 EditMode tests passing (100% pass rate).
-* **Core Gameplay Loop:** Full 3-floor run, cross-intersection reactions, Prism/Crossfire conduits, multi-phase boss encounter, reward draft, bag expansion, and AES-256 local encrypted save restoration verified.
-* **Android Target:** Package `com.developer.lattirune`, Portrait $1080 \times 1920$, Target API 34.
-* **Release Artifact:** `Builds/Android/Lattirune-Phase2-Verification.apk` via `AndroidBuildScript.cs`.
-
-## Combat Status & Effect Framework
-
-Elemental reactions resolve dynamically into runtime combat effects:
-
-```
-Rune Beam A x Rune Beam B (or Prism/Crossfire Branches)
-        ↓
-ElementalIntersectionEngine
-        ↓
-ElementalReactionSystem (ReactionResult)
-        ↓
-ReactionEffectResolver
-        ↓
-CombatEffectSystem (CombatEffectInstance)
-        ↓
-Combatant (Damage Pipeline & Runtime Modifiers)
-```
 
 ## Documentation
 

@@ -59,7 +59,7 @@ namespace Lattirune.Dungeon
         {
             if (dungeonDefinition == null)
             {
-                dungeonDefinition = DungeonDefinitionSO.CreateDefaultPhase2Dungeon();
+                dungeonDefinition = DungeonDefinitionSO.Create10FloorCursedSewersDungeon();
             }
         }
 
@@ -132,11 +132,13 @@ namespace Lattirune.Dungeon
 
                 if (enemyCombatant != null)
                 {
-                    enemyCombatant.SetupTrainingDummy(
+                    enemyCombatant.SetupCustom(
+                        name: CurrentEncounter.EnemyName,
                         hp: CurrentEncounter.EnemyHp,
                         baseArmor: CurrentEncounter.EnemyArmor,
                         attack: CurrentEncounter.EnemyAttack,
-                        interval: CurrentEncounter.AttackInterval
+                        interval: CurrentEncounter.AttackInterval,
+                        traits: CurrentEncounter.EnemyTraits
                     );
                 }
             }

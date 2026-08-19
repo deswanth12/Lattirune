@@ -422,7 +422,7 @@ namespace Lattirune.Core
                 runManager = runObj.AddComponent<RunManager>();
             }
             runManager.Initialize(
-                DungeonDefinitionSO.CreateDefaultPhase2Dungeon(),
+                DungeonDefinitionSO.Create10FloorCursedSewersDungeon(),
                 combatSystem,
                 rewardService,
                 _playerCombatant,
