@@ -53,6 +53,25 @@ The Crossfire Rune (`rune_crossfire`, Fire affinity) and Amplifier Node (`rune_o
 * **Chained Prism Compatibility:** Each emitted Crossfire beam can independently intersect with Prisms, generating secondary refractions.
 * **Zero Self-Intersection:** Beams originating from the same root emitter ID are filtered out from triggering self-reactions.
 
+## Dungeon Run Progression & Master State Machine
+
+The multi-floor roguelite dungeon progression coordinates encounters, reward drafts, and floor transitions:
+
+```
+[RUN START]
+    ↓
+[Floor 1: Sewer Entry (Rat)] → [Combat] → [Victory] → [Reward Draft] → [Continue]
+    ↓
+[Floor 2: Armory Cellar (Skeleton)] → [Combat] → [Victory] → [Reward Draft] → [Continue]
+    ↓
+[Floor 3: Boss Sanctum (Lich Lord)] → [Combat] → [Victory] → [Reward Draft] → [RUN COMPLETE]
+```
+
+### State Machine Lifecycle:
+* **Explicit State Model:** `RunState` (`NotStarted`, `Starting`, `FloorPreparing`, `EncounterActive`, `RewardSelection`, `FloorTransition`, `RunComplete`, `Defeated`).
+* **Data-Driven Architecture:** `DungeonDefinitionSO`, `DungeonFloorDefinitionSO`, and `EncounterDefinitionSO` encapsulate immutable level definitions.
+* **Run Persistence & Resume:** `SavedRunData` cleanly serializes active floor and encounter indexes into local encrypted JSON saves.
+
 ## Combat Status & Effect Framework
 
 Elemental reactions resolve dynamically into runtime combat effects:

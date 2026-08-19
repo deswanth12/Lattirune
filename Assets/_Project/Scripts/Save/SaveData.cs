@@ -53,6 +53,25 @@ namespace Lattirune.Save
     }
 
     [Serializable]
+    public class SavedRunData
+    {
+        public bool hasActiveRun;
+        public int currentFloorIndex;
+        public int currentEncounterIndex;
+        public int runState;
+
+        public SavedRunData() { }
+
+        public SavedRunData(bool active, int floorIdx, int encIdx, int state)
+        {
+            hasActiveRun = active;
+            currentFloorIndex = floorIdx;
+            currentEncounterIndex = encIdx;
+            runState = state;
+        }
+    }
+
+    [Serializable]
     public class SavedSettingsData
     {
         public float masterVolume = 1.0f;
@@ -72,7 +91,7 @@ namespace Lattirune.Save
     }
 
     /// <summary>
-    /// Root serializable data transfer object for player state and settings persistence.
+    /// Root serializable data transfer object for player state, run progression, and settings persistence.
     /// </summary>
     [Serializable]
     public class SaveData
@@ -81,6 +100,7 @@ namespace Lattirune.Save
         public string timestamp;
         public List<SavedItemData> items = new List<SavedItemData>();
         public List<SavedRuneData> runes = new List<SavedRuneData>();
+        public SavedRunData run = new SavedRunData();
         public SavedSettingsData settings = new SavedSettingsData();
 
         public SaveData()
@@ -97,6 +117,7 @@ namespace Lattirune.Save
             {
                 version = SaveVersion.CURRENT_VERSION,
                 timestamp = DateTime.UtcNow.ToString("o"),
+                run = new SavedRunData(false, 0, 0, 0),
                 settings = new SavedSettingsData(1.0f, 1.0f, false, true)
             };
 
