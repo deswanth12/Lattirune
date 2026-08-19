@@ -509,18 +509,24 @@ namespace Lattirune.Dungeon
             return true;
         }
 
-        public bool ResolveCampfireRuneUpgrade(string runeId)
+        public void UpgradeRune(string runeId, int powerBonus = 2)
         {
-            if (campfireChoiceResolved || string.IsNullOrEmpty(runeId)) return false;
+            if (string.IsNullOrEmpty(runeId)) return;
 
             if (!_runtimeRuneUpgrades.ContainsKey(runeId))
             {
                 _runtimeRuneUpgrades[runeId] = 0;
             }
-            _runtimeRuneUpgrades[runeId] += 2;
-
-            campfireChoiceResolved = true;
+            _runtimeRuneUpgrades[runeId] += powerBonus;
             OnCampfireRuneUpgraded?.Invoke(runeId);
+        }
+
+        public bool ResolveCampfireRuneUpgrade(string runeId)
+        {
+            if (campfireChoiceResolved || string.IsNullOrEmpty(runeId)) return false;
+
+            UpgradeRune(runeId, 2);
+            campfireChoiceResolved = true;
             return true;
         }
 
