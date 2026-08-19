@@ -15,6 +15,9 @@ using Lattirune.Save;
 using Lattirune.Synergy;
 using Lattirune.UI;
 using Lattirune.Progression;
+using Lattirune.Economy;
+using Lattirune.Events;
+using Lattirune.Modifiers;
 
 namespace Lattirune.Core
 {
@@ -484,6 +487,17 @@ namespace Lattirune.Core
                     SaveCurrentState();
                 }
             };
+
+            // Procedural Run Events Subsystem (TASK-051 & TASK-052)
+            GameObject econObj = new GameObject("EconomyManager");
+            econObj.transform.SetParent(transform);
+            var economyManager = econObj.AddComponent<EconomyManager>();
+            economyManager.Initialize(startingGold: 0);
+
+            GameObject eventObj = new GameObject("RunEventIntegration");
+            eventObj.transform.SetParent(transform);
+            var eventIntegration = eventObj.AddComponent<RunEventIntegration>();
+            eventIntegration.Initialize(runManager, economyManager, _playerCombatant, combatSystem);
         }
 
         private void BuildDefaultItemDefinitions()

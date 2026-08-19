@@ -297,6 +297,23 @@ namespace Lattirune.Dungeon
             }
         }
 
+        public void PauseForEvent()
+        {
+            if (currentState != RunState.EncounterActive && !IsRunFinished)
+            {
+                SetState(RunState.EventActive);
+            }
+        }
+
+        public void ResumeFromEvent()
+        {
+            if (currentState == RunState.EventActive)
+            {
+                SetState(RunState.FloorPreparing);
+                PrepareCurrentEncounter();
+            }
+        }
+
         // ==========================================
         // IN-RUN ECONOMY OPERATIONS (Section 13.1)
         // ==========================================
