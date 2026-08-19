@@ -235,6 +235,14 @@ namespace Lattirune.Dungeon
 
             if (CurrentEncounter.IsBoss && bossSystem != null)
             {
+                if (CurrentFloorNumber == 5)
+                {
+                    bossSystem.Initialize(BossDefinitionSO.CreateGraveGoliathDefinition(), enemyCombatant);
+                }
+                else
+                {
+                    bossSystem.Initialize(BossDefinitionSO.CreateLichLordDefinition(), enemyCombatant);
+                }
                 bossSystem.StartBossFight();
             }
             else

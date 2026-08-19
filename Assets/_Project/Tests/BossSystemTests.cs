@@ -119,5 +119,31 @@ namespace Lattirune.Tests
             Assert.AreEqual(8, telem.EffectiveAttack);
             Assert.AreEqual(10, telem.EffectiveArmor);
         }
+
+        [Test]
+        public void BossSystem_GraveGoliathMidBoss_TransitionsAtHalfHp()
+        {
+            var goliath = BossDefinitionSO.CreateGraveGoliathDefinition();
+            Assert.IsTrue(goliath.IsValid(out _));
+            Assert.AreEqual(2, goliath.PhaseCount);
+            Assert.AreEqual(320, goliath.MaxHp);
+
+            _bossSystem.Initialize(goliath, _enemy);
+            _bossSystem.StartBossFight();
+
+            Assert.AreEqual(0, _bossSystem.CurrentPhaseIndex);
+            Assert.AreEqual("Phase 1: Colossal Sentinel", _bossSystem.CurrentPhase.DisplayName);
+            Assert.AreEqual(320, _enemy.MaxHp);
+            Assert.AreEqual(12, _enemy.Armor);
+            Assert.AreEqual(7, _enemy.BaseAttackDamage);
+
+            // Deal 170 damage (HP = 150 / 320 = 46.8% <= 50% threshold)
+            _enemy.TakeDamage(new DamageResult("Hero", "Goliath", 170, 0, 1f, 1f, 0, 170, false));
+
+            Assert.AreEqual(1, _bossSystem.CurrentPhaseIndex);
+            Assert.AreEqual("Phase 2: Molten Core", _bossSystem.CurrentPhase.DisplayName);
+            Assert.AreEqual(18, _enemy.Armor); // 12 + 6
+            Assert.AreEqual(12, _enemy.BaseAttackDamage); // 7 + 5
+        }
     }
 }

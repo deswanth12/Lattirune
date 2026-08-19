@@ -124,5 +124,27 @@ namespace Lattirune.Boss
             boss.Initialize("boss_lich_lord", "The Lich Lord", hp: 750, armor: 10, attack: 8, interval: 2.5f, phaseList);
             return boss;
         }
+
+        /// <summary>
+        /// Factory creating canonical Grave Goliath 2-phase Mid-Boss configuration for Floor 5.
+        /// </summary>
+        public static BossDefinitionSO CreateGraveGoliathDefinition()
+        {
+            BossDefinitionSO boss = ScriptableObject.CreateInstance<BossDefinitionSO>();
+            List<BossPhaseDefinitionSO> phaseList = new List<BossPhaseDefinitionSO>();
+
+            // Phase 1: Colossal Sentinel (100% -> 50%)
+            BossPhaseDefinitionSO p1 = ScriptableObject.CreateInstance<BossPhaseDefinitionSO>();
+            p1.Initialize("phase_1_colossal_sentinel", "Phase 1: Colossal Sentinel", threshold: 1.0f, extraArmor: 0, extraAttack: 0, speedMult: 1.0f);
+            phaseList.Add(p1);
+
+            // Phase 2: Molten Core Enrage (50% -> 0%)
+            BossPhaseDefinitionSO p2 = ScriptableObject.CreateInstance<BossPhaseDefinitionSO>();
+            p2.Initialize("phase_2_molten_enrage", "Phase 2: Molten Core", threshold: 0.50f, extraArmor: 6, extraAttack: 5, speedMult: 0.75f);
+            phaseList.Add(p2);
+
+            boss.Initialize("boss_grave_goliath", "Grave Goliath", hp: 320, armor: 12, attack: 7, interval: 2.2f, phaseList);
+            return boss;
+        }
     }
 }
