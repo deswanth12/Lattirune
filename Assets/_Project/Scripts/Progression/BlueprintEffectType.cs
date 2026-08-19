@@ -10,6 +10,10 @@ namespace Lattirune.Progression
         UnlockRuneInRewardPool,
         PermanentStartingGoldBonus,
         PermanentStartingHpBonus,
-        PermanentDamageMultiplier
+        PermanentDamageMultiplier,
+        PotionHealBonus,
+        VampirismBonus,
+        BonusEmberReward,
+        MapVision
     }
 }

@@ -1,4 +1,4 @@
-﻿# POST-PLAN DEVELOPMENT & RUNTIME VALIDATION BACKLOG
+# POST-PLAN DEVELOPMENT & RUNTIME VALIDATION BACKLOG
 
 ## Project Status Overview
 - **Engine**: Unity 2022.3.62f1
@@ -74,5 +74,10 @@ PERSISTENT SAVE / LOAD (Zero data loss, automatic background saving)
 - [x] **P2-3: Monte Carlo Balance Verification**: MonteCarloBalanceSimulator runs 1,000 automated runs with balanced win curves.
 
 ### [P3] Long-Term Balance & Content Expansion
-- [ ] **P3-1: Additional Relic Blueprints**: Expansion of Forge blueprints for post-launch updates.
-- [ ] **P3-2: Endless Dungeon Mode**: Procedural floor scaling beyond Floor 10.
+- [x] **P3-1: Additional Relic Blueprints**: Expansion of Forge blueprints to 19 canonical blueprints with unique effects (PotionHealBonus, VampirismBonus, BonusEmberReward, MapVision).
+- [x] **P3-2: Endless Dungeon Mode**: Procedural infinite floor scaling beyond Floor 10 with escalating enemy HP/ATK and bonus Ember harvesting.
+
+### [P4] Post-Launch Live-Ops & Future Expansions
+- [ ] **P4-1: Daily Challenge Runs**: Seeded daily modifier runs with global asynchronous leaderboards.
+- [ ] **P4-2: Alternate Dungeon Biomes**: Volcanic Caldera and Frozen Catacombs biomes.
+- [ ] **P4-3: Custom Conduit Shader Particles**: GPU particle trails for laser conduit beam intersections.

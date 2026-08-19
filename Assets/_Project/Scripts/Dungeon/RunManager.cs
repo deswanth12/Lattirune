@@ -47,6 +47,7 @@ namespace Lattirune.Dungeon
         [Header("Campfire State (PLAN.md Section 11)")]
         [SerializeField] private bool campfireChoiceResolved = false;
         [SerializeField] private bool hasUsedReviveThisRun = false;
+        [SerializeField] private bool isEndlessMode = false;
         private readonly Dictionary<string, int> _runtimeRuneUpgrades = new Dictionary<string, int>();
         private bool _victoryRewardsGranted = false;
 
@@ -73,9 +74,9 @@ namespace Lattirune.Dungeon
         public int CurrentFloorNumber => currentFloorIndex + 1;
         public int CurrentEncounterIndex => currentEncounterIndex;
         public int TotalFloors => dungeonDefinition != null ? dungeonDefinition.TotalFloorCount : 0;
-        public DungeonFloorDefinitionSO CurrentFloor => dungeonDefinition != null ? dungeonDefinition.GetFloor(currentFloorIndex) : null;
+        public DungeonFloorDefinitionSO CurrentFloor => GetCurrentOrEndlessFloor();
         public EncounterDefinitionSO CurrentEncounter => CurrentFloor != null ? CurrentFloor.GetEncounter(currentEncounterIndex) : null;
-        public bool IsFinalFloor => dungeonDefinition != null && currentFloorIndex >= dungeonDefinition.TotalFloorCount - 1;
+        public bool IsFinalFloor => !isEndlessMode && dungeonDefinition != null && currentFloorIndex >= dungeonDefinition.TotalFloorCount - 1;
         public bool IsFinalEncounterOnFloor => CurrentFloor != null && currentEncounterIndex >= CurrentFloor.EncounterCount - 1;
         public bool IsRunFinished => currentState == RunState.RunComplete || currentState == RunState.Defeated;
         public BossSystem Boss => bossSystem;
@@ -86,6 +87,43 @@ namespace Lattirune.Dungeon
         public bool IsMerchantFloor => CurrentFloorNumber == 4 || CurrentFloorNumber == 9;
         public bool IsCampfireFloor => CurrentFloorNumber == 8;
         public bool HasUsedReviveThisRun => hasUsedReviveThisRun;
+        public bool IsEndlessMode => isEndlessMode;
+
+        public void EnableEndlessMode()
+        {
+            isEndlessMode = true;
+        }
+
+        private DungeonFloorDefinitionSO GetCurrentOrEndlessFloor()
+        {
+            if (dungeonDefinition == null) return null;
+
+            if (currentFloorIndex < dungeonDefinition.TotalFloorCount)
+            {
+                return dungeonDefinition.GetFloor(currentFloorIndex);
+            }
+
+            // Procedurally generate endless floor
+            int endlessTier = currentFloorIndex - dungeonDefinition.TotalFloorCount + 1;
+            int scaledHp = Mathf.RoundToInt(120 * (1.0f + 0.15f * endlessTier));
+            int scaledAtk = Mathf.RoundToInt(15 * (1.0f + 0.10f * endlessTier));
+
+            var floor = ScriptableObject.CreateInstance<DungeonFloorDefinitionSO>();
+            var enc = ScriptableObject.CreateInstance<EncounterDefinitionSO>();
+            enc.Initialize(
+                id: $"endless_enc_{currentFloorIndex}",
+                name: $"Abyssal Horror Mk.{endlessTier}",
+                desc: $"A monstrous entity warped by deep dungeon ley lines. (Floor {CurrentFloorNumber})",
+                hp: scaledHp,
+                armor: 4 + endlessTier,
+                atk: scaledAtk,
+                interval: 2.0f,
+                isBoss: (CurrentFloorNumber % 5 == 0)
+            );
+
+            floor.Initialize(CurrentFloorNumber, $"Abyssal Depths - Level {endlessTier}", new List<EncounterDefinitionSO> { enc });
+            return floor;
+        }
 
         private void Awake()
         {

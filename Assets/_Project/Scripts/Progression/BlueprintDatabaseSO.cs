@@ -198,6 +198,36 @@ namespace Lattirune.Progression
                 BlueprintCategory.Utility, cost: 55, targetId: "stat_starting_hp", effect: BlueprintEffectType.PermanentStartingHpBonus, value: 20);
             list.Add(bpHp);
 
+            // 15. Celestial Compass (70 Embers)
+            BlueprintDefinitionSO bpCompass = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
+            bpCompass.Initialize("bp_celestial_compass", "Celestial Compass", "Attunes with ancient ley lines, revealing secret shrines on the Dungeon Map.",
+                BlueprintCategory.Relic, cost: 70, targetId: "relic_celestial_compass", effect: BlueprintEffectType.MapVision);
+            list.Add(bpCompass);
+
+            // 16. Alchemist's Flask (60 Embers)
+            BlueprintDefinitionSO bpFlask = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
+            bpFlask.Initialize("bp_alchemists_flask", "Alchemist's Flask", "Distills potent healing draughts, increasing emergency potion heals to 45 HP.",
+                BlueprintCategory.Utility, cost: 60, targetId: "relic_alchemists_flask", effect: BlueprintEffectType.PotionHealBonus, value: 20);
+            list.Add(bpFlask);
+
+            // 17. Vampiric Edge (85 Embers)
+            BlueprintDefinitionSO bpVampire = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
+            bpVampire.Initialize("bp_vampiric_edge", "Vampiric Edge", "Infuses weapons with sanguine energy, restoring 10% of attack damage as Health.",
+                BlueprintCategory.Relic, cost: 85, targetId: "relic_vampiric_edge", effect: BlueprintEffectType.VampirismBonus, value: 10);
+            list.Add(bpVampire);
+
+            // 18. Prism Core (95 Embers)
+            BlueprintDefinitionSO bpPrism = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
+            bpPrism.Initialize("bp_prism_core", "Prism Core", "Unlocks hyper-refractive Prism Runes in reward pools with extra beam branching.",
+                BlueprintCategory.Rune, cost: 95, targetId: "rune_prism_core", effect: BlueprintEffectType.UnlockRuneInRewardPool);
+            list.Add(bpPrism);
+
+            // 19. Eternal Embers (80 Embers)
+            BlueprintDefinitionSO bpEternal = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
+            bpEternal.Initialize("bp_eternal_embers", "Eternal Embers", "Harvests lingering dungeon spirits, granting +5 bonus Embers on every floor clear.",
+                BlueprintCategory.Utility, cost: 80, targetId: "stat_bonus_embers", effect: BlueprintEffectType.BonusEmberReward, value: 5);
+            list.Add(bpEternal);
+
             db.Initialize(list);
             return db;
         }
