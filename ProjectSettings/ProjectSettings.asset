@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!129 &1
+PlayerSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 26
+  productName: Lattirune
+  companyName: DefaultCompany
+  bundleVersion: 0.1.0
+  defaultInterfaceOrientation: 1
+  allowedAutorotateToPortrait: 1
+  allowedAutorotateToPortraitUpsideDown: 0
+  allowedAutorotateToLandscapeRight: 0
+  allowedAutorotateToLandscapeLeft: 0
+  useOSAutorotation: 0
+  use32BitDisplayBuffer: 1
+  defaultScreenWidth: 1080
+  defaultScreenHeight: 1920
+  defaultScreenWidthWeb: 540
+  defaultScreenHeightWeb: 960
+  m_TemplateCustomTags: {}
+  accelerometerFrequency: 60
+  activeColorSpace: 1
+  selectedEditorRenderPipelineAsset: {fileID: 0}
+  applicationIdentifier:
+    Android: com.developer.lattirune
+    iOS: com.developer.lattirune
+    Standalone: com.developer.lattirune
+  targetFramerate:
+    Android: 60
+    iOS: 60
+    Standalone: 60
+  AndroidTargetAPI: 34
+  AndroidMinAPI: 24

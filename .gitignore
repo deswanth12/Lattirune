@@ -1,0 +1,56 @@
+# Unity generated folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/[Aa]rchives/
+
+# Unity asset store packages
+/[Aa]ssets/[Aa]sset[Ss]tore[Tt]ools*
+
+# Visual Studio / VS Code / Rider
+.vs/
+.idea/
+.vscode/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# Android / Mobile build artifacts and keystores
+*.apk
+*.aab
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+
+# Secrets and credentials
+*.key
+*.pem
+*.env
+*secret*
+*credential*
