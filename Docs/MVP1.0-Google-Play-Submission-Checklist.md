@@ -105,7 +105,7 @@
 * **Production Track:** Target for full release (`BLOCKED` pending testing tracks)
 
 ## 18. Manual QA Dependency
-* **Automated Unit & Integration Tests:** 538 / 538 PASS (`PASS`)
+* **Automated Unit & Integration Tests:** 552 / 552 PASS (`PASS`)
 * **Physical Android Device Verification:** Pending hardware lab execution (`BLOCKED` / Recorded in [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./MVP1.0-Physical-Android-QA-Record.md))
 
 ## 19. Release Blockers Table
@@ -114,6 +114,7 @@
 * **Final Release Handoff:** [`Docs/MVP1.0-Final-External-Release-Handoff.md`](./MVP1.0-Final-External-Release-Handoff.md)
 * **Physical QA Record:** [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./MVP1.0-Physical-Android-QA-Record.md)
 * **Final Release Audit:** [`Docs/MVP1.0-Final-External-Release-Audit.md`](./MVP1.0-Final-External-Release-Audit.md)
+* **Blocker Execution Record:** [`Docs/MVP1.0-Release-Blocker-Execution-Record.md`](./MVP1.0-Release-Blocker-Execution-Record.md)
 
 | Blocker ID | Description | Severity | Remediation Requirement |
 | :--- | :--- | :--- | :--- |
