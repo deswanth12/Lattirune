@@ -32,3 +32,4 @@ PlayerSettings:
     Standalone: 60
   AndroidTargetAPI: 34
   AndroidMinAPI: 24
+  activeInputHandler: 2
