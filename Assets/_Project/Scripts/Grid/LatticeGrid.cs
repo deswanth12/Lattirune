@@ -12,9 +12,30 @@ namespace Lattirune.Grid
     {
         public const int WIDTH = 5;
         public const int HEIGHT = 5;
+        public const int GRID_WIDTH = WIDTH;
+        public const int GRID_HEIGHT = HEIGHT;
         public const int TOTAL_CELLS = WIDTH * HEIGHT; // 25
 
         private readonly GridCell[,] _cells = new GridCell[WIDTH, HEIGHT];
+
+        public int ActiveCellCount
+        {
+            get
+            {
+                int count = 0;
+                for (int x = 0; x < WIDTH; x++)
+                {
+                    for (int y = 0; y < HEIGHT; y++)
+                    {
+                        if (_cells[x, y] != null && _cells[x, y].State != TileState.Locked)
+                        {
+                            count++;
+                        }
+                    }
+                }
+                return count;
+            }
+        }
 
         public event Action<Vector2Int, TileState> OnCellStateChanged;
         public event Action<string, Vector2Int, Vector2Int> OnItemPlaced;

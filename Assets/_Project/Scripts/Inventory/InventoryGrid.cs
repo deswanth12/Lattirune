@@ -107,7 +107,7 @@ namespace Lattirune.Inventory
             return true;
         }
 
-        public int ExpandCapacity(int count = 1)
+        public bool ExpandCapacity(int count = 1)
         {
             int expanded = 0;
             for (int y = 0; y < _height && expanded < count; y++)
@@ -120,7 +120,7 @@ namespace Lattirune.Inventory
                     }
                 }
             }
-            return UnlockedCellCount;
+            return expanded > 0;
         }
 
         public bool LockCell(int x, int y)

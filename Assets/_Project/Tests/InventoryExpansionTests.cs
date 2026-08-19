@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
+using Lattirune.Core;
 using Lattirune.Inventory;
 using Lattirune.Items;
 using Lattirune.Save;

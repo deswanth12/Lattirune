@@ -10,7 +10,11 @@ namespace Lattirune.Runes
         Lightning = 2,
         Poison = 3,
         Void = 4,
-        Light = 5
+        Light = 5,
+        Force = 6,
+        Earth = 7,
+        Shadow = 8,
+        Wind = 9
     }
 
     /// <summary>
@@ -59,8 +63,11 @@ namespace Lattirune.Runes
         public float ChainChance => chainChance;
         public int PoisonStacksPerSec => poisonStacksPerSec;
         public int ShieldBonus => shieldBonus;
+        public int StartingShieldBonus => shieldBonus;
         public float LifestealPercent => lifestealPercent;
+        public float LifestealRatio => lifestealPercent;
         public float HastePercent => hastePercent;
+        public float AttackSpeedBonus => hastePercent;
 
         public void Initialize(
             string id, 

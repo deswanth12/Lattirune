@@ -17,6 +17,7 @@ namespace Lattirune.Synergy
 
         public IReadOnlyList<SynergyDefinitionSO> Definitions => synergyDefinitions;
         public int Count => synergyDefinitions != null ? synergyDefinitions.Count : 0;
+        public int TotalSynergyCount => Count;
 
         public void Initialize(List<SynergyDefinitionSO> definitions)
         {
@@ -101,6 +102,15 @@ namespace Lattirune.Synergy
 
             return errors.Count == 0;
         }
+
+        public bool IsValid() => ValidateDatabase(out _);
+        public bool IsValid(out string error)
+        {
+            bool valid = ValidateDatabase(out var list);
+            error = valid ? null : string.Join("; ", list);
+            return valid;
+        }
+        public bool IsValid(out List<string> errors) => ValidateDatabase(out errors);
 
         public static SynergyDatabaseSO CreateCanonicalDatabase() => CreateDefaultDatabase();
         public static SynergyDatabaseSO CreateCanonicalSynergyDatabase() => CreateDefaultDatabase();

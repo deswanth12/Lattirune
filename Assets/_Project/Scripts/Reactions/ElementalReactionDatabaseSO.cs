@@ -14,7 +14,9 @@ namespace Lattirune.Reactions
         [SerializeField] private List<ElementalReactionDefinitionSO> reactionDefinitions = new List<ElementalReactionDefinitionSO>();
 
         public IReadOnlyList<ElementalReactionDefinitionSO> Definitions => reactionDefinitions;
+        public IReadOnlyList<ElementalReactionDefinitionSO> AllReactions => reactionDefinitions;
         public int Count => reactionDefinitions != null ? reactionDefinitions.Count : 0;
+        public int TotalReactionCount => Count;
 
         public void Initialize(List<ElementalReactionDefinitionSO> definitions)
         {
@@ -110,6 +112,15 @@ namespace Lattirune.Reactions
 
             return errors.Count == 0;
         }
+
+        public bool IsValid() => ValidateDatabase(out _);
+        public bool IsValid(out string error)
+        {
+            bool valid = ValidateDatabase(out var list);
+            error = valid ? null : string.Join("; ", list);
+            return valid;
+        }
+        public bool IsValid(out List<string> errors) => ValidateDatabase(out errors);
 
         public ElementalReactionDefinitionSO GetReaction(ElementType a, ElementType b) => FindReaction(a, b);
         public ElementalReactionDefinitionSO GetReaction(Lattirune.Runes.RuneElement a, Lattirune.Runes.RuneElement b) => FindReaction((ElementType)(int)a, (ElementType)(int)b);
