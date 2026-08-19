@@ -59,15 +59,23 @@ namespace Lattirune.Save
         public int currentFloorIndex;
         public int currentEncounterIndex;
         public int runState;
+        public List<string> activeModifierIds = new List<string>();
+        public int highestCombo;
 
-        public SavedRunData() { }
+        public SavedRunData() 
+        {
+            activeModifierIds = new List<string>();
+            highestCombo = 0;
+        }
 
-        public SavedRunData(bool active, int floorIdx, int encIdx, int state)
+        public SavedRunData(bool active, int floorIdx, int encIdx, int state, IEnumerable<string> modifierIds = null, int combo = 0)
         {
             hasActiveRun = active;
             currentFloorIndex = floorIdx;
             currentEncounterIndex = encIdx;
             runState = state;
+            activeModifierIds = modifierIds != null ? new List<string>(modifierIds) : new List<string>();
+            highestCombo = combo;
         }
     }
 
