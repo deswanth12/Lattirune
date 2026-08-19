@@ -40,15 +40,17 @@
 * **Short Description:** Prepared (75 characters, max 80) (`PASS`)
 * **Full Description:** Prepared with accurate MVP 1.0 feature set (`PASS`)
 * **Draft Location:** [`Docs/MVP1.0-Google-Play-Store-Listing.md`](./MVP1.0-Google-Play-Store-Listing.md) (`PASS`)
+* **Store Listing Status:** `READY`
 
 ## 6. App Description Review
 * **Accurate Feature Description:** Grid building, 20 items, 10 runes, 6 enemies, Lich Lord, Blueprint Forge (`PASS`)
 * **Unsupported Feature Claims:** Zero claims of online multiplayer, cloud saves, or paid loot (`PASS`)
 
 ## 7. Graphics Requirements
-* **App Icon:** $512 \times 512$ PNG (32-bit color) (`NOT VERIFIED` - pending art asset finalization)
-* **Feature Graphic:** $1024 \times 500$ PNG/JPEG (`NOT VERIFIED` - pending marketing asset package)
-* **Screenshots:** Minimum 4 portrait screenshots ($1080 \times 1920$) (`NOT VERIFIED` - pending device capture)
+* **App Icon:** $512 \times 512$ PNG (`PENDING FINAL ASSET PACK`)
+* **Feature Graphic:** $1024 \times 500$ PNG/JPEG (`PENDING ASSET CREATION`)
+* **Screenshots (12-Screen Plan):** [`Docs/MVP1.0-Screenshot-Capture-Plan.md`](./MVP1.0-Screenshot-Capture-Plan.md) (`PENDING CAPTURE`)
+* **Store Asset Manifest:** [`Docs/MVP1.0-Store-Asset-Manifest.md`](./MVP1.0-Store-Asset-Manifest.md) (`READY`)
 
 ## 8. App Access
 * **Login / Authentication:** None required (`PASS`)
@@ -71,6 +73,7 @@
 
 ## 11. Privacy Policy Requirement
 * **Privacy Policy Document:** Prepared at [`Docs/MVP1.0-Privacy-Policy.md`](./MVP1.0-Privacy-Policy.md) (`READY`)
+* **Hosting Guide:** [`Docs/MVP1.0-Privacy-Policy-Hosting-Guide.md`](./MVP1.0-Privacy-Policy-Hosting-Guide.md) (`READY`)
 * **Public URL:** A publicly accessible privacy policy URL must be hosted before production release (`NOT HOSTED` / `BLOCKED`)
 * **Offline Evidence:** Codebase contains zero telemetry, tracking, or network requests (`PASS`)
 
@@ -102,7 +105,7 @@
 * **Production Track:** Target for full release (`BLOCKED` pending testing tracks)
 
 ## 18. Manual QA Dependency
-* **Automated Unit & Integration Tests:** 438 / 438 PASS (`PASS`)
+* **Automated Unit & Integration Tests:** 464 / 464 PASS (`PASS`)
 * **Physical Android Device Verification:** Pending hardware lab execution (`BLOCKED`)
 
 ## 19. Release Blockers Table
@@ -110,14 +113,16 @@
 | :--- | :--- | :--- | :--- |
 | **BLK-001** | Physical Android device QA not completed | `CRITICAL` | Execute manual smoke checklist on physical hardware |
 | **BLK-002** | Public Privacy Policy URL not hosted | `REQUIRED` | Host static policy URL for Play Console listing |
-| **BLK-003** | Store listing graphic assets not finalized | `REQUIRED` | Provide 512×512 icon, 1024×500 feature graphic, and screenshots |
+| **BLK-003** | Store listing graphic assets not finalized | `REQUIRED` | Finalize 512×512 icon, 1024×500 feature graphic, and 12-screen capture |
 
 ## 20. Final Submission Checklist
 * [x] Core gameplay, 10 floors, 20 items, 10 runes, 6 enemies, Lich Lord implemented and verified.
-* [x] 438 automated regression tests passing with 0 compilation and console errors.
+* [x] 464 automated regression tests passing with 0 compilation and console errors.
 * [x] Package identity (`com.developer.lattirune`), version name (`1.0.0`), and version code (`1`) unified.
 * [x] AAB build pipeline configured in `AndroidBuildScript.cs`.
-* [x] Privacy policy document created based on local encrypted offline architecture.
+* [x] Store listing copy finalized in `MVP1.0-Google-Play-Store-Listing.md`.
+* [x] Screenshot capture plan defined in `MVP1.0-Screenshot-Capture-Plan.md`.
+* [x] Privacy policy document and hosting guide created.
 * [x] Zero ads, zero IAP, zero analytics, zero network permissions.
 * [ ] Physical Android device smoke test executed and signed off.
 * [ ] Android App Bundle (.aab) generated and signed.

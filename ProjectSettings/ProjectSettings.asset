@@ -5,8 +5,8 @@ PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 26
   productName: Lattirune
-  companyName: DefaultCompany
-  bundleVersion: 0.1.0
+  companyName: Developer
+  bundleVersion: 1.0.0
   defaultInterfaceOrientation: 1
   allowedAutorotateToPortrait: 1
   allowedAutorotateToPortraitUpsideDown: 0
