@@ -8,8 +8,8 @@ using UnityEngine;
 namespace Lattirune.Editor
 {
     /// <summary>
-    /// Automated Android Build script for Phase 1, Phase 2, and Phase 3 MVP Release Candidate.
-    /// Builds development and release candidate APKs targeting 1080x1920 portrait orientation.
+    /// Automated Android Build script for Phase 1, Phase 2, and Phase 3 MVP Release.
+    /// Builds development, release candidate, and production versioned APKs targeting 1080x1920 portrait orientation.
     /// </summary>
     public static class AndroidBuildScript
     {
@@ -18,8 +18,15 @@ namespace Lattirune.Editor
         public const string APK_NAME_PHASE2 = "Lattirune-Phase2-Verification.apk";
         public const string APK_NAME_MVP1 = "Lattirune-MVP1-Verification.apk";
         public const string APK_NAME_RELEASE_CANDIDATE = "Lattirune-MVP1-ReleaseCandidate.apk";
+        public const string APK_NAME_V100 = "Lattirune-1.0.0.apk";
         public const string PACKAGE_ID = "com.developer.lattirune";
         public const string BOOTSTRAP_SCENE_PATH = "Assets/_Project/Scenes/Bootstrap.unity";
+
+        [MenuItem("Lattirune/Build/Build Android 1.0.0 Production Release APK")]
+        public static bool BuildAndroidV100ReleaseApk()
+        {
+            return ExecuteAndroidBuild(APK_NAME_V100);
+        }
 
         [MenuItem("Lattirune/Build/Build Android MVP 1.0 Release Candidate APK")]
         public static bool BuildAndroidMvp1ReleaseCandidateApk()
@@ -51,6 +58,8 @@ namespace Lattirune.Editor
 
             // 1. Configure Android Player Settings
             PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, PACKAGE_ID);
+            PlayerSettings.bundleVersion = "1.0.0";
+            PlayerSettings.Android.bundleVersionCode = 1;
             PlayerSettings.productName = "Lattirune";
             PlayerSettings.companyName = "Developer";
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;

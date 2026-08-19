@@ -10,17 +10,22 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Engine:** Unity 6 LTS (2D URP)
 * **Language:** C#
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
-* **Development Status:** MVP 1.0 Release Sign-Off (Ready for Ship)
+* **Development Status:** MVP 1.0.0 Release Package Finalized (Release Ready)
 
-## Phase 3 MVP 1.0 Final Release Sign-Off (TASK-035)
+## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 & TASK-036)
 
-* **Build Target:** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
+* **Build Target (RC):** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
+* **Build Target (v1.0.0):** `Builds/Android/Lattirune-1.0.0.apk`
 * **Package ID:** `com.developer.lattirune`
+* **Version Name:** `1.0.0`
+* **Version Code:** `1`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 389 / 389 passing ($100\%$)
+* **EditMode Tests:** 401 / 401 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
+* **Changelog:** [`CHANGELOG.md`](./CHANGELOG.md)
+* **Release Notes:** [`Docs/MVP1.0-Release-Notes.md`](./Docs/MVP1.0-Release-Notes.md)
 * **Release Manifest:** [`Docs/MVP1.0-Release-Manifest.md`](./Docs/MVP1.0-Release-Manifest.md)
 * **Traceability Matrix:** [`Docs/MVP1.0-Release-Traceability.md`](./Docs/MVP1.0-Release-Traceability.md)
 * **Release Sign-Off:**
@@ -147,7 +152,7 @@ The execution engine enforcing deterministic cascading triggers as specified in 
 The complete rune catalogue defined in PLAN.md Section 5.1:
 
 | # | Rune Name | ID | Element | Direction | Mechanical In-Combat Effect | Compatible Setup |
-| :- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| :- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | **Ember Rune** | `rune_ember` | Fire | East ($\rightarrow$) | +6 Fire Dmg; Burn (3 dmg/s for 4s) | Blades, Bows, Wands |
 | 2 | **Frost Rune** | `rune_frost` | Ice | South ($\downarrow$) | +4 Ice Dmg; Enemy speed -15% | Shields, Daggers |
 | 3 | **Spark Rune** | `rune_spark` | Lightning | North ($\uparrow$) | +8 Shock Dmg; 25% chain arc chance | Fast weapons (<1.5s) |
@@ -275,5 +280,7 @@ The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic 
 ## Documentation
 
 * [`PLAN.md`](./PLAN.md) — Master project planning and technical architecture blueprint (v1.0.1).
+* [`CHANGELOG.md`](./CHANGELOG.md) — Official project changelog and release history.
+* [`MVP1.0-Release-Notes.md`](./Docs/MVP1.0-Release-Notes.md) — Comprehensive MVP 1.0.0 Release Notes.
 * [`MVP1.0-Release-Manifest.md`](./Docs/MVP1.0-Release-Manifest.md) — Official MVP 1.0 Release Manifest and build specifications.
-* [`MVP1.0-Release-Traceability.md`](./Docs/MVP1.0-Release-Traceability.md) — Comprehensive requirements traceability matrix.
+* [`MVP1.0-Release-Traceability.md`](./Docs/MVP1.0-Release-Traceability.md) — Complete requirements traceability matrix.
