@@ -61,11 +61,13 @@ namespace Lattirune.Tests
         {
             _merchant.GenerateOffers(floorNumber: 4);
 
-            Assert.AreEqual(4, _merchant.OfferCount);
+            Assert.AreEqual(6, _merchant.OfferCount);
             Assert.IsNotNull(_merchant.CurrentOffers[0]);
             Assert.IsNotNull(_merchant.CurrentOffers[1]);
             Assert.IsNotNull(_merchant.CurrentOffers[2]);
             Assert.IsNotNull(_merchant.CurrentOffers[3]);
+            Assert.IsNotNull(_merchant.CurrentOffers[4]);
+            Assert.IsNotNull(_merchant.CurrentOffers[5]);
 
             // Slot expansion is always priced at 40g (PLAN.md 13.1)
             var expansionOffer = System.Array.Find(_merchant.CurrentOffers as MerchantOffer[] ?? new List<MerchantOffer>(_merchant.CurrentOffers).ToArray(), o => o.OfferType == MerchantOfferType.GridSlotExpansion);

@@ -53,38 +53,50 @@ namespace Lattirune.Economy
             currentOffers.Clear();
             if (_random == null) _random = new SystemRandomSource();
 
-            // 1. Generate 1 Equipment Item
+            // 1. Generate 2 Equipment Items
             if (itemDatabase != null && itemDatabase.TotalItemCount > 0)
             {
                 var availableItems = new List<ItemDataSO>(itemDatabase.AllItems);
-                int pickIdx = _random.Next(0, availableItems.Count);
-                ItemDataSO item = availableItems[pickIdx];
+                int countToPick = Mathf.Min(2, availableItems.Count);
+                for (int i = 0; i < countToPick; i++)
+                {
+                    int pickIdx = _random.Next(0, availableItems.Count);
+                    ItemDataSO item = availableItems[pickIdx];
+                    availableItems.RemoveAt(pickIdx);
 
-                int price = item.Category == ItemCategory.Relic ? _random.Next(35, 51) : _random.Next(15, 31);
-                currentOffers.Add(new MerchantOffer(
-                    id: $"offer_item_{item.ItemId}",
-                    title: item.DisplayName,
-                    desc: $"Equipment [{item.Category}] | Size: {item.Dimensions.x}x{item.Dimensions.y}",
-                    type: MerchantOfferType.Item,
-                    price: price,
-                    item: item
-                ));
+                    int price = item.Category == ItemCategory.Relic ? _random.Next(35, 51) : _random.Next(15, 31);
+                    currentOffers.Add(new MerchantOffer(
+                        id: $"offer_item_{item.ItemId}_{i}",
+                        title: item.DisplayName,
+                        desc: $"Equipment [{item.Category}] | Size: {item.Dimensions.x}x{item.Dimensions.y}",
+                        type: MerchantOfferType.Item,
+                        price: price,
+                        item: item
+                    ));
+                }
             }
 
-            // 2. Generate 1 Directional Rune
+            // 2. Generate 2 Directional Runes
             if (runeDatabase != null && runeDatabase.TotalRuneCount > 0)
             {
-                int runeIdx = _random.Next(0, runeDatabase.TotalRuneCount);
-                RuneData rune = runeDatabase.AllRunes[runeIdx];
-                int runePrice = _random.Next(30, 46); // 30-45g
-                currentOffers.Add(new MerchantOffer(
-                    id: $"offer_rune_{rune.RuneId}",
-                    title: rune.RuneName,
-                    desc: $"Elemental Rune [{rune.Element}] | Direction: {rune.Direction}",
-                    type: MerchantOfferType.Rune,
-                    price: runePrice,
-                    rune: rune
-                ));
+                var availableRunes = new List<RuneData>(runeDatabase.AllRunes);
+                int countToPick = Mathf.Min(2, availableRunes.Count);
+                for (int i = 0; i < countToPick; i++)
+                {
+                    int runeIdx = _random.Next(0, availableRunes.Count);
+                    RuneData rune = availableRunes[runeIdx];
+                    availableRunes.RemoveAt(runeIdx);
+
+                    int runePrice = _random.Next(30, 46); // 30-45g
+                    currentOffers.Add(new MerchantOffer(
+                        id: $"offer_rune_{rune.RuneId}_{i}",
+                        title: rune.RuneName,
+                        desc: $"Elemental Rune [{rune.Element}] | Direction: {rune.Direction}",
+                        type: MerchantOfferType.Rune,
+                        price: runePrice,
+                        rune: rune
+                    ));
+                }
             }
 
             // 3. Grid Slot Expansion (40 Gold fixed)
