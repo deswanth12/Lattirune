@@ -19,6 +19,7 @@ namespace Lattirune.UI
         [SerializeField] private CombatSystem combatSystem;
         [SerializeField] private SynergySystem synergySystem;
         [SerializeField] private RewardService rewardService;
+        [SerializeField] private Lattirune.Dungeon.RunManager runManager;
 
         [Header("Reward Configuration")]
         [SerializeField] private Transform rewardSpawnParent;
@@ -33,6 +34,7 @@ namespace Lattirune.UI
         public ScreenNavigationController Navigation => navigation;
         public CombatSystem Combat => combatSystem;
         public RewardService Rewards => rewardService;
+        public Lattirune.Dungeon.RunManager RunManager => runManager;
         public IReadOnlyList<RewardOption> CurrentRewardOptions => _currentRewardOptions;
         public RewardOption SelectedRewardOption => _selectedRewardOption;
         public bool IsShowingRewards => _isShowingRewards;
@@ -64,9 +66,11 @@ namespace Lattirune.UI
             RewardService service, 
             List<ItemDataSO> catalogue,
             Transform spawnParent,
-            ScreenNavigationController nav)
+            ScreenNavigationController nav,
+            Lattirune.Dungeon.RunManager run = null)
         {
             navigation = nav;
+            runManager = run;
             Initialize(combat, synergy, service, catalogue, spawnParent);
         }
 
@@ -125,9 +129,26 @@ namespace Lattirune.UI
             _selectedRewardOption = null;
             _currentRewardOptions.Clear();
 
+            if (runManager != null && runManager.CurrentState == Lattirune.Dungeon.RunState.RewardSelection)
+            {
+                runManager.ContinueAfterReward();
+            }
+
             if (combatSystem != null)
             {
                 combatSystem.ResetCombat();
+            }
+
+            if (navigation != null)
+            {
+                if (runManager != null && runManager.CurrentState == Lattirune.Dungeon.RunState.RunComplete)
+                {
+                    navigation.NavigateTo(ScreenState.MAIN_MENU);
+                }
+                else
+                {
+                    navigation.NavigateTo(ScreenState.GRID_BUILD);
+                }
             }
         }
 

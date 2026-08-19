@@ -745,10 +745,11 @@ namespace Lattirune.Core
 
             if (combatEncounterUI != null)
             {
-                combatEncounterUI.Initialize(combatSystem, synergySystem, rewardService, prototypeItemCatalogue, stagingAreaParent, navigationController);
+                combatEncounterUI.Initialize(combatSystem, synergySystem, rewardService, prototypeItemCatalogue, stagingAreaParent, navigationController, runManager);
             }
         }
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         private void OnGUI()
         {
             // Only show developer HUD overlay during active gameplay (GRID_BUILD / COMBAT)
@@ -832,5 +833,6 @@ namespace Lattirune.Core
 
             GUILayout.EndArea();
         }
+#endif
     }
 }
