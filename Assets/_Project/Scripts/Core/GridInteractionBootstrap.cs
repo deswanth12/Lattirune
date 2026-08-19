@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Lattirune.Combat;
 using Lattirune.Core;
 using Lattirune.Grid;
 using Lattirune.Items;
@@ -10,7 +11,7 @@ namespace Lattirune.Core
 {
     /// <summary>
     /// Bootstraps the physical 5x5 LatticeGrid interaction, data-driven prototype items,
-    /// Rune Conduit engine, and Elemental Synergy system.
+    /// Rune Conduit engine, Elemental Synergy system, and 1v1 Combat loop.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -20,6 +21,8 @@ namespace Lattirune.Core
         [SerializeField] private ItemDragController dragController;
         [SerializeField] private RuneConduitDebugView conduitDebugView;
         [SerializeField] private SynergySystem synergySystem;
+        [SerializeField] private CombatSystem combatSystem;
+        [SerializeField] private CombatDebugView combatDebugView;
         [SerializeField] private Transform stagingAreaParent;
 
         [Header("Staging Layout")]
@@ -33,6 +36,8 @@ namespace Lattirune.Core
         [SerializeField] private bool enableConduitDemo = true;
 
         private LatticeGrid _grid;
+        private PlayerCombatant _playerCombatant;
+        private EnemyCombatant _enemyCombatant;
         private readonly List<ItemInstance> _spawnedItemInstances = new List<ItemInstance>();
         private readonly List<(RuneData rune, Vector2Int origin, ConduitDirection dir, int range)> _activeRunesWithData = new List<(RuneData, Vector2Int, ConduitDirection, int)>();
         private readonly List<ConduitTarget> _activeTargets = new List<ConduitTarget>();
@@ -40,6 +45,9 @@ namespace Lattirune.Core
         public LatticeGrid Grid => _grid;
         public GridView View => gridView;
         public SynergySystem Synergy => synergySystem;
+        public CombatSystem Combat => combatSystem;
+        public PlayerCombatant Player => _playerCombatant;
+        public EnemyCombatant Enemy => _enemyCombatant;
         public IReadOnlyList<ItemInstance> SpawnedItems => _spawnedItemInstances;
 
         private void Start()
@@ -91,16 +99,54 @@ namespace Lattirune.Core
             // 6. Spawn Prototype Data-Driven Items
             SpawnPrototypeCatalogue();
 
-            // 7. Setup Development Runes (Fire Rune demo)
+            // 7. Setup Development Runes
             if (enableConduitDemo)
             {
                 SetupDevelopmentRunesAndTargets();
-                RecalculateAndRenderConduits();
             }
 
-            // Hook into item placement/removal events to dynamically recalculate conduits and synergies
+            // 8. Setup Combat Entities & System (TASK-007)
+            SetupCombatEncounter();
+
+            // 9. Initial recalculation of conduits, synergies, and player stats
+            RecalculateAndRenderConduits();
+
+            // Hook into item placement/removal events to dynamically recalculate conduits, synergies, and combat stats
             _grid.OnItemPlaced += (id, origin, size) => RecalculateAndRenderConduits();
             _grid.OnItemRemoved += (id, origin, size) => RecalculateAndRenderConduits();
+        }
+
+        private void SetupCombatEncounter()
+        {
+            // Player entity
+            GameObject playerObj = new GameObject("PlayerCombatant");
+            playerObj.transform.SetParent(transform);
+            _playerCombatant = playerObj.AddComponent<PlayerCombatant>();
+            _playerCombatant.SetupDefaultPlayer(initialHp: 100);
+
+            // Enemy entity (Training Dummy / Baseline normal enemy)
+            GameObject enemyObj = new GameObject("TrainingDummy");
+            enemyObj.transform.SetParent(transform);
+            _enemyCombatant = enemyObj.AddComponent<EnemyCombatant>();
+            _enemyCombatant.SetupTrainingDummy(hp: 50, baseArmor: 2, attack: 4, interval: 1.5f);
+
+            // Combat System coordinator
+            if (combatSystem == null)
+            {
+                GameObject combatSystemObj = new GameObject("CombatSystem");
+                combatSystemObj.transform.SetParent(transform);
+                combatSystem = combatSystemObj.AddComponent<CombatSystem>();
+            }
+            combatSystem.Initialize(_playerCombatant, _enemyCombatant);
+
+            // Combat Debug View
+            if (combatDebugView == null)
+            {
+                GameObject debugViewObj = new GameObject("CombatDebugView");
+                debugViewObj.transform.SetParent(transform);
+                combatDebugView = debugViewObj.AddComponent<CombatDebugView>();
+            }
+            combatDebugView.Initialize(combatSystem);
         }
 
         private void SpawnPrototypeCatalogue()
@@ -209,6 +255,12 @@ namespace Lattirune.Core
             if (synergySystem != null)
             {
                 synergySystem.UpdateSynergies(activeConduitData, _spawnedItemInstances);
+            }
+
+            // Update Player Combat Stats from the Grid build
+            if (_playerCombatant != null)
+            {
+                _playerCombatant.UpdateStatsFromBuild(_spawnedItemInstances);
             }
         }
     }
