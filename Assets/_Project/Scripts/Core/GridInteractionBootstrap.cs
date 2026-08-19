@@ -4,11 +4,13 @@ using Lattirune.Core;
 using Lattirune.Grid;
 using Lattirune.Items;
 using Lattirune.Runes;
+using Lattirune.Synergy;
 
 namespace Lattirune.Core
 {
     /// <summary>
-    /// Bootstraps the physical 5x5 LatticeGrid interaction, data-driven prototype items, and Rune Conduit engine.
+    /// Bootstraps the physical 5x5 LatticeGrid interaction, data-driven prototype items,
+    /// Rune Conduit engine, and Elemental Synergy system.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -17,6 +19,7 @@ namespace Lattirune.Core
         [SerializeField] private GridView gridView;
         [SerializeField] private ItemDragController dragController;
         [SerializeField] private RuneConduitDebugView conduitDebugView;
+        [SerializeField] private SynergySystem synergySystem;
         [SerializeField] private Transform stagingAreaParent;
 
         [Header("Staging Layout")]
@@ -26,16 +29,17 @@ namespace Lattirune.Core
         [Header("Item Catalogue (TASK-005 Prototype Items)")]
         [SerializeField] private List<ItemDataSO> prototypeItemCatalogue = new List<ItemDataSO>();
 
-        [Header("Development Runes & Targets (TASK-004 Demo)")]
+        [Header("Development Runes & Targets (TASK-004 & TASK-006 Demo)")]
         [SerializeField] private bool enableConduitDemo = true;
 
         private LatticeGrid _grid;
         private readonly List<ItemInstance> _spawnedItemInstances = new List<ItemInstance>();
-        private readonly List<(Vector2Int origin, ConduitDirection dir, int range)> _activeRunes = new List<(Vector2Int, ConduitDirection, int)>();
+        private readonly List<(RuneData rune, Vector2Int origin, ConduitDirection dir, int range)> _activeRunesWithData = new List<(RuneData, Vector2Int, ConduitDirection, int)>();
         private readonly List<ConduitTarget> _activeTargets = new List<ConduitTarget>();
 
         public LatticeGrid Grid => _grid;
         public GridView View => gridView;
+        public SynergySystem Synergy => synergySystem;
         public IReadOnlyList<ItemInstance> SpawnedItems => _spawnedItemInstances;
 
         private void Start()
@@ -75,17 +79,26 @@ namespace Lattirune.Core
             }
             conduitDebugView.Initialize(gridView);
 
-            // 5. Spawn Prototype Data-Driven Items
+            // 5. Ensure SynergySystem exists and initialize
+            if (synergySystem == null)
+            {
+                GameObject synergyObj = new GameObject("SynergySystem");
+                synergyObj.transform.SetParent(transform);
+                synergySystem = synergyObj.AddComponent<SynergySystem>();
+            }
+            synergySystem.EnsureDefaultDefinitions();
+
+            // 6. Spawn Prototype Data-Driven Items
             SpawnPrototypeCatalogue();
 
-            // 6. Setup Development Rune Conduits Demo if enabled
+            // 7. Setup Development Runes (Fire Rune demo)
             if (enableConduitDemo)
             {
                 SetupDevelopmentRunesAndTargets();
                 RecalculateAndRenderConduits();
             }
 
-            // Hook into item placement/removal events to dynamically recalculate conduits
+            // Hook into item placement/removal events to dynamically recalculate conduits and synergies
             _grid.OnItemPlaced += (id, origin, size) => RecalculateAndRenderConduits();
             _grid.OnItemRemoved += (id, origin, size) => RecalculateAndRenderConduits();
         }
@@ -99,7 +112,6 @@ namespace Lattirune.Core
                 stagingAreaParent = stagingObj.transform;
             }
 
-            // If no catalog assets were assigned in inspector, build the 5 baseline prototype items programmatically
             if (prototypeItemCatalogue == null || prototypeItemCatalogue.Count == 0)
             {
                 BuildDefaultItemDefinitions();
@@ -151,11 +163,10 @@ namespace Lattirune.Core
 
         private void SetupDevelopmentRunesAndTargets()
         {
-            // Demo Rune A: Position (2,1) emitting North with range 3
-            _activeRunes.Add((new Vector2Int(2, 1), ConduitDirection.North, 3));
-
-            // Demo Rune B: Position (3,3) emitting West with range 3
-            _activeRunes.Add((new Vector2Int(3, 3), ConduitDirection.West, 3));
+            // Demo Fire Rune: Position (2,1) emitting North with range 3
+            RuneData fireRune = ScriptableObject.CreateInstance<RuneData>();
+            fireRune.Initialize("fire_rune_01", "Fire Rune", ConduitDirection.North, ElementType.Fire, 3);
+            _activeRunesWithData.Add((fireRune, new Vector2Int(2, 1), ConduitDirection.North, 3));
 
             // Demo Target Receptor at (2,4)
             GameObject targetObj = new GameObject("Target_2_4");
@@ -178,8 +189,27 @@ namespace Lattirune.Core
                 return false;
             }
 
-            List<RuneConduitResult> results = RuneConduitEngine.CalculateMultipleConduits(_grid, _activeRunes, IsTarget);
+            var runeSpecs = new List<(Vector2Int, ConduitDirection, int)>();
+            var activeConduitData = new List<(RuneData, Vector2Int, RuneConduitResult)>();
+
+            for (int i = 0; i < _activeRunesWithData.Count; i++)
+            {
+                var (rune, origin, dir, range) = _activeRunesWithData[i];
+                RuneConduitResult result = RuneConduitEngine.CalculateConduit(_grid, origin, dir, range, IsTarget, stopOnTarget: false);
+                activeConduitData.Add((rune, origin, result));
+                runeSpecs.Add((origin, dir, range));
+            }
+
+            List<RuneConduitResult> results = new List<RuneConduitResult>();
+            foreach (var item in activeConduitData) results.Add(item.Item3);
+
             conduitDebugView.RenderConduits(results);
+
+            // Update Synergies
+            if (synergySystem != null)
+            {
+                synergySystem.UpdateSynergies(activeConduitData, _spawnedItemInstances);
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Lattirune.Items
 {
     /// <summary>
     /// Runtime representation of an item in the game world / inventory.
-    /// References immutable ItemDataSO while managing instance-specific position, rotation, and visual states.
+    /// References immutable ItemDataSO while managing instance-specific position, rotation, synergy, and visual states.
     /// </summary>
     [RequireComponent(typeof(BoxCollider2D))]
     public class ItemInstance : MonoBehaviour
@@ -20,6 +20,10 @@ namespace Lattirune.Items
         [SerializeField] private bool isPlacedOnGrid = false;
         [SerializeField] private Vector2Int currentGridPosition = new Vector2Int(-1, -1);
 
+        [Header("Synergy State (Runtime Only)")]
+        [SerializeField] private string activeSynergyId = null;
+        [SerializeField] private bool hasActiveSynergy = false;
+
         private Vector3 _originalPosition;
         private SpriteRenderer _spriteRenderer;
         private BoxCollider2D _collider;
@@ -30,6 +34,8 @@ namespace Lattirune.Items
         public bool IsPlacedOnGrid => isPlacedOnGrid;
         public Vector2Int CurrentGridPosition => currentGridPosition;
         public Vector3 OriginalPosition => _originalPosition;
+        public string ActiveSynergyId => activeSynergyId;
+        public bool HasActiveSynergy => hasActiveSynergy;
 
         public Vector2Int CurrentDimensions => itemData != null 
             ? ItemRotationUtility.GetRotatedDimensions(itemData.BaseDimensions, currentRotationDegrees)
@@ -56,6 +62,8 @@ namespace Lattirune.Items
             currentRotationDegrees = ItemRotationUtility.NormalizeRotation(initialRotation);
             isPlacedOnGrid = false;
             currentGridPosition = new Vector2Int(-1, -1);
+            activeSynergyId = null;
+            hasActiveSynergy = false;
 
             UpdateVisual();
         }
@@ -70,6 +78,40 @@ namespace Lattirune.Items
             currentRotationDegrees = ItemRotationUtility.GetNextRotation(currentRotationDegrees);
             UpdateVisual();
             return true;
+        }
+
+        /// <summary>
+        /// Sets the runtime synergy state and visual feedback without modifying ItemDataSO.
+        /// </summary>
+        public void SetSynergyState(string synergyId, Color? synergyColor = null)
+        {
+            activeSynergyId = synergyId;
+            hasActiveSynergy = !string.IsNullOrEmpty(synergyId);
+
+            if (_spriteRenderer != null)
+            {
+                if (hasActiveSynergy)
+                {
+                    // Flame / Elemental glow tint
+                    _spriteRenderer.color = synergyColor ?? new Color(1f, 0.45f, 0.1f, 1f);
+                }
+                else
+                {
+                    _spriteRenderer.color = Color.white;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if a discrete grid coordinate is covered by this item instance's occupied footprint.
+        /// </summary>
+        public bool ContainsGridCoordinate(Vector2Int coord)
+        {
+            if (!isPlacedOnGrid) return false;
+
+            Vector2Int dims = CurrentDimensions;
+            return coord.x >= currentGridPosition.x && coord.x < currentGridPosition.x + dims.x &&
+                   coord.y >= currentGridPosition.y && coord.y < currentGridPosition.y + dims.y;
         }
 
         public void UpdateVisual()
@@ -96,7 +138,7 @@ namespace Lattirune.Items
             tex.Apply();
 
             _spriteRenderer.sprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 32);
-            _spriteRenderer.color = Color.white;
+            _spriteRenderer.color = hasActiveSynergy ? new Color(1f, 0.45f, 0.1f, 1f) : Color.white;
             _spriteRenderer.sortingOrder = 10;
 
             transform.localScale = new Vector3(width, height, 1f);
@@ -120,7 +162,7 @@ namespace Lattirune.Items
             }
             else
             {
-                _spriteRenderer.color = Color.white;
+                _spriteRenderer.color = hasActiveSynergy ? new Color(1f, 0.45f, 0.1f, 1f) : Color.white;
                 _spriteRenderer.sortingOrder = 10;
             }
         }
@@ -137,6 +179,7 @@ namespace Lattirune.Items
         {
             isPlacedOnGrid = false;
             currentGridPosition = new Vector2Int(-1, -1);
+            SetSynergyState(null);
             transform.position = returnPosition;
             _originalPosition = returnPosition;
             SetVisualState(false);
