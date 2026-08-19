@@ -72,6 +72,40 @@ namespace Lattirune.Save
     }
 
     [Serializable]
+    public class SavedInventoryData
+    {
+        public int expansionStep;
+        public List<int> unlockedX = new List<int>();
+        public List<int> unlockedY = new List<int>();
+
+        public SavedInventoryData() { }
+
+        public SavedInventoryData(int step, IEnumerable<Vector2Int> unlocked)
+        {
+            expansionStep = step;
+            if (unlocked != null)
+            {
+                foreach (var pos in unlocked)
+                {
+                    unlockedX.Add(pos.x);
+                    unlockedY.Add(pos.y);
+                }
+            }
+        }
+
+        public List<Vector2Int> GetCoordinates()
+        {
+            List<Vector2Int> list = new List<Vector2Int>();
+            int count = Mathf.Min(unlockedX != null ? unlockedX.Count : 0, unlockedY != null ? unlockedY.Count : 0);
+            for (int i = 0; i < count; i++)
+            {
+                list.Add(new Vector2Int(unlockedX[i], unlockedY[i]));
+            }
+            return list;
+        }
+    }
+
+    [Serializable]
     public class SavedSettingsData
     {
         public float masterVolume = 1.0f;
@@ -91,7 +125,7 @@ namespace Lattirune.Save
     }
 
     /// <summary>
-    /// Root serializable data transfer object for player state, run progression, and settings persistence.
+    /// Root serializable data transfer object for player state, inventory expansion, run progression, and settings persistence.
     /// </summary>
     [Serializable]
     public class SaveData
@@ -101,6 +135,7 @@ namespace Lattirune.Save
         public List<SavedItemData> items = new List<SavedItemData>();
         public List<SavedRuneData> runes = new List<SavedRuneData>();
         public SavedRunData run = new SavedRunData();
+        public SavedInventoryData inventory = new SavedInventoryData();
         public SavedSettingsData settings = new SavedSettingsData();
 
         public SaveData()
@@ -118,6 +153,7 @@ namespace Lattirune.Save
                 version = SaveVersion.CURRENT_VERSION,
                 timestamp = DateTime.UtcNow.ToString("o"),
                 run = new SavedRunData(false, 0, 0, 0),
+                inventory = new SavedInventoryData(0, null),
                 settings = new SavedSettingsData(1.0f, 1.0f, false, true)
             };
 

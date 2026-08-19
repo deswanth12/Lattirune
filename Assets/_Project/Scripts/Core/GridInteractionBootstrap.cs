@@ -7,6 +7,7 @@ using Lattirune.Combat.Effects;
 using Lattirune.Core;
 using Lattirune.Dungeon;
 using Lattirune.Grid;
+using Lattirune.Inventory;
 using Lattirune.Items;
 using Lattirune.Reactions;
 using Lattirune.Runes;
@@ -18,8 +19,8 @@ namespace Lattirune.Core
 {
     /// <summary>
     /// Bootstraps the complete Phase 2 Prototype: 5x5 LatticeGrid, data-driven items,
-    /// Crossfire Multi-Directional Emitters & Omnidirectional Nodes, Prism Refraction,
-    /// 5-Element Synergy system, 2-Beam Elemental Reactions, Combat Effect / Status Framework,
+    /// Spatial Bag Inventory & Procedural Expansion, Crossfire Multi-Directional Emitters,
+    /// Prism Refraction, 5-Element Synergy system, 2-Beam Elemental Reactions, Combat Effect / Status Framework,
     /// Multi-Floor Run Progression State Machine, Multi-Phase Boss (The Lich Lord), 1v1 Combat loop,
     /// Reward selection, Audio/Haptics, and Encrypted Local Save persistence.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
@@ -36,6 +37,7 @@ namespace Lattirune.Core
         [SerializeField] private CombatSystem combatSystem;
         [SerializeField] private BossSystem bossSystem;
         [SerializeField] private RunManager runManager;
+        [SerializeField] private InventorySystem inventorySystem;
         [SerializeField] private RewardService rewardService;
         [SerializeField] private CombatEncounterUI combatEncounterUI;
         [SerializeField] private AudioController audioController;
@@ -71,6 +73,7 @@ namespace Lattirune.Core
         public CombatSystem Combat => combatSystem;
         public BossSystem Boss => bossSystem;
         public RunManager Run => runManager;
+        public InventorySystem Inventory => inventorySystem;
         public RewardService Rewards => rewardService;
         public CombatEncounterUI EncounterUI => combatEncounterUI;
         public AudioController Audio => audioController;
@@ -137,13 +140,22 @@ namespace Lattirune.Core
             }
             reactionSystem.EnsureDefaultDefinitions();
 
-            // 7. Ensure Catalogue Exists
+            // 7. Ensure InventorySystem exists and initialize (TASK-019)
+            if (inventorySystem == null)
+            {
+                GameObject invObj = new GameObject("InventorySystem");
+                invObj.transform.SetParent(transform);
+                inventorySystem = invObj.AddComponent<InventorySystem>();
+            }
+            inventorySystem.Initialize();
+
+            // 8. Ensure Catalogue Exists
             if (prototypeItemCatalogue == null || prototypeItemCatalogue.Count == 0)
             {
                 BuildDefaultItemDefinitions();
             }
 
-            // 8. Setup Save System (TASK-010)
+            // 9. Setup Save System (TASK-010)
             if (saveSystem == null)
             {
                 GameObject saveObj = new GameObject("SaveSystem");
@@ -151,22 +163,22 @@ namespace Lattirune.Core
                 saveSystem = saveObj.AddComponent<SaveSystem>();
             }
 
-            // 9. Spawn Prototype Items or Restore from Save
+            // 10. Spawn Prototype Items or Restore from Save
             LoadOrCreateState();
 
-            // 10. Setup Development Runes, Crossfire & Prism Refraction (TASK-015 & TASK-016)
+            // 11. Setup Development Runes, Crossfire & Prism Refraction (TASK-015 & TASK-016)
             if (enableConduitDemo && _activeRunesWithData.Count == 0)
             {
                 SetupDevelopmentRunesAndTargets();
             }
 
-            // 11. Setup Combat Entities, Effects, Boss & Run Manager (TASK-017 & TASK-018)
+            // 12. Setup Combat Entities, Effects, Boss & Run Manager (TASK-017 & TASK-018)
             SetupCombatAndRewardEncounter();
 
-            // 12. Setup Audio, Haptics & Feedback Coordinator
+            // 13. Setup Audio, Haptics & Feedback Coordinator
             SetupFeedbackSystem();
 
-            // 13. Initial recalculation of conduits, synergies, reactions, and player stats
+            // 14. Initial recalculation of conduits, synergies, reactions, and player stats
             RecalculateAndRenderConduits();
 
             // Hook into item placement/removal events to dynamically recalculate conduits, synergies, and combat stats
@@ -185,6 +197,16 @@ namespace Lattirune.Core
 
             LoadResult loadResult = saveSystem.Load();
             SaveData data = loadResult.Data ?? SaveData.CreateDefault();
+
+            // Restore inventory expansion state
+            if (data.inventory != null && inventorySystem != null)
+            {
+                var coords = data.inventory.GetCoordinates();
+                if (coords != null && coords.Count > 0)
+                {
+                    inventorySystem.RestoreState(coords, data.inventory.expansionStep);
+                }
+            }
 
             // Clear any previous spawned items
             for (int i = _spawnedItemInstances.Count - 1; i >= 0; i--)
@@ -288,6 +310,15 @@ namespace Lattirune.Core
                     floorIdx: runManager.CurrentFloorIndex,
                     encIdx: runManager.CurrentEncounterIndex,
                     state: (int)runManager.CurrentState
+                );
+            }
+
+            // Save Inventory Expansion (TASK-019)
+            if (inventorySystem != null && inventorySystem.Grid != null)
+            {
+                data.inventory = new SavedInventoryData(
+                    inventorySystem.ExpansionStep,
+                    inventorySystem.Grid.GetUnlockedCoordinates()
                 );
             }
 
@@ -575,9 +606,9 @@ namespace Lattirune.Core
 
         private void OnGUI()
         {
-            // Development persistence & run progression telemetry in top right
-            GUILayout.BeginArea(new Rect(Screen.width - 200, 20, 190, 370), GUI.skin.box);
-            GUILayout.Label("<size=11><b>RUN & BOSS CONTROLS</b></size>");
+            // Development persistence, inventory & run telemetry in top right
+            GUILayout.BeginArea(new Rect(Screen.width - 210, 20, 200, 420), GUI.skin.box);
+            GUILayout.Label("<size=11><b>DEV CONTROLS & HUD</b></size>");
 
             if (runManager != null)
             {
@@ -590,7 +621,6 @@ namespace Lattirune.Core
                     GUILayout.Label($"<size=10><b>BOSS:</b> {telem.BossName}</size>");
                     GUILayout.Label($"<size=9>HP: {telem.CurrentHp}/{telem.MaxHp} ({telem.HpPercentage:P0})</size>");
                     GUILayout.Label($"<size=9>Phase: {telem.CurrentPhaseIndex + 1}/{bossSystem.TotalPhases} ({telem.PhaseName})</size>");
-                    GUILayout.Label($"<size=9>Atk: {telem.EffectiveAttack} | Arm: {telem.EffectiveArmor} | Spd: {telem.EffectiveAttackInterval:F1}s</size>");
                 }
 
                 if (runManager.CurrentState == RunState.NotStarted || runManager.IsRunFinished)
@@ -612,6 +642,21 @@ namespace Lattirune.Core
                     if (GUILayout.Button("CONTINUE"))
                     {
                         runManager.ContinueAfterReward();
+                    }
+                }
+            }
+
+            GUILayout.Space(4);
+            if (inventorySystem != null)
+            {
+                GUILayout.Label("<size=10><b>BAG INVENTORY:</b></size>");
+                GUILayout.Label($"<size=9>Capacity: {inventorySystem.Capacity} / {inventorySystem.TotalCapacity}</size>");
+                GUILayout.Label($"<size=9>Unlocked: {inventorySystem.UnlockedCount} | Locked: {inventorySystem.LockedCount}</size>");
+                if (inventorySystem.CanExpand)
+                {
+                    if (GUILayout.Button("EXPAND BAG"))
+                    {
+                        inventorySystem.ExpandBag();
                     }
                 }
             }

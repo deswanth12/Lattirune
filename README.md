@@ -53,6 +53,14 @@ The Crossfire Rune (`rune_crossfire`, Fire affinity) and Amplifier Node (`rune_o
 * **Chained Prism Compatibility:** Each emitted Crossfire beam can independently intersect with Prisms, generating secondary refractions.
 * **Zero Self-Intersection:** Beams originating from the same root emitter ID are filtered out from triggering self-reactions.
 
+## Spatial Bag Inventory & Procedural Expansion
+
+The player's backpack storage operates as a discrete 2D spatial grid completely decoupled from the $5 \times 5$ combat lattice:
+* **Starting Capacity:** Initial $2 \times 3$ (6 cells) active inventory area inside a $4 \times 4$ frame.
+* **Deterministic Expansion Order:** Unlocks adjacent locked cells sequentially (up to 16 maximum cells).
+* **Multi-Tile Footprint Support:** Validates multi-tile items ($1 \times 1$, $1 \times 2$, $2 \times 1$, $2 \times 2$) and dynamic $90^\circ$ rotation states.
+* **Persistence:** Serializes unlocked cell coordinates and expansion stage to encrypted JSON save data.
+
 ## Dungeon Run Progression & Master State Machine
 
 The multi-floor roguelite dungeon progression coordinates encounters, reward drafts, and floor transitions:
@@ -76,9 +84,6 @@ The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic 
 | **Phase 1** | Frost Warden | $100\% \rightarrow 66\%$ | 10 | 8 | 2.5s |
 | **Phase 2** | Soul Harvest | $66\% \rightarrow 33\%$ | 15 (+5) | 12 (+4) | 2.0s (0.8×) |
 | **Phase 3** | Necrotic Inversion | $33\% \rightarrow 0\%$ | 20 (+10) | 16 (+8) | 1.6s (0.64×) |
-
-* **BossSystem:** Coordinates phase threshold detection, stat modifications, and lifecycle events (`OnPhaseChanged`, `OnBossEnraged`).
-* **BossTelemetry:** Exposes real-time read-only status and phase telemetry without mutating ScriptableObject definitions.
 
 ## Combat Status & Effect Framework
 
