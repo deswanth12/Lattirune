@@ -1,13 +1,14 @@
 using System;
 using UnityEngine;
 using Lattirune.Combat.Effects;
+using Lattirune.Modifiers;
 
 namespace Lattirune.Combat
 {
     /// <summary>
     /// Coordinates 1v1 auto-battle encounters, execution cooldowns, damage application,
     /// dynamic battle speed multipliers (1x, 2x, 3x), emergency consumable taps,
-    /// dynamic runtime stat modifiers from CombatEffectSystem, and victory/defeat resolution.
+    /// dynamic runtime stat modifiers from CombatEffectSystem and RunModifierManager, and victory/defeat resolution.
     /// Derived strictly from PLAN.md Section 9.1 and Section 9.2.
     /// </summary>
     public class CombatSystem : MonoBehaviour
@@ -16,6 +17,7 @@ namespace Lattirune.Combat
         [SerializeField] private PlayerCombatant player;
         [SerializeField] private EnemyCombatant enemy;
         [SerializeField] private CombatEffectSystem effectSystem;
+        [SerializeField] private RunModifierManager modifierManager;
 
         [Header("State")]
         [SerializeField] private CombatState currentState = CombatState.Preparing;
@@ -33,16 +35,19 @@ namespace Lattirune.Combat
         public PlayerCombatant Player => player;
         public EnemyCombatant Enemy => enemy;
         public CombatEffectSystem Effects => effectSystem;
+        public RunModifierManager Modifiers => modifierManager;
         public float SpeedMultiplier => speedMultiplier;
 
         public void Initialize(
             PlayerCombatant playerCombatant, 
             EnemyCombatant enemyCombatant, 
-            CombatEffectSystem effects = null)
+            CombatEffectSystem effects = null,
+            RunModifierManager modifiers = null)
         {
             player = playerCombatant;
             enemy = enemyCombatant;
             effectSystem = effects;
+            modifierManager = modifiers;
             currentState = CombatState.Preparing;
             speedMultiplier = 1.0f;
         }
@@ -135,6 +140,13 @@ namespace Lattirune.Combat
                 int effectiveEnemyArmor = enemy.Armor;
                 float damageModifier = 1.0f;
                 int effectivePlayerAttack = player.BaseAttackDamage;
+                int effectiveRuneBonus = player.ActiveRuneBonus;
+
+                if (modifierManager != null)
+                {
+                    damageModifier *= modifierManager.GetAggregateMultiplier(RunModifierType.DamageMultiplier, 1.0f);
+                    effectiveRuneBonus = Mathf.RoundToInt(player.ActiveRuneBonus * modifierManager.GetAggregateMultiplier(RunModifierType.ElementalDamageBonus, 1.0f));
+                }
 
                 if (effectSystem != null)
                 {
@@ -147,7 +159,7 @@ namespace Lattirune.Combat
                     sourceName: player.CombatantName,
                     targetName: enemy.CombatantName,
                     baseDamage: effectivePlayerAttack,
-                    runeBonus: player.ActiveRuneBonus,
+                    runeBonus: effectiveRuneBonus,
                     targetArmor: effectiveEnemyArmor,
                     isCritical: false,
                     damageModifier: damageModifier
@@ -171,9 +183,15 @@ namespace Lattirune.Combat
                 float damageModifier = 1.0f;
                 int effectiveEnemyAttack = enemy.BaseAttackDamage;
 
+                if (modifierManager != null)
+                {
+                    float defenseMultiplier = modifierManager.GetAggregateMultiplier(RunModifierType.CurseOfVulnerability, 1.0f);
+                    effectivePlayerArmor = Mathf.Max(0, Mathf.RoundToInt(effectivePlayerArmor * defenseMultiplier));
+                }
+
                 if (effectSystem != null)
                 {
-                    effectivePlayerArmor = Mathf.RoundToInt(player.Armor * effectSystem.GetArmorMultiplier(player));
+                    effectivePlayerArmor = Mathf.RoundToInt(effectivePlayerArmor * effectSystem.GetArmorMultiplier(player));
                     damageModifier *= effectSystem.GetDamageIntakeMultiplier(player);
                     effectiveEnemyAttack = Mathf.RoundToInt(enemy.BaseAttackDamage * effectSystem.GetAttackMultiplier(enemy));
                 }

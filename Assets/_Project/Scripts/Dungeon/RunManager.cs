@@ -6,6 +6,7 @@ using Lattirune.Combat;
 using Lattirune.Economy;
 using Lattirune.Inventory;
 using Lattirune.Items;
+using Lattirune.Modifiers;
 using Lattirune.Progression;
 using Lattirune.Runes;
 using Lattirune.UI;
@@ -15,7 +16,7 @@ namespace Lattirune.Dungeon
     /// <summary>
     /// Master state machine coordinator for multi-floor dungeon run progression.
     /// Manages floor transitions, encounter sequencing, in-run economy (Gold/Embers),
-    /// Merchant Stall transactions, Campfire Rest Site decisions, boss encounters, and run lifecycle.
+    /// Merchant Stall transactions, Campfire Rest Site decisions, boss encounters, run modifiers, and run lifecycle.
     /// Strictly adheres to PLAN.md Sections 9.1, 11, and 13.1.
     /// </summary>
     public class RunManager : MonoBehaviour
@@ -30,6 +31,7 @@ namespace Lattirune.Dungeon
         [SerializeField] private PlayerCombatant playerCombatant;
         [SerializeField] private EnemyCombatant enemyCombatant;
         [SerializeField] private MetaProgressionManager metaProgression;
+        [SerializeField] private RunModifierManager modifierManager;
 
         [Header("Runtime State")]
         [SerializeField] private RunState currentState = RunState.NotStarted;
@@ -101,7 +103,8 @@ namespace Lattirune.Dungeon
             PlayerCombatant player,
             EnemyCombatant enemy,
             BossSystem boss = null,
-            MetaProgressionManager meta = null)
+            MetaProgressionManager meta = null,
+            RunModifierManager modifiers = null)
         {
             dungeonDefinition = dungeon;
             EnsureDefaultDungeon();
@@ -112,6 +115,7 @@ namespace Lattirune.Dungeon
             playerCombatant = player;
             enemyCombatant = enemy;
             metaProgression = meta;
+            modifierManager = modifiers;
 
             currentState = RunState.NotStarted;
             currentFloorIndex = 0;
@@ -195,9 +199,16 @@ namespace Lattirune.Dungeon
 
                 if (enemyCombatant != null)
                 {
+                    int effectiveHp = CurrentEncounter.EnemyHp;
+                    if (modifierManager != null)
+                    {
+                        float hpMultiplier = modifierManager.GetAggregateMultiplier(RunModifierType.EnemyHealthMultiplier, 1.0f);
+                        effectiveHp = Mathf.RoundToInt(CurrentEncounter.EnemyHp * hpMultiplier);
+                    }
+
                     enemyCombatant.SetupCustom(
                         name: CurrentEncounter.EnemyName,
-                        hp: CurrentEncounter.EnemyHp,
+                        hp: effectiveHp,
                         baseArmor: CurrentEncounter.EnemyArmor,
                         attack: CurrentEncounter.EnemyAttack,
                         interval: CurrentEncounter.AttackInterval,
@@ -248,7 +259,13 @@ namespace Lattirune.Dungeon
                 else
                 {
                     bool isElite = CurrentFloorNumber == 3 || CurrentFloorNumber == 7 || (CurrentEncounter != null && CurrentEncounter.EnemyHp >= 100);
-                    AddGold(EconomyManager.GetGoldDrop(isElite));
+                    int goldDrop = EconomyManager.GetGoldDrop(isElite);
+                    if (modifierManager != null)
+                    {
+                        float goldMult = modifierManager.GetAggregateMultiplier(RunModifierType.GoldMultiplier, 1.0f);
+                        goldDrop = Mathf.RoundToInt(goldDrop * goldMult);
+                    }
+                    AddGold(goldDrop);
                 }
             }
 
