@@ -80,6 +80,12 @@ namespace Lattirune.Combat
             }
         }
 
+        public virtual void TakeDirectDamage(int amount)
+        {
+            if (!IsAlive || amount <= 0) return;
+            TakeDamage(new DamageResult("DirectEffect", CombatantName, amount, 0, amount));
+        }
+
         public virtual void Heal(int amount)
         {
             if (!IsAlive || amount <= 0) return;
