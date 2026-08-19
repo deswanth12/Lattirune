@@ -6,12 +6,13 @@ using Lattirune.Grid;
 using Lattirune.Items;
 using Lattirune.Runes;
 using Lattirune.Synergy;
+using Lattirune.UI;
 
 namespace Lattirune.Core
 {
     /// <summary>
     /// Bootstraps the physical 5x5 LatticeGrid interaction, data-driven prototype items,
-    /// Rune Conduit engine, Elemental Synergy system, and 1v1 Combat loop.
+    /// Rune Conduit engine, Elemental Synergy system, 1v1 Combat loop, and post-battle Reward selection flow.
     /// [DEVELOPMENT / PROTOTYPE ENTRY POINT]
     /// </summary>
     public class GridInteractionBootstrap : MonoBehaviour
@@ -22,7 +23,8 @@ namespace Lattirune.Core
         [SerializeField] private RuneConduitDebugView conduitDebugView;
         [SerializeField] private SynergySystem synergySystem;
         [SerializeField] private CombatSystem combatSystem;
-        [SerializeField] private CombatDebugView combatDebugView;
+        [SerializeField] private RewardService rewardService;
+        [SerializeField] private CombatEncounterUI combatEncounterUI;
         [SerializeField] private Transform stagingAreaParent;
 
         [Header("Staging Layout")]
@@ -46,6 +48,8 @@ namespace Lattirune.Core
         public GridView View => gridView;
         public SynergySystem Synergy => synergySystem;
         public CombatSystem Combat => combatSystem;
+        public RewardService Rewards => rewardService;
+        public CombatEncounterUI EncounterUI => combatEncounterUI;
         public PlayerCombatant Player => _playerCombatant;
         public EnemyCombatant Enemy => _enemyCombatant;
         public IReadOnlyList<ItemInstance> SpawnedItems => _spawnedItemInstances;
@@ -105,8 +109,8 @@ namespace Lattirune.Core
                 SetupDevelopmentRunesAndTargets();
             }
 
-            // 8. Setup Combat Entities & System (TASK-007)
-            SetupCombatEncounter();
+            // 8. Setup Combat Entities & Encounter UI (TASK-007 & TASK-008)
+            SetupCombatAndRewardEncounter();
 
             // 9. Initial recalculation of conduits, synergies, and player stats
             RecalculateAndRenderConduits();
@@ -116,7 +120,7 @@ namespace Lattirune.Core
             _grid.OnItemRemoved += (id, origin, size) => RecalculateAndRenderConduits();
         }
 
-        private void SetupCombatEncounter()
+        private void SetupCombatAndRewardEncounter()
         {
             // Player entity
             GameObject playerObj = new GameObject("PlayerCombatant");
@@ -124,7 +128,7 @@ namespace Lattirune.Core
             _playerCombatant = playerObj.AddComponent<PlayerCombatant>();
             _playerCombatant.SetupDefaultPlayer(initialHp: 100);
 
-            // Enemy entity (Training Dummy / Baseline normal enemy)
+            // Enemy entity (Training Dummy)
             GameObject enemyObj = new GameObject("TrainingDummy");
             enemyObj.transform.SetParent(transform);
             _enemyCombatant = enemyObj.AddComponent<EnemyCombatant>();
@@ -139,14 +143,31 @@ namespace Lattirune.Core
             }
             combatSystem.Initialize(_playerCombatant, _enemyCombatant);
 
-            // Combat Debug View
-            if (combatDebugView == null)
+            // Reward Service (TASK-008)
+            if (rewardService == null)
             {
-                GameObject debugViewObj = new GameObject("CombatDebugView");
-                debugViewObj.transform.SetParent(transform);
-                combatDebugView = debugViewObj.AddComponent<CombatDebugView>();
+                GameObject rewardServiceObj = new GameObject("RewardService");
+                rewardServiceObj.transform.SetParent(transform);
+                rewardService = rewardServiceObj.AddComponent<RewardService>();
             }
-            combatDebugView.Initialize(combatSystem);
+
+            // Combat Encounter UI (TASK-008)
+            if (combatEncounterUI == null)
+            {
+                GameObject uiObj = new GameObject("CombatEncounterUI");
+                uiObj.transform.SetParent(transform);
+                combatEncounterUI = uiObj.AddComponent<CombatEncounterUI>();
+            }
+            combatEncounterUI.Initialize(combatSystem, synergySystem, rewardService, prototypeItemCatalogue, stagingAreaParent);
+
+            // Register newly rewarded items into active spawned item tracking
+            rewardService.OnRewardApplied += (option, instance) =>
+            {
+                if (instance != null && !_spawnedItemInstances.Contains(instance))
+                {
+                    _spawnedItemInstances.Add(instance);
+                }
+            };
         }
 
         private void SpawnPrototypeCatalogue()
