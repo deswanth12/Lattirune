@@ -5,7 +5,7 @@
 **Target Package:** `com.developer.lattirune`  
 **Version:** `1.0.0` (Build `1`)  
 **Save Version:** `1` (AES-256 Encrypted)  
-**Repository State:** `READY` (511 / 511 tests passing)  
+**Repository State:** `READY` (524 / 524 tests passing)  
 **External Release Gate:** `BLOCKED`
 
 ---
@@ -14,7 +14,7 @@
 
 | ID | Action | Description | Required Evidence | Status | Owner |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **EXT-01** | Android QA | Execute 26-point manual test checklist on physical hardware | Completed and signed-off QA checklist ([`Docs/MVP1.0-Manual-QA-Checklist.md`](./MVP1.0-Manual-QA-Checklist.md)) | `BLOCKED` | QA Team / Hardware Lab |
+| **EXT-01** | Android QA | Execute 26-point manual test checklist on physical hardware | Completed and signed-off QA checklist ([`Docs/MVP1.0-Physical-Android-QA-Record.md`](./MVP1.0-Physical-Android-QA-Record.md)) | `BLOCKED` | QA Team / Hardware Lab |
 | **EXT-02** | Privacy Hosting | Host privacy policy document on a publicly accessible HTTPS web page | Active public HTTPS URL serving [`Docs/MVP1.0-Privacy-Policy.md`](./MVP1.0-Privacy-Policy.md) | `BLOCKED` | Publisher / Web Ops |
 | **EXT-03** | App Icon | Provide production high-resolution application icon | $512 \times 512$ 32-bit PNG asset complying with [`Docs/MVP1.0-Store-Asset-Manifest.md`](./MVP1.0-Store-Asset-Manifest.md) | `BLOCKED` | Art / UI Designer |
 | **EXT-04** | Feature Graphic | Create marketing promotional banner for Google Play Store | $1024 \times 500$ 24-bit PNG/JPEG asset complying with [`Docs/MVP1.0-Store-Asset-Manifest.md`](./MVP1.0-Store-Asset-Manifest.md) | `BLOCKED` | Marketing / Art Team |
@@ -27,7 +27,7 @@
 
 ## Action Verification Notes
 
-- **EXT-01 (Android QA):** Cannot be verified using automated test runners; requires a physical Android device running Android 7.0+ (API Level 24+).
+- **EXT-01 (Android QA):** Hardware test gate attempted in TASK-045. ADB and physical hardware were unavailable in the execution environment; results recorded in [`Docs/MVP1.0-Physical-Android-QA-Record.md`](./MVP1.0-Physical-Android-QA-Record.md). Status remains `BLOCKED` until hardware pass is signed off.
 - **EXT-02 (Privacy Hosting):** Must be hosted prior to submission in Google Play Console Data Safety & App Content sections.
 - **EXT-03 to EXT-05 (Store Visuals):** Required mandatory graphics for Google Play Store listing publication.
 - **EXT-06 & EXT-07 (Binary & Signing):** AAB must be built from the clean repository state and signed using an isolated keystore.
