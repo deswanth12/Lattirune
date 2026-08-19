@@ -53,27 +53,22 @@ namespace Lattirune.Economy
             currentOffers.Clear();
             if (_random == null) _random = new SystemRandomSource();
 
-            // 1. Generate 2 Equipment Items
+            // 1. Generate 1 Equipment Item
             if (itemDatabase != null && itemDatabase.TotalItemCount > 0)
             {
                 var availableItems = new List<ItemDataSO>(itemDatabase.AllItems);
-                // Filter out non-equipment or internal items if needed
-                for (int i = 0; i < 2 && availableItems.Count > 0; i++)
-                {
-                    int pickIdx = _random.Next(0, availableItems.Count);
-                    ItemDataSO item = availableItems[pickIdx];
-                    availableItems.RemoveAt(pickIdx);
+                int pickIdx = _random.Next(0, availableItems.Count);
+                ItemDataSO item = availableItems[pickIdx];
 
-                    int price = item.Category == ItemCategory.Relic ? _random.Next(35, 51) : _random.Next(15, 31);
-                    currentOffers.Add(new MerchantOffer(
-                        id: $"offer_item_{item.ItemId}_{i}",
-                        title: item.DisplayName,
-                        desc: $"Equipment [{item.Category}] | Size: {item.Dimensions.x}x{item.Dimensions.y}",
-                        type: MerchantOfferType.Item,
-                        price: price,
-                        item: item
-                    ));
-                }
+                int price = item.Category == ItemCategory.Relic ? _random.Next(35, 51) : _random.Next(15, 31);
+                currentOffers.Add(new MerchantOffer(
+                    id: $"offer_item_{item.ItemId}",
+                    title: item.DisplayName,
+                    desc: $"Equipment [{item.Category}] | Size: {item.Dimensions.x}x{item.Dimensions.y}",
+                    type: MerchantOfferType.Item,
+                    price: price,
+                    item: item
+                ));
             }
 
             // 2. Generate 1 Directional Rune
@@ -99,6 +94,15 @@ namespace Lattirune.Economy
                 desc: "Permanently unlocks 1 adjacent locked grid tile for this run.",
                 type: MerchantOfferType.GridSlotExpansion,
                 price: 40
+            ));
+
+            // 4. Emergency Health Potion (15 Gold)
+            currentOffers.Add(new MerchantOffer(
+                id: "offer_health_potion",
+                title: "Rejuvenation Draught",
+                desc: "Restores 35 Health points immediately.",
+                type: MerchantOfferType.HealthPotion,
+                price: 15
             ));
 
             OnOffersRefreshed?.Invoke();

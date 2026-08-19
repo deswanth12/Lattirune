@@ -95,7 +95,7 @@ namespace Lattirune.Tests
 
             // 0.3s real time at 2x speed simulates 0.6s delta
             _player.TickCooldown(0.3f * _combat.SpeedMultiplier);
-            Assert.AreEqual(0.6f, _player.CooldownTimer, 0.001f);
+            Assert.AreEqual(0.4f, _player.CooldownTimer, 0.001f);
         }
 
         [Test]

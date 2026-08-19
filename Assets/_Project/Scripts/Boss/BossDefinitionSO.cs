@@ -108,17 +108,17 @@ namespace Lattirune.Boss
 
             // Phase 1: Frost Warden (100% -> 66%)
             BossPhaseDefinitionSO p1 = ScriptableObject.CreateInstance<BossPhaseDefinitionSO>();
-            p1.Initialize("phase_1_frost_warden", "Frost Warden", threshold: 1.0f, extraArmor: 0, extraAttack: 0, speedMult: 1.0f);
+            p1.Initialize("phase_1_frost_warden", "Phase 1: Frost Warden", threshold: 1.0f, extraArmor: 0, extraAttack: 0, speedMult: 1.0f);
             phaseList.Add(p1);
 
             // Phase 2: Soul Harvest (66% -> 33%)
             BossPhaseDefinitionSO p2 = ScriptableObject.CreateInstance<BossPhaseDefinitionSO>();
-            p2.Initialize("phase_2_soul_harvest", "Soul Harvest", threshold: 0.66f, extraArmor: 5, extraAttack: 4, speedMult: 0.8f);
+            p2.Initialize("phase_2_soul_harvest", "Phase 2: Soul Harvest", threshold: 0.66f, extraArmor: 5, extraAttack: 4, speedMult: 0.8f);
             phaseList.Add(p2);
 
             // Phase 3: Necrotic Inversion (33% -> 0%)
             BossPhaseDefinitionSO p3 = ScriptableObject.CreateInstance<BossPhaseDefinitionSO>();
-            p3.Initialize("phase_3_necrotic_inversion", "Necrotic Inversion", threshold: 0.33f, extraArmor: 10, extraAttack: 8, speedMult: 0.64f);
+            p3.Initialize("phase_3_necrotic_inversion", "Phase 3: Necrotic Inversion", threshold: 0.33f, extraArmor: 10, extraAttack: 8, speedMult: 0.64f);
             phaseList.Add(p3);
 
             boss.Initialize("boss_lich_lord", "The Lich Lord", hp: 750, armor: 10, attack: 8, interval: 2.5f, phaseList);

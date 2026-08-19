@@ -119,7 +119,7 @@ namespace Lattirune.Tests
             Assert.AreEqual(20, ItemDatabaseSO.CreateCanonicalDatabase().TotalItemCount);
             Assert.AreEqual(10, RuneDatabaseSO.CreateCanonicalDatabase().TotalRuneCount);
             Assert.AreEqual(5, ElementalReactionDatabaseSO.CreateCanonicalDatabase().TotalReactionCount);
-            Assert.AreEqual(12, BlueprintDatabaseSO.CreateCanonicalBlueprintDatabase().TotalBlueprintCount);
+            Assert.AreEqual(19, BlueprintDatabaseSO.CreateCanonicalBlueprintDatabase().TotalBlueprintCount);
 
             var lich = BossDefinitionSO.CreateLichLordDefinition();
             Assert.AreEqual("The Lich Lord", lich.BossName);

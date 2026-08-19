@@ -105,11 +105,9 @@ namespace Lattirune.Simulation
                 {
                     floorReached = floor;
 
-                    // In-Run scaling: Player upgrades equipment every 2 floors (loot cache / merchant)
-                    if (floor == 3 || floor == 5 || floor == 7 || floor == 9)
-                    {
-                        playerAttack += 3.5f;
-                    }
+                    // In-Run scaling: Player acquires items, upgrades, and synergies across floors
+                    playerAttack += 2.5f;
+                    if (floor % 2 == 0) playerArmor += 2;
 
                     // Floor 8: Campfire heal
                     if (floor == 8)
@@ -120,20 +118,22 @@ namespace Lattirune.Simulation
                     // Enemy stats per floor
                     int enemyHp = 35 + (floor - 1) * 20;
                     int enemyArmor = floor >= 5 ? 4 + (floor - 5) * 2 : 0;
-                    float enemyAttack = 4 + (floor - 1) * 2.2f;
+                    float enemyAttack = 4 + (floor - 1) * 2.0f;
                     float enemySpeed = 1.5f;
 
-                    if (floor == 5) { enemyHp = 160; enemyArmor = 8; enemyAttack = 14; } // Mid-Boss
-                    if (floor == 10) { enemyHp = 650; enemyArmor = 10; enemyAttack = 18; } // Boss: The Lich Lord
+                    if (floor == 5) { enemyHp = 140; enemyArmor = 6; enemyAttack = 10; } // Mid-Boss
+                    if (floor == 10) { enemyHp = 350; enemyArmor = 8; enemyAttack = 14; } // Boss: The Lich Lord
 
-                    // Battle Simulation
-                    float playerDps = (playerAttack * 1.15f) / attackInterval; // Includes combo & rune multiplier
+                    // Battle Simulation with Synergies and Combos
+                    float synergyMultiplier = 1.0f + 0.12f * floor;
+                    float playerDps = (playerAttack * synergyMultiplier) / attackInterval;
                     totalDpsAccumulator += playerDps;
 
                     float effectiveEnemyArmor = Mathf.Max(0, enemyArmor - 2);
-                    float playerDamagePerSec = Mathf.Max(2f, playerDps - (effectiveEnemyArmor * 0.5f));
+                    float playerDamagePerSec = Mathf.Max(3f, playerDps - (effectiveEnemyArmor * 0.4f));
 
-                    float enemyDps = Mathf.Max(1f, enemyAttack - playerArmor);
+                    float effectivePlayerArmor = playerArmor + (floor >= 3 ? 3 : 0);
+                    float enemyDps = Mathf.Max(1f, enemyAttack - (effectivePlayerArmor * 0.6f));
                     float enemyDamagePerSec = enemyDps / enemySpeed;
 
                     float timeToKillEnemy = enemyHp / playerDamagePerSec;

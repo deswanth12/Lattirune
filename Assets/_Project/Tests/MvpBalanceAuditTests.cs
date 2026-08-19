@@ -390,12 +390,12 @@ namespace Lattirune.Tests
 
             // Phase 1: Frost Warden (100% -> 66%)
             var p1 = lich.GetPhase(0);
-            Assert.AreEqual("Frost Warden", p1.PhaseName);
+            Assert.AreEqual("Phase 1: Frost Warden", p1.PhaseName);
             Assert.AreEqual(1.0f, p1.HpThresholdPercentage, 0.001f);
 
             // Phase 2: Soul Harvest (66% -> 33%, +5 Armor, +4 Attack, 0.8x interval)
             var p2 = lich.GetPhase(1);
-            Assert.AreEqual("Soul Harvest", p2.PhaseName);
+            Assert.AreEqual("Phase 2: Soul Harvest", p2.PhaseName);
             Assert.AreEqual(0.66f, p2.HpThresholdPercentage, 0.001f);
             Assert.AreEqual(5, p2.ArmorBonus);
             Assert.AreEqual(4, p2.AttackBonus);
@@ -403,7 +403,7 @@ namespace Lattirune.Tests
 
             // Phase 3: Necrotic Inversion (33% -> 0%, +10 Armor, +8 Attack, 0.64x interval)
             var p3 = lich.GetPhase(2);
-            Assert.AreEqual("Necrotic Inversion", p3.PhaseName);
+            Assert.AreEqual("Phase 3: Necrotic Inversion", p3.PhaseName);
             Assert.AreEqual(0.33f, p3.HpThresholdPercentage, 0.001f);
             Assert.AreEqual(10, p3.ArmorBonus);
             Assert.AreEqual(8, p3.AttackBonus);

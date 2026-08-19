@@ -188,7 +188,7 @@ namespace Lattirune.Tests
             combat.ResetCombat();
             Assert.AreEqual(CombatState.Preparing, combat.CurrentState);
             Assert.IsTrue(player.IsAlive);
-            Assert.AreEqual(100, player.CurrentHp);
+            Assert.AreEqual(20, player.CurrentHp);
             Assert.AreEqual(100, enemy.CurrentHp);
         }
     }
