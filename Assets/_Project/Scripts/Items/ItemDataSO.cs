@@ -59,9 +59,15 @@ namespace Lattirune.Items
         public int ThornsDamage => thornsDamage;
         public int ThornsBonus => thornsDamage;
         public float CritBonus => critBonus;
+        public float CritChanceBonus => critBonus;
         public int FlatDamageBonus => flatDamageBonus;
         public float ElementalRuneDamageModifier => elementalRuneDamageModifier;
+        public float ElementalRuneModifier => elementalRuneDamageModifier;
         public int DamageTakenReduction => damageTakenReduction;
+        public int ArmorBonus => damageTakenReduction;
+        public int HealingAmount => maxHpBonus > 0 ? maxHpBonus : 35;
+        public float SpeedBonus => critBonus > 0f ? critBonus : 0.40f;
+        public int PoisonStacksApplied => flatDamageBonus > 0 ? flatDamageBonus : 15;
         public Color PlaceholderColor => placeholderColor;
         public Sprite Icon => icon;
 

@@ -37,6 +37,11 @@ namespace Lattirune.Grid
             }
         }
 
+        public int LockedCellCount => TOTAL_CELLS - ActiveCellCount;
+
+        public int GetActiveCellCount() => ActiveCellCount;
+        public int GetLockedCellCount() => LockedCellCount;
+
         public event Action<Vector2Int, TileState> OnCellStateChanged;
         public event Action<string, Vector2Int, Vector2Int> OnItemPlaced;
         public event Action<string, Vector2Int, Vector2Int> OnItemRemoved;
