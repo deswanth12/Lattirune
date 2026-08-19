@@ -6,8 +6,8 @@ using Lattirune.Items;
 namespace Lattirune.UI
 {
     /// <summary>
-    /// Generates distinct, non-duplicate reward options from the available prototype ItemDataSO pool.
-    /// Supports deterministic seed generation for testing and reproducibility.
+    /// Generates distinct, non-duplicate reward options from the available ItemDataSO pool.
+    /// Supports unlocked blueprint filtering and deterministic seed generation for testing and reproducibility.
     /// </summary>
     public static class RewardGenerator
     {
@@ -21,6 +21,18 @@ namespace Lattirune.UI
             int count = DEFAULT_REWARD_COUNT, 
             int? seed = null)
         {
+            return GenerateRewardOptions(availableItems, null, count, seed);
+        }
+
+        /// <summary>
+        /// Generates non-duplicate reward options, optionally filtering only items that are baseline or unlocked via Blueprints.
+        /// </summary>
+        public static List<RewardOption> GenerateRewardOptions(
+            IReadOnlyList<ItemDataSO> availableItems,
+            IReadOnlyCollection<string> unlockedItemIds,
+            int count = DEFAULT_REWARD_COUNT,
+            int? seed = null)
+        {
             List<RewardOption> results = new List<RewardOption>();
             if (availableItems == null || availableItems.Count == 0)
             {
@@ -31,9 +43,25 @@ namespace Lattirune.UI
             List<ItemDataSO> validCandidates = new List<ItemDataSO>();
             for (int i = 0; i < availableItems.Count; i++)
             {
-                if (availableItems[i] != null && !string.IsNullOrEmpty(availableItems[i].ItemId))
+                var item = availableItems[i];
+                if (item != null && !string.IsNullOrEmpty(item.ItemId))
                 {
-                    validCandidates.Add(availableItems[i]);
+                    if (unlockedItemIds == null || unlockedItemIds.Count == 0 || unlockedItemIds.Contains(item.ItemId))
+                    {
+                        validCandidates.Add(item);
+                    }
+                }
+            }
+
+            if (validCandidates.Count == 0)
+            {
+                // Fallback to all non-null items if filter yielded 0 candidates
+                for (int i = 0; i < availableItems.Count; i++)
+                {
+                    if (availableItems[i] != null && !string.IsNullOrEmpty(availableItems[i].ItemId))
+                    {
+                        validCandidates.Add(availableItems[i]);
+                    }
                 }
             }
 

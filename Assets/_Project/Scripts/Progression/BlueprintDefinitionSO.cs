@@ -4,7 +4,7 @@ namespace Lattirune.Progression
 {
     /// <summary>
     /// Static ScriptableObject defining an unlockable blueprint at the Blueprint Forge.
-    /// Stores metadata, category, Ember cost, unlock payload, and prerequisites.
+    /// Stores metadata, category, Ember cost, unlock payload, effect type, effect value, and prerequisites.
     /// Strictly adheres to PLAN.md Section 12 and Section 22.
     /// </summary>
     [CreateAssetMenu(fileName = "Blueprint_", menuName = "Lattirune/Progression/Blueprint Definition")]
@@ -21,6 +21,10 @@ namespace Lattirune.Progression
         [SerializeField] private string targetUnlockId = "item_shortbow";
         [SerializeField] private string prerequisiteBlueprintId = null;
 
+        [Header("Gameplay Effect")]
+        [SerializeField] private BlueprintEffectType effectType = BlueprintEffectType.UnlockItemInRewardPool;
+        [SerializeField] private int effectValue = 0;
+
         public string BlueprintId => blueprintId;
         public string DisplayName => displayName;
         public string Description => description;
@@ -30,6 +34,9 @@ namespace Lattirune.Progression
         public string PrerequisiteBlueprintId => prerequisiteBlueprintId;
         public bool HasPrerequisite => !string.IsNullOrEmpty(prerequisiteBlueprintId);
 
+        public BlueprintEffectType EffectType => effectType;
+        public int EffectValue => effectValue;
+
         public void Initialize(
             string id,
             string name,
@@ -37,7 +44,9 @@ namespace Lattirune.Progression
             BlueprintCategory cat,
             int cost,
             string targetId,
-            string prereqId = null)
+            string prereqId = null,
+            BlueprintEffectType effect = BlueprintEffectType.UnlockItemInRewardPool,
+            int value = 0)
         {
             blueprintId = id;
             displayName = name;
@@ -46,6 +55,8 @@ namespace Lattirune.Progression
             emberCost = Mathf.Max(1, cost);
             targetUnlockId = targetId;
             prerequisiteBlueprintId = prereqId;
+            effectType = effect;
+            effectValue = value;
         }
 
         public bool IsValid(out string error)
@@ -58,11 +69,6 @@ namespace Lattirune.Progression
             if (string.IsNullOrEmpty(displayName))
             {
                 error = "Display Name cannot be empty.";
-                return false;
-            }
-            if (string.IsNullOrEmpty(targetUnlockId))
-            {
-                error = "Target Unlock ID cannot be empty.";
                 return false;
             }
             if (emberCost <= 0)

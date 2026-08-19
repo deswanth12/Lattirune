@@ -131,6 +131,47 @@ namespace Lattirune.Progression
             return UnlockBlueprint(bp);
         }
 
+        public List<BlueprintDefinitionSO> GetUnlockedBlueprints()
+        {
+            EnsureDefaultDatabase();
+            List<BlueprintDefinitionSO> list = new List<BlueprintDefinitionSO>();
+            if (blueprintDatabase == null) return list;
+
+            foreach (var id in _unlockedBlueprintIds)
+            {
+                var bp = blueprintDatabase.GetBlueprint(id);
+                if (bp != null)
+                {
+                    list.Add(bp);
+                }
+            }
+            return list;
+        }
+
+        // ==========================================
+        // AGGREGATED PERMANENT GAMEPLAY EFFECTS
+        // ==========================================
+
+        public int GetStartingGoldBonus()
+        {
+            return BlueprintEffectResolver.ComputeStartingGoldBonus(GetUnlockedBlueprints());
+        }
+
+        public int GetStartingHpBonus()
+        {
+            return BlueprintEffectResolver.ComputeStartingHpBonus(GetUnlockedBlueprints());
+        }
+
+        public HashSet<string> GetUnlockedItemIds()
+        {
+            return BlueprintEffectResolver.ComputeUnlockedItemIds(GetUnlockedBlueprints());
+        }
+
+        public HashSet<string> GetUnlockedRuneIds()
+        {
+            return BlueprintEffectResolver.ComputeUnlockedRuneIds(GetUnlockedBlueprints());
+        }
+
         // ==========================================
         // CAMPFIRE META-HUB & LIFETIME STATS
         // ==========================================

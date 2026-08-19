@@ -117,74 +117,86 @@ namespace Lattirune.Progression
             // 1. Shortbow Blueprint (50 Embers)
             BlueprintDefinitionSO bpShortbow = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpShortbow.Initialize("bp_shortbow", "Shortbow Blueprint", "Unlocks the armor-piercing Shortbow into dungeon reward pools.",
-                BlueprintCategory.Weapon, cost: 50, targetId: "item_shortbow");
+                BlueprintCategory.Weapon, cost: 50, targetId: "item_shortbow", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpShortbow);
 
             // 2. Apprentice Wand Blueprint (60 Embers)
             BlueprintDefinitionSO bpWand = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpWand.Initialize("bp_apprentice_wand", "Apprentice Wand Blueprint", "Unlocks the Apprentice Wand (+50% rune damage) into reward pools.",
-                BlueprintCategory.Weapon, cost: 60, targetId: "item_apprentice_wand");
+                BlueprintCategory.Weapon, cost: 60, targetId: "item_apprentice_wand", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpWand);
 
             // 3. Battleaxe Blueprint (80 Embers)
             BlueprintDefinitionSO bpAxe = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpAxe.Initialize("bp_battleaxe", "Battleaxe Blueprint", "Unlocks the heavy L-shaped Battleaxe into reward pools.",
-                BlueprintCategory.Weapon, cost: 80, targetId: "item_battleaxe");
+                BlueprintCategory.Weapon, cost: 80, targetId: "item_battleaxe", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpAxe);
 
             // 4. Phalanx Spear Blueprint (75 Embers)
             BlueprintDefinitionSO bpSpear = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpSpear.Initialize("bp_phalanx_spear", "Phalanx Spear Blueprint", "Unlocks the 1x3 Phalanx Spear into reward pools.",
-                BlueprintCategory.Weapon, cost: 75, targetId: "item_phalanx_spear");
+                BlueprintCategory.Weapon, cost: 75, targetId: "item_phalanx_spear", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpSpear);
 
             // 5. Iron Tower Shield Blueprint (65 Embers)
             BlueprintDefinitionSO bpTower = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpTower.Initialize("bp_iron_tower_shield", "Iron Tower Shield Blueprint", "Unlocks the 2x2 Iron Tower Shield (25 Shield) into reward pools.",
-                BlueprintCategory.Shield, cost: 65, targetId: "item_iron_tower_shield");
+                BlueprintCategory.Shield, cost: 65, targetId: "item_iron_tower_shield", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpTower);
 
             // 6. Spiked Buckler Blueprint (55 Embers)
             BlueprintDefinitionSO bpSpiked = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpSpiked.Initialize("bp_spiked_buckler", "Spiked Buckler Blueprint", "Unlocks the reflective Spiked Buckler into reward pools.",
-                BlueprintCategory.Shield, cost: 55, targetId: "item_spiked_buckler");
+                BlueprintCategory.Shield, cost: 55, targetId: "item_spiked_buckler", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpSpiked);
 
             // 7. Chainmail Coat Blueprint (70 Embers)
             BlueprintDefinitionSO bpChainmail = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpChainmail.Initialize("bp_chainmail_coat", "Chainmail Coat Blueprint", "Unlocks the damage-reducing Chainmail Coat into reward pools.",
-                BlueprintCategory.Armor, cost: 70, targetId: "item_chainmail_coat");
+                BlueprintCategory.Armor, cost: 70, targetId: "item_chainmail_coat", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpChainmail);
 
             // 8. Ruby Ring Blueprint (50 Embers)
             BlueprintDefinitionSO bpRuby = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpRuby.Initialize("bp_ruby_ring", "Ruby Ring Blueprint", "Unlocks the Fire-boosting Ruby Ring into reward pools.",
-                BlueprintCategory.Relic, cost: 50, targetId: "item_ruby_ring");
+                BlueprintCategory.Relic, cost: 50, targetId: "item_ruby_ring", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpRuby);
 
             // 9. Sapphire Ring Blueprint (50 Embers)
             BlueprintDefinitionSO bpSapphire = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpSapphire.Initialize("bp_sapphire_ring", "Sapphire Ring Blueprint", "Unlocks the Ice-boosting Sapphire Ring into reward pools.",
-                BlueprintCategory.Relic, cost: 50, targetId: "item_sapphire_ring");
+                BlueprintCategory.Relic, cost: 50, targetId: "item_sapphire_ring", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpSapphire);
 
             // 10. Lucky Clover Blueprint (60 Embers)
             BlueprintDefinitionSO bpClover = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpClover.Initialize("bp_lucky_clover", "Lucky Clover Blueprint", "Unlocks the Lucky Clover (+10% Crit Chance) into reward pools.",
-                BlueprintCategory.Relic, cost: 60, targetId: "item_lucky_clover");
+                BlueprintCategory.Relic, cost: 60, targetId: "item_lucky_clover", effect: BlueprintEffectType.UnlockItemInRewardPool);
             list.Add(bpClover);
 
             // 11. Crossfire Rune Blueprint (80 Embers)
             BlueprintDefinitionSO bpCrossfire = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpCrossfire.Initialize("bp_rune_crossfire", "Crossfire Rune Blueprint", "Unlocks the 4-way Crossfire Rune into reward pools.",
-                BlueprintCategory.Rune, cost: 80, targetId: "rune_crossfire");
+                BlueprintCategory.Rune, cost: 80, targetId: "rune_crossfire", effect: BlueprintEffectType.UnlockRuneInRewardPool);
             list.Add(bpCrossfire);
 
             // 12. Haste Rune Blueprint (90 Embers)
             BlueprintDefinitionSO bpHaste = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
             bpHaste.Initialize("bp_rune_haste", "Haste Rune Blueprint", "Unlocks the speed-enhancing Haste Rune into reward pools.",
-                BlueprintCategory.Rune, cost: 90, targetId: "rune_haste");
+                BlueprintCategory.Rune, cost: 90, targetId: "rune_haste", effect: BlueprintEffectType.UnlockRuneInRewardPool);
             list.Add(bpHaste);
+
+            // 13. Mercenary Purse (Permanent Starting Gold +15) (45 Embers)
+            BlueprintDefinitionSO bpGold = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
+            bpGold.Initialize("bp_mercenary_purse", "Mercenary Purse", "Permanently grants +15 Starting Gold on every new dungeon run.",
+                BlueprintCategory.Utility, cost: 45, targetId: "stat_starting_gold", effect: BlueprintEffectType.PermanentStartingGoldBonus, value: 15);
+            list.Add(bpGold);
+
+            // 14. Vitality Infusion (Permanent Starting Max HP +20) (55 Embers)
+            BlueprintDefinitionSO bpHp = ScriptableObject.CreateInstance<BlueprintDefinitionSO>();
+            bpHp.Initialize("bp_vitality_infusion", "Vitality Infusion", "Permanently grants +20 Starting Max HP on every new dungeon run.",
+                BlueprintCategory.Utility, cost: 55, targetId: "stat_starting_hp", effect: BlueprintEffectType.PermanentStartingHpBonus, value: 20);
+            list.Add(bpHp);
 
             db.Initialize(list);
             return db;

@@ -6,6 +6,7 @@ using Lattirune.Combat;
 using Lattirune.Economy;
 using Lattirune.Inventory;
 using Lattirune.Items;
+using Lattirune.Progression;
 using Lattirune.Runes;
 using Lattirune.UI;
 
@@ -28,6 +29,7 @@ namespace Lattirune.Dungeon
         [SerializeField] private RewardService rewardService;
         [SerializeField] private PlayerCombatant playerCombatant;
         [SerializeField] private EnemyCombatant enemyCombatant;
+        [SerializeField] private MetaProgressionManager metaProgression;
 
         [Header("Runtime State")]
         [SerializeField] private RunState currentState = RunState.NotStarted;
@@ -98,7 +100,8 @@ namespace Lattirune.Dungeon
             RewardService rewards,
             PlayerCombatant player,
             EnemyCombatant enemy,
-            BossSystem boss = null)
+            BossSystem boss = null,
+            MetaProgressionManager meta = null)
         {
             dungeonDefinition = dungeon;
             EnsureDefaultDungeon();
@@ -108,6 +111,7 @@ namespace Lattirune.Dungeon
             rewardService = rewards;
             playerCombatant = player;
             enemyCombatant = enemy;
+            metaProgression = meta;
 
             currentState = RunState.NotStarted;
             currentFloorIndex = 0;
@@ -136,15 +140,29 @@ namespace Lattirune.Dungeon
 
         public bool StartRun()
         {
+            return StartRun(metaProgression);
+        }
+
+        public bool StartRun(MetaProgressionManager meta)
+        {
             EnsureDefaultDungeon();
+
+            metaProgression = meta ?? metaProgression;
 
             currentFloorIndex = 0;
             currentEncounterIndex = 0;
-            currentGold = 0;
+            currentGold = metaProgression != null ? metaProgression.GetStartingGoldBonus() : 0;
             currentEmbers = 0;
             campfireChoiceResolved = false;
             _victoryRewardsGranted = false;
             _runtimeRuneUpgrades.Clear();
+
+            if (playerCombatant != null)
+            {
+                int bonusHp = metaProgression != null ? metaProgression.GetStartingHpBonus() : 0;
+                playerCombatant.SetStats(100 + bonusHp, playerCombatant.Armor, playerCombatant.AttackInterval);
+                playerCombatant.ResetHpToFull();
+            }
 
             SetState(RunState.Starting);
             SetState(RunState.FloorPreparing);

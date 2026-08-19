@@ -12,14 +12,15 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** Pre-production / Phase 4 Meta-Progression
 
-## Meta-Progression: Campfire Hub & Blueprint Forge
+## Meta-Progression: Campfire Hub, Blueprint Forge & Permanent Upgrades
 
 * **Progression Separation (PLAN.md Section 12):**
   * **In-Run Temporary:** In-run Gold, equipped grid items, temporary rune upgrades, combat status effects, and temporary merchant purchases reset upon death/run complete.
   * **Persistent Meta-Hub:** Dungeon Embers currency, permanent Blueprint unlocks, lifetime boss clear statistics, and codex entries persist permanently across runs.
-* **Blueprint Forge (PLAN.md Section 12 & 22):**
-  * Players spend persistent *Dungeon Embers* (awarded on clearing the Floor 10 Boss Sanctum, $80 - 120$ Embers) to permanently unlock new weapons, shields, armor, relics, and runes into future dungeon reward pools.
-  * Canonical Forge Blueprints include `Shortbow` (50 Embers), `Apprentice Wand` (60 Embers), `Battleaxe` (80 Embers), `Phalanx Spear` (75 Embers), `Iron Tower Shield` (65 Embers), `Spiked Buckler` (55 Embers), `Chainmail Coat` (70 Embers), `Ruby Ring` (50 Embers), `Sapphire Ring` (50 Embers), `Lucky Clover` (60 Embers), `Crossfire Rune` (80 Embers), and `Haste Rune` (90 Embers).
+* **Blueprint Forge & Effect Integration (PLAN.md Section 12 & 22):**
+  * Players spend persistent *Dungeon Embers* (awarded on clearing the Floor 10 Boss Sanctum, $80 - 120$ Embers) to permanently unlock new weapons, shields, armor, relics, runes, and starting stat upgrades.
+  * **Reward Pool Injection:** Unlocked item and rune blueprints dynamically expand the 3-card reward draft candidate pool without mutating baseline ScriptableObject assets.
+  * **Permanent Starting Bonuses:** Utility upgrades (e.g. `Mercenary Purse` for $+15$ Starting Gold, `Vitality Infusion` for $+20$ Starting Max HP) apply deterministically exactly once at the beginning of each run.
 
 ## Combat Simulation Agency & Speed Control
 
