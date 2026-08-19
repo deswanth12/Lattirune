@@ -7,6 +7,7 @@ namespace Lattirune.Combat
 {
     /// <summary>
     /// Player combatant that dynamically derives attack power, armor, and rune bonuses from items placed on the LatticeGrid.
+    /// Strictly adheres to PLAN.md Section 6.1 and Section 9.2.
     /// </summary>
     public class PlayerCombatant : Combatant
     {
@@ -14,6 +15,7 @@ namespace Lattirune.Combat
         [SerializeField] private int baseAttackDamage = 10;
         [SerializeField] private int activeRuneBonus = 0;
         [SerializeField] private bool hasActiveSynergy = false;
+        [SerializeField] private float activeCritBonus = 0f;
 
         public const int DEFAULT_FIRE_SYNERGY_BONUS = 5;
         public const int DEFAULT_BASE_WEAPON_DAMAGE = 10;
@@ -22,6 +24,7 @@ namespace Lattirune.Combat
         public int BaseAttackDamage => baseAttackDamage;
         public int ActiveRuneBonus => activeRuneBonus;
         public bool HasActiveSynergy => hasActiveSynergy;
+        public float ActiveCritBonus => activeCritBonus;
 
         public void SetupDefaultPlayer(int initialHp = 100)
         {
@@ -36,6 +39,8 @@ namespace Lattirune.Combat
             int calculatedDamage = 0;
             int calculatedArmor = 0;
             int calculatedRuneBonus = 0;
+            float calculatedCrit = 0f;
+            int calculatedHpBonus = 0;
             bool foundSynergy = false;
 
             if (items != null)
@@ -47,7 +52,8 @@ namespace Lattirune.Combat
                     // Weapon Damage & Synergy Bonus
                     if (item.Data.Category == ItemCategory.Weapon)
                     {
-                        calculatedDamage += DEFAULT_BASE_WEAPON_DAMAGE;
+                        int weaponDmg = item.Data.BaseDamage > 0 ? item.Data.BaseDamage : DEFAULT_BASE_WEAPON_DAMAGE;
+                        calculatedDamage += weaponDmg;
 
                         if (item.HasActiveSynergy)
                         {
@@ -69,7 +75,8 @@ namespace Lattirune.Combat
                     // Shield Defense
                     else if (item.Data.Category == ItemCategory.Shield)
                     {
-                        calculatedArmor += DEFAULT_GUARD_PLATE_ARMOR;
+                        int shieldDef = item.Data.ShieldValue > 0 ? item.Data.ShieldValue : DEFAULT_GUARD_PLATE_ARMOR;
+                        calculatedArmor += shieldDef;
 
                         if (item.HasActiveSynergy)
                         {
@@ -80,12 +87,28 @@ namespace Lattirune.Combat
                             }
                         }
                     }
+                    // Armor / Robes
+                    else if (item.Data.Category == ItemCategory.Armor)
+                    {
+                        calculatedHpBonus += item.Data.MaxHpBonus;
+                        if (item.Data.DamageTakenReduction > 0)
+                        {
+                            calculatedArmor += item.Data.DamageTakenReduction;
+                        }
+                    }
+                    // Relic Stat Modifiers
+                    else if (item.Data.Category == ItemCategory.Relic)
+                    {
+                        calculatedDamage += item.Data.FlatDamageBonus;
+                        calculatedCrit += item.Data.CritBonus;
+                    }
                 }
             }
 
             // If no weapon placed, default to 1 unarmed damage
             baseAttackDamage = Mathf.Max(1, calculatedDamage);
             activeRuneBonus = calculatedRuneBonus;
+            activeCritBonus = calculatedCrit;
             hasActiveSynergy = foundSynergy;
 
             SetStats(MaxHp, calculatedArmor, AttackInterval);

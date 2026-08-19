@@ -468,32 +468,8 @@ namespace Lattirune.Core
 
         private void BuildDefaultItemDefinitions()
         {
-            prototypeItemCatalogue = new List<ItemDataSO>();
-
-            // 1. Training Sword (Weapon, 1x2, Rotatable)
-            ItemDataSO sword = ScriptableObject.CreateInstance<ItemDataSO>();
-            sword.Initialize("item_training_sword", "Training Sword", "A reliable iron training sword.", ItemCategory.Weapon, new Vector2Int(1, 2), true, new Color(0.9f, 0.5f, 0.1f));
-            prototypeItemCatalogue.Add(sword);
-
-            // 2. Ember Blade (Weapon, 2x1, Rotatable)
-            ItemDataSO ember = ScriptableObject.CreateInstance<ItemDataSO>();
-            ember.Initialize("item_ember_blade", "Ember Blade", "A blade glowing with stored heat.", ItemCategory.Weapon, new Vector2Int(2, 1), true, new Color(0.91f, 0.3f, 0.24f));
-            prototypeItemCatalogue.Add(ember);
-
-            // 3. Guard Plate (Shield, 2x2, Rotatable)
-            ItemDataSO plate = ScriptableObject.CreateInstance<ItemDataSO>();
-            plate.Initialize("item_guard_plate", "Guard Plate", "A reinforced defensive chestplate.", ItemCategory.Shield, new Vector2Int(2, 2), true, new Color(0.2f, 0.6f, 0.86f));
-            prototypeItemCatalogue.Add(plate);
-
-            // 4. Arcane Relic (Relic, 1x1, Fixed)
-            ItemDataSO relic = ScriptableObject.CreateInstance<ItemDataSO>();
-            relic.Initialize("item_arcane_relic", "Arcane Relic", "Ancient artifact vibrating with energy.", ItemCategory.Relic, new Vector2Int(1, 1), false, new Color(0.61f, 0.35f, 0.71f));
-            prototypeItemCatalogue.Add(relic);
-
-            // 5. Vital Flask (Consumable, 1x1, Fixed)
-            ItemDataSO flask = ScriptableObject.CreateInstance<ItemDataSO>();
-            flask.Initialize("item_vital_flask", "Vital Flask", "Restorative dungeon potion.", ItemCategory.Consumable, new Vector2Int(1, 1), false, new Color(0.18f, 0.8f, 0.44f));
-            prototypeItemCatalogue.Add(flask);
+            ItemDatabaseSO db = ItemDatabaseSO.CreateCanonicalDatabase();
+            prototypeItemCatalogue = new List<ItemDataSO>(db.AllItems);
         }
 
         private void SetupDevelopmentRunesAndTargets()

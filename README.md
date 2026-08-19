@@ -12,6 +12,33 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** Pre-production / Phase 3 Content Build
 
+## MVP 1.0 Item Catalogue (20 Items)
+
+The complete item catalogue defined in PLAN.md Section 6.1:
+
+| # | Item Name | ID | Category | Footprint | Base Stats | Special Traits / Synergies |
+| :- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | **Rusty Dagger** | `item_rusty_dagger` | Weapon | $1 \times 1$ | 4 Dmg, 0.8s cd | +2 Dmg if placed in corner tile |
+| 2 | **Iron Broadsword** | `item_iron_broadsword` | Weapon | $1 \times 2$ | 10 Dmg, 2.0s cd | +3 Dmg for each adjacent weapon |
+| 3 | **Shortbow** | `item_shortbow` | Weapon | $2 \times 1$ | 6 Dmg, 1.4s cd | 5 Armor Pierce |
+| 4 | **Apprentice Wand** | `item_apprentice_wand` | Weapon | $1 \times 2$ | 7 Dmg, 1.8s cd | +50% Elemental Rune Damage |
+| 5 | **Battleaxe** | `item_battleaxe` | Weapon | L-Shape ($2 \times 2$) | 18 Dmg, 3.0s cd | $1.5\times$ Dmg if shield is 0 |
+| 6 | **Phalanx Spear** | `item_phalanx_spear` | Weapon | $1 \times 3$ | 12 Dmg, 1.8s cd | +4 Dmg for empty tiles behind shaft |
+| 7 | **Wooden Buckler** | `item_wooden_buckler` | Shield | $1 \times 1$ | 8 Shield | Starting shield at battle start |
+| 8 | **Iron Tower Shield** | `item_iron_tower_shield` | Shield | $2 \times 2$ | 25 Shield | Heavy insulator shield |
+| 9 | **Spiked Buckler** | `item_spiked_buckler` | Shield | $1 \times 2$ | 12 Shield | Reflects 4 Thorns damage when struck |
+| 10 | **Leather Tunic** | `item_leather_tunic` | Armor | $2 \times 2$ | +25 Max HP | +10 HP per adjacent potion |
+| 11 | **Chainmail Coat** | `item_chainmail_coat` | Armor | $2 \times 2$ | +15 Max HP | Reduces incoming damage by 2 flat |
+| 12 | **Whetstone** | `item_whetstone` | Relic | $1 \times 1$ | +3 Flat Dmg | All adjacent blades gain +3 Base Dmg |
+| 13 | **Ruby Ring** | `item_ruby_ring` | Relic | $1 \times 1$ | Passive | Adjacent Fire Runes gain +25% burn |
+| 14 | **Sapphire Ring** | `item_sapphire_ring` | Relic | $1 \times 1$ | Passive | Adjacent Ice Runes gain +25% slow |
+| 15 | **Lucky Clover** | `item_lucky_clover` | Relic | $1 \times 1$ | +10% Crit | Increases Critical Strike Chance |
+| 16 | **Health Potion** | `item_health_potion` | Consumable | $1 \times 1$ | +35 HP | Auto-drinks below 30% HP |
+| 17 | **Stamina Flask** | `item_stamina_flask` | Consumable | $1 \times 1$ | +40% Speed | Auto-drinks at battle start for 4s |
+| 18 | **Poison Vial** | `item_poison_vial` | Consumable | $1 \times 1$ | 15 Poison | Inflicts 15 Poison on attacker on hit |
+| 19 | **Decaying Blade** | `item_decaying_blade` | Cursed Weapon | $1 \times 2$ | 22 Dmg, 1.2s cd | Cursed: Deals 2 dmg to adjacent items |
+| 20 | **Blood Shield** | `item_blood_shield` | Cursed Shield | $2 \times 2$ | 45 Shield | Cursed: Reduces healing by 50% |
+
 ## Phase 3: Biome 1 ("The Cursed Sewers") & 6-Enemy Bestiary
 
 The 10-floor dungeon expands across Biome 1 with data-driven enemy archetypes and tactical grid-disrupting traits:
