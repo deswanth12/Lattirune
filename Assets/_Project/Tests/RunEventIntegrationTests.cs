@@ -233,19 +233,19 @@ namespace Lattirune.Tests
             Assert.AreEqual(1, SaveVersion.CURRENT_VERSION);
 
             string legacyJson = @"{
-                \"version\": 1,
-                \"timestamp\": \"2026-08-19T14:00:00Z\",
-                \"items\": [],
-                \"runes\": [],
-                \"run\": {
-                    \"hasActiveRun\": true,
-                    \"currentFloorIndex\": 3,
-                    \"currentEncounterIndex\": 0,
-                    \"runState\": 1
+                ""version"": 1,
+                ""timestamp"": ""2026-08-19T14:00:00Z"",
+                ""items"": [],
+                ""runes"": [],
+                ""run"": {
+                    ""hasActiveRun"": true,
+                    ""currentFloorIndex"": 3,
+                    ""currentEncounterIndex"": 0,
+                    ""runState"": 1
                 },
-                \"inventory\": { \"expansionStep\": 0, \"unlockedX\": [], \"unlockedY\": [] },
-                \"meta\": { \"embers\": 20, \"unlockedBlueprints\": [], \"totalBossClears\": 0, \"totalRunsAttempted\": 2 },
-                \"settings\": { \"masterVolume\": 1.0, \"sfxVolume\": 1.0, \"isMuted\": false, \"hapticsEnabled\": true }
+                ""inventory"": { ""expansionStep"": 0, ""unlockedX"": [], ""unlockedY"": [] },
+                ""meta"": { ""embers"": 20, ""unlockedBlueprints"": [], ""totalBossClears"": 0, ""totalRunsAttempted"": 2 },
+                ""settings"": { ""masterVolume"": 1.0, ""sfxVolume"": 1.0, ""isMuted"": false, ""hapticsEnabled"": true }
             }";
 
             SaveData loaded = SaveSerializer.DeserializeFromJson(legacyJson);

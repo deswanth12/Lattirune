@@ -113,6 +113,11 @@ namespace Lattirune.Combat
             OnStateChanged?.Invoke(CombatState.Fighting);
         }
 
+        public void Tick(float dt)
+        {
+            UpdateCombat(dt);
+        }
+
         public void UpdateCombat(float deltaTime)
         {
             if (currentState != CombatState.Fighting || player == null || enemy == null)

@@ -332,19 +332,19 @@ namespace Lattirune.Tests
         {
             // Simulate legacy JSON produced in MVP 1.0 without activeModifierIds and highestCombo
             string legacyJson = @"{
-                \"version\": 1,
-                \"timestamp\": \"2026-08-19T12:00:00Z\",
-                \"items\": [],
-                \"runes\": [],
-                \"run\": {
-                    \"hasActiveRun\": true,
-                    \"currentFloorIndex\": 2,
-                    \"currentEncounterIndex\": 1,
-                    \"runState\": 1
+                ""version"": 1,
+                ""timestamp"": ""2026-08-19T12:00:00Z"",
+                ""items"": [],
+                ""runes"": [],
+                ""run"": {
+                    ""hasActiveRun"": true,
+                    ""currentFloorIndex"": 2,
+                    ""currentEncounterIndex"": 1,
+                    ""runState"": 1
                 },
-                \"inventory\": { \"expansionStep\": 0, \"unlockedX\": [], \"unlockedY\": [] },
-                \"meta\": { \"embers\": 100, \"unlockedBlueprints\": [], \"totalBossClears\": 1, \"totalRunsAttempted\": 3 },
-                \"settings\": { \"masterVolume\": 1.0, \"sfxVolume\": 1.0, \"isMuted\": false, \"hapticsEnabled\": true }
+                ""inventory"": { ""expansionStep"": 0, ""unlockedX"": [], ""unlockedY"": [] },
+                ""meta"": { ""embers"": 100, ""unlockedBlueprints"": [], ""totalBossClears"": 1, ""totalRunsAttempted"": 3 },
+                ""settings"": { ""masterVolume"": 1.0, ""sfxVolume"": 1.0, ""isMuted"": false, ""hapticsEnabled"": true }
             }";
 
             SaveData legacySave = SaveSerializer.DeserializeFromJson(legacyJson);

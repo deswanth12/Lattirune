@@ -53,15 +53,12 @@ namespace Lattirune.Tests
         public void FullGame_UnifiedLoop_ExecutesSeamlesslyWithZeroExceptions()
         {
             // 1. Grid & Inventory
-            var gridObj = new GameObject("LatticeGrid");
-            gridObj.transform.SetParent(_holder.transform);
-            var grid = gridObj.AddComponent<LatticeGrid>();
-            grid.Initialize();
+            var grid = new LatticeGrid();
 
             var invObj = new GameObject("InventorySystem");
             invObj.transform.SetParent(_holder.transform);
             var inventory = invObj.AddComponent<InventorySystem>();
-            inventory.Initialize(grid);
+            inventory.Initialize();
 
             // 2. Combat & Modifiers & Combos
             var playerObj = new GameObject("PlayerCombatant");

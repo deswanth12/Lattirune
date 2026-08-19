@@ -36,11 +36,10 @@ namespace Lattirune.Tests
             _economy = _holder.AddComponent<SimpleEconomyService>();
             _economy.Initialize(startingGold: 100);
 
-            _grid = _holder.AddComponent<LatticeGrid>();
-            _grid.Initialize();
+            _grid = new LatticeGrid();
 
             _inventory = _holder.AddComponent<InventorySystem>();
-            _inventory.Initialize(_grid);
+            _inventory.Initialize();
 
             var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);

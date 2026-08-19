@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using Lattirune.Combat;
@@ -109,15 +109,12 @@ namespace Lattirune.Tests
         [Test]
         public void ApplyStartingLoadout_ConfiguresPlayerAndStagingInventory()
         {
-            var gridObj = new GameObject("Grid");
-            gridObj.transform.SetParent(_holder.transform);
-            var grid = gridObj.AddComponent<LatticeGrid>();
-            grid.Initialize();
+            var grid = new LatticeGrid();
 
             var invObj = new GameObject("Inventory");
             invObj.transform.SetParent(_holder.transform);
             var inventory = invObj.AddComponent<InventorySystem>();
-            inventory.Initialize(grid);
+            inventory.Initialize();
 
             var playerObj = new GameObject("Player");
             playerObj.transform.SetParent(_holder.transform);
