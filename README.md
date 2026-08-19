@@ -12,7 +12,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
 * **Development Status:** MVP 1.0.0 Release Package Finalized (Ready for Manual Android QA)
 
-## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-041)
+## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-042)
 
 * **Build Target (RC):** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
 * **Build Target (v1.0.0 APK):** `Builds/Android/Lattirune-1.0.0.apk`
@@ -21,10 +21,11 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Version Name:** `1.0.0`
 * **Version Code:** `1`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 464 / 464 passing ($100\%$)
+* **EditMode Tests:** 478 / 478 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
+* **Final Release Blockers:** [`Docs/MVP1.0-Final-Release-Blockers.md`](./Docs/MVP1.0-Final-Release-Blockers.md)
 * **Store Asset Manifest:** [`Docs/MVP1.0-Store-Asset-Manifest.md`](./Docs/MVP1.0-Store-Asset-Manifest.md)
 * **Screenshot Plan:** [`Docs/MVP1.0-Screenshot-Capture-Plan.md`](./Docs/MVP1.0-Screenshot-Capture-Plan.md)
 * **Privacy Policy:** [`Docs/MVP1.0-Privacy-Policy.md`](./Docs/MVP1.0-Privacy-Policy.md)
@@ -52,7 +53,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 
 ## Manual QA Status
 
-* **Automated Regression:** `464 / 464 PASS`
+* **Automated Regression:** `478 / 478 PASS`
 * **Android Device:** `NOT TESTED`
 * **Installation:** `NOT TESTED`
 * **Physical Touch:** `NOT TESTED`
@@ -63,21 +64,25 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 
 ## Google Play Release Status
 
-* **Automated Regression:** `464 / 464 PASS`
-* **Google Play Store Listing:** `READY`
-* **App Icon:** `PENDING`
-* **Feature Graphic:** `PENDING`
-* **Screenshots:** `PENDING`
+* **MVP 1.0 Automated QA:** `PASS (478 / 478)`
+* **App Icon:** `EXTERNAL ASSET REQUIRED`
+* **Feature Graphic:** `EXTERNAL ASSET REQUIRED`
+* **Screenshots:** `EXTERNAL CAPTURE REQUIRED`
+* **Store Listing:** `READY`
 * **Privacy Policy:** `READY`
 * **Privacy Policy URL:** `NOT HOSTED`
 * **AAB Pipeline:** `CONFIGURED`
 * **AAB Artifact:** `NOT GENERATED`
+* **Production Signing:** `EXTERNAL CONFIGURATION REQUIRED`
 * **Physical Android QA:** `NOT COMPLETED`
 * **Google Play Submission:** `NOT SUBMITTED`
-* **Remaining Blockers:**
-  1. Physical Android device QA pending hardware lab verification.
-  2. Public Privacy Policy URL not hosted.
-  3. Store listing graphic assets (icon, feature graphic, screenshots) pending capture.
+* **Release Status:** `BLOCKED`
+* **Remaining External Actions:**
+  1. Connect physical Android device and sign off 26-point manual QA checklist.
+  2. Host Privacy Policy document on a publicly accessible HTTPS URL.
+  3. Provide final $512 \times 512$ icon, $1024 \times 500$ feature graphic, and 12-screen capture set.
+  4. Generate and sign release AAB bundle in secure CI/CD environment.
+  5. Submit store listing assets and binary in Google Play Console.
 
 ## Full Mobile Screen Navigation Flow & UI Architecture
 
@@ -190,7 +195,7 @@ The execution engine enforcing deterministic cascading triggers as specified in 
 The complete rune catalogue defined in PLAN.md Section 5.1:
 
 | # | Rune Name | ID | Element | Direction | Mechanical In-Combat Effect | Compatible Setup |
-| :- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| :- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | **Ember Rune** | `rune_ember` | Fire | East ($\rightarrow$) | +6 Fire Dmg; Burn (3 dmg/s for 4s) | Blades, Bows, Wands |
 | 2 | **Frost Rune** | `rune_frost` | Ice | South ($\downarrow$) | +4 Ice Dmg; Enemy speed -15% | Shields, Daggers |
 | 3 | **Spark Rune** | `rune_spark` | Lightning | North ($\uparrow$) | +8 Shock Dmg; 25% chain arc chance | Fast weapons (<1.5s) |
@@ -322,6 +327,7 @@ The Lich Lord (`boss_lich_lord`) is a 3-phase boss encounter with deterministic 
 * [`MVP1.0-Release-Notes.md`](./Docs/MVP1.0-Release-Notes.md) — Comprehensive MVP 1.0.0 Release Notes.
 * [`MVP1.0-Release-Manifest.md`](./Docs/MVP1.0-Release-Manifest.md) — Official MVP 1.0 Release Manifest and build specifications.
 * [`MVP1.0-Release-Traceability.md`](./Docs/MVP1.0-Release-Traceability.md) — Complete requirements traceability matrix.
+* [`MVP1.0-Final-Release-Blockers.md`](./Docs/MVP1.0-Final-Release-Blockers.md) — Final release blocker audit and external dependency classification.
 * [`MVP1.0-Manual-QA-Checklist.md`](./Docs/MVP1.0-Manual-QA-Checklist.md) — Official Manual QA Checklist & Hardware Verification Matrix.
 * [`MVP1.0-Google-Play-Submission-Checklist.md`](./Docs/MVP1.0-Google-Play-Submission-Checklist.md) — Play Store submission readiness checklist.
 * [`MVP1.0-Google-Play-Store-Listing.md`](./Docs/MVP1.0-Google-Play-Store-Listing.md) — Play Store title and description copy.
