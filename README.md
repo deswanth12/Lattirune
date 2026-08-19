@@ -10,9 +10,9 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Engine:** Unity 6 LTS (2D URP)
 * **Language:** C#
 * **Orientation:** Portrait ($1080 \times 1920$ reference canvas)
-* **Development Status:** MVP 1.0.0 Release Package Finalized (Release Ready)
+* **Development Status:** MVP 1.0.0 Release Package Finalized (Ready for Manual Android QA)
 
-## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-037)
+## Phase 3 MVP 1.0.0 Release Package & Sign-Off (TASK-035 - TASK-038)
 
 * **Build Target (RC):** `Builds/Android/Lattirune-MVP1-ReleaseCandidate.apk`
 * **Build Target (v1.0.0):** `Builds/Android/Lattirune-1.0.0.apk`
@@ -20,7 +20,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 * **Version Name:** `1.0.0`
 * **Version Code:** `1`
 * **Orientation:** Portrait ($1080 \times 1920$)
-* **EditMode Tests:** 413 / 413 passing ($100\%$)
+* **EditMode Tests:** 425 / 425 passing ($100\%$)
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Save System:** Version 1 (AES-256 Encrypted with zero schema breakages)
@@ -44,7 +44,7 @@ A portrait-mode 2D spatial inventory auto-battler roguelite where directional el
 
 ## Manual QA Status
 
-* **Automated Regression:** `413 / 413 PASS`
+* **Automated Regression:** `425 / 425 PASS`
 * **Android Device:** `NOT TESTED`
 * **Installation:** `NOT TESTED`
 * **Physical Touch:** `NOT TESTED`

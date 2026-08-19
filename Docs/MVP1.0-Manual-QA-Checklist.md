@@ -6,7 +6,14 @@
 **Version:** `1.0.0` (Build `1`)  
 **Save Version:** `1` (AES-256 Encrypted)  
 **Target Hardware:** Android 10+ (Portrait $1080 \times 1920$, $\ge 52\text{ dp}$ Touch Targets)  
-**Status Key:** `PASS` | `FAIL` | `BLOCKED` | `NOT TESTED`
+**QA Session Log:**
+* **Device:** `NOT AVAILABLE`
+* **Android Version:** `NOT AVAILABLE`
+* **APK:** `Builds/Android/Lattirune-1.0.0.apk`
+* **Date:** `August 19, 2026`
+* **Tester:** `Automated Pipeline & Manual QA Lead`
+* **Result:** `READY FOR MANUAL ANDROID QA (Physical Device Lab Pass Pending)`
+* **Status Key:** `PASS` | `FAIL` | `BLOCKED` | `NOT TESTED`
 
 ---
 

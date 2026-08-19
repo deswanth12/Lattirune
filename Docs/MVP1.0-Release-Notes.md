@@ -50,19 +50,34 @@ Lattirune MVP 1.0 marks the completion of the core tactical auto-battler rogueli
 
 ## 4. Verification & QA Status
 
-* **Automated EditMode Test Suite:** 413 / 413 tests passing ($100\%$ pass rate).
+* **Automated EditMode Test Suite:** 425 / 425 tests passing ($100\%$ pass rate).
 * **Compilation Errors:** 0
 * **Console Errors:** 0
 * **Android Build Status:** PASS
-* **Android Device Testing:** `NOT TESTED` (No physical Android device was connected during automated execution; automated smoke tests and controller safety tests have 100% test coverage).
-* **APK Installation:** `NOT TESTED` (Pending physical hardware lab sign-off).
 * **Security Audit:** PASS (Zero secrets, private keys, or API credentials stored in repository; `.gitignore` properly excludes build outputs and keystores).
 
 ---
 
-## 5. Manual QA Status
+## 5. Physical Android QA
 
-* **Automated Regression:** `413 / 413 PASS`
+* **Device:** `NOT AVAILABLE`
+* **Installation:** `NOT TESTED`
+* **Smoke Flow:** `NOT TESTED`
+* **Touch:** `NOT TESTED`
+* **Android Back:** `NOT TESTED`
+* **Save/Load:** `NOT TESTED`
+* **Audio:** `NOT TESTED`
+* **Haptics:** `NOT TESTED`
+* **Lifecycle:** `NOT TESTED`
+* **Offline:** `NOT TESTED`
+* **Performance:** `NOT TESTED`
+* **Overall Status:** `NOT TESTED`
+
+---
+
+## 6. Manual QA Status
+
+* **Automated Regression:** `425 / 425 PASS`
 * **Android Device Testing:** `NOT TESTED`
 * **Clean APK Installation:** `NOT TESTED`
 * **Cold Launch & Resume:** `NOT TESTED`
@@ -74,7 +89,7 @@ Lattirune MVP 1.0 marks the completion of the core tactical auto-battler rogueli
 
 ---
 
-## 6. Known Limitations & Future Scope
+## 7. Known Limitations & Future Scope
 
 * **Physical Device Testing:** Physical hardware testing on Android retail devices (Samsung Galaxy, Google Pixel) remains pending manual QA lab verification.
 * **Google Play Publishing:** Store listing assets, signed AAB bundles, and Google Play Console submissions are scheduled for post-MVP Phase 4.
