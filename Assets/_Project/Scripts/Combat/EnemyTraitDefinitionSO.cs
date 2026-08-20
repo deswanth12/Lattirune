@@ -27,7 +27,9 @@ namespace Lattirune.Combat
         Juggernaut,   // +40% Max HP, +10 Armor
         Frenzied,     // +35% Attack Speed (faster cooldown)
         MoltenAura,   // Reflects 25% damage back as flame thorns
-        ToxicThorns   // Inflicts virulent poison on hit
+        ToxicThorns,  // Inflicts virulent poison on hit
+        Frostbound,   // +5 Armor, chilling presence
+        Blighted      // +30% Max HP, reduces player healing
     }
 
     /// <summary>

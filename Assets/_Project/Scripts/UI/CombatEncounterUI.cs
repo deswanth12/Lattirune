@@ -225,6 +225,8 @@ namespace Lattirune.UI
                     EliteAffixType.Frenzied => "+35% Attack Speed",
                     EliteAffixType.MoltenAura => "+2 ATK & 25% Thorns Reflection",
                     EliteAffixType.ToxicThorns => "Inflicts Poison On Hit",
+                    EliteAffixType.Frostbound => "+6 Armor & Chilling Aura",
+                    EliteAffixType.Blighted => "+30% Max HP & Healing Suppression",
                     _ => ""
                 };
                 eliteAffixBadge = $" <color=#ef4444>[💀 {enemy.EliteAffix.ToString().ToUpper()}: {affixDesc}]</color>";

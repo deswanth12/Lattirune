@@ -140,6 +140,32 @@ namespace Lattirune.Tests
         }
 
         [Test]
+        public void Frostbound_EliteAffix_AppliesBonusArmor()
+        {
+            EnemyCombatant enemy = _holderObj.AddComponent<EnemyCombatant>();
+            enemy.SetupCustom("Spider", 50, 0, 4, 1.5f);
+            enemy.ApplyEliteAffix(EliteAffixType.Frostbound);
+
+            Assert.IsTrue(enemy.IsElite);
+            Assert.AreEqual(EliteAffixType.Frostbound, enemy.EliteAffix);
+            Assert.AreEqual("Frostbound Spider", enemy.CombatantName);
+            Assert.AreEqual(6, enemy.Armor); // 0 + 6
+        }
+
+        [Test]
+        public void Blighted_EliteAffix_AppliesBonusHp()
+        {
+            EnemyCombatant enemy = _holderObj.AddComponent<EnemyCombatant>();
+            enemy.SetupCustom("Rat", 100, 0, 4, 1.5f);
+            enemy.ApplyEliteAffix(EliteAffixType.Blighted);
+
+            Assert.IsTrue(enemy.IsElite);
+            Assert.AreEqual(EliteAffixType.Blighted, enemy.EliteAffix);
+            Assert.AreEqual("Blighted Rat", enemy.CombatantName);
+            Assert.AreEqual(130, enemy.MaxHp); // 100 + 30% = 130
+        }
+
+        [Test]
         public void Necromancer_SummonTrait_MatchesConfig()
         {
             EncounterDefinitionSO necro = EncounterDefinitionSO.CreateNecromancer();

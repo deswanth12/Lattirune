@@ -62,6 +62,16 @@ namespace Lattirune.Combat
                     poison.Initialize("trait_toxic_thorns", "Toxic Thorns", EnemyTraitType.ApplyPoisonOnHit, 2f);
                     AddTrait(poison);
                     break;
+                case EliteAffixType.Frostbound:
+                    SetCombatantName($"Frostbound {CombatantName}");
+                    SetStats(MaxHp, Armor + 6, AttackInterval);
+                    break;
+                case EliteAffixType.Blighted:
+                    SetCombatantName($"Blighted {CombatantName}");
+                    int bonusBlightHp = Mathf.RoundToInt(MaxHp * 0.30f);
+                    SetStats(MaxHp + bonusBlightHp, Armor + 2, AttackInterval);
+                    ResetHpToFull();
+                    break;
             }
         }
 

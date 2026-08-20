@@ -298,7 +298,9 @@ namespace Lattirune.Dungeon
                             EliteAffixType.Juggernaut,
                             EliteAffixType.Frenzied,
                             EliteAffixType.MoltenAura,
-                            EliteAffixType.ToxicThorns
+                            EliteAffixType.ToxicThorns,
+                            EliteAffixType.Frostbound,
+                            EliteAffixType.Blighted
                         };
                         int affixIndex = (currentFloorIndex + currentEncounterIndex) % affixPool.Length;
                         enemyCombatant.ApplyEliteAffix(affixPool[affixIndex]);
