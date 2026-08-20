@@ -151,7 +151,7 @@ namespace Lattirune.Reactions
         {
             if (reactionSystem == null || gridView == null || Camera.main == null) return;
             if (reactionSystem.ActiveReactionCount == 0) return;
-            if (navigation != null && navigation.CurrentScreen != UI.ScreenState.GRID_BUILD && navigation.CurrentScreen != UI.ScreenState.COMBAT) return;
+            if (navigation == null || (navigation.CurrentScreen != UI.ScreenState.GRID_BUILD && navigation.CurrentScreen != UI.ScreenState.COMBAT)) return;
 
             float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
             if (scale <= 0.01f) scale = 1.0f;
@@ -162,9 +162,9 @@ namespace Lattirune.Reactions
             GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
             labelStyle.alignment = TextAnchor.MiddleCenter;
             labelStyle.fontStyle = FontStyle.Bold;
-            labelStyle.fontSize = 20;
+            labelStyle.fontSize = 18;
 
-            float pulse = 0.85f + 0.15f * Mathf.Sin(Time.time * 8.0f);
+            float pulse = 0.85f + 0.15f * Mathf.Sin(Time.time * 6.0f);
 
             foreach (var rxn in reactionSystem.ActiveReactions)
             {
@@ -178,11 +178,13 @@ namespace Lattirune.Reactions
 
                 Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
                 float guiX = (screenPos.x / scale) - 90f;
-                float guiY = ((Screen.height - screenPos.y) / scale) - 30f;
+                float guiY = ((Screen.height - screenPos.y) / scale) - 18f;
 
                 Color oldColor = GUI.color;
                 GUI.color = new Color(rxn.ReactionColor.r, rxn.ReactionColor.g, rxn.ReactionColor.b, pulse);
-                GUI.Label(new Rect(guiX, guiY, 180f, 60f), $"✨ {rxn.ReactionName} ✨", labelStyle);
+                GUI.Box(new Rect(guiX - 10, guiY, 200f, 36f), GUIContent.none, UI.LattiruneUITheme.StyleBadge);
+                labelStyle.normal.textColor = Color.white;
+                GUI.Label(new Rect(guiX - 10, guiY, 200f, 36f), $"** {rxn.ReactionName.ToUpper()}! **", labelStyle);
                 GUI.color = oldColor;
             }
 

@@ -84,8 +84,8 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
+            if (navigation == null || navigation.CurrentScreen != ScreenState.CAMPFIRE_HUB) return;
             if (!isHubVisible || metaManager == null) return;
-            if (navigation != null && navigation.CurrentScreen != ScreenState.CAMPFIRE_HUB) return;
 
             // If Forge is currently open, let Forge render its modal window
             if (forgeController != null && forgeController.IsOpen)
@@ -105,11 +105,11 @@ namespace Lattirune.UI
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "🔥 CAMPFIRE META-HUB 🔥");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "CAMPFIRE META-HUB");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 50, panelWidth - 80, panelHeight - 100));
 
-            LattiruneUITheme.DrawHeader("🔥 CAMPFIRE META-HUB 🔥", "Forge blueprints, review stats, and manage permanent progression.");
+            LattiruneUITheme.DrawHeader("CAMPFIRE META-HUB", "Forge blueprints, review stats, and manage permanent progression.");
             GUILayout.Space(16);
 
             GUIStyle statStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
@@ -117,32 +117,32 @@ namespace Lattirune.UI
             statStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
 
             GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUILayout.Label($"🔥 Persistent Embers: <b>{DisplayedEmbers}</b>", statStyle);
-            GUILayout.Label($"📜 Blueprints Unlocked: <b>{UnlockedBlueprintCount} / {TotalBlueprintCount}</b>", statStyle);
-            GUILayout.Label($"⚔️ Runs Attempted: <b>{metaManager.TotalRunsAttempted}</b> | Boss Clears: <b>{metaManager.TotalBossClears}</b>", statStyle);
+            GUILayout.Label($"Persistent Embers: <b>{DisplayedEmbers}</b>", statStyle);
+            GUILayout.Label($"Blueprints Unlocked: <b>{UnlockedBlueprintCount} / {TotalBlueprintCount}</b>", statStyle);
+            GUILayout.Label($"Runs Attempted: <b>{metaManager.TotalRunsAttempted}</b> | Boss Clears: <b>{metaManager.TotalBossClears}</b>", statStyle);
             GUILayout.EndVertical();
 
             GUILayout.Space(24);
 
-            if (LattiruneUITheme.DrawPrimaryButton("🔨 ENTER BLUEPRINT FORGE", 75f))
+            if (LattiruneUITheme.DrawPrimaryButton("ENTER BLUEPRINT FORGE", 75f))
             {
                 OpenBlueprintForge();
             }
             GUILayout.Space(14);
 
-            if (LattiruneUITheme.DrawSecondaryButton("🛡️ HERO ROSTER & LOADOUTS", 65f))
+            if (LattiruneUITheme.DrawSecondaryButton("HERO ROSTER & LOADOUTS", 65f))
             {
                 if (navigation != null) navigation.NavigateTo(ScreenState.HERO_SELECTION);
             }
             GUILayout.Space(14);
 
-            if (LattiruneUITheme.DrawSecondaryButton("📖 ARCANE CODEX & BESTIARY", 65f))
+            if (LattiruneUITheme.DrawSecondaryButton("ARCANE CODEX & BESTIARY", 65f))
             {
                 if (navigation != null) navigation.NavigateTo(ScreenState.CODEX);
             }
             GUILayout.Space(14);
 
-            if (LattiruneUITheme.DrawSecondaryButton("↩ RETURN TO MAIN MENU", 65f))
+            if (LattiruneUITheme.DrawSecondaryButton("RETURN TO MAIN MENU", 65f))
             {
                 if (navigation != null) navigation.NavigateTo(ScreenState.MAIN_MENU);
                 else HideHub();

@@ -159,7 +159,7 @@ namespace Lattirune.Tests
 
             Assert.AreEqual(5, freshManager.CurrentFloorNumber);
             Assert.AreEqual(4, freshManager.CurrentFloorIndex);
-            Assert.AreEqual("Armored Skeleton", _enemy.CombatantName);
+            Assert.AreEqual("Grave Goliath", _enemy.CombatantName);
 
             Object.DestroyImmediate(freshObj);
         }

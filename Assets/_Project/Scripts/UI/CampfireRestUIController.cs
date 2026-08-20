@@ -126,7 +126,7 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
-            if (navigation != null && navigation.CurrentScreen != ScreenState.CAMPFIRE_REST) return;
+            if (navigation == null || navigation.CurrentScreen != ScreenState.CAMPFIRE_REST) return;
             if (!isVisible) return;
 
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
@@ -136,11 +136,11 @@ namespace Lattirune.UI
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "🔥 CAMPFIRE REST SANCTUARY 🔥");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "CAMPFIRE REST SANCTUARY");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader("🔥 CAMPFIRE REST SANCTUARY 🔥", "A rare moment of warmth amidst the subterranean darkness.");
+            LattiruneUITheme.DrawHeader("CAMPFIRE REST SANCTUARY", "A rare moment of warmth amidst the subterranean darkness.");
             GUILayout.Space(12);
 
             int currentHp = playerCombatant != null ? playerCombatant.CurrentHp : 100;
@@ -164,7 +164,7 @@ namespace Lattirune.UI
             descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
             GUILayout.Label("Heal 40% of Max HP immediately to recover from brutal combat.", descStyle);
             GUILayout.Space(6);
-            if (LattiruneUITheme.DrawPrimaryButton("❤️ REST & HEAL (+40% HP)", 60f))
+            if (LattiruneUITheme.DrawPrimaryButton("REST & HEAL (+40% HP)", 60f))
             {
                 ChooseRestAndHeal();
             }
@@ -182,7 +182,7 @@ namespace Lattirune.UI
             GUILayout.Label("2. ATTUNE RUNE MATRIX", runeHeader);
             GUILayout.Label("Forge your active runes in sacred heat, granting +3 Flat Elemental Power.", descStyle);
             GUILayout.Space(6);
-            if (LattiruneUITheme.DrawPrimaryButton("⚡ ATTUNE RUNES (+3 Power)", 60f))
+            if (LattiruneUITheme.DrawPrimaryButton("ATTUNE RUNES (+3 Power)", 60f))
             {
                 ChooseUpgradeRune();
             }
@@ -195,12 +195,12 @@ namespace Lattirune.UI
             GUIStyle curseHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
             curseHeader.fontSize = 22;
             curseHeader.fontStyle = FontStyle.Bold;
-            curseHeader.normal.textColor = LattiruneUITheme.ColorPurpleRune;
+            curseHeader.normal.textColor = LattiruneUITheme.ColorShadowRune;
 
             GUILayout.Label("3. SACRED CLEANSE", curseHeader);
             GUILayout.Label("Purge lingering dungeon curses and vulnerabilities from your spirit.", descStyle);
             GUILayout.Space(6);
-            if (LattiruneUITheme.DrawPrimaryButton("✨ CLEANSE CURSES", 60f))
+            if (LattiruneUITheme.DrawPrimaryButton("CLEANSE CURSES", 60f))
             {
                 ChooseCleanseCurse();
             }
@@ -212,16 +212,16 @@ namespace Lattirune.UI
 
             // Dialogue / Feedback
             GUIStyle feedbackStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            feedbackStyle.fontSize = 18;
+            feedbackStyle.fontSize = 17;
             feedbackStyle.fontStyle = FontStyle.Italic;
             feedbackStyle.alignment = TextAnchor.MiddleCenter;
-            feedbackStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
+            feedbackStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
             GUILayout.Label($"\"{_feedbackMessage}\"", feedbackStyle);
             GUILayout.Space(12);
 
             // Leave / Continue Button
             GUI.enabled = _hasChosenOption;
-            if (LattiruneUITheme.DrawPrimaryButton("⚔️ LEAVE REST SITE & DESCEND ➔", 75f))
+            if (LattiruneUITheme.DrawPrimaryButton("LEAVE REST SITE & DESCEND", 75f))
             {
                 Hide();
                 if (runManager != null)

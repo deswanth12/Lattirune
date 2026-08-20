@@ -56,8 +56,16 @@ namespace Lattirune.Items
             }
         }
 
+        [SerializeField] private UI.ScreenNavigationController navigation;
+
+        public void BindNavigation(UI.ScreenNavigationController nav)
+        {
+            navigation = nav;
+        }
+
         private void OnGUI()
         {
+            if (navigation == null || (navigation.CurrentScreen != UI.ScreenState.GRID_BUILD && navigation.CurrentScreen != UI.ScreenState.COMBAT)) return;
             if (_activeDraggedItem == null) return;
 
             float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
@@ -73,7 +81,7 @@ namespace Lattirune.Items
             float offsetY = (Screen.height / scale - 1920f) * 0.5f;
             Color oldColor = GUI.color;
             GUI.color = Color.cyan;
-            if (GUI.Button(new Rect(540f - 180f, 1550f + offsetY, 360f, 75f), "🔄 ROTATE (90°)", btnStyle))
+            if (GUI.Button(new Rect(540f - 180f, 1550f + offsetY, 360f, 75f), "[?] ROTATE (90°)", btnStyle))
             {
                 RotateActiveItem();
             }

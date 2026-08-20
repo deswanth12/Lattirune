@@ -109,7 +109,7 @@ namespace Lattirune.Tests
             var dungeon = DungeonDefinitionSO.Create10FloorCursedSewersDungeon();
             Assert.AreEqual(10, dungeon.TotalFloorCount);
             Assert.AreEqual("Floor 4: Merchant Stall", dungeon.GetFloor(3).FloorName);
-            Assert.AreEqual("Floor 8: Campfire Rest Site", dungeon.GetFloor(7).FloorName);
+            Assert.AreEqual("Floor 8: Crystalline Chasm", dungeon.GetFloor(7).FloorName);
             Assert.AreEqual("Floor 10: Boss Sanctum", dungeon.GetFloor(9).FloorName);
         }
 

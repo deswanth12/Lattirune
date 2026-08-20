@@ -38,6 +38,10 @@ namespace Lattirune.UI
             if (navigation != null)
             {
                 navigation.OnScreenChanged += HandleScreenChanged;
+                if (navigation.CurrentScreen == ScreenState.DUNGEON_MAP || navigation.CurrentScreen == ScreenState.RUN_START)
+                {
+                    Show();
+                }
             }
         }
 
@@ -51,11 +55,11 @@ namespace Lattirune.UI
 
         private void HandleScreenChanged(ScreenState prev, ScreenState next)
         {
-            if (next == ScreenState.RUN_START)
+            if (next == ScreenState.DUNGEON_MAP || next == ScreenState.RUN_START)
             {
                 Show();
             }
-            else if (prev == ScreenState.RUN_START)
+            else if (prev == ScreenState.DUNGEON_MAP || prev == ScreenState.RUN_START)
             {
                 Hide();
             }
@@ -79,7 +83,7 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
-            if (navigation != null && navigation.CurrentScreen != ScreenState.RUN_START) return;
+            if (navigation == null || (navigation.CurrentScreen != ScreenState.DUNGEON_MAP && navigation.CurrentScreen != ScreenState.RUN_START)) return;
             if (!isVisible || _mapGraph == null) return;
 
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
@@ -89,15 +93,21 @@ namespace Lattirune.UI
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "🗺 DUNGEON MAP: THE CURSED SEWERS 🗺");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "THE CURSED SEWERS — 10-FLOOR DESCENT");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader("🗺 DUNGEON MAP: THE CURSED SEWERS 🗺", "Select an available room node to advance your descent.");
+            LattiruneUITheme.DrawHeader("THE CURSED SEWERS", "Select an active room node to advance your descent.");
+            GUILayout.Space(10);
+
+            // Run Telemetry Bar
+            int gold = runManager != null ? runManager.CurrentGold : 0;
+            int floorNum = runManager != null ? runManager.CurrentFloorNumber : 1;
+            LattiruneUITheme.DrawBadge($"Floor: {floorNum} / 10  |  Gold: {gold}g  |  Target: The Lich Lord", LattiruneUITheme.ColorGoldPrimary);
             GUILayout.Space(12);
 
             // Scrollable Map Nodes List (Floors 1 to 10)
-            _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(840));
+            _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(800));
 
             for (int f = 1; f <= 10; f++)
             {
@@ -107,10 +117,12 @@ namespace Lattirune.UI
                 GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
                 GUIStyle floorHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                floorHeader.fontSize = 20;
+                floorHeader.fontSize = 18;
                 floorHeader.fontStyle = FontStyle.Bold;
-                floorHeader.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
-                GUILayout.Label($"── FLOOR {f} ──", floorHeader);
+                floorHeader.normal.textColor = (f == floorNum) ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorTextMuted;
+                
+                string floorTag = (f == 10) ? "FLOOR 10 — BOSS LAIR" : $"FLOOR {f}";
+                GUILayout.Label(floorTag, floorHeader);
                 GUILayout.Space(4);
 
                 GUILayout.BeginHorizontal();
@@ -121,18 +133,14 @@ namespace Lattirune.UI
                     bool isCleared = node.IsCleared;
 
                     string badge = GetNodeBadge(node.NodeType);
-                    string statusIcon = isCleared ? "✓ " : (isAvailable ? "► " : "🔒 ");
+                    string statusIcon = isCleared ? "[CLEARED] " : (isAvailable ? "[ACTIVE] " : "");
                     string btnText = $"{statusIcon}{badge}\n{node.Title}";
 
                     GUI.enabled = isAvailable || isCleared;
                     bool clicked = false;
-                    if (isSelected)
+                    if (isSelected || isAvailable)
                     {
                         clicked = LattiruneUITheme.DrawPrimaryButton(btnText, 65f);
-                    }
-                    else if (isCleared)
-                    {
-                        clicked = LattiruneUITheme.DrawSecondaryButton(btnText, 65f);
                     }
                     else
                     {
@@ -162,14 +170,14 @@ namespace Lattirune.UI
                 GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
                 GUIStyle detailTitle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                detailTitle.fontSize = 22;
+                detailTitle.fontSize = 20;
                 detailTitle.fontStyle = FontStyle.Bold;
-                detailTitle.normal.textColor = selectedNode.IsAvailable ? LattiruneUITheme.ColorGoldPrimary : LattiruneUITheme.ColorTextMuted;
+                detailTitle.normal.textColor = selectedNode.IsAvailable ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorTextMuted;
 
                 GUILayout.Label($"{GetNodeBadge(selectedNode.NodeType)}: {selectedNode.Title}", detailTitle);
 
                 GUIStyle detailDesc = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                detailDesc.fontSize = 16;
+                detailDesc.fontSize = 15;
                 detailDesc.normal.textColor = LattiruneUITheme.ColorTextMuted;
                 GUILayout.Label(selectedNode.Description, detailDesc);
 
@@ -182,7 +190,7 @@ namespace Lattirune.UI
             bool canEnter = selectedNode != null && selectedNode.IsAvailable && !selectedNode.IsCleared;
             GUI.enabled = canEnter;
 
-            if (LattiruneUITheme.DrawPrimaryButton("⚔️ ENTER ROOM & BEGIN ⚔️", 75f))
+            if (LattiruneUITheme.DrawPrimaryButton("ENTER ROOM & BEGIN", 75f))
             {
                 if (_mapGraph.SelectAndEnterNode(_selectedNodeId))
                 {
@@ -212,13 +220,13 @@ namespace Lattirune.UI
         {
             switch (type)
             {
-                case DungeonMapNodeType.NormalBattle: return "⚔ BATTLE";
-                case DungeonMapNodeType.EliteBattle: return "💀 ELITE";
-                case DungeonMapNodeType.MysteryShrine: return "✨ SHRINE";
-                case DungeonMapNodeType.MerchantStall: return "🛒 MERCHANT";
-                case DungeonMapNodeType.TreasureVault: return "💎 VAULT";
-                case DungeonMapNodeType.CampfireRest: return "⛺ REST SITE";
-                case DungeonMapNodeType.Boss: return "👑 BOSS SANCTUM";
+                case DungeonMapNodeType.NormalBattle: return "BATTLE";
+                case DungeonMapNodeType.EliteBattle: return "ELITE";
+                case DungeonMapNodeType.Boss: return "BOSS";
+                case DungeonMapNodeType.MysteryShrine: return "SHRINE";
+                case DungeonMapNodeType.MerchantStall: return "MERCHANT";
+                case DungeonMapNodeType.CampfireRest: return "REST";
+                case DungeonMapNodeType.TreasureVault: return "VAULT";
                 default: return "ROOM";
             }
         }

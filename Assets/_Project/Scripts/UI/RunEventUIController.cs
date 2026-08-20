@@ -85,61 +85,47 @@ namespace Lattirune.UI
             }
         }
 
+        [SerializeField] private ScreenNavigationController navigation;
+
+        public void Initialize(RunEventService service = null, ScreenNavigationController nav = null)
+        {
+            eventService = service;
+            navigation = nav;
+        }
+
         private void OnGUI()
         {
+            if (navigation == null || navigation.CurrentScreen != ScreenState.EVENT) return;
             if (!_isShowingModal || _activeEvent == null) return;
 
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float panelWidth = 960f;
-            float panelHeight = 1200f;
+            float panelHeight = 1300f;
             float posX = (1080f - panelWidth) * 0.5f;
-            float posY = (1920f - panelHeight) * 0.5f;
+            float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), _activeEvent.Title);
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 32;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
-            titleStyle.normal.textColor = new Color(0.95f, 0.8f, 0.2f); // Gold
-
-            GUILayout.Label($"✨ {_activeEvent.Title} ✨", titleStyle);
+            LattiruneUITheme.DrawHeader(_activeEvent.Title, "A mysterious encounter deep within the Cursed Sewers.");
             GUILayout.Space(12);
-
-            GUIStyle resourceStyle = new GUIStyle(GUI.skin.label);
-            resourceStyle.fontSize = 20;
-            resourceStyle.alignment = TextAnchor.MiddleCenter;
-            resourceStyle.normal.textColor = Color.cyan;
 
             int currentGold = _economyService != null ? _economyService.GoldBalance : 0;
             int currentHp = playerCombatant != null ? playerCombatant.CurrentHp : 100;
             int maxHp = playerCombatant != null ? playerCombatant.MaxHp : 100;
-            GUILayout.Label($"[ ❤️ HERO HP: {currentHp}/{maxHp}  |  💰 GOLD: {currentGold} ]", resourceStyle);
+            LattiruneUITheme.DrawBadge($"Hero HP: {currentHp}/{maxHp}  |  Gold: {currentGold}g", LattiruneUITheme.ColorCyanArcane);
             GUILayout.Space(16);
 
-            GUIStyle bodyStyle = new GUIStyle(GUI.skin.label);
-            bodyStyle.fontSize = 20;
+            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+            GUIStyle bodyStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            bodyStyle.fontSize = 18;
             bodyStyle.wordWrap = true;
-            bodyStyle.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
+            bodyStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
             GUILayout.Label(_activeEvent.Description, bodyStyle);
-            GUILayout.Space(24);
-
-            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
-            btnStyle.fontSize = 20;
-            btnStyle.fontStyle = FontStyle.Bold;
+            GUILayout.EndVertical();
+            GUILayout.Space(20);
 
             // Choices list
             for (int i = 0; i < _activeEvent.Choices.Count; i++)
@@ -147,8 +133,8 @@ namespace Lattirune.UI
                 var choice = _activeEvent.Choices[i];
                 if (choice == null) continue;
 
-                string btnText = $"{choice.DisplayName}\n<size=16><i>{choice.Description}</i></size>";
-                if (GUILayout.Button(btnText, btnStyle, GUILayout.MinHeight(75)))
+                string btnText = $"{choice.DisplayName}  —  {choice.Description}";
+                if (LattiruneUITheme.DrawPrimaryButton(btnText, 65f))
                 {
                     if (eventService != null)
                     {
@@ -162,10 +148,10 @@ namespace Lattirune.UI
             {
                 GUILayout.Space(12);
                 GUIStyle alertStyle = new GUIStyle(GUI.skin.label);
-                alertStyle.fontSize = 18;
+                alertStyle.fontSize = 17;
                 alertStyle.fontStyle = FontStyle.Italic;
                 alertStyle.alignment = TextAnchor.MiddleCenter;
-                alertStyle.normal.textColor = Color.yellow;
+                alertStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
                 GUILayout.Label(_lastOutcomeMessage, alertStyle);
             }
 

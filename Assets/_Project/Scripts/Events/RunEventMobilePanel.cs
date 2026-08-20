@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using Lattirune.Combat;
 using Lattirune.Economy;
@@ -67,8 +67,16 @@ namespace Lattirune.Events
             _isResolved = resolved;
         }
 
+        [SerializeField] private ScreenNavigationController _navigation;
+
+        public void BindNavigation(ScreenNavigationController nav)
+        {
+            _navigation = nav;
+        }
+
         private void OnGUI()
         {
+            if (_navigation != null && _navigation.CurrentScreen != ScreenState.EVENT) return;
             if (!isVisible || _activeEvent == null) return;
 
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
@@ -89,7 +97,7 @@ namespace Lattirune.Events
             int currentGold = _economyManager != null ? _economyManager.GoldBalance : 0;
             int currentHp = _playerCombatant != null ? _playerCombatant.CurrentHp : 100;
             int maxHp = _playerCombatant != null ? _playerCombatant.MaxHp : 100;
-            LattiruneUITheme.DrawProgressBar(currentHp, maxHp, $"HERO HP: {currentHp}/{maxHp}   |   💰 GOLD: {currentGold}", LattiruneUITheme.ColorGreenHealth, 28f);
+            LattiruneUITheme.DrawProgressBar(currentHp, maxHp, $"HERO HP: {currentHp}/{maxHp}   |   [?] GOLD: {currentGold}", LattiruneUITheme.ColorGreenHealth, 28f);
             GUILayout.Space(16);
 
             GUIStyle loreStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
@@ -138,7 +146,7 @@ namespace Lattirune.Events
                 GUILayout.Label(_outcomeFeedback, successStyle);
                 GUILayout.Space(24);
 
-                if (LattiruneUITheme.DrawPrimaryButton("⚔️ CONTINUE DUNGEON EXPLORATION ➔", 75f))
+                if (LattiruneUITheme.DrawPrimaryButton("[SWORD]️ CONTINUE DUNGEON EXPLORATION ➔", 75f))
                 {
                     Hide();
                 }

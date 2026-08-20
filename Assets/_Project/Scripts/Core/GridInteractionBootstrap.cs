@@ -75,6 +75,7 @@ namespace Lattirune.Core
         [SerializeField] private PrismRuneDataSO defaultPrismData;
 
         private LatticeGrid _grid;
+        private GameObject _worldGameplayContainer;
         private PlayerCombatant _playerCombatant;
         private EnemyCombatant _enemyCombatant;
         private readonly List<ItemInstance> _spawnedItemInstances = new List<ItemInstance>();
@@ -120,12 +121,23 @@ namespace Lattirune.Core
             // 1. Create Core 5x5 Grid Data Structure
             _grid = new LatticeGrid(initializeDefaultLayout: true);
 
+            // Create World Gameplay Container to group all 3D world space visuals
+            if (_worldGameplayContainer == null)
+            {
+                _worldGameplayContainer = new GameObject("WorldGameplayContainer");
+                _worldGameplayContainer.transform.SetParent(transform);
+            }
+
             // 2. Ensure GridView exists and initialize
             if (gridView == null)
             {
                 GameObject gridViewObj = new GameObject("GridView");
-                gridViewObj.transform.SetParent(transform);
+                gridViewObj.transform.SetParent(_worldGameplayContainer.transform);
                 gridView = gridViewObj.AddComponent<GridView>();
+            }
+            else
+            {
+                gridView.transform.SetParent(_worldGameplayContainer.transform);
             }
             gridView.Initialize(_grid);
 
@@ -133,8 +145,12 @@ namespace Lattirune.Core
             if (dragController == null)
             {
                 GameObject dragCtrlObj = new GameObject("ItemDragController");
-                dragCtrlObj.transform.SetParent(transform);
+                dragCtrlObj.transform.SetParent(_worldGameplayContainer.transform);
                 dragController = dragCtrlObj.AddComponent<ItemDragController>();
+            }
+            else
+            {
+                dragController.transform.SetParent(_worldGameplayContainer.transform);
             }
             dragController.Initialize(_grid, gridView);
 
@@ -142,8 +158,12 @@ namespace Lattirune.Core
             if (conduitDebugView == null)
             {
                 GameObject conduitViewObj = new GameObject("RuneConduitDebugView");
-                conduitViewObj.transform.SetParent(transform);
+                conduitViewObj.transform.SetParent(_worldGameplayContainer.transform);
                 conduitDebugView = conduitViewObj.AddComponent<RuneConduitDebugView>();
+            }
+            else
+            {
+                conduitDebugView.transform.SetParent(_worldGameplayContainer.transform);
             }
             conduitDebugView.Initialize(gridView);
 
@@ -221,8 +241,12 @@ namespace Lattirune.Core
             if (stagingAreaParent == null)
             {
                 GameObject stagingObj = new GameObject("StagingArea");
-                stagingObj.transform.SetParent(transform);
+                stagingObj.transform.SetParent(_worldGameplayContainer != null ? _worldGameplayContainer.transform : transform);
                 stagingAreaParent = stagingObj.transform;
+            }
+            else if (_worldGameplayContainer != null)
+            {
+                stagingAreaParent.SetParent(_worldGameplayContainer.transform);
             }
 
             LoadResult loadResult = saveSystem.Load();
@@ -580,6 +604,7 @@ namespace Lattirune.Core
             floatyObj.transform.SetParent(transform);
             var floatyPool = floatyObj.AddComponent<FloatingCombatTextPool>();
             floatyPool.Initialize(combatSystem, reactionSystem);
+            floatyPool.BindNavigation(navigationController);
 
             GameObject shakeObj = new GameObject("CombatCameraShakeController");
             shakeObj.transform.SetParent(transform);
@@ -620,21 +645,26 @@ namespace Lattirune.Core
                 };
             }
 
-            GameObject tutUiObj = new GameObject("TutorialOverlayUIController");
-            tutUiObj.transform.SetParent(transform);
-            var tutorialUI = tutUiObj.AddComponent<TutorialOverlayUIController>();
-            tutorialUI.Initialize(tutorialManager, navigationController);
-
             // Bind ScreenNavigationController state manager
             if (navigationController != null)
             {
-                navigationController.BindWorldGrid(gridView != null ? gridView.gameObject : null);
+                navigationController.BindWorldGrid(_worldGameplayContainer != null ? _worldGameplayContainer : (gridView != null ? gridView.gameObject : null));
+                navigationController.RegisterScreenController(ScreenState.MAIN_MENU, mainMenuController);
+                navigationController.RegisterScreenController(ScreenState.CAMPFIRE_HUB, campfireHubController);
+                navigationController.RegisterScreenController(ScreenState.BLUEPRINT_FORGE, blueprintForgeController);
+                navigationController.RegisterScreenController(ScreenState.SETTINGS, settingsUIController);
                 navigationController.RegisterScreenController(ScreenState.HERO_SELECTION, heroClassUI);
                 navigationController.RegisterScreenController(ScreenState.DUNGEON_MAP, mapUI);
+                navigationController.RegisterScreenController(ScreenState.RUN_START, mapUI);
+                navigationController.RegisterScreenController(ScreenState.GRID_BUILD, combatEncounterUI);
                 navigationController.RegisterScreenController(ScreenState.COMBAT, combatEncounterUI);
+                navigationController.RegisterScreenController(ScreenState.REWARD_SELECTION, combatEncounterUI);
                 navigationController.RegisterScreenController(ScreenState.MERCHANT, merchantUI);
                 navigationController.RegisterScreenController(ScreenState.CAMPFIRE_REST, campfireRestUI);
                 navigationController.RegisterScreenController(ScreenState.CODEX, codexUI);
+
+                if (dragController != null) dragController.BindNavigation(navigationController);
+                navigationController.Initialize(ScreenState.MAIN_MENU);
             }
 
             if (reactionSystem != null)
@@ -667,7 +697,7 @@ namespace Lattirune.Core
 
             // Demo Target Receptor at (2,4)
             GameObject targetObj = new GameObject("Target_2_4");
-            targetObj.transform.SetParent(transform);
+            targetObj.transform.SetParent(_worldGameplayContainer != null ? _worldGameplayContainer.transform : transform);
             ConduitTarget target = targetObj.AddComponent<ConduitTarget>();
             target.Initialize("target_dummy_boss", new Vector2Int(2, 4));
             _activeTargets.Add(target);

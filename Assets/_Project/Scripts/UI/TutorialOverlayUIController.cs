@@ -24,7 +24,7 @@ namespace Lattirune.UI
         private void OnGUI()
         {
             if (tutorialManager == null || tutorialManager.IsTutorialCompleted) return;
-            if (navigation != null && navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.COMBAT) return;
+            if (navigation == null || (navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.COMBAT)) return;
 
             float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
             if (scale <= 0.01f) scale = 1.0f;

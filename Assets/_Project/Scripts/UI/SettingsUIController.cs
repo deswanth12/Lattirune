@@ -143,45 +143,51 @@ namespace Lattirune.UI
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "⚙️ AUDIO & SETTINGS ⚙️");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "AUDIO & SETTINGS");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader("⚙️ AUDIO & SETTINGS ⚙️", "Configure audio levels, tactile haptics, and accessibility.");
+            LattiruneUITheme.DrawHeader("AUDIO & SETTINGS", "Configure audio levels, tactile haptics, and system preferences.");
             GUILayout.Space(20);
 
             GUIStyle labelStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            labelStyle.fontSize = 20;
+            labelStyle.fontSize = 18;
             labelStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
 
+            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+
             GUILayout.Label($"Master Volume: <b>{Mathf.RoundToInt(masterVolume * 100)}%</b>", labelStyle);
-            float newMaster = GUILayout.HorizontalSlider(masterVolume, 0f, 1f, GUILayout.Height(30));
+            float newMaster = GUILayout.HorizontalSlider(masterVolume, 0f, 1f, GUILayout.Height(28));
             if (Mathf.Abs(newMaster - masterVolume) > 0.001f) SetMasterVolume(newMaster);
-            GUILayout.Space(12);
+            GUILayout.Space(10);
 
             GUILayout.Label($"Music (BGM) Volume: <b>{Mathf.RoundToInt(musicVolume * 100)}%</b>", labelStyle);
-            float newMusic = GUILayout.HorizontalSlider(musicVolume, 0f, 1f, GUILayout.Height(30));
+            float newMusic = GUILayout.HorizontalSlider(musicVolume, 0f, 1f, GUILayout.Height(28));
             if (Mathf.Abs(newMusic - musicVolume) > 0.001f) SetMusicVolume(newMusic);
-            GUILayout.Space(12);
+            GUILayout.Space(10);
 
             GUILayout.Label($"SFX Volume: <b>{Mathf.RoundToInt(sfxVolume * 100)}%</b>", labelStyle);
-            float newSfx = GUILayout.HorizontalSlider(sfxVolume, 0f, 1f, GUILayout.Height(30));
+            float newSfx = GUILayout.HorizontalSlider(sfxVolume, 0f, 1f, GUILayout.Height(28));
             if (Mathf.Abs(newSfx - sfxVolume) > 0.001f) SetSfxVolume(newSfx);
+
+            GUILayout.EndVertical();
+
             GUILayout.Space(20);
 
-            if (LattiruneUITheme.DrawSecondaryButton(isMuted ? "🔇 UNMUTE AUDIO" : "🔊 MUTE AUDIO", 65f))
+            if (LattiruneUITheme.DrawSecondaryButton(isMuted ? "UNMUTE AUDIO" : "MUTE AUDIO", 65f))
             {
                 ToggleMute();
             }
-            GUILayout.Space(14);
+            GUILayout.Space(12);
 
-            if (LattiruneUITheme.DrawSecondaryButton(hapticsEnabled ? "📳 DISABLE HAPTICS" : "📳 ENABLE HAPTICS", 65f))
+            if (LattiruneUITheme.DrawSecondaryButton(hapticsEnabled ? "DISABLE HAPTICS" : "ENABLE HAPTICS", 65f))
             {
                 ToggleHaptics();
             }
-            GUILayout.Space(20);
 
-            if (LattiruneUITheme.DrawPrimaryButton("⚔️ SAVE & RETURN ⚔️", 75f))
+            GUILayout.FlexibleSpace();
+
+            if (LattiruneUITheme.DrawPrimaryButton("SAVE & RETURN", 75f))
             {
                 CloseSettings();
             }

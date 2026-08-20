@@ -352,11 +352,11 @@ namespace Lattirune.Tests
             // Floor 4: Merchant Stall
             Assert.AreEqual("Floor 4: Merchant Stall", dungeon.GetFloor(3).FloorName);
 
-            // Floor 8: Campfire Rest Site
-            Assert.AreEqual("Floor 8: Campfire Rest Site", dungeon.GetFloor(7).FloorName);
+            // Floor 8: Crystalline Chasm
+            Assert.AreEqual("Floor 8: Crystalline Chasm", dungeon.GetFloor(7).FloorName);
 
-            // Floor 9: Spider Nest (Pre-Boss)
-            Assert.AreEqual("Floor 9: Spider Nest", dungeon.GetFloor(8).FloorName);
+            // Floor 9: Pre-Boss Sanctum
+            Assert.AreEqual("Floor 9: Pre-Boss Sanctum", dungeon.GetFloor(8).FloorName);
 
             // Floor 10: Boss Sanctum
             Assert.AreEqual("Floor 10: Boss Sanctum", dungeon.GetFloor(9).FloorName);

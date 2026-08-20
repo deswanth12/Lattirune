@@ -93,9 +93,23 @@ namespace Lattirune.UI
             }
         }
 
+        public void ContinueEndlessMode()
+        {
+            if (runManager != null)
+            {
+                runManager.EnableEndlessMode();
+                runManager.AdvanceFloor();
+            }
+
+            if (navigation != null)
+            {
+                navigation.NavigateTo(ScreenState.DUNGEON_MAP);
+            }
+        }
+
         private void OnGUI()
         {
-            if (navigation == null || navigation.CurrentScreen != ScreenState.RUN_COMPLETE) return;
+            if (navigation == null || (navigation.CurrentScreen != ScreenState.RUN_COMPLETE && navigation.CurrentScreen != ScreenState.VICTORY && navigation.CurrentScreen != ScreenState.DEATH)) return;
 
             DrawRunCompleteWindow();
         }
@@ -109,7 +123,7 @@ namespace Lattirune.UI
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            string windowTitle = isVictory ? "🏆 VICTORY: DUNGEON CLEARED 🏆" : "💀 DEFEAT: RUN ENDED 💀";
+            string windowTitle = isVictory ? "VICTORY: DUNGEON CLEARED" : "DEFEAT: HERO FALLEN";
             LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), windowTitle);
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 50, panelWidth - 80, panelHeight - 100));
@@ -118,26 +132,35 @@ namespace Lattirune.UI
             GUILayout.Space(24);
 
             GUIStyle statStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            statStyle.fontSize = 20;
+            statStyle.fontSize = 18;
             statStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
 
             GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUILayout.Label($"🏰 <b>Floors Reached:</b> {floorsCleared} / 10", statStyle);
+            GUILayout.Label($"<b>Floors Reached:</b> {floorsCleared} / 10", statStyle);
             GUILayout.Space(8);
-            GUILayout.Label($"🪙 <b>In-Run Gold Collected:</b> {goldEarned} Gold", statStyle);
+            GUILayout.Label($"<b>In-Run Gold Collected:</b> {goldEarned} Gold", statStyle);
             GUILayout.Space(8);
-            GUILayout.Label($"🔥 <b>Dungeon Embers Awarded:</b> {embersEarned} Embers", statStyle);
+            GUILayout.Label($"<b>Dungeon Embers Awarded:</b> {embersEarned} Embers", statStyle);
             GUILayout.EndVertical();
 
-            GUILayout.Space(32);
+            GUILayout.Space(28);
 
-            if (LattiruneUITheme.DrawPrimaryButton("🏕️ RETURN TO CAMPFIRE HUB", 75f))
+            if (isVictory)
+            {
+                if (LattiruneUITheme.DrawPrimaryButton("CONTINUE IN ENDLESS MODE", 75f))
+                {
+                    ContinueEndlessMode();
+                }
+                GUILayout.Space(14);
+            }
+
+            if (LattiruneUITheme.DrawPrimaryButton("RETURN TO CAMPFIRE HUB", 75f))
             {
                 ReturnToCampfireHub();
             }
-            GUILayout.Space(16);
+            GUILayout.Space(14);
 
-            if (LattiruneUITheme.DrawSecondaryButton("⚡ START NEW RUN", 65f))
+            if (LattiruneUITheme.DrawSecondaryButton("START NEW RUN", 65f))
             {
                 StartNewRun();
             }

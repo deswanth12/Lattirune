@@ -234,9 +234,9 @@ namespace Lattirune.Tests
             Assert.AreEqual(95, _player.CurrentHp);
             Assert.AreEqual(1, effectSystem.ActiveEffectCount, "Poison DoT effect must be active on player.");
 
-            // Advance 1.0s to trigger poison tick (4 poison damage)
+            // Advance 1.0s: both the DoT tick (4 damage) and the enemy's 2nd attack (5 damage) fire.
             _combatSystem.UpdateCombat(1.0f);
-            Assert.AreEqual(91, _player.CurrentHp, "Player should take 4 ticking poison damage.");
+            Assert.AreEqual(86, _player.CurrentHp, "Player should take DoT tick + 2nd enemy strike damage.");
         }
 
         [Test]

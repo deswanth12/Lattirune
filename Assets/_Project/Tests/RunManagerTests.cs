@@ -158,11 +158,15 @@ namespace Lattirune.Tests
         [Test]
         public void RunManager_EliteEncounter_AssignsEliteAffix()
         {
-            _runManager.StartRun();
-            // Restore state to Floor 5 (Elite floor)
-            _runManager.RestoreRunState(floorIdx: 4, encIdx: 0, state: RunState.FloorPreparing);
+            // Use 10-floor dungeon so Floor 7 (Bone Crypt) is accessible
+            var dungeon10 = DungeonDefinitionSO.Create10FloorCursedSewersDungeon();
+            _runManager.Initialize(dungeon10, _combatSystem, _rewardService, _player, _enemy);
 
-            Assert.IsTrue(_enemy.IsElite, "Floor 5 enemy must have an active Elite Affix.");
+            _runManager.StartRun();
+            // Restore state to Floor 7 (Elite floor: Bone Crypt)
+            _runManager.RestoreRunState(floorIdx: 6, encIdx: 0, state: RunState.FloorPreparing);
+
+            Assert.IsTrue(_enemy.IsElite, "Floor 7 enemy must have an active Elite Affix.");
             Assert.AreNotEqual(EliteAffixType.None, _enemy.EliteAffix);
         }
     }

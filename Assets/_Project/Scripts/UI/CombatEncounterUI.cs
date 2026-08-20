@@ -143,11 +143,11 @@ namespace Lattirune.UI
             {
                 if (runManager != null && runManager.CurrentState == Lattirune.Dungeon.RunState.RunComplete)
                 {
-                    navigation.NavigateTo(ScreenState.MAIN_MENU);
+                    navigation.NavigateTo(ScreenState.RUN_COMPLETE);
                 }
                 else
                 {
-                    navigation.NavigateTo(ScreenState.GRID_BUILD);
+                    navigation.NavigateTo(ScreenState.DUNGEON_MAP);
                 }
             }
         }
@@ -212,15 +212,15 @@ namespace Lattirune.UI
                     EliteAffixType.Blighted => "+30% Max HP & Healing Suppression",
                     _ => ""
                 };
-                eliteAffixBadge = $" [💀 {enemy.EliteAffix.ToString().ToUpper()}: {affixDesc}]";
+                eliteAffixBadge = $" [ELITE: {enemy.EliteAffix.ToString().ToUpper()}: {affixDesc}]";
             }
 
             GUIStyle floorHeaderStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
             floorHeaderStyle.fontSize = 18;
             floorHeaderStyle.fontStyle = FontStyle.Bold;
-            floorHeaderStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
+            floorHeaderStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
 
-            GUILayout.Label($"── {floorTitle} ──", floorHeaderStyle);
+            GUILayout.Label(floorTitle, floorHeaderStyle);
             GUILayout.Space(4);
 
             // Health bars
@@ -232,14 +232,14 @@ namespace Lattirune.UI
             if (combatSystem.Combo != null && combatSystem.Combo.CurrentCombo > 0)
             {
                 GUIStyle comboStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                comboStyle.fontSize = 18;
+                comboStyle.fontSize = 17;
                 comboStyle.fontStyle = FontStyle.Bold;
                 comboStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
-                GUILayout.Label($"⚡ COMBO: {combatSystem.Combo.CurrentCombo}x  |  MULT: {combatSystem.Combo.ComboMultiplier:0.00}x", comboStyle);
+                GUILayout.Label($"COMBO: {combatSystem.Combo.CurrentCombo}x  |  MULTIPLIER: {combatSystem.Combo.ComboMultiplier:0.00}x DMG", comboStyle);
             }
 
             GUIStyle textStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            textStyle.fontSize = 16;
+            textStyle.fontSize = 15;
             textStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
             GUILayout.Label($"<i>Log: {_combatLog}</i>", textStyle);
             GUILayout.Space(6);
@@ -249,7 +249,7 @@ namespace Lattirune.UI
             // Battle Start Button (in Preparing State)
             if (combatSystem.CurrentState == CombatState.Preparing && !_isShowingRewards)
             {
-                if (LattiruneUITheme.DrawPrimaryButton("⚔️ START BATTLE", 65f))
+                if (LattiruneUITheme.DrawPrimaryButton("START BATTLE", 65f))
                 {
                     combatSystem.StartCombat();
                 }
@@ -259,9 +259,9 @@ namespace Lattirune.UI
             {
                 string speedLabel = combatSystem.SpeedMultiplier switch
                 {
-                    >= 3.0f => "⏩ SPEED: 3.0x",
-                    >= 2.0f => "⏩ SPEED: 2.0x",
-                    _ => "▶️ SPEED: 1.0x"
+                    >= 3.0f => "SPEED: 3.0x",
+                    >= 2.0f => "SPEED: 2.0x",
+                    _ => "SPEED: 1.0x"
                 };
 
                 if (LattiruneUITheme.DrawSecondaryButton(speedLabel, 65f))
@@ -277,7 +277,7 @@ namespace Lattirune.UI
 
                 GUILayout.Space(12);
 
-                if (LattiruneUITheme.DrawSecondaryButton("🧪 POTION (+25 HP)", 65f))
+                if (LattiruneUITheme.DrawSecondaryButton("POTION (+25 HP)", 65f))
                 {
                     combatSystem.UseEmergencyPotion(player, 25);
                 }
@@ -287,14 +287,14 @@ namespace Lattirune.UI
             {
                 if (runManager != null && runManager.CanRevivePlayer)
                 {
-                    if (LattiruneUITheme.DrawPrimaryButton("❤️ REVIVE (50% HP)", 65f))
+                    if (LattiruneUITheme.DrawPrimaryButton("REVIVE (50% HP)", 65f))
                     {
                         runManager.RevivePlayer(0.5f);
                     }
                     GUILayout.Space(12);
                 }
 
-                if (LattiruneUITheme.DrawDangerButton("🔄 RETRY ENCOUNTER", 65f))
+                if (LattiruneUITheme.DrawDangerButton("RETRY ENCOUNTER", 65f))
                 {
                     combatSystem.ResetCombat();
                 }
@@ -314,11 +314,11 @@ namespace Lattirune.UI
             float posX = (1080f - modalWidth) * 0.5f;
             float posY = 380f + offsetY;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, modalWidth, modalHeight), "🏆 VICTORY REWARDS 🏆");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, modalWidth, modalHeight), "VICTORY REWARDS");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, modalWidth - 80, modalHeight - 80));
 
-            LattiruneUITheme.DrawHeader("🏆 VICTORY REWARDS 🏆", "Select ONE reward to reinforce your build:");
+            LattiruneUITheme.DrawHeader("VICTORY REWARDS", "Select ONE reward to reinforce your build:");
             GUILayout.Space(20);
 
             for (int i = 0; i < _currentRewardOptions.Count; i++)
@@ -331,17 +331,17 @@ namespace Lattirune.UI
 
                 GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
-                string selectState = isSelected ? " [SELECTED]" : "";
+                string selectState = isSelected ? " [CHOSEN]" : "";
                 GUIStyle cardTitleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
                 cardTitleStyle.fontSize = 22;
                 cardTitleStyle.fontStyle = FontStyle.Bold;
-                cardTitleStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
+                cardTitleStyle.normal.textColor = isSelected ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorTextPrimary;
 
                 GUILayout.Label($"{opt.DisplayName} ({opt.Footprint.x}x{opt.Footprint.y} {opt.Category}){selectState}", cardTitleStyle);
                 GUILayout.Space(4);
 
                 GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                descStyle.fontSize = 18;
+                descStyle.fontSize = 17;
                 descStyle.wordWrap = true;
                 descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
                 GUILayout.Label(opt.Description, descStyle);
@@ -350,11 +350,11 @@ namespace Lattirune.UI
                 GUI.enabled = !isLocked;
                 if (isSelected)
                 {
-                    LattiruneUITheme.DrawPrimaryButton("REWARD CHOSEN", 65f);
+                    LattiruneUITheme.DrawPrimaryButton("REWARD CHOSEN", 60f);
                 }
                 else
                 {
-                    if (LattiruneUITheme.DrawPrimaryButton("CLAIM REWARD", 65f))
+                    if (LattiruneUITheme.DrawPrimaryButton("CLAIM REWARD", 60f))
                     {
                         SelectReward(opt);
                     }
@@ -370,7 +370,7 @@ namespace Lattirune.UI
             // Continue Button (enabled after a reward is chosen)
             if (_selectedRewardOption != null)
             {
-                if (LattiruneUITheme.DrawPrimaryButton("⚔️ PROCEED TO NEXT FLOOR ➔", 75f))
+                if (LattiruneUITheme.DrawPrimaryButton("PROCEED TO NEXT ROOM", 75f))
                 {
                     CloseRewardScreenAndContinue();
                 }

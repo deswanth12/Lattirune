@@ -75,39 +75,21 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
-            if (navigation != null && navigation.CurrentScreen != ScreenState.CODEX) return;
+            if (navigation == null || navigation.CurrentScreen != ScreenState.CODEX) return;
             if (!isVisible || codexManager == null) return;
 
-            // Responsive scale matrix
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float panelWidth = 960f;
             float panelHeight = 1500f;
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "ARCANE CODEX & BESTIARY");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            // Title
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 32;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
-            titleStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f); // Burnished Brass
-
-            GUILayout.Label("📜 ARCANE CODEX & BESTIARY 📜", titleStyle);
+            LattiruneUITheme.DrawHeader("ARCANE CODEX & BESTIARY", "Compendium of subterranean beasts, bosses, and elemental synergies.");
             GUILayout.Space(12);
 
             // Tab Selector Row
@@ -116,24 +98,22 @@ namespace Lattirune.UI
             int totalEnemies = codexManager.Bestiary != null ? codexManager.Bestiary.TotalCount : 7;
             int discoveredCount = codexManager.DiscoveredEnemies.Count;
 
-            GUI.color = (_currentTab == CodexTab.Bestiary) ? Color.yellow : Color.white;
-            if (GUILayout.Button($"💀 BESTIARY ({discoveredCount}/{totalEnemies})", GUILayout.Height(55)))
+            if (LattiruneUITheme.DrawTabButton($"BESTIARY ({discoveredCount}/{totalEnemies})", _currentTab == CodexTab.Bestiary, 55f))
             {
                 _currentTab = CodexTab.Bestiary;
                 _scrollPos = Vector2.zero;
             }
+            GUILayout.Space(12);
 
-            GUI.color = (_currentTab == CodexTab.SynergiesAndReactions) ? Color.yellow : Color.white;
-            if (GUILayout.Button("⚡ SYNERGIES & REACTIONS", GUILayout.Height(55)))
+            if (LattiruneUITheme.DrawTabButton("SYNERGIES & REACTIONS", _currentTab == CodexTab.SynergiesAndReactions, 55f))
             {
                 _currentTab = CodexTab.SynergiesAndReactions;
                 _scrollPos = Vector2.zero;
             }
 
-            GUI.color = oldColor;
             GUILayout.EndHorizontal();
 
-            GUILayout.Space(18);
+            GUILayout.Space(16);
 
             // Scrollable Content
             _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(1050));
@@ -152,7 +132,7 @@ namespace Lattirune.UI
             GUILayout.FlexibleSpace();
 
             // Return / Close Button
-            if (GUILayout.Button("RETURN TO CAMPFIRE HUB", GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawSecondaryButton("RETURN TO CAMPFIRE HUB", 65f))
             {
                 Hide();
                 if (navigation != null)
@@ -197,8 +177,7 @@ namespace Lattirune.UI
                     GUIStyle statStyle = new GUIStyle(GUI.skin.label);
                     statStyle.fontSize = 16;
                     statStyle.fontStyle = FontStyle.Bold;
-                    statStyle.normal.textColor = Color.cyan;
-                    GUILayout.Label($"Base Stats: ❤️ HP: {enemy.BaseHp}  |  🛡 DEF: {enemy.BaseArmor}  |  ⚔ ATK: {enemy.BaseAttack}  |  ⏱ Speed: {enemy.AttackSpeed:0.0}s", statStyle);
+                    GUILayout.Label($"Base Stats:  HP: {enemy.BaseHp}  |  DEF: {enemy.BaseArmor}  |  ATK: {enemy.BaseAttack}  |  Speed: {enemy.AttackSpeed:0.0}s", statStyle);
 
                     GUIStyle stratStyle = new GUIStyle(GUI.skin.label);
                     stratStyle.fontSize = 15;
@@ -268,7 +247,7 @@ namespace Lattirune.UI
             eStyle.fontSize = 15;
             eStyle.normal.textColor = new Color(0.85f, 0.85f, 0.85f);
 
-            GUILayout.Label($"✨ {title}: {formula}", tStyle);
+            GUILayout.Label($"** {title}: {formula}", tStyle);
             GUILayout.Label($"   Effect: {effect}", eStyle);
             GUILayout.Space(6);
         }

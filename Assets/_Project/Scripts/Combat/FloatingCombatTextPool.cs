@@ -73,7 +73,7 @@ namespace Lattirune.Combat
             if (result == null || !result.IsActive) return;
 
             Vector2 spawnPos = new Vector2(540f + UnityEngine.Random.Range(-50f, 50f), 520f + UnityEngine.Random.Range(-30f, 30f));
-            SpawnText($"✨ {result.ReactionName.ToUpper()}! ✨", spawnPos, FloatingTextType.ElementalDamage, duration: 1.2f);
+            SpawnText($"** {result.ReactionName.ToUpper()}! **", spawnPos, FloatingTextType.ElementalDamage, duration: 1.2f);
         }
 
         private void HandleAttackExecuted(DamageResult damage)
@@ -97,7 +97,7 @@ namespace Lattirune.Combat
             else if (damage.RuneBonus > 0)
             {
                 type = FloatingTextType.ElementalDamage;
-                prefix = "🔥 ";
+                prefix = "[RUNE] ";
             }
             else
             {
@@ -162,8 +162,16 @@ namespace Lattirune.Combat
             Tick(Time.deltaTime);
         }
 
+        [SerializeField] private UI.ScreenNavigationController navigation;
+
+        public void BindNavigation(UI.ScreenNavigationController nav)
+        {
+            navigation = nav;
+        }
+
         private void OnGUI()
         {
+            if (navigation == null || (navigation.CurrentScreen != UI.ScreenState.GRID_BUILD && navigation.CurrentScreen != UI.ScreenState.COMBAT)) return;
             float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
             if (scale <= 0.01f) scale = 1.0f;
 

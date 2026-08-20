@@ -158,25 +158,30 @@ namespace Lattirune.UI
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
             // Top Title & Subtitle Header
-            LattiruneUITheme.DrawHeader("LATTIRUNE", "Align the Lattice. Awaken the Runes.");
-            GUILayout.Space(20);
+            LattiruneUITheme.DrawHeader("LATTIRUNE", "ALIGN THE LATTICE. AWAKEN THE RUNES.");
+            GUILayout.Space(24);
 
-            // Center Visual Identity Emblem Container
+            // Center Visual Arcane Lattice Emblem
             GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUILayout.Space(12);
+            GUILayout.Space(16);
             GUIStyle emblemStyle = new GUIStyle(LattiruneUITheme.StyleHeaderTitle);
-            emblemStyle.fontSize = 42;
+            emblemStyle.fontSize = 36;
             emblemStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
-            GUILayout.Label("--- ❖ ---", emblemStyle);
+            float pulse = LattiruneUITheme.GetPulseAlpha(3f, 0.75f, 1.0f);
+            Color oldColor = GUI.color;
+            GUI.color = new Color(LattiruneUITheme.ColorGoldBright.r, LattiruneUITheme.ColorGoldBright.g, LattiruneUITheme.ColorGoldBright.b, pulse);
+            GUILayout.Label("❖  L A T T I C E  ❖", emblemStyle);
+            GUI.color = oldColor;
             
             GUIStyle loreStyle = new GUIStyle(LattiruneUITheme.StyleHeaderSubtitle);
-            loreStyle.fontSize = 16;
+            loreStyle.fontSize = 15;
             loreStyle.alignment = TextAnchor.MiddleCenter;
-            GUILayout.Label("A Tactical Grid-Inventory Roguelite", loreStyle);
-            GUILayout.Space(12);
+            loreStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUILayout.Label("Tactical Grid Inventory & Elemental Reactions", loreStyle);
+            GUILayout.Space(16);
             GUILayout.EndVertical();
 
-            GUILayout.Space(36);
+            GUILayout.Space(32);
 
             // Primary Action Button
             if (hasSavedRun)
@@ -185,7 +190,7 @@ namespace Lattirune.UI
                 {
                     ContinueRun();
                 }
-                GUILayout.Space(16);
+                GUILayout.Space(14);
                 if (LattiruneUITheme.DrawSecondaryButton("START NEW RUN (DISCARD SAVE)", 65f))
                 {
                     StartNewRun();
@@ -199,7 +204,7 @@ namespace Lattirune.UI
                 }
             }
 
-            GUILayout.Space(20);
+            GUILayout.Space(18);
 
             // Secondary Buttons
             if (LattiruneUITheme.DrawSecondaryButton("CAMPFIRE META-HUB", 65f))
@@ -218,18 +223,12 @@ namespace Lattirune.UI
             {
                 OpenSettings();
             }
-            GUILayout.Space(14);
-
-            if (LattiruneUITheme.DrawDangerButton("EXIT GAME", 60f))
-            {
-                ExitGame();
-            }
 
             GUILayout.FlexibleSpace();
 
             // Bottom Version Footer
             GUIStyle versionStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            versionStyle.fontSize = 15;
+            versionStyle.fontSize = 14;
             versionStyle.alignment = TextAnchor.MiddleCenter;
             versionStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
             GUILayout.Label("Lattirune v1.0.0 (API 36 - Android 16)", versionStyle);

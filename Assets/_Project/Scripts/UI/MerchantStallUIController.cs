@@ -93,7 +93,7 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
-            if (navigation != null && navigation.CurrentScreen != ScreenState.MERCHANT) return;
+            if (navigation == null || navigation.CurrentScreen != ScreenState.MERCHANT) return;
             if (!isVisible || merchantSystem == null) return;
 
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
@@ -103,24 +103,24 @@ namespace Lattirune.UI
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "⚜ WANDERING MERCHANT ⚜");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "WANDERING MERCHANT");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader("⚜ WANDERING MERCHANT ⚜", "Rare armaments, ancient runes, and lattice expansions.");
+            LattiruneUITheme.DrawHeader("WANDERING MERCHANT", "Rare armaments, ancient runes, and lattice expansions.");
             GUILayout.Space(10);
 
             int currentGold = _economyService != null ? _economyService.CurrentGold : (runManager != null ? runManager.CurrentGold : 0);
             int floorNum = runManager != null ? runManager.CurrentFloorNumber : 1;
 
-            LattiruneUITheme.DrawBadge($"Floor {floorNum}  |  Your Gold: {currentGold} 🪙", LattiruneUITheme.ColorGoldPrimary);
+            LattiruneUITheme.DrawBadge($"Floor: {floorNum}  |  Your Gold: {currentGold}g", LattiruneUITheme.ColorGoldPrimary);
             GUILayout.Space(12);
 
             GUIStyle dialogueStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            dialogueStyle.fontSize = 18;
+            dialogueStyle.fontSize = 17;
             dialogueStyle.fontStyle = FontStyle.Italic;
             dialogueStyle.alignment = TextAnchor.MiddleCenter;
-            dialogueStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
+            dialogueStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
             GUILayout.Label($"\"{_feedbackMessage}\"", dialogueStyle);
             GUILayout.Space(16);
 
@@ -136,10 +136,10 @@ namespace Lattirune.UI
                 GUIStyle offerHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
                 offerHeader.fontSize = 22;
                 offerHeader.fontStyle = FontStyle.Bold;
-                offerHeader.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorGoldPrimary;
+                offerHeader.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorGoldBright;
 
                 string statusText = offer.IsSold ? "[SOLD OUT]" : $"{offer.CurrentPrice} Gold";
-                GUILayout.Label($"{offer.Title}  -  {statusText}", offerHeader);
+                GUILayout.Label($"{offer.Title}  —  {statusText}", offerHeader);
                 GUILayout.Space(4);
 
                 GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
@@ -153,7 +153,7 @@ namespace Lattirune.UI
                     bool canAfford = _economyService != null && _economyService.CanAfford(offer.CurrentPrice);
                     GUI.enabled = canAfford;
 
-                    if (LattiruneUITheme.DrawPrimaryButton($"🛒 PURCHASE ({offer.CurrentPrice}g)", 60f))
+                    if (LattiruneUITheme.DrawPrimaryButton($"PURCHASE ({offer.CurrentPrice}g)", 60f))
                     {
                         if (merchantSystem.BuyOffer(i, _economyService, inventorySystem, latticeGrid, playerCombatant))
                         {
@@ -173,7 +173,7 @@ namespace Lattirune.UI
             // Reroll Button (10 Gold)
             bool canReroll = _economyService != null && _economyService.CanAfford(10);
             GUI.enabled = canReroll;
-            if (LattiruneUITheme.DrawSecondaryButton("🔄 REROLL STOCK (10 Gold)", 65f))
+            if (LattiruneUITheme.DrawSecondaryButton("REROLL STOCK (10 Gold)", 65f))
             {
                 if (merchantSystem.RerollOffers(_economyService, 10, floorNum))
                 {
@@ -184,7 +184,7 @@ namespace Lattirune.UI
 
             GUILayout.Space(12);
 
-            if (LattiruneUITheme.DrawPrimaryButton("⚔️ LEAVE MERCHANT & CONTINUE ➔", 75f))
+            if (LattiruneUITheme.DrawPrimaryButton("LEAVE MERCHANT & CONTINUE", 75f))
             {
                 Hide();
                 if (runManager != null)

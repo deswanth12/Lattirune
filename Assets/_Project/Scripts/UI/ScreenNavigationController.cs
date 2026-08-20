@@ -39,6 +39,7 @@ namespace Lattirune.UI
             if (controller != null)
             {
                 _screenRegistry[state] = controller;
+                EnforceScreenVisibility(currentScreen);
             }
         }
 
@@ -83,18 +84,23 @@ namespace Lattirune.UI
             }
 
             // 2. Control registered mono screen controllers
-            foreach (var kvp in _screenRegistry)
+            if (activeState != ScreenState.SETTINGS)
             {
-                if (kvp.Value != null)
+                HashSet<MonoBehaviour> targetControllers = new HashSet<MonoBehaviour>();
+                foreach (var kvp in _screenRegistry)
                 {
-                    // Settings overlay is modal, does not disable underlying primary screen
-                    if (activeState == ScreenState.SETTINGS)
+                    if (kvp.Value != null && kvp.Key == activeState)
                     {
-                        // Settings overlay handles its own display
+                        targetControllers.Add(kvp.Value);
                     }
-                    else
+                }
+
+                HashSet<MonoBehaviour> visited = new HashSet<MonoBehaviour>();
+                foreach (var kvp in _screenRegistry)
+                {
+                    if (kvp.Value != null && visited.Add(kvp.Value))
                     {
-                        kvp.Value.enabled = (kvp.Key == activeState);
+                        kvp.Value.enabled = targetControllers.Contains(kvp.Value);
                     }
                 }
             }
