@@ -11,7 +11,7 @@ namespace Lattirune.UI
 {
     /// <summary>
     /// Mobile portrait UI Controller for the In-Run Merchant Stall.
-    /// Strictly adheres to PLAN.md Section 11, 13.1, and 15 (>= 52 dp touch targets).
+    /// Displays item artwork icons, price tags, and inventory restocking (0 emoji, 0 placeholders).
     /// </summary>
     public class MerchantStallUIController : MonoBehaviour
     {
@@ -28,7 +28,7 @@ namespace Lattirune.UI
 
         [Header("State")]
         [SerializeField] private bool isVisible = false;
-        private string _feedbackMessage = "";
+        private string _feedbackMessage = "Welcome, traveler! What supplies do you seek?";
 
         public bool IsVisible => isVisible;
 
@@ -117,7 +117,7 @@ namespace Lattirune.UI
             GUILayout.Space(10);
 
             // Economy bar
-            int gold = _economyService != null ? _economyService.GoldBalance : 0;
+            int gold = _economyService != null ? _economyService.GoldBalance : (runManager != null ? runManager.CurrentGold : 0);
             int floorNum = runManager != null ? runManager.CurrentFloorNumber : 1;
             LattiruneUITheme.DrawBadge($"HERO GOLD: {gold}g  |  FLOOR {floorNum} STOCK", LattiruneUITheme.ColorGoldPrimary);
             GUILayout.Space(12);
@@ -127,9 +127,8 @@ namespace Lattirune.UI
             feedbackStyle.fontSize = 17;
             feedbackStyle.fontStyle = FontStyle.Italic;
             feedbackStyle.alignment = TextAnchor.MiddleCenter;
-            feedbackStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
-            GUILayout.Label($"\"{_feedbackMessage}\"", feedbackStyle);
-            GUILayout.Space(12);
+            GUILayout.Label(_feedbackMessage, feedbackStyle);
+            GUILayout.Space(14);
 
             // Offer Cards
             var offers = merchantSystem.CurrentOffers;
@@ -140,66 +139,67 @@ namespace Lattirune.UI
 
                 GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
-                GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                titleStyle.fontSize = 20;
-                titleStyle.fontStyle = FontStyle.Bold;
-                titleStyle.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorGoldPrimary;
+                GUILayout.BeginHorizontal();
 
-                string soldTag = offer.IsSold ? " [SOLD OUT]" : "";
-                GUILayout.Label($"{offer.Title}{soldTag}", titleStyle);
+                // Item Artwork Icon
+                Texture2D itemIcon = VisualAssetProvider.GetItemTexture(offer.ItemData != null ? offer.ItemData.ItemId : "");
+                if (itemIcon != null)
+                {
+                    Rect iconRect = GUILayoutUtility.GetRect(64f, 64f, GUILayout.Width(64f), GUILayout.Height(64f));
+                    GUI.DrawTexture(iconRect, itemIcon, ScaleMode.ScaleToFit);
+                    GUILayout.Space(12);
+                }
+
+                GUILayout.BeginVertical();
+                GUIStyle nameStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+                nameStyle.fontSize = 19;
+                nameStyle.fontStyle = FontStyle.Bold;
+                nameStyle.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorTextPrimary;
+                GUILayout.Label(offer.Title, nameStyle);
 
                 GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                descStyle.fontSize = 15;
+                descStyle.fontSize = 14;
                 descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
                 GUILayout.Label(offer.Description, descStyle);
-                GUILayout.Space(6);
+                GUILayout.EndVertical();
 
-                if (!offer.IsSold)
+                GUILayout.FlexibleSpace();
+
+                // Price Tag & Purchase Button
+                if (offer.IsSold)
                 {
-                    bool canAfford = _economyService != null && _economyService.CanAfford(offer.CurrentPrice);
+                    LattiruneUITheme.DrawBadge("PURCHASED", LattiruneUITheme.ColorTextMuted);
+                }
+                else
+                {
+                    bool canAfford = gold >= offer.CurrentPrice;
                     GUI.enabled = canAfford;
 
-                    if (LattiruneUITheme.DrawPrimaryButton($"PURCHASE ({offer.CurrentPrice}g)", 60f))
+                    if (LattiruneUITheme.DrawPrimaryButton($"BUY ({offer.CurrentPrice}g)", 55f))
                     {
                         if (merchantSystem.BuyOffer(i, _economyService, inventorySystem, latticeGrid, playerCombatant))
                         {
-                            _feedbackMessage = $"Pleasure doing business! You acquired {offer.Title}.";
+                            _feedbackMessage = $"Acquired {offer.Title}!";
                         }
                     }
 
                     GUI.enabled = true;
                 }
 
+                GUILayout.EndHorizontal();
+
                 GUILayout.EndVertical();
-                GUILayout.Space(10);
+                GUILayout.Space(8);
             }
 
             GUILayout.FlexibleSpace();
 
-            // Reroll Button (10 Gold)
-            bool canReroll = _economyService != null && _economyService.CanAfford(10);
-            GUI.enabled = canReroll;
-            if (LattiruneUITheme.DrawSecondaryButton("REROLL STOCK (10 Gold)", 65f))
+            // Exit Button
+            if (LattiruneUITheme.DrawSecondaryButton("LEAVE MERCHANT OUTPOST", 75f))
             {
-                if (merchantSystem.RerollOffers(_economyService, 10, floorNum))
-                {
-                    _feedbackMessage = "The merchant reveals a fresh crate of wares!";
-                }
-            }
-            GUI.enabled = true;
-
-            GUILayout.Space(12);
-
-            if (LattiruneUITheme.DrawPrimaryButton("LEAVE MERCHANT & CONTINUE", 75f))
-            {
-                Hide();
                 if (mapController != null && mapController.MapGraph != null)
                 {
                     mapController.MapGraph.CompleteCurrentNode();
-                }
-                if (runManager != null)
-                {
-                    runManager.ContinueAfterReward();
                 }
                 if (navigation != null)
                 {

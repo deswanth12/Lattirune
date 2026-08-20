@@ -518,6 +518,10 @@ namespace Lattirune.Core
                 uiObj.transform.SetParent(transform);
                 combatEncounterUI = uiObj.AddComponent<CombatEncounterUI>();
             }
+            if (GetComponent<CombatStageVisualController>() == null)
+            {
+                gameObject.AddComponent<CombatStageVisualController>();
+            }
             combatEncounterUI.Initialize(combatSystem, synergySystem, rewardService, prototypeItemCatalogue, stagingAreaParent, navigationController, runManager);
 
             // Reward applied -> auto-save
@@ -721,17 +725,19 @@ namespace Lattirune.Core
             prototypeItemCatalogue = new List<ItemDataSO>(db.AllItems);
         }
 
-        private void SetupDevelopmentRunesAndTargets()
+                private void SetupDevelopmentRunesAndTargets()
         {
             // 1. Demo Fire Rune: Position (2,1) emitting North with range 3
             RuneData fireRune = ScriptableObject.CreateInstance<RuneData>();
             fireRune.Initialize("fire_rune_01", "Fire Rune", ConduitDirection.North, ElementType.Fire, 3);
             _activeRunesWithData.Add((fireRune, new Vector2Int(2, 1), ConduitDirection.North, 3));
+            SpawnRuneVisualObject(fireRune, new Vector2Int(2, 1));
 
             // 2. Demo Ice Rune: Position (0,3) emitting East with range 4
             RuneData iceRune = ScriptableObject.CreateInstance<RuneData>();
             iceRune.Initialize("ice_rune_01", "Ice Rune", ConduitDirection.East, ElementType.Ice, 4);
             _activeRunesWithData.Add((iceRune, new Vector2Int(0, 3), ConduitDirection.East, 4));
+            SpawnRuneVisualObject(iceRune, new Vector2Int(0, 3));
 
             // Demo Target Receptor at (2,4)
             GameObject targetObj = new GameObject("Target_2_4");
@@ -743,6 +749,23 @@ namespace Lattirune.Core
             // Demo Prism setup
             defaultPrismData = ScriptableObject.CreateInstance<PrismRuneDataSO>();
             defaultPrismData.Initialize("prism_demo", "Prism Rune", branchCount: 2, maxDepth: 3);
+        }
+
+        private void SpawnRuneVisualObject(RuneData rune, Vector2Int gridPos)
+        {
+            if (rune == null) return;
+            GameObject runeObj = new GameObject($"RuneVisual_{rune.RuneName}_{gridPos.x}_{gridPos.y}");
+            runeObj.transform.SetParent(_worldGameplayContainer != null ? _worldGameplayContainer.transform : transform);
+            runeObj.transform.position = GridCoordinateUtility.GridToWorld(gridPos);
+            runeObj.transform.localScale = new Vector3(GridCoordinateUtility.DEFAULT_CELL_SIZE * 0.85f, GridCoordinateUtility.DEFAULT_CELL_SIZE * 0.85f, 1f);
+
+            SpriteRenderer sr = runeObj.AddComponent<SpriteRenderer>();
+            Texture2D runeTex = VisualAssetProvider.GetRuneTexture(rune.Element);
+            if (runeTex != null)
+            {
+                sr.sprite = Sprite.Create(runeTex, new Rect(0, 0, runeTex.width, runeTex.height), new Vector2(0.5f, 0.5f), 128);
+            }
+            sr.sortingOrder = 5;
         }
 
         public void PlacePrismAt(Vector2Int coord, PrismRuneDataSO data = null)

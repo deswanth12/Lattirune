@@ -331,6 +331,26 @@ namespace Lattirune.UI
             return tex;
         }
 
+        
+        public static void DrawCard(Rect rect)
+        {
+            EnsureInitialized();
+            GUI.DrawTexture(rect, _texCard);
+            DrawBorder(rect, ColorBorderMuted, 2);
+        }
+
+        public static void DrawBorder(Rect rect, Color color, int thickness)
+        {
+            EnsureInitialized();
+            Color oldC = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture(new Rect(rect.x, rect.y, rect.width, thickness), _texCard);
+            GUI.DrawTexture(new Rect(rect.x, rect.y + rect.height - thickness, rect.width, thickness), _texCard);
+            GUI.DrawTexture(new Rect(rect.x, rect.y, thickness, rect.height), _texCard);
+            GUI.DrawTexture(new Rect(rect.x + rect.width - thickness, rect.y, thickness, rect.height), _texCard);
+            GUI.color = oldC;
+        }
+
         public static GUIStyle StyleHeaderTitle => _styleHeaderTitle;
         public static GUIStyle StyleHeaderSubtitle => _styleHeaderSubtitle;
         public static GUIStyle StyleSectionTitle => _styleSectionTitle;

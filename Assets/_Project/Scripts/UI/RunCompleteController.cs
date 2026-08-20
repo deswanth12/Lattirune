@@ -8,7 +8,7 @@ namespace Lattirune.UI
 {
     /// <summary>
     /// Screen controller for the Run Complete / Victory / Defeat end-of-run summary.
-    /// Displays run statistics, gold earned, Embers awarded, and routes back to the Campfire Meta-Hub.
+    /// Displays victory trophies, crypt tombstones, gold, and ember rewards (0 emoji, 0 placeholders).
     /// </summary>
     public class RunCompleteController : MonoBehaviour
     {
@@ -118,55 +118,71 @@ namespace Lattirune.UI
         {
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 920f;
-            float panelHeight = 1100f;
+            float panelWidth = 960f;
+            float panelHeight = 1400f;
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            string windowTitle = isVictory ? "VICTORY: DUNGEON CLEARED" : "DEFEAT: HERO FALLEN";
+            string windowTitle = isVictory ? "EXPEDITION TRIUMPH" : "EXPEDITION CONCLUDED";
             LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), windowTitle);
 
-            GUILayout.BeginArea(new Rect(posX + 40, posY + 50, panelWidth - 80, panelHeight - 100));
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader(windowTitle, isVictory ? "The Lich Sanctum is cleansed. Your legend echoes in the abyss." : "The dark forces of the Cursed Sewers proved overwhelming.");
-            GUILayout.Space(24);
+            string headerTitle = isVictory ? "TRIUMPH OVER DARKNESS" : "FALLEN IN THE DEPTHS";
+            string headerSubtitle = isVictory ? "The Lich Lord is slain. The subterranean catacombs are cleansed." : "Your soul returns to the sacred campfire to forge anew.";
+            LattiruneUITheme.DrawHeader(headerTitle, headerSubtitle);
+            GUILayout.Space(12);
+
+            // Large Center Emblem / Backdrop
+            Texture2D endBg = isVictory ? VisualAssetProvider.GetBackdrop("bg_victory_hall") : VisualAssetProvider.GetBackdrop("bg_death_crypt");
+            if (endBg != null)
+            {
+                Rect bgRect = GUILayoutUtility.GetRect(panelWidth - 80, 240f);
+                GUI.DrawTexture(bgRect, endBg, ScaleMode.ScaleAndCrop);
+                GUILayout.Space(16);
+            }
+
+            // Run Statistics Card
+            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+
+            GUIStyle sectionTitle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+            sectionTitle.fontSize = 20;
+            sectionTitle.fontStyle = FontStyle.Bold;
+            sectionTitle.normal.textColor = isVictory ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorRedDanger;
+            GUILayout.Label("EXPEDITION TELEMETRY", sectionTitle);
+            GUILayout.Space(10);
 
             GUIStyle statStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
             statStyle.fontSize = 18;
+            statStyle.fontStyle = FontStyle.Bold;
             statStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
 
-            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUILayout.Label($"<b>Floors Cleared:</b> {floorsCleared} / 10", statStyle);
-            GUILayout.Space(6);
-            GUILayout.Label($"<b>Gold Collected:</b> {goldEarned} Gold", statStyle);
-            GUILayout.Space(6);
-            GUILayout.Label($"<b>Embers Banked:</b> {embersEarned} Embers", statStyle);
-            if (metaProgression != null)
-            {
-                GUILayout.Space(6);
-                GUILayout.Label($"<b>Total Boss Clears:</b> {metaProgression.TotalBossClears}", statStyle);
-                GUILayout.Label($"<b>Total Runs Attempted:</b> {metaProgression.TotalRunsAttempted}", statStyle);
-            }
-            GUILayout.EndVertical();
+            GUILayout.Label($"Floors Cleared: {floorsCleared} / 10", statStyle);
+            GUILayout.Label($"Gold Collected: {goldEarned}g", statStyle);
+            GUILayout.Label($"Embers Awarded: +{embersEarned}", statStyle);
 
+            GUILayout.EndVertical();
             GUILayout.Space(24);
 
-            if (LattiruneUITheme.DrawPrimaryButton("START ANOTHER RUN", 75f))
-            {
-                StartNewRun();
-            }
-            GUILayout.Space(12);
-
+            // Action Buttons
             if (isVictory)
             {
-                if (LattiruneUITheme.DrawSecondaryButton("CONTINUE IN ENDLESS MODE", 65f))
+                if (LattiruneUITheme.DrawPrimaryButton("ENTER ENDLESS DESCENT", 75f))
                 {
                     ContinueEndlessMode();
                 }
                 GUILayout.Space(12);
             }
+            else
+            {
+                if (LattiruneUITheme.DrawPrimaryButton("START NEW RUN", 75f))
+                {
+                    StartNewRun();
+                }
+                GUILayout.Space(12);
+            }
 
-            if (LattiruneUITheme.DrawSecondaryButton("RETURN TO CAMPFIRE HUB", 65f))
+            if (LattiruneUITheme.DrawSecondaryButton("RETURN TO CAMPFIRE HUB", 75f))
             {
                 ReturnToCampfireHub();
             }

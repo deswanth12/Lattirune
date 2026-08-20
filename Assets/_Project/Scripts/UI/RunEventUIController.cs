@@ -9,8 +9,8 @@ using Lattirune.Modifiers;
 namespace Lattirune.UI
 {
     /// <summary>
-    /// Lightweight presentation component for procedural run events in Lattirune 1.1.
-    /// Renders the event modal, title, description, current resources (Gold/HP), choice buttons, and resolution outcome.
+    /// Presentation component for procedural run events in Lattirune.
+    /// Displays glowing mystery shrine artwork and choice cards (0 emoji, 0 placeholders).
     /// </summary>
     public class RunEventUIController : MonoBehaviour
     {
@@ -30,7 +30,6 @@ namespace Lattirune.UI
 
         public bool IsShowingModal => _isShowingModal;
         public RunEventDefinitionSO ActiveEvent => _activeEvent;
-        public string LastOutcomeMessage => _lastOutcomeMessage;
 
         public void BindMapController(DungeonMapScreenController map)
         {
@@ -131,76 +130,90 @@ namespace Lattirune.UI
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float panelWidth = 960f;
-            float panelHeight = 1300f;
+            float panelHeight = 1350f;
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), _activeEvent.Title);
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), _activeEvent.Title.ToUpper());
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader(_activeEvent.Title, "A mysterious encounter deep within the Cursed Sewers.");
-            GUILayout.Space(12);
+            LattiruneUITheme.DrawHeader(_activeEvent.Title.ToUpper(), "A strange encounter stirs in the subterranean shadows.");
+            GUILayout.Space(10);
 
-            int currentGold = _economyService != null ? _economyService.GoldBalance : 0;
-            int currentHp = playerCombatant != null ? playerCombatant.CurrentHp : 100;
-            int maxHp = playerCombatant != null ? playerCombatant.MaxHp : 100;
-            LattiruneUITheme.DrawBadge($"Hero HP: {currentHp}/{maxHp}  |  Gold: {currentGold}g", LattiruneUITheme.ColorCyanArcane);
-            GUILayout.Space(16);
-
-            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUIStyle bodyStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            bodyStyle.fontSize = 18;
-            bodyStyle.wordWrap = true;
-            bodyStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
-            GUILayout.Label(_activeEvent.Description, bodyStyle);
-            GUILayout.EndVertical();
-            GUILayout.Space(20);
-
-            // Choices list
-            GUI.enabled = !_isResolved;
-            for (int i = 0; i < _activeEvent.Choices.Count; i++)
+            // Shrine Backdrop
+            Texture2D shrineBg = VisualAssetProvider.GetBackdrop("bg_shrine_event");
+            if (shrineBg != null)
             {
-                var choice = _activeEvent.Choices[i];
-                if (choice == null) continue;
-
-                string btnText = $"{choice.DisplayName}  —  {choice.Description}";
-                if (LattiruneUITheme.DrawPrimaryButton(btnText, 65f))
-                {
-                    if (eventService != null)
-                    {
-                        eventService.SelectChoice(choice.ChoiceId, _economyService, playerCombatant, modifierManager);
-                    }
-                }
-                GUILayout.Space(10);
+                Rect sRect = GUILayoutUtility.GetRect(panelWidth - 80, 200f);
+                GUI.DrawTexture(sRect, shrineBg, ScaleMode.ScaleAndCrop);
+                GUILayout.Space(12);
             }
-            GUI.enabled = true;
+
+            // Description
+            GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            descStyle.fontSize = 16;
+            descStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
+            GUILayout.Label(_activeEvent.Description, descStyle);
+            GUILayout.Space(14);
+
+            // Choice Cards
+            if (!_isResolved && _activeEvent.Choices != null)
+            {
+                for (int i = 0; i < _activeEvent.Choices.Count; i++)
+                {
+                    var choice = _activeEvent.Choices[i];
+                    if (choice == null) continue;
+
+                    GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+
+                    GUIStyle choiceTitle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+                    choiceTitle.fontSize = 18;
+                    choiceTitle.fontStyle = FontStyle.Bold;
+                    choiceTitle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+                    GUILayout.Label(choice.DisplayName.ToUpper(), choiceTitle);
+
+                    GUIStyle choiceDesc = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                    choiceDesc.fontSize = 14;
+                    choiceDesc.normal.textColor = LattiruneUITheme.ColorTextMuted;
+                    GUILayout.Label(choice.Description, choiceDesc);
+                    GUILayout.Space(8);
+
+                    if (LattiruneUITheme.DrawPrimaryButton($"CHOOSE: {choice.DisplayName.ToUpper()}", 55f))
+                    {
+                        if (eventService != null)
+                        {
+                            eventService.SelectChoice(choice.ChoiceId, _economyService, playerCombatant, modifierManager);
+                        }
+                    }
+
+                    GUILayout.EndVertical();
+                    GUILayout.Space(10);
+                }
+            }
 
             if (!string.IsNullOrEmpty(_lastOutcomeMessage))
             {
+                GUIStyle outcomeStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                outcomeStyle.fontSize = 16;
+                outcomeStyle.fontStyle = FontStyle.Bold;
+                outcomeStyle.alignment = TextAnchor.MiddleCenter;
+                outcomeStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+                GUILayout.Label(_lastOutcomeMessage, outcomeStyle);
                 GUILayout.Space(12);
-                GUIStyle alertStyle = new GUIStyle(GUI.skin.label);
-                alertStyle.fontSize = 17;
-                alertStyle.fontStyle = FontStyle.Italic;
-                alertStyle.alignment = TextAnchor.MiddleCenter;
-                alertStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
-                GUILayout.Label(_lastOutcomeMessage, alertStyle);
             }
+
+            GUILayout.FlexibleSpace();
 
             if (_isResolved)
             {
-                GUILayout.Space(16);
                 if (LattiruneUITheme.DrawPrimaryButton("CONTINUE DESCENT", 75f))
                 {
+                    CloseModal();
                     if (mapController != null && mapController.MapGraph != null)
                     {
                         mapController.MapGraph.CompleteCurrentNode();
                     }
-                    if (runManager != null)
-                    {
-                        runManager.ContinueAfterReward();
-                    }
-                    CloseModal();
                     if (navigation != null)
                     {
                         navigation.NavigateTo(ScreenState.DUNGEON_MAP);

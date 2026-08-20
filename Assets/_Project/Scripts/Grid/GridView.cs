@@ -51,23 +51,31 @@ namespace Lattirune.Grid
             }
         }
 
-        private void CreateDefaultCellSprite()
+                private void CreateDefaultCellSprite()
         {
             if (_defaultCellSprite == null)
             {
-                Texture2D tex = new Texture2D(32, 32);
-                for (int x = 0; x < 32; x++)
+                Texture2D tex = new Texture2D(64, 64, TextureFormat.RGBA32, false);
+                Color border = new Color(0.85f, 0.65f, 0.2f, 0.9f); // Gold Arcane Border
+                Color inner = new Color(0.10f, 0.12f, 0.18f, 0.95f); // Deep Slate
+                Color corner = new Color(1.0f, 0.85f, 0.35f, 1.0f); // Bright Gold Corner
+
+                for (int x = 0; x < 64; x++)
                 {
-                    for (int y = 0; y < 32; y++)
+                    for (int y = 0; y < 64; y++)
                     {
-                        // Draw a simple bordered square
-                        bool isBorder = x == 0 || x == 31 || y == 0 || y == 31;
-                        tex.SetPixel(x, y, isBorder ? new Color(0.77f, 0.61f, 0.15f, 0.8f) : Color.white);
+                        bool isOuter = x == 0 || x == 63 || y == 0 || y == 63;
+                        bool isInner = x == 1 || x == 62 || y == 1 || y == 62;
+                        bool isCorner = (x <= 3 || x >= 60) && (y <= 3 || y >= 60);
+
+                        if (isCorner) tex.SetPixel(x, y, corner);
+                        else if (isOuter || isInner) tex.SetPixel(x, y, border);
+                        else tex.SetPixel(x, y, inner);
                     }
                 }
-                tex.filterMode = FilterMode.Point;
+                tex.filterMode = FilterMode.Bilinear;
                 tex.Apply();
-                _defaultCellSprite = Sprite.Create(tex, new Rect(0, 0, 32, 32), new Vector2(0.5f, 0.5f), 32);
+                _defaultCellSprite = Sprite.Create(tex, new Rect(0, 0, 64, 64), new Vector2(0.5f, 0.5f), 64);
             }
         }
 

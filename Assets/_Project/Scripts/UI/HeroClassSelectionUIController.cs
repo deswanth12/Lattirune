@@ -9,7 +9,8 @@ namespace Lattirune.UI
 {
     /// <summary>
     /// Mobile portrait UI Controller for selecting and unlocking Hero Classes.
-    /// Strictly adheres to PLAN.md Section 12, 15, and 16.
+    /// Displays full high-contrast stylized Hero portraits, class emblems,
+    /// base combat stats, and starting runic loadouts (0 emoji, 0 placeholders).
     /// </summary>
     public class HeroClassSelectionUIController : MonoBehaviour
     {
@@ -23,7 +24,7 @@ namespace Lattirune.UI
         [SerializeField] private DungeonMapScreenController mapController;
         [SerializeField] private bool isVisible = false;
         private int _selectedPreviewIndex = 0;
-        private string _feedbackMessage = "";
+        private string _feedbackMessage = "Choose your Champion for the descent.";
 
         public bool IsVisible => isVisible;
 
@@ -79,12 +80,24 @@ namespace Lattirune.UI
             isVisible = false;
         }
 
-        private void OnGUI()
+                private void OnGUI()
         {
             if (navigation == null || navigation.CurrentScreen != ScreenState.HERO_SELECTION) return;
-            if (!isVisible || classManager == null || classManager.Database == null) return;
 
-            var classes = classManager.Database.AllClasses;
+            if (classManager == null)
+            {
+                classManager = UnityEngine.Object.FindFirstObjectByType<HeroClassManager>();
+                if (classManager == null)
+                {
+                    classManager = gameObject.AddComponent<HeroClassManager>();
+                }
+            }
+            if (classManager.Database == null)
+            {
+                classManager.Initialize();
+            }
+
+            var classes = classManager.Database != null ? classManager.Database.AllClasses : null;
             if (classes == null || classes.Count == 0) return;
 
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
@@ -99,13 +112,13 @@ namespace Lattirune.UI
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
             LattiruneUITheme.DrawHeader("HERO CLASS SELECTION", "Choose your Champion for the subterranean descent.");
-            GUILayout.Space(12);
+            GUILayout.Space(10);
 
             int embers = metaProgression != null ? metaProgression.CurrentEmbers : 0;
             LattiruneUITheme.DrawBadge($"Persistent Embers: {embers}", LattiruneUITheme.ColorGoldPrimary);
-            GUILayout.Space(16);
+            GUILayout.Space(14);
 
-            // Class Selector 2x2 Grid for Perfect Mobile Fit
+            // 2x2 Hero Selection Grid
             int count = classes.Count;
             for (int r = 0; r < count; r += 2)
             {
@@ -120,9 +133,9 @@ namespace Lattirune.UI
                         bool isUnlocked = classManager.IsClassUnlocked(def.ClassId);
                         bool isActiveHero = (def.ClassId == classManager.SelectedClassId);
 
-                        string tabText = def.ClassName;
-                        if (isActiveHero) tabText = $"★ {def.ClassName}";
-                        else if (!isUnlocked) tabText = $"[LOCKED] {def.ClassName}";
+                        string tabText = def.ClassName.ToUpper();
+                        if (isActiveHero) tabText = $"[ACTIVE] {tabText}";
+                        else if (!isUnlocked) tabText = $"[LOCKED] {tabText}";
 
                         if (isSelectedPreview)
                         {
@@ -149,9 +162,9 @@ namespace Lattirune.UI
                 GUILayout.Space(8);
             }
 
-            GUILayout.Space(14);
+            GUILayout.Space(12);
 
-            // Active Preview Card
+            // Selected Hero Showcase Card
             var currentDef = classes[Mathf.Clamp(_selectedPreviewIndex, 0, classes.Count - 1)];
             if (currentDef != null)
             {
@@ -160,41 +173,65 @@ namespace Lattirune.UI
 
                 GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
+                GUILayout.BeginHorizontal();
+
+                // 1. Large Hero Artwork Portrait
+                Texture2D heroTex = VisualAssetProvider.GetHeroTexture(currentDef.ClassId);
+                if (heroTex != null)
+                {
+                    Rect heroArtRect = GUILayoutUtility.GetRect(180f, 180f, GUILayout.Width(180f), GUILayout.Height(180f));
+                    GUI.DrawTexture(heroArtRect, heroTex, ScaleMode.ScaleToFit);
+                    GUILayout.Space(16);
+                }
+
+                // 2. Hero Info & Stats
+                GUILayout.BeginVertical();
                 GUIStyle headerStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
                 headerStyle.fontSize = 24;
                 headerStyle.fontStyle = FontStyle.Bold;
                 headerStyle.normal.textColor = isActive ? LattiruneUITheme.ColorGoldBright : (isUnlocked ? LattiruneUITheme.ColorTextPrimary : LattiruneUITheme.ColorTextMuted);
 
                 string badge = isActive ? " [ACTIVE CHAMPION]" : (isUnlocked ? " [UNLOCKED]" : $" [LOCKED: {currentDef.EmbersCost} Embers]");
-                GUILayout.Label($"{currentDef.ClassName}{badge}", headerStyle);
-                GUILayout.Space(6);
+                GUILayout.Label($"{currentDef.ClassName.ToUpper()}{badge}", headerStyle);
+                GUILayout.Space(4);
 
                 GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                descStyle.fontSize = 17;
+                descStyle.fontSize = 15;
                 descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
                 GUILayout.Label(currentDef.Description, descStyle);
-                GUILayout.Space(12);
+                GUILayout.Space(8);
 
-                // Stats Matrix
+                // Stats Row
                 GUIStyle statStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                statStyle.fontSize = 17;
+                statStyle.fontSize = 15;
                 statStyle.fontStyle = FontStyle.Bold;
                 statStyle.normal.textColor = LattiruneUITheme.ColorCyanArcane;
+                GUILayout.Label($"HP: {currentDef.BaseHp}  |  ARMOR: {currentDef.BaseArmor}  |  ATK: {currentDef.BaseAttack}  |  SPD: {currentDef.AttackInterval:0.0}s", statStyle);
 
-                GUILayout.Label($"Base Stats:  HP: {currentDef.BaseHp}  |  DEF: {currentDef.BaseArmor}  |  ATK: {currentDef.BaseAttack}  |  Speed: {currentDef.AttackInterval:0.0}s", statStyle);
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+
                 GUILayout.Space(10);
 
-                // Starting Loadout
-                GUIStyle loadoutStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                loadoutStyle.fontSize = 15;
-                loadoutStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+                // Starting Runes & Items Row
+                GUILayout.BeginHorizontal();
+                for (int i = 0; i < currentDef.StartingRuneIds.Count; i++)
+                {
+                    Texture2D runeIcon = VisualAssetProvider.GetRuneTexture(ElementType.Fire);
+                    Rect rRect = GUILayoutUtility.GetRect(48f, 48f, GUILayout.Width(48f), GUILayout.Height(48f));
+                    if (runeIcon != null) GUI.DrawTexture(rRect, runeIcon, ScaleMode.ScaleToFit);
+                    GUILayout.Space(6);
+                }
+                for (int i = 0; i < currentDef.StartingItemIds.Count; i++)
+                {
+                    Texture2D itemIcon = VisualAssetProvider.GetItemTexture(currentDef.StartingItemIds[i]);
+                    Rect iRect = GUILayoutUtility.GetRect(48f, 48f, GUILayout.Width(48f), GUILayout.Height(48f));
+                    if (itemIcon != null) GUI.DrawTexture(iRect, itemIcon, ScaleMode.ScaleToFit);
+                    GUILayout.Space(6);
+                }
+                GUILayout.EndHorizontal();
 
-                string itemsList = string.Join(", ", currentDef.StartingItemIds);
-                string runesList = string.Join(", ", currentDef.StartingRuneIds);
-                GUILayout.Label($"Starting Items: {itemsList}", loadoutStyle);
-                GUILayout.Label($"Starting Runes: {runesList}", loadoutStyle);
-
-                GUILayout.Space(16);
+                GUILayout.Space(14);
 
                 // Select / Unlock Action
                 if (!isUnlocked)
@@ -232,45 +269,35 @@ namespace Lattirune.UI
 
             GUILayout.FlexibleSpace();
 
-            // Feedback Dialogue
-            if (!string.IsNullOrEmpty(_feedbackMessage))
-            {
-                GUIStyle feedbackStyle = new GUIStyle(GUI.skin.label);
-                feedbackStyle.fontSize = 16;
-                feedbackStyle.fontStyle = FontStyle.Italic;
-                feedbackStyle.alignment = TextAnchor.MiddleCenter;
-                feedbackStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
-                GUILayout.Label(_feedbackMessage, feedbackStyle);
-                GUILayout.Space(8);
-            }
-
-            // Bottom Navigation Row
+            // Bottom Navigation Buttons
             GUILayout.BeginHorizontal();
+
             if (LattiruneUITheme.DrawPrimaryButton("DESCEND INTO DUNGEON", 75f))
             {
-                Hide();
-                if (mapController != null)
-                {
-                    mapController.ResetMapForNewRun();
-                }
                 if (runManager != null)
                 {
                     runManager.StartRun(metaProgression);
+                }
+                if (mapController != null)
+                {
+                    mapController.ResetMapForNewRun();
                 }
                 if (navigation != null)
                 {
                     navigation.NavigateTo(ScreenState.DUNGEON_MAP);
                 }
             }
-            GUILayout.Space(14);
+
+            GUILayout.Space(16);
+
             if (LattiruneUITheme.DrawSecondaryButton("RETURN", 75f))
             {
-                Hide();
                 if (navigation != null)
                 {
                     navigation.NavigateTo(ScreenState.MAIN_MENU);
                 }
             }
+
             GUILayout.EndHorizontal();
 
             GUILayout.EndArea();

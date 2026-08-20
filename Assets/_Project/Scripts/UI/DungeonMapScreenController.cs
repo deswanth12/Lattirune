@@ -8,7 +8,7 @@ namespace Lattirune.UI
 {
     /// <summary>
     /// Mobile portrait UI Controller for the 10-Floor Dungeon Map DAG and branch path selection.
-    /// Strictly adheres to PLAN.md Section 2 (Step 1: Explore) and Section 11.
+    /// Displays crisp vector-quality node icons, room level tags, and authentic background (0 emoji, 0 placeholders).
     /// </summary>
     public class DungeonMapScreenController : MonoBehaviour
     {
@@ -94,10 +94,13 @@ namespace Lattirune.UI
             isVisible = false;
         }
 
-        private void OnGUI()
+                private void OnGUI()
         {
             if (navigation == null || (navigation.CurrentScreen != ScreenState.DUNGEON_MAP && navigation.CurrentScreen != ScreenState.RUN_START)) return;
-            if (!isVisible || _mapGraph == null) return;
+            if (_mapGraph == null)
+            {
+                _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
+            }
 
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
@@ -120,7 +123,7 @@ namespace Lattirune.UI
             GUILayout.Space(12);
 
             // Scrollable Map Nodes List (Floors 1 to 10)
-            _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(800));
+            _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(850));
 
             for (int f = 1; f <= 10; f++)
             {
@@ -134,123 +137,129 @@ namespace Lattirune.UI
                 floorHeader.fontStyle = FontStyle.Bold;
                 floorHeader.normal.textColor = (f == floorNum) ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorTextMuted;
                 
-                string floorTag = (f == 10) ? "FLOOR 10 — BOSS LAIR" : $"FLOOR {f}";
+                string floorTag = (f == 10) ? "FLOOR 10 — BOSS LAIR" : (f == 5 ? "FLOOR 5 — MID-BOSS LAIR" : $"FLOOR {f}");
                 GUILayout.Label(floorTag, floorHeader);
-                GUILayout.Space(4);
+                GUILayout.Space(6);
 
-                GUILayout.BeginHorizontal();
                 foreach (var node in floorNodes)
                 {
                     bool isSelected = (node.NodeId == _selectedNodeId);
                     bool isAvailable = node.IsAvailable && !node.IsCleared;
-                    bool isCleared = node.IsCleared;
 
-                    string badge = GetNodeBadge(node.NodeType);
-                    string statusIcon = isCleared ? "[CLEARED] " : (isAvailable ? "[ACTIVE] " : "");
-                    string btnText = $"{statusIcon}{badge}\n{node.Title}";
+                    GUILayout.BeginHorizontal();
 
-                    GUI.enabled = isAvailable || isCleared;
-                    bool clicked = false;
-                    if (isSelected || isAvailable)
+                    // Room Icon
+                    Texture2D nodeIcon = GetNodeIcon(node.NodeType);
+                    if (nodeIcon != null)
                     {
-                        clicked = LattiruneUITheme.DrawPrimaryButton(btnText, 65f);
+                        Rect iconRect = GUILayoutUtility.GetRect(48f, 48f, GUILayout.Width(48f), GUILayout.Height(48f));
+                        GUI.DrawTexture(iconRect, nodeIcon, ScaleMode.ScaleToFit);
+                        GUILayout.Space(10);
+                    }
+
+                    string statusTag = node.IsCleared ? "[CLEARED]" : (isAvailable ? "[AVAILABLE]" : "[LOCKED]");
+                    string nodeTitle = $"{statusTag} {node.Title.ToUpper()}";
+
+                    if (node.IsCleared)
+                    {
+                        GUI.enabled = false;
+                        LattiruneUITheme.DrawSecondaryButton(nodeTitle, 52f);
+                        GUI.enabled = true;
+                    }
+                    else if (isAvailable)
+                    {
+                        if (isSelected)
+                        {
+                            if (LattiruneUITheme.DrawPrimaryButton($">> {nodeTitle} <<", 55f))
+                            {
+                                _selectedNodeId = node.NodeId;
+                            }
+                        }
+                        else
+                        {
+                            if (LattiruneUITheme.DrawSecondaryButton(nodeTitle, 52f))
+                            {
+                                _selectedNodeId = node.NodeId;
+                            }
+                        }
                     }
                     else
                     {
-                        clicked = LattiruneUITheme.DrawSecondaryButton(btnText, 65f);
+                        GUI.enabled = false;
+                        LattiruneUITheme.DrawSecondaryButton(nodeTitle, 52f);
+                        GUI.enabled = true;
                     }
 
-                    if (clicked)
-                    {
-                        _selectedNodeId = node.NodeId;
-                    }
-                    GUI.enabled = true;
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(6);
                 }
-                GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();
-                GUILayout.Space(8);
+                GUILayout.Space(10);
             }
 
             GUILayout.EndScrollView();
+            GUILayout.Space(14);
 
-            GUILayout.Space(12);
-
-            // Selected Node Detail Card
+            // Active Room Preview & Launch Button
             var selectedNode = _mapGraph.GetNode(_selectedNodeId);
-            if (selectedNode != null)
+            if (selectedNode != null && selectedNode.IsAvailable && !selectedNode.IsCleared)
             {
-                GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-
-                GUIStyle detailTitle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                detailTitle.fontSize = 20;
-                detailTitle.fontStyle = FontStyle.Bold;
-                detailTitle.normal.textColor = selectedNode.IsAvailable ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorTextMuted;
-
-                GUILayout.Label($"{GetNodeBadge(selectedNode.NodeType)}: {selectedNode.Title}", detailTitle);
-
-                GUIStyle detailDesc = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                detailDesc.fontSize = 15;
-                detailDesc.normal.textColor = LattiruneUITheme.ColorTextMuted;
-                GUILayout.Label(selectedNode.Description, detailDesc);
-
-                GUILayout.EndVertical();
-            }
-
-            GUILayout.FlexibleSpace();
-
-            // Enter Selected Room Button
-            bool canEnter = selectedNode != null && selectedNode.IsAvailable && !selectedNode.IsCleared;
-            GUI.enabled = canEnter;
-
-            if (LattiruneUITheme.DrawPrimaryButton("ENTER ROOM & BEGIN", 75f))
-            {
-                if (_mapGraph.SelectAndEnterNode(_selectedNodeId))
+                if (LattiruneUITheme.DrawPrimaryButton($"ENTER {selectedNode.Title.ToUpper()} & BEGIN", 80f))
                 {
-                    Hide();
-                    if (runManager != null)
-                    {
-                        runManager.SetCurrentFloor(selectedNode.FloorNumber - 1);
-                        runManager.PrepareCurrentEncounter();
-                    }
-
-                    if (selectedNode.NodeType == DungeonMapNodeType.MerchantStall)
-                    {
-                        if (navigation != null) navigation.NavigateTo(ScreenState.MERCHANT);
-                    }
-                    else if (selectedNode.NodeType == DungeonMapNodeType.CampfireRest)
-                    {
-                        if (navigation != null) navigation.NavigateTo(ScreenState.CAMPFIRE_REST);
-                    }
-                    else if (selectedNode.NodeType == DungeonMapNodeType.MysteryShrine)
-                    {
-                        if (navigation != null) navigation.NavigateTo(ScreenState.EVENT);
-                    }
-                    else
-                    {
-                        if (navigation != null) navigation.NavigateTo(ScreenState.GRID_BUILD);
-                    }
+                    EnterSelectedNode(selectedNode);
                 }
             }
-
-            GUI.enabled = true;
+            else
+            {
+                GUI.enabled = false;
+                LattiruneUITheme.DrawSecondaryButton("SELECT AN ACTIVE ROOM TO PROCEED", 80f);
+                GUI.enabled = true;
+            }
 
             GUILayout.EndArea();
             GUI.matrix = oldMatrix;
         }
 
-        private string GetNodeBadge(DungeonMapNodeType type)
+        private Texture2D GetNodeIcon(DungeonMapNodeType type)
         {
             switch (type)
             {
-                case DungeonMapNodeType.NormalBattle: return "BATTLE";
-                case DungeonMapNodeType.EliteBattle: return "ELITE";
-                case DungeonMapNodeType.Boss: return "BOSS";
-                case DungeonMapNodeType.MysteryShrine: return "SHRINE";
-                case DungeonMapNodeType.MerchantStall: return "MERCHANT";
-                case DungeonMapNodeType.CampfireRest: return "REST";
-                case DungeonMapNodeType.TreasureVault: return "VAULT";
-                default: return "ROOM";
+                case DungeonMapNodeType.NormalBattle: return VisualAssetProvider.GetUIIcon("ui_icon_battle");
+                case DungeonMapNodeType.EliteBattle: return VisualAssetProvider.GetUIIcon("ui_icon_elite");
+                case DungeonMapNodeType.MerchantStall: return VisualAssetProvider.GetUIIcon("ui_icon_merchant");
+                case DungeonMapNodeType.CampfireRest: return VisualAssetProvider.GetUIIcon("ui_icon_campfire");
+                case DungeonMapNodeType.MysteryShrine: return VisualAssetProvider.GetUIIcon("ui_icon_event");
+                case DungeonMapNodeType.TreasureVault: return VisualAssetProvider.GetUIIcon("ui_icon_event");
+                case DungeonMapNodeType.Boss: return VisualAssetProvider.GetUIIcon("ui_icon_boss");
+                default: return VisualAssetProvider.GetUIIcon("ui_icon_battle");
+            }
+        }
+
+        private void EnterSelectedNode(DungeonMapNode node)
+        {
+            if (node == null || runManager == null) return;
+
+            _mapGraph.SelectAndEnterNode(node.NodeId);
+            runManager.SetCurrentFloor(node.FloorNumber - 1);
+
+            switch (node.NodeType)
+            {
+                case DungeonMapNodeType.NormalBattle:
+                case DungeonMapNodeType.EliteBattle:
+                case DungeonMapNodeType.Boss:
+                    navigation?.NavigateTo(ScreenState.GRID_BUILD);
+                    break;
+                case DungeonMapNodeType.MerchantStall:
+                    navigation?.NavigateTo(ScreenState.MERCHANT);
+                    break;
+                case DungeonMapNodeType.CampfireRest:
+                    navigation?.NavigateTo(ScreenState.CAMPFIRE_REST);
+                    break;
+                case DungeonMapNodeType.MysteryShrine:
+                case DungeonMapNodeType.TreasureVault:
+                    navigation?.NavigateTo(ScreenState.EVENT);
+                    break;
             }
         }
     }

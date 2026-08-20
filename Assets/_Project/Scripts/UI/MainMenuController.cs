@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Lattirune.Audio;
+using Lattirune.Core;
 using Lattirune.Dungeon;
 using Lattirune.Progression;
 using Lattirune.Save;
@@ -8,13 +9,13 @@ using Lattirune.Save;
 namespace Lattirune.UI
 {
     /// <summary>
-    /// Screen controller for the Main Menu entry flow.
-    /// Coordinates Starting New Runs, Continuing Active Runs from encrypted save data,
-    /// entering the persistent Campfire Meta-Hub, and accessing Game Settings.
+    /// Screen controller for the main menu screen.
+    /// Manages starting a new run, continuing a saved run, navigating to sub-screens, and quitting.
+    /// Adheres to dark fantasy aesthetic with stylized artwork backdrops.
     /// </summary>
     public class MainMenuController : MonoBehaviour
     {
-        [Header("System References")]
+        [Header("References")]
         [SerializeField] private ScreenNavigationController navigation;
         [SerializeField] private RunManager runManager;
         [SerializeField] private MetaProgressionManager metaProgression;
@@ -23,43 +24,38 @@ namespace Lattirune.UI
         [Header("State")]
         [SerializeField] private bool hasSavedRun = false;
 
-        public event Action OnNewRunStarted;
-        public event Action OnRunContinued;
-
-        public ScreenNavigationController Navigation => navigation;
-        public RunManager Run => runManager;
-        public MetaProgressionManager Meta => metaProgression;
         public bool HasSavedRun => hasSavedRun;
 
-        public void Initialize(
-            ScreenNavigationController nav,
-            RunManager run,
-            MetaProgressionManager meta,
-            SaveSystem save = null)
+        public void Initialize(ScreenNavigationController nav, RunManager run = null, MetaProgressionManager meta = null, SaveSystem save = null)
         {
             navigation = nav;
             runManager = run;
             metaProgression = meta;
             saveSystem = save;
-
-            CheckSavedRun();
+            RefreshSaveState();
         }
 
-        public void CheckSavedRun()
+        public void Initialize(ScreenNavigationController nav, SaveSystem save)
         {
-            if (saveSystem != null && saveSystem.HasSaveFile())
-            {
-                SaveData data = saveSystem.Load();
-                hasSavedRun = data != null && data.run != null && data.run.hasActiveRun;
-            }
-            else
-            {
-                hasSavedRun = false;
-            }
+            navigation = nav;
+            saveSystem = save;
+            RefreshSaveState();
+        }
+
+        public void RefreshSaveState()
+        {
+            hasSavedRun = saveSystem != null && saveSystem.HasSave();
         }
 
         public void StartNewRun()
         {
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            if (hasSavedRun && saveSystem != null)
+            {
+                saveSystem.DeleteSave();
+                hasSavedRun = false;
+            }
+
             if (runManager != null)
             {
                 runManager.ResetRun();
@@ -71,8 +67,6 @@ namespace Lattirune.UI
                 metaProgression.RecordRunAttempt();
             }
 
-            OnNewRunStarted?.Invoke();
-
             if (navigation != null)
             {
                 navigation.NavigateTo(ScreenState.HERO_SELECTION);
@@ -81,38 +75,16 @@ namespace Lattirune.UI
 
         public void ContinueRun()
         {
-            if (saveSystem != null && saveSystem.HasSaveFile())
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            if (navigation != null)
             {
-                SaveData data = saveSystem.Load();
-                if (data != null && data.run != null && runManager != null)
-                {
-                    runManager.RestoreRunState(
-                        data.run.currentFloorIndex,
-                        data.run.currentEncounterIndex,
-                        (RunState)data.run.runState
-                    );
-
-                    if (metaProgression != null && data.meta != null)
-                    {
-                        metaProgression.ImportMetaData(data.meta);
-                    }
-
-                    OnRunContinued?.Invoke();
-
-                    if (navigation != null)
-                    {
-                        navigation.NavigateTo(ScreenState.GRID_BUILD);
-                    }
-                    return;
-                }
+                navigation.NavigateTo(ScreenState.DUNGEON_MAP);
             }
-
-            // Fallback to start new run if no valid save was found
-            StartNewRun();
         }
 
         public void OpenCampfireHub()
         {
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
             if (navigation != null)
             {
                 navigation.NavigateTo(ScreenState.CAMPFIRE_HUB);
@@ -121,6 +93,7 @@ namespace Lattirune.UI
 
         public void OpenSettings()
         {
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
             if (navigation != null)
             {
                 navigation.NavigateTo(ScreenState.SETTINGS);
@@ -159,29 +132,16 @@ namespace Lattirune.UI
 
             // Top Title & Subtitle Header
             LattiruneUITheme.DrawHeader("LATTIRUNE", "ALIGN THE LATTICE. AWAKEN THE RUNES.");
-            GUILayout.Space(24);
+            GUILayout.Space(14);
 
-            // Center Visual Arcane Lattice Emblem
-            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUILayout.Space(16);
-            GUIStyle emblemStyle = new GUIStyle(LattiruneUITheme.StyleHeaderTitle);
-            emblemStyle.fontSize = 36;
-            emblemStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
-            float pulse = LattiruneUITheme.GetPulseAlpha(3f, 0.75f, 1.0f);
-            Color oldColor = GUI.color;
-            GUI.color = new Color(LattiruneUITheme.ColorGoldBright.r, LattiruneUITheme.ColorGoldBright.g, LattiruneUITheme.ColorGoldBright.b, pulse);
-            GUILayout.Label("❖  L A T T I C E  ❖", emblemStyle);
-            GUI.color = oldColor;
-            
-            GUIStyle loreStyle = new GUIStyle(LattiruneUITheme.StyleHeaderSubtitle);
-            loreStyle.fontSize = 15;
-            loreStyle.alignment = TextAnchor.MiddleCenter;
-            loreStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-            GUILayout.Label("Tactical Grid Inventory & Elemental Reactions", loreStyle);
-            GUILayout.Space(16);
-            GUILayout.EndVertical();
-
-            GUILayout.Space(32);
+            // Center Visual Arcane Citadel Backdrop
+            Texture2D menuBg = VisualAssetProvider.GetBackdrop("bg_mainmenu");
+            if (menuBg != null)
+            {
+                Rect bgRect = GUILayoutUtility.GetRect(panelWidth - 80, 200f);
+                GUI.DrawTexture(bgRect, menuBg, ScaleMode.ScaleAndCrop);
+                GUILayout.Space(16);
+            }
 
             // Primary Action Button
             if (hasSavedRun)

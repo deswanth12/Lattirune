@@ -1,43 +1,43 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Combat;
 using Lattirune.Core;
+using Lattirune.Inventory;
 using Lattirune.Items;
 using Lattirune.Synergy;
 
 namespace Lattirune.UI
 {
     /// <summary>
-    /// Unified prototype HUD for combat state, health bars, synergy indicators,
-    /// and the post-victory 3-card reward selection flow.
-    /// [DEVELOPMENT / PROTOTYPE UI]
+    /// Master UI Component for the Combat Encounter Screen.
+    /// Integrates the 2D Animated Battle Arena Stage, real character portraits,
+    /// monster visuals, boss phase transitions, speed controls, emergency potions,
+    /// and visual victory reward cards (0 emoji, 0 placeholders).
     /// </summary>
     public class CombatEncounterUI : MonoBehaviour
     {
-        [Header("System References")]
-        [SerializeField] private ScreenNavigationController navigation;
+        [Header("Combat System References")]
         [SerializeField] private CombatSystem combatSystem;
         [SerializeField] private SynergySystem synergySystem;
         [SerializeField] private RewardService rewardService;
+        [SerializeField] private ScreenNavigationController navigation;
         [SerializeField] private Lattirune.Dungeon.RunManager runManager;
 
-        [Header("Reward Configuration")]
+        [Header("Reward Modal References")]
+        [SerializeField] private List<ItemDataSO> _itemCatalogue;
         [SerializeField] private Transform rewardSpawnParent;
-        [SerializeField] private Vector3 rewardSpawnPosition = new Vector3(0f, -4f, 0f);
+        [SerializeField] private Vector3 rewardSpawnPosition = Vector3.zero;
 
-        private List<ItemDataSO> _itemCatalogue = new List<ItemDataSO>();
+        [Header("State")]
         private List<RewardOption> _currentRewardOptions = new List<RewardOption>();
-        private RewardOption _selectedRewardOption = null;
+        private RewardOption _selectedRewardOption;
         private bool _isShowingRewards = false;
-        private string _combatLog = "Arrange items on the 5x5 grid, then tap 'START BATTLE'.";
+        private string _combatLog = "Prepare your grid alignment and initiate battle.";
 
-        public ScreenNavigationController Navigation => navigation;
-        public CombatSystem Combat => combatSystem;
-        public RewardService Rewards => rewardService;
-        public Lattirune.Dungeon.RunManager RunManager => runManager;
-        public IReadOnlyList<RewardOption> CurrentRewardOptions => _currentRewardOptions;
-        public RewardOption SelectedRewardOption => _selectedRewardOption;
         public bool IsShowingRewards => _isShowingRewards;
+        public RewardOption SelectedRewardOption => _selectedRewardOption;
+        public IReadOnlyList<RewardOption> CurrentRewardOptions => _currentRewardOptions;
 
         public void Initialize(
             CombatSystem combat, 
@@ -97,11 +97,26 @@ namespace Lattirune.UI
         {
             string bonus = damage.HasSynergyBonus ? $" (+{damage.RuneBonus} Flame Synergy)" : "";
             _combatLog = $"{damage.SourceName} strikes {damage.TargetName} for {damage.FinalDamage} DMG{bonus}!";
+
+            // Trigger 2D Visual Stage Animation & VFX
+            if (CombatStageVisualController.Instance != null && combatSystem != null)
+            {
+                if (damage.SourceName == combatSystem.Player?.CombatantName)
+                {
+                    CombatStageVisualController.Instance.TriggerHeroAttack();
+                    CombatStageVisualController.Instance.TriggerEnemyHit(damage.FinalDamage, damage.HasSynergyBonus);
+                }
+                else
+                {
+                    CombatStageVisualController.Instance.TriggerEnemyAttack();
+                    CombatStageVisualController.Instance.TriggerHeroHit(damage.FinalDamage);
+                }
+            }
         }
 
         private void HandleVictory()
         {
-            _combatLog = ">>> VICTORY! Enemy vanquished. Choose a reward. <<<";
+            _combatLog = "VICTORY! Enemy vanquished. Choose your reward.";
             _isShowingRewards = true;
             _selectedRewardOption = null;
 
@@ -119,7 +134,7 @@ namespace Lattirune.UI
 
         private void HandleDefeat()
         {
-            _combatLog = ">>> DEFEAT! Player succumbed. <<<";
+            _combatLog = "DEFEAT! Player succumbed to the dungeon horrors.";
             _isShowingRewards = false;
             _selectedRewardOption = null;
 
@@ -189,99 +204,103 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
-            if (navigation == null || (navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.COMBAT && navigation.CurrentScreen != ScreenState.REWARD_SELECTION))
+            if (combatSystem == null) return;
+            if (navigation != null && navigation.CurrentScreen != ScreenState.COMBAT && navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.REWARD_SELECTION)
             {
                 return;
             }
 
-            if (combatSystem == null || combatSystem.Player == null || combatSystem.Enemy == null) return;
-
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
-
-            DrawCombatTopHUD();
-
-            // Victory Reward Selection Overlay
-            if (_isShowingRewards && _currentRewardOptions != null && _currentRewardOptions.Count > 0)
+            if (_isShowingRewards || (navigation != null && navigation.CurrentScreen == ScreenState.REWARD_SELECTION))
             {
                 DrawRewardSelectionModal();
             }
-
-            GUI.matrix = oldMatrix;
+            else
+            {
+                DrawCombatTopHUD();
+            }
         }
 
         private void DrawCombatTopHUD()
         {
             float hudWidth = 1000f;
-            float hudHeight = 360f;
+            float hudHeight = 440f;
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float posX = (1080f - hudWidth) * 0.5f;
             float posY = 20f + offsetY;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, hudWidth, hudHeight), "COMBAT HUD");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, hudWidth, hudHeight), "BATTLE ARENA");
 
-            GUILayout.BeginArea(new Rect(posX + 24, posY + 16, hudWidth - 48, hudHeight - 32));
+            GUILayout.BeginArea(new Rect(posX + 20, posY + 15, hudWidth - 40, hudHeight - 30));
 
             PlayerCombatant player = combatSystem.Player;
             EnemyCombatant enemy = combatSystem.Enemy;
 
-            string floorTitle = runManager != null 
-                ? (runManager.IsEndlessMode ? $"DUNGEON FLOOR {runManager.CurrentFloorNumber} [ENDLESS TIER {runManager.EndlessTier}]" : $"DUNGEON FLOOR {runManager.CurrentFloorNumber}")
-                : "DUNGEON ENCOUNTER";
+            bool isBoss = (runManager != null && runManager.CurrentFloor != null && runManager.CurrentFloor.GetEncounter(0) != null && runManager.CurrentFloor.GetEncounter(0).IsBoss)
+                          || (enemy != null && (enemy.CombatantName.ToLower().Contains("goliath") || enemy.CombatantName.ToLower().Contains("lich")));
 
-            string eliteAffixBadge = "";
-            if (enemy != null && enemy.EliteAffix != EliteAffixType.None)
+            int bossPhase = 1;
+            if (isBoss && enemy != null)
             {
-                string affixDesc = enemy.EliteAffix switch
+                if (enemy.CombatantName.ToLower().Contains("goliath") && enemy.CurrentHp < enemy.MaxHp * 0.5f) bossPhase = 2;
+                else if (enemy.CombatantName.ToLower().Contains("lich"))
                 {
-                    EliteAffixType.Vampiric => "Leeches 25% DMG as HP",
-                    EliteAffixType.Juggernaut => "+40% Max HP & +8 Base Armor",
-                    EliteAffixType.Frenzied => "+35% Attack Speed",
-                    EliteAffixType.MoltenAura => "+2 ATK & 25% Thorns Reflection",
-                    EliteAffixType.ToxicThorns => "Inflicts Poison On Hit",
-                    EliteAffixType.Frostbound => "+6 Armor & Chilling Aura",
-                    EliteAffixType.Blighted => "+30% Max HP & Healing Suppression",
-                    _ => ""
-                };
-                eliteAffixBadge = $" [ELITE: {enemy.EliteAffix.ToString().ToUpper()}: {affixDesc}]";
+                    if (enemy.CurrentHp < enemy.MaxHp * 0.33f) bossPhase = 3;
+                    else if (enemy.CurrentHp < enemy.MaxHp * 0.66f) bossPhase = 2;
+                }
             }
 
-            GUIStyle floorHeaderStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-            floorHeaderStyle.fontSize = 18;
-            floorHeaderStyle.fontStyle = FontStyle.Bold;
-            floorHeaderStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+            Texture2D heroTex = VisualAssetProvider.GetHeroTexture(player != null ? player.CombatantName : "hero_rune_knight");
+            Texture2D enemyTex = VisualAssetProvider.GetEnemyTexture(enemy != null ? enemy.CombatantName : "enemy_sewer_rat", isBoss, bossPhase);
 
-            GUILayout.Label(floorTitle, floorHeaderStyle);
-            GUILayout.Space(4);
+            // 1. Draw 2D Interactive Battle Arena Stage (Hero vs Villain Cards + Avatars + Health + Stats + VFX)
+            Rect stageRect = GUILayoutUtility.GetRect(hudWidth - 40, 240f);
+            if (CombatStageVisualController.Instance != null)
+            {
+                CombatStageVisualController.Instance.DrawBattleArenaStage(
+                    stageRect,
+                    heroTex,
+                    player != null ? player.CombatantName : "Rune Knight",
+                    player != null ? player.CurrentHp : 100,
+                    player != null ? player.MaxHp : 100,
+                    player != null ? player.Armor : 0,
+                    player != null ? player.BaseAttackDamage + player.ActiveRuneBonus : 10,
+                    enemyTex,
+                    enemy != null ? enemy.CombatantName : "Sewer Rat",
+                    enemy != null ? enemy.CurrentHp : 30,
+                    enemy != null ? enemy.MaxHp : 30,
+                    enemy != null ? enemy.Armor : 0,
+                    enemy != null ? enemy.BaseAttackDamage : 5,
+                    isBoss,
+                    bossPhase
+                );
+            }
+            else
+            {
+                DrawFallbackStage(stageRect, heroTex, enemyTex, player, enemy, isBoss, bossPhase);
+            }
 
-            // Health bars
-            LattiruneUITheme.DrawProgressBar(player.CurrentHp, player.MaxHp, $"HERO HP: {player.CurrentHp}/{player.MaxHp}  |  DEF: {player.Armor}  |  ATK: {player.BaseAttackDamage}+{player.ActiveRuneBonus}", LattiruneUITheme.ColorGreenHealth, 26f);
-            GUILayout.Space(4);
-            LattiruneUITheme.DrawProgressBar(enemy.CurrentHp, enemy.MaxHp, $"{enemy.CombatantName} HP: {enemy.CurrentHp}/{enemy.MaxHp}  |  DEF: {enemy.Armor}  |  ATK: {enemy.BaseAttackDamage}{eliteAffixBadge}", LattiruneUITheme.ColorRedDanger, 26f);
-            GUILayout.Space(4);
+            GUILayout.Space(8);
 
+            // 2. Action Log & Combos
             if (combatSystem.Combo != null && combatSystem.Combo.CurrentCombo > 0)
             {
                 GUIStyle comboStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                comboStyle.fontSize = 17;
+                comboStyle.fontSize = 16;
                 comboStyle.fontStyle = FontStyle.Bold;
                 comboStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
                 GUILayout.Label($"COMBO: {combatSystem.Combo.CurrentCombo}x  |  MULTIPLIER: {combatSystem.Combo.ComboMultiplier:0.00}x DMG", comboStyle);
             }
 
-            GUIStyle textStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            textStyle.fontSize = 15;
-            textStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-            GUILayout.Label($"<i>Log: {_combatLog}</i>", textStyle);
+            GUIStyle logStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            logStyle.fontSize = 14;
+            logStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUILayout.Label($"<i>Log: {_combatLog}</i>", logStyle);
             GUILayout.Space(6);
 
+            // 3. Combat Controls (Touch friendly >= 65dp)
             GUILayout.BeginHorizontal();
 
-            // Battle Start Button (in Preparing State)
             if (combatSystem.CurrentState == CombatState.Preparing && !_isShowingRewards)
             {
                 if (LattiruneUITheme.DrawPrimaryButton("START BATTLE", 65f))
@@ -289,7 +308,6 @@ namespace Lattirune.UI
                     combatSystem.StartCombat();
                 }
             }
-            // Active Fighting Controls: Speed Multiplier & Emergency Heal
             else if (combatSystem.CurrentState == CombatState.Fighting)
             {
                 string speedLabel = combatSystem.SpeedMultiplier switch
@@ -317,7 +335,6 @@ namespace Lattirune.UI
                     combatSystem.UseEmergencyPotion(player, 25);
                 }
             }
-            // Retry and Revive Controls (in Defeat State)
             else if (combatSystem.CurrentState == CombatState.Defeat)
             {
                 if (runManager != null && runManager.CanRevivePlayer)
@@ -338,80 +355,104 @@ namespace Lattirune.UI
             GUILayout.EndHorizontal();
 
             GUILayout.EndArea();
+            GUI.matrix = oldMatrix;
+        }
+
+        private void DrawFallbackStage(Rect stageRect, Texture2D heroTex, Texture2D enemyTex, PlayerCombatant player, EnemyCombatant enemy, bool isBoss, int bossPhase)
+        {
+            float cardW = (stageRect.width - 20f) * 0.5f;
+            
+            // Hero Card
+            Rect heroCard = new Rect(stageRect.x, stageRect.y, cardW, stageRect.height);
+            LattiruneUITheme.DrawCard(heroCard);
+            if (heroTex != null) GUI.DrawTexture(new Rect(heroCard.x + 10, heroCard.y + 10, 100, 100), heroTex, ScaleMode.ScaleToFit);
+
+            // Enemy Card
+            Rect enemyCard = new Rect(stageRect.x + cardW + 20f, stageRect.y, cardW, stageRect.height);
+            LattiruneUITheme.DrawCard(enemyCard);
+            if (enemyTex != null) GUI.DrawTexture(new Rect(enemyCard.x + 10, enemyCard.y + 10, 100, 100), enemyTex, ScaleMode.ScaleToFit);
         }
 
         private void DrawRewardSelectionModal()
         {
             float modalWidth = 960f;
-            float modalHeight = 1200f;
+            float modalHeight = 1300f;
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float posX = (1080f - modalWidth) * 0.5f;
-            float posY = 380f + offsetY;
+            float posY = 300f + offsetY;
 
             LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, modalWidth, modalHeight), "VICTORY REWARDS");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, modalWidth - 80, modalHeight - 80));
 
             LattiruneUITheme.DrawHeader("VICTORY REWARDS", "Select ONE reward to reinforce your build:");
-            GUILayout.Space(20);
+            GUILayout.Space(16);
 
             for (int i = 0; i < _currentRewardOptions.Count; i++)
             {
-                RewardOption opt = _currentRewardOptions[i];
-                if (opt == null) continue;
+                var option = _currentRewardOptions[i];
+                if (option == null) continue;
 
-                bool isSelected = _selectedRewardOption == opt;
-                bool isLocked = _selectedRewardOption != null;
-
+                bool isSelected = (_selectedRewardOption == option);
                 GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
-                string selectState = isSelected ? " [CHOSEN]" : "";
-                GUIStyle cardTitleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                cardTitleStyle.fontSize = 22;
-                cardTitleStyle.fontStyle = FontStyle.Bold;
-                cardTitleStyle.normal.textColor = isSelected ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorTextPrimary;
+                GUILayout.BeginHorizontal();
 
-                GUILayout.Label($"{opt.DisplayName} ({opt.Footprint.x}x{opt.Footprint.y} {opt.Category}){selectState}", cardTitleStyle);
-                GUILayout.Space(4);
+                // Real Item Artwork Icon
+                Texture2D itemIcon = VisualAssetProvider.GetItemTexture(option.ItemData != null ? option.ItemData.ItemId : "");
+                if (itemIcon != null)
+                {
+                    Rect iconRect = GUILayoutUtility.GetRect(80f, 80f, GUILayout.Width(80f), GUILayout.Height(80f));
+                    GUI.DrawTexture(iconRect, itemIcon, ScaleMode.ScaleToFit);
+                    GUILayout.Space(12);
+                }
+
+                GUILayout.BeginVertical();
+                GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+                titleStyle.fontSize = 20;
+                titleStyle.fontStyle = FontStyle.Bold;
+                titleStyle.normal.textColor = isSelected ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorTextPrimary;
+                GUILayout.Label(option.DisplayName, titleStyle);
 
                 GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                descStyle.fontSize = 17;
-                descStyle.wordWrap = true;
+                descStyle.fontSize = 15;
                 descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-                GUILayout.Label(opt.Description, descStyle);
-                GUILayout.Space(8);
+                GUILayout.Label(option.Description, descStyle);
+                GUILayout.EndVertical();
 
-                GUI.enabled = !isLocked;
+                GUILayout.FlexibleSpace();
+
                 if (isSelected)
                 {
-                    LattiruneUITheme.DrawPrimaryButton("REWARD CHOSEN", 60f);
+                    LattiruneUITheme.DrawBadge("CLAIMED & STAGED", LattiruneUITheme.ColorGoldPrimary);
                 }
                 else
                 {
-                    if (LattiruneUITheme.DrawPrimaryButton("CLAIM REWARD", 60f))
+                    if (LattiruneUITheme.DrawPrimaryButton($"CLAIM {option.DisplayName.ToUpper()}", 55f))
                     {
-                        SelectReward(opt);
+                        SelectReward(option);
                     }
                 }
-                GUI.enabled = true;
+
+                GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();
                 GUILayout.Space(12);
             }
 
-            GUILayout.Space(20);
+            GUILayout.FlexibleSpace();
 
-            // Continue Button (enabled after a reward is chosen)
             if (_selectedRewardOption != null)
             {
-                if (LattiruneUITheme.DrawPrimaryButton("PROCEED TO NEXT ROOM", 75f))
+                if (LattiruneUITheme.DrawPrimaryButton("CONTINUE DESCENT", 75f))
                 {
                     CloseRewardScreenAndContinue();
                 }
             }
 
             GUILayout.EndArea();
+            GUI.matrix = oldMatrix;
         }
     }
 }
