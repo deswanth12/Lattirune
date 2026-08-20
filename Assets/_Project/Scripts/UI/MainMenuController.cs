@@ -155,7 +155,7 @@ namespace Lattirune.UI
             float panelWidth = 920f;
             float panelHeight = 1100f;
             float posX = (1080f - panelWidth) * 0.5f;
-            float posY = (1920f - panelHeight) * 0.5f;
+            float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
             GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
             boxStyle.normal.background = Texture2D.whiteTexture;

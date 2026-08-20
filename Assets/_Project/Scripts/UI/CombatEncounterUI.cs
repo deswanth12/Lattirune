@@ -182,8 +182,11 @@ namespace Lattirune.UI
         {
             float hudWidth = 1000f;
             float hudHeight = 360f;
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
+            float offsetY = (Screen.height / scale - 1920f) * 0.5f;
             float posX = (1080f - hudWidth) * 0.5f;
-            float posY = 20f;
+            float posY = 20f + offsetY;
 
             GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
             boxStyle.normal.background = Texture2D.whiteTexture;
@@ -326,8 +329,11 @@ namespace Lattirune.UI
         {
             float modalWidth = 960f;
             float modalHeight = 1200f;
+            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
+            if (scale <= 0.01f) scale = 1.0f;
+            float offsetY = (Screen.height / scale - 1920f) * 0.5f;
             float posX = (1080f - modalWidth) * 0.5f;
-            float posY = 380f;
+            float posY = 380f + offsetY;
 
             GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
             boxStyle.normal.background = Texture2D.whiteTexture;
