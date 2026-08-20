@@ -12,13 +12,18 @@ namespace Lattirune.UI
         HERO_SELECTION,
         CODEX,
         RUN_START,
+        DUNGEON_MAP,
         GRID_BUILD,
         COMBAT,
         REWARD_SELECTION,
+        EVENT,
         INVENTORY,
         MERCHANT,
         CAMPFIRE_REST,
         BOSS,
+        VICTORY,
+        DEATH,
+        TUTORIAL,
         RUN_COMPLETE,
         SETTINGS
     }

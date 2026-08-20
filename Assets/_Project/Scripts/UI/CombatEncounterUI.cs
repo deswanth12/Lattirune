@@ -154,7 +154,7 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
-            if (navigation != null && navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.COMBAT)
+            if (navigation == null || (navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.COMBAT))
             {
                 return;
             }

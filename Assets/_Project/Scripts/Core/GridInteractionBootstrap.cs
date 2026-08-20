@@ -163,7 +163,7 @@ namespace Lattirune.Core
                 reactionObj.transform.SetParent(transform);
                 reactionSystem = reactionObj.AddComponent<ElementalReactionSystem>();
                 var reactionVFX = reactionObj.AddComponent<ElementalReactionVFXController>();
-                reactionVFX.Initialize(reactionSystem, gridView);
+                reactionVFX.Initialize(reactionSystem, gridView, navigationController);
             }
             reactionSystem.EnsureDefaultDefinitions();
 
@@ -494,7 +494,7 @@ namespace Lattirune.Core
                 uiObj.transform.SetParent(transform);
                 combatEncounterUI = uiObj.AddComponent<CombatEncounterUI>();
             }
-            combatEncounterUI.Initialize(combatSystem, synergySystem, rewardService, prototypeItemCatalogue, stagingAreaParent);
+            combatEncounterUI.Initialize(combatSystem, synergySystem, rewardService, prototypeItemCatalogue, stagingAreaParent, navigationController, runManager);
 
             // Reward applied -> auto-save
             rewardService.OnRewardApplied += (option, instance) =>
@@ -623,7 +623,28 @@ namespace Lattirune.Core
             GameObject tutUiObj = new GameObject("TutorialOverlayUIController");
             tutUiObj.transform.SetParent(transform);
             var tutorialUI = tutUiObj.AddComponent<TutorialOverlayUIController>();
-            tutorialUI.Initialize(tutorialManager);
+            tutorialUI.Initialize(tutorialManager, navigationController);
+
+            // Bind ScreenNavigationController state manager
+            if (navigationController != null)
+            {
+                navigationController.BindWorldGrid(gridView != null ? gridView.gameObject : null);
+                navigationController.RegisterScreenController(ScreenState.HERO_SELECTION, heroClassUI);
+                navigationController.RegisterScreenController(ScreenState.DUNGEON_MAP, mapUI);
+                navigationController.RegisterScreenController(ScreenState.COMBAT, combatEncounterUI);
+                navigationController.RegisterScreenController(ScreenState.MERCHANT, merchantUI);
+                navigationController.RegisterScreenController(ScreenState.CAMPFIRE_REST, campfireRestUI);
+                navigationController.RegisterScreenController(ScreenState.CODEX, codexUI);
+            }
+
+            if (reactionSystem != null)
+            {
+                var reactionVFX = reactionSystem.GetComponent<ElementalReactionVFXController>();
+                if (reactionVFX != null)
+                {
+                    reactionVFX.Initialize(reactionSystem, gridView, navigationController);
+                }
+            }
         }
 
         private void BuildDefaultItemDefinitions()

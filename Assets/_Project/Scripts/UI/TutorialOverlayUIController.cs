@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Lattirune.Tutorial;
 
@@ -13,14 +13,18 @@ namespace Lattirune.UI
         [Header("References")]
         [SerializeField] private TutorialManager tutorialManager;
 
-        public void Initialize(TutorialManager tutorial = null)
+        [SerializeField] private ScreenNavigationController navigation;
+
+        public void Initialize(TutorialManager tutorial = null, ScreenNavigationController nav = null)
         {
             tutorialManager = tutorial;
+            navigation = nav;
         }
 
         private void OnGUI()
         {
             if (tutorialManager == null || tutorialManager.IsTutorialCompleted) return;
+            if (navigation != null && navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.COMBAT) return;
 
             float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
             if (scale <= 0.01f) scale = 1.0f;

@@ -148,59 +148,91 @@ namespace Lattirune.UI
         {
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 920f;
-            float panelHeight = 1100f;
+            float panelWidth = 940f;
+            float panelHeight = 1350f;
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "⚔️ LATTIRUNE ⚔️");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "LATTIRUNE");
 
-            GUILayout.BeginArea(new Rect(posX + 40, posY + 50, panelWidth - 80, panelHeight - 100));
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader("⚔️ LATTIRUNE ⚔️", "Align the Lattice. Awaken the Runes.");
+            // Top Title & Subtitle Header
+            LattiruneUITheme.DrawHeader("LATTIRUNE", "Align the Lattice. Awaken the Runes.");
+            GUILayout.Space(20);
+
+            // Center Visual Identity Emblem Container
+            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+            GUILayout.Space(12);
+            GUIStyle emblemStyle = new GUIStyle(LattiruneUITheme.StyleHeaderTitle);
+            emblemStyle.fontSize = 42;
+            emblemStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
+            GUILayout.Label("--- ❖ ---", emblemStyle);
+            
+            GUIStyle loreStyle = new GUIStyle(LattiruneUITheme.StyleHeaderSubtitle);
+            loreStyle.fontSize = 16;
+            loreStyle.alignment = TextAnchor.MiddleCenter;
+            GUILayout.Label("A Tactical Grid-Inventory Roguelite", loreStyle);
+            GUILayout.Space(12);
+            GUILayout.EndVertical();
+
             GUILayout.Space(36);
 
+            // Primary Action Button
             if (hasSavedRun)
             {
-                if (LattiruneUITheme.DrawPrimaryButton("⚔️ RESUME ACTIVE DESCENT ⚔️", 75f))
+                if (LattiruneUITheme.DrawPrimaryButton("RESUME DESCENT", 80f))
                 {
                     ContinueRun();
                 }
                 GUILayout.Space(16);
-            }
-
-            if (!hasSavedRun)
-            {
-                if (LattiruneUITheme.DrawPrimaryButton("🔥 START NEW RUN 🔥", 75f))
+                if (LattiruneUITheme.DrawSecondaryButton("START NEW RUN (DISCARD SAVE)", 65f))
                 {
                     StartNewRun();
                 }
             }
             else
             {
-                if (LattiruneUITheme.DrawSecondaryButton("⚡ START NEW RUN (DISCARD SAVE)", 65f))
+                if (LattiruneUITheme.DrawPrimaryButton("START NEW RUN", 85f))
                 {
                     StartNewRun();
                 }
             }
-            GUILayout.Space(16);
 
-            if (LattiruneUITheme.DrawSecondaryButton("🏕️ CAMPFIRE META-HUB", 65f))
+            GUILayout.Space(20);
+
+            // Secondary Buttons
+            if (LattiruneUITheme.DrawSecondaryButton("CAMPFIRE META-HUB", 65f))
             {
                 OpenCampfireHub();
             }
-            GUILayout.Space(16);
+            GUILayout.Space(14);
 
-            if (LattiruneUITheme.DrawSecondaryButton("🔊 AUDIO & SETTINGS", 65f))
+            if (LattiruneUITheme.DrawSecondaryButton("ARCANE CODEX & BESTIARY", 65f))
+            {
+                if (navigation != null) navigation.NavigateTo(ScreenState.CODEX);
+            }
+            GUILayout.Space(14);
+
+            if (LattiruneUITheme.DrawSecondaryButton("SETTINGS", 65f))
             {
                 OpenSettings();
             }
-            GUILayout.Space(16);
+            GUILayout.Space(14);
 
-            if (LattiruneUITheme.DrawDangerButton("🚪 EXIT GAME", 65f))
+            if (LattiruneUITheme.DrawDangerButton("EXIT GAME", 60f))
             {
                 ExitGame();
             }
+
+            GUILayout.FlexibleSpace();
+
+            // Bottom Version Footer
+            GUIStyle versionStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            versionStyle.fontSize = 15;
+            versionStyle.alignment = TextAnchor.MiddleCenter;
+            versionStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUILayout.Label("Lattirune v1.0.0 (API 36 - Android 16)", versionStyle);
 
             GUILayout.EndArea();
             GUI.matrix = oldMatrix;

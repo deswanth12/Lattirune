@@ -138,17 +138,20 @@ namespace Lattirune.Reactions
     {
         [SerializeField] private ElementalReactionSystem reactionSystem;
         [SerializeField] private Grid.GridView gridView;
+        [SerializeField] private UI.ScreenNavigationController navigation;
 
-        public void Initialize(ElementalReactionSystem system, Grid.GridView view)
+        public void Initialize(ElementalReactionSystem system, Grid.GridView view, UI.ScreenNavigationController nav = null)
         {
             reactionSystem = system;
             gridView = view;
+            navigation = nav;
         }
 
         private void OnGUI()
         {
             if (reactionSystem == null || gridView == null || Camera.main == null) return;
             if (reactionSystem.ActiveReactionCount == 0) return;
+            if (navigation != null && navigation.CurrentScreen != UI.ScreenState.GRID_BUILD && navigation.CurrentScreen != UI.ScreenState.COMBAT) return;
 
             float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
             if (scale <= 0.01f) scale = 1.0f;

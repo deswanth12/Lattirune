@@ -70,9 +70,10 @@ namespace Lattirune.Items
             btnStyle.fontSize = 24;
             btnStyle.fontStyle = FontStyle.Bold;
 
+            float offsetY = (Screen.height / scale - 1920f) * 0.5f;
             Color oldColor = GUI.color;
             GUI.color = Color.cyan;
-            if (GUI.Button(new Rect(540f - 180f, 1550f, 360f, 75f), "🔄 ROTATE (90°)", btnStyle))
+            if (GUI.Button(new Rect(540f - 180f, 1550f + offsetY, 360f, 75f), "🔄 ROTATE (90°)", btnStyle))
             {
                 RotateActiveItem();
             }

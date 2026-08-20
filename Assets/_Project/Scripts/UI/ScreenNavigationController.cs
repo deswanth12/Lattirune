@@ -23,10 +23,30 @@ namespace Lattirune.UI
         public ScreenState CurrentScreen => currentScreen;
         public int HistoryCount => _history.Count;
 
+        [Header("References")]
+        [SerializeField] private GameObject worldGridObject;
+        [SerializeField] private MonoBehaviour tutorialController;
+
+        private readonly Dictionary<ScreenState, MonoBehaviour> _screenRegistry = new Dictionary<ScreenState, MonoBehaviour>();
+
+        public void BindWorldGrid(GameObject gridObj)
+        {
+            worldGridObject = gridObj;
+        }
+
+        public void RegisterScreenController(ScreenState state, MonoBehaviour controller)
+        {
+            if (controller != null)
+            {
+                _screenRegistry[state] = controller;
+            }
+        }
+
         public void Initialize(ScreenState startingScreen = ScreenState.MAIN_MENU)
         {
             currentScreen = startingScreen;
             _history.Clear();
+            EnforceScreenVisibility(startingScreen);
         }
 
         public void NavigateTo(ScreenState nextScreen, bool recordHistory = true)
@@ -44,7 +64,40 @@ namespace Lattirune.UI
             AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
             HapticFeedback.Trigger(HapticFeedbackType.Selection);
 
+            EnforceScreenVisibility(currentScreen);
             OnScreenChanged?.Invoke(previous, currentScreen);
+        }
+
+        public void ShowScreen(ScreenState state)
+        {
+            NavigateTo(state, recordHistory: true);
+        }
+
+        private void EnforceScreenVisibility(ScreenState activeState)
+        {
+            // 1. Control 3D Grid & World space rendering visibility
+            bool showWorldGrid = (activeState == ScreenState.GRID_BUILD || activeState == ScreenState.COMBAT || activeState == ScreenState.REWARD_SELECTION || activeState == ScreenState.INVENTORY);
+            if (worldGridObject != null)
+            {
+                worldGridObject.SetActive(showWorldGrid);
+            }
+
+            // 2. Control registered mono screen controllers
+            foreach (var kvp in _screenRegistry)
+            {
+                if (kvp.Value != null)
+                {
+                    // Settings overlay is modal, does not disable underlying primary screen
+                    if (activeState == ScreenState.SETTINGS)
+                    {
+                        // Settings overlay handles its own display
+                    }
+                    else
+                    {
+                        kvp.Value.enabled = (kvp.Key == activeState);
+                    }
+                }
+            }
         }
 
         /// <summary>
