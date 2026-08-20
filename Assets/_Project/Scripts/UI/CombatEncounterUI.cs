@@ -182,34 +182,14 @@ namespace Lattirune.UI
         {
             float hudWidth = 1000f;
             float hudHeight = 360f;
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-            float offsetY = (Screen.height / scale - 1920f) * 0.5f;
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
+
             float posX = (1080f - hudWidth) * 0.5f;
             float posY = 20f + offsetY;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.94f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, hudWidth, hudHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, hudWidth, hudHeight), "COMBAT HUD");
 
             GUILayout.BeginArea(new Rect(posX + 24, posY + 16, hudWidth - 48, hudHeight - 32));
-
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 22;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.normal.textColor = Color.white;
-
-            GUIStyle textStyle = new GUIStyle(GUI.skin.label);
-            textStyle.fontSize = 18;
-            textStyle.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
-
-            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
-            btnStyle.fontSize = 20;
-            btnStyle.fontStyle = FontStyle.Bold;
 
             PlayerCombatant player = combatSystem.Player;
             EnemyCombatant enemy = combatSystem.Enemy;
@@ -232,30 +212,36 @@ namespace Lattirune.UI
                     EliteAffixType.Blighted => "+30% Max HP & Healing Suppression",
                     _ => ""
                 };
-                eliteAffixBadge = $" <color=#ef4444>[💀 {enemy.EliteAffix.ToString().ToUpper()}: {affixDesc}]</color>";
+                eliteAffixBadge = $" [💀 {enemy.EliteAffix.ToString().ToUpper()}: {affixDesc}]";
             }
 
-            GUIStyle floorHeaderStyle = new GUIStyle(GUI.skin.label);
+            GUIStyle floorHeaderStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
             floorHeaderStyle.fontSize = 18;
             floorHeaderStyle.fontStyle = FontStyle.Bold;
-            floorHeaderStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f);
+            floorHeaderStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
 
             GUILayout.Label($"── {floorTitle} ──", floorHeaderStyle);
+            GUILayout.Space(4);
 
-            string flameNote = player.HasActiveSynergy ? " <color=#f97316>[🔥 FLAME SYNERGY]</color>" : "";
-            GUILayout.Label($"<b>HERO HP:</b> {player.CurrentHp}/{player.MaxHp} | <b>DEF:</b> {player.Armor} | <b>ATK:</b> {player.BaseAttackDamage}+{player.ActiveRuneBonus}{flameNote}", textStyle);
-            GUILayout.Label($"<b>{enemy.CombatantName} HP:</b> {enemy.CurrentHp}/{enemy.MaxHp} | <b>DEF:</b> {enemy.Armor} | <b>ATK:</b> {enemy.BaseAttackDamage}{eliteAffixBadge}", textStyle);
+            // Health bars
+            LattiruneUITheme.DrawProgressBar(player.CurrentHp, player.MaxHp, $"HERO HP: {player.CurrentHp}/{player.MaxHp}  |  DEF: {player.Armor}  |  ATK: {player.BaseAttackDamage}+{player.ActiveRuneBonus}", LattiruneUITheme.ColorGreenHealth, 26f);
+            GUILayout.Space(4);
+            LattiruneUITheme.DrawProgressBar(enemy.CurrentHp, enemy.MaxHp, $"{enemy.CombatantName} HP: {enemy.CurrentHp}/{enemy.MaxHp}  |  DEF: {enemy.Armor}  |  ATK: {enemy.BaseAttackDamage}{eliteAffixBadge}", LattiruneUITheme.ColorRedDanger, 26f);
+            GUILayout.Space(4);
 
             if (combatSystem.Combo != null && combatSystem.Combo.CurrentCombo > 0)
             {
-                GUIStyle comboStyle = new GUIStyle(GUI.skin.label);
+                GUIStyle comboStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
                 comboStyle.fontSize = 18;
                 comboStyle.fontStyle = FontStyle.Bold;
-                comboStyle.normal.textColor = Color.yellow;
+                comboStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
                 GUILayout.Label($"⚡ COMBO: {combatSystem.Combo.CurrentCombo}x  |  MULT: {combatSystem.Combo.ComboMultiplier:0.00}x", comboStyle);
             }
 
-            GUILayout.Label($"<size=15><i>Log: {_combatLog}</i></size>", textStyle);
+            GUIStyle textStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            textStyle.fontSize = 16;
+            textStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUILayout.Label($"<i>Log: {_combatLog}</i>", textStyle);
             GUILayout.Space(6);
 
             GUILayout.BeginHorizontal();
@@ -263,12 +249,10 @@ namespace Lattirune.UI
             // Battle Start Button (in Preparing State)
             if (combatSystem.CurrentState == CombatState.Preparing && !_isShowingRewards)
             {
-                GUI.color = Color.green;
-                if (GUILayout.Button("⚔️ START BATTLE", btnStyle, GUILayout.Height(65), GUILayout.Width(320)))
+                if (LattiruneUITheme.DrawPrimaryButton("⚔️ START BATTLE", 65f))
                 {
                     combatSystem.StartCombat();
                 }
-                GUI.color = oldColor;
             }
             // Active Fighting Controls: Speed Multiplier & Emergency Heal
             else if (combatSystem.CurrentState == CombatState.Fighting)
@@ -280,7 +264,7 @@ namespace Lattirune.UI
                     _ => "▶️ SPEED: 1.0x"
                 };
 
-                if (GUILayout.Button(speedLabel, btnStyle, GUILayout.Height(65), GUILayout.Width(240)))
+                if (LattiruneUITheme.DrawSecondaryButton(speedLabel, 65f))
                 {
                     float nextSpeed = combatSystem.SpeedMultiplier switch
                     {
@@ -293,7 +277,7 @@ namespace Lattirune.UI
 
                 GUILayout.Space(12);
 
-                if (GUILayout.Button("🧪 POTION (+25 HP)", btnStyle, GUILayout.Height(65), GUILayout.Width(260)))
+                if (LattiruneUITheme.DrawSecondaryButton("🧪 POTION (+25 HP)", 65f))
                 {
                     combatSystem.UseEmergencyPotion(player, 25);
                 }
@@ -303,21 +287,17 @@ namespace Lattirune.UI
             {
                 if (runManager != null && runManager.CanRevivePlayer)
                 {
-                    GUI.color = Color.green;
-                    if (GUILayout.Button("❤️ REVIVE (50% HP)", btnStyle, GUILayout.Height(65), GUILayout.Width(300)))
+                    if (LattiruneUITheme.DrawPrimaryButton("❤️ REVIVE (50% HP)", 65f))
                     {
                         runManager.RevivePlayer(0.5f);
                     }
-                    GUI.color = oldColor;
                     GUILayout.Space(12);
                 }
 
-                GUI.color = Color.red;
-                if (GUILayout.Button("🔄 RETRY ENCOUNTER", btnStyle, GUILayout.Height(65), GUILayout.Width(300)))
+                if (LattiruneUITheme.DrawDangerButton("🔄 RETRY ENCOUNTER", 65f))
                 {
                     combatSystem.ResetCombat();
                 }
-                GUI.color = oldColor;
             }
 
             GUILayout.EndHorizontal();
@@ -329,52 +309,17 @@ namespace Lattirune.UI
         {
             float modalWidth = 960f;
             float modalHeight = 1200f;
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-            float offsetY = (Screen.height / scale - 1920f) * 0.5f;
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
+
             float posX = (1080f - modalWidth) * 0.5f;
             float posY = 380f + offsetY;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.98f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, modalWidth, modalHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, modalWidth, modalHeight), "🏆 VICTORY REWARDS 🏆");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, modalWidth - 80, modalHeight - 80));
 
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 36;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
-            titleStyle.normal.textColor = new Color(0.95f, 0.8f, 0.2f); // Gold
-
-            GUILayout.Label("🏆 VICTORY REWARDS 🏆", titleStyle);
-            GUILayout.Space(8);
-
-            GUIStyle subStyle = new GUIStyle(GUI.skin.label);
-            subStyle.fontSize = 20;
-            subStyle.alignment = TextAnchor.MiddleCenter;
-            subStyle.normal.textColor = Color.white;
-            GUILayout.Label("Select ONE reward to reinforce your build:", subStyle);
-            GUILayout.Space(24);
-
-            GUIStyle cardBoxStyle = new GUIStyle(GUI.skin.box);
-            GUIStyle cardTitleStyle = new GUIStyle(GUI.skin.label);
-            cardTitleStyle.fontSize = 22;
-            cardTitleStyle.fontStyle = FontStyle.Bold;
-            cardTitleStyle.normal.textColor = Color.white;
-
-            GUIStyle descStyle = new GUIStyle(GUI.skin.label);
-            descStyle.fontSize = 18;
-            descStyle.wordWrap = true;
-            descStyle.normal.textColor = new Color(0.85f, 0.85f, 0.85f);
-
-            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
-            btnStyle.fontSize = 20;
-            btnStyle.fontStyle = FontStyle.Bold;
+            LattiruneUITheme.DrawHeader("🏆 VICTORY REWARDS 🏆", "Select ONE reward to reinforce your build:");
+            GUILayout.Space(20);
 
             for (int i = 0; i < _currentRewardOptions.Count; i++)
             {
@@ -384,21 +329,36 @@ namespace Lattirune.UI
                 bool isSelected = _selectedRewardOption == opt;
                 bool isLocked = _selectedRewardOption != null;
 
-                GUILayout.BeginVertical(cardBoxStyle);
+                GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
-                string selectState = isSelected ? " <color=#4ade80>[SELECTED]</color>" : "";
-                GUILayout.Label($"<b>{opt.DisplayName}</b> ({opt.Footprint.x}x{opt.Footprint.y} {opt.Category}){selectState}", cardTitleStyle);
+                string selectState = isSelected ? " [SELECTED]" : "";
+                GUIStyle cardTitleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+                cardTitleStyle.fontSize = 22;
+                cardTitleStyle.fontStyle = FontStyle.Bold;
+                cardTitleStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
+
+                GUILayout.Label($"{opt.DisplayName} ({opt.Footprint.x}x{opt.Footprint.y} {opt.Category}){selectState}", cardTitleStyle);
                 GUILayout.Space(4);
+
+                GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                descStyle.fontSize = 18;
+                descStyle.wordWrap = true;
+                descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
                 GUILayout.Label(opt.Description, descStyle);
                 GUILayout.Space(8);
 
                 GUI.enabled = !isLocked;
-                if (isSelected) GUI.color = Color.green;
-                if (GUILayout.Button(isSelected ? "REWARD CHOSEN" : "CLAIM REWARD", btnStyle, GUILayout.Height(65)))
+                if (isSelected)
                 {
-                    SelectReward(opt);
+                    LattiruneUITheme.DrawPrimaryButton("REWARD CHOSEN", 65f);
                 }
-                GUI.color = oldColor;
+                else
+                {
+                    if (LattiruneUITheme.DrawPrimaryButton("CLAIM REWARD", 65f))
+                    {
+                        SelectReward(opt);
+                    }
+                }
                 GUI.enabled = true;
 
                 GUILayout.EndVertical();
@@ -410,12 +370,10 @@ namespace Lattirune.UI
             // Continue Button (enabled after a reward is chosen)
             if (_selectedRewardOption != null)
             {
-                GUI.color = Color.cyan;
-                if (GUILayout.Button("PROCEED TO NEXT FLOOR ➔", btnStyle, GUILayout.Height(65)))
+                if (LattiruneUITheme.DrawPrimaryButton("⚔️ PROCEED TO NEXT FLOOR ➔", 75f))
                 {
                     CloseRewardScreenAndContinue();
                 }
-                GUI.color = oldColor;
             }
 
             GUILayout.EndArea();

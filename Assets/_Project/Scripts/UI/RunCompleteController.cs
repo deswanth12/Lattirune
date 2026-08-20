@@ -102,43 +102,48 @@ namespace Lattirune.UI
 
         private void DrawRunCompleteWindow()
         {
-            float modalWidth = 360f;
-            float modalHeight = 360f;
-            float startX = 20f;
-            float startY = 120f;
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            GUIStyle modalStyle = new GUIStyle(GUI.skin.box);
-            modalStyle.fontSize = 13;
-            modalStyle.alignment = TextAnchor.UpperCenter;
+            float panelWidth = 920f;
+            float panelHeight = 1100f;
+            float posX = (1080f - panelWidth) * 0.5f;
+            float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 22;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
+            string windowTitle = isVictory ? "🏆 VICTORY: DUNGEON CLEARED 🏆" : "💀 DEFEAT: RUN ENDED 💀";
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), windowTitle);
 
-            GUILayout.BeginArea(new Rect(startX, startY, modalWidth, modalHeight), modalStyle);
+            GUILayout.BeginArea(new Rect(posX + 40, posY + 50, panelWidth - 80, panelHeight - 100));
 
-            string outcomeHeader = isVictory ? "<color=green>DUNGEON CLEARED!</color>" : "<color=red>RUN DEFEATED</color>";
-            GUILayout.Label(outcomeHeader, titleStyle);
-            GUILayout.Space(10);
+            LattiruneUITheme.DrawHeader(windowTitle, isVictory ? "The Lich Sanctum is cleansed. Your legend echoes in the abyss." : "The dark forces of the Cursed Sewers proved overwhelming.");
+            GUILayout.Space(24);
 
-            GUILayout.Label($"<b>Floors Reached:</b> {floorsCleared} / 10");
-            GUILayout.Label($"<b>In-Run Gold Collected:</b> {goldEarned} 🪙");
-            GUILayout.Label($"<b>Dungeon Embers Awarded:</b> {embersEarned} 🔥");
-            GUILayout.Space(16);
+            GUIStyle statStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            statStyle.fontSize = 20;
+            statStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
 
-            if (GUILayout.Button("RETURN TO CAMPFIRE HUB", GUILayout.Height(52)))
+            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+            GUILayout.Label($"🏰 <b>Floors Reached:</b> {floorsCleared} / 10", statStyle);
+            GUILayout.Space(8);
+            GUILayout.Label($"🪙 <b>In-Run Gold Collected:</b> {goldEarned} Gold", statStyle);
+            GUILayout.Space(8);
+            GUILayout.Label($"🔥 <b>Dungeon Embers Awarded:</b> {embersEarned} Embers", statStyle);
+            GUILayout.EndVertical();
+
+            GUILayout.Space(32);
+
+            if (LattiruneUITheme.DrawPrimaryButton("🏕️ RETURN TO CAMPFIRE HUB", 75f))
             {
                 ReturnToCampfireHub();
             }
-            GUILayout.Space(8);
+            GUILayout.Space(16);
 
-            if (GUILayout.Button("START NEW RUN", GUILayout.Height(52)))
+            if (LattiruneUITheme.DrawSecondaryButton("⚡ START NEW RUN", 65f))
             {
                 StartNewRun();
             }
 
             GUILayout.EndArea();
+            GUI.matrix = oldMatrix;
         }
     }
 }

@@ -96,57 +96,33 @@ namespace Lattirune.UI
             if (navigation != null && navigation.CurrentScreen != ScreenState.MERCHANT) return;
             if (!isVisible || merchantSystem == null) return;
 
-            // Fullscreen dark neo-arcane backdrop (1080x1920 scaled)
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float panelWidth = 960f;
             float panelHeight = 1500f;
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "⚜ WANDERING MERCHANT ⚜");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            // Header
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 32;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
-            titleStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f); // Burnished Brass
-
-            GUILayout.Label("⚜ WANDERING MERCHANT ⚜", titleStyle);
+            LattiruneUITheme.DrawHeader("⚜ WANDERING MERCHANT ⚜", "Rare armaments, ancient runes, and lattice expansions.");
             GUILayout.Space(10);
-
-            // Subheader: Gold & Floor
-            GUIStyle goldStyle = new GUIStyle(GUI.skin.label);
-            goldStyle.fontSize = 24;
-            goldStyle.alignment = TextAnchor.MiddleCenter;
-            goldStyle.normal.textColor = Color.yellow;
 
             int currentGold = _economyService != null ? _economyService.CurrentGold : (runManager != null ? runManager.CurrentGold : 0);
             int floorNum = runManager != null ? runManager.CurrentFloorNumber : 1;
-            GUILayout.Label($"Floor {floorNum}  |  Your Gold: {currentGold} 🪙", goldStyle);
-            GUILayout.Space(10);
 
-            // Feedback / Dialogue
-            GUIStyle dialogueStyle = new GUIStyle(GUI.skin.label);
+            LattiruneUITheme.DrawBadge($"Floor {floorNum}  |  Your Gold: {currentGold} 🪙", LattiruneUITheme.ColorGoldPrimary);
+            GUILayout.Space(12);
+
+            GUIStyle dialogueStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
             dialogueStyle.fontSize = 18;
             dialogueStyle.fontStyle = FontStyle.Italic;
             dialogueStyle.alignment = TextAnchor.MiddleCenter;
-            dialogueStyle.normal.textColor = Color.white;
+            dialogueStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
             GUILayout.Label($"\"{_feedbackMessage}\"", dialogueStyle);
-            GUILayout.Space(20);
+            GUILayout.Space(16);
 
             // Offers List
             var offers = merchantSystem.CurrentOffers;
@@ -155,29 +131,29 @@ namespace Lattirune.UI
                 var offer = offers[i];
                 if (offer == null) continue;
 
-                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
-                GUIStyle offerHeader = new GUIStyle(GUI.skin.label);
+                GUIStyle offerHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
                 offerHeader.fontSize = 22;
                 offerHeader.fontStyle = FontStyle.Bold;
-                offerHeader.normal.textColor = offer.IsSold ? Color.gray : Color.white;
+                offerHeader.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorGoldPrimary;
 
                 string statusText = offer.IsSold ? "[SOLD OUT]" : $"{offer.CurrentPrice} Gold";
                 GUILayout.Label($"{offer.Title}  -  {statusText}", offerHeader);
+                GUILayout.Space(4);
 
-                GUIStyle descStyle = new GUIStyle(GUI.skin.label);
+                GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
                 descStyle.fontSize = 16;
-                descStyle.normal.textColor = offer.IsSold ? Color.gray : new Color(0.8f, 0.8f, 0.8f);
+                descStyle.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorTextPrimary;
                 GUILayout.Label(offer.Description, descStyle);
-
-                GUILayout.Space(6);
+                GUILayout.Space(8);
 
                 if (!offer.IsSold)
                 {
                     bool canAfford = _economyService != null && _economyService.CanAfford(offer.CurrentPrice);
                     GUI.enabled = canAfford;
 
-                    if (GUILayout.Button($"PURCHASE ({offer.CurrentPrice}g)", GUILayout.Height(55)))
+                    if (LattiruneUITheme.DrawPrimaryButton($"🛒 PURCHASE ({offer.CurrentPrice}g)", 60f))
                     {
                         if (merchantSystem.BuyOffer(i, _economyService, inventorySystem, latticeGrid, playerCombatant))
                         {
@@ -189,7 +165,7 @@ namespace Lattirune.UI
                 }
 
                 GUILayout.EndVertical();
-                GUILayout.Space(12);
+                GUILayout.Space(10);
             }
 
             GUILayout.FlexibleSpace();
@@ -197,7 +173,7 @@ namespace Lattirune.UI
             // Reroll Button (10 Gold)
             bool canReroll = _economyService != null && _economyService.CanAfford(10);
             GUI.enabled = canReroll;
-            if (GUILayout.Button("🔄 REROLL STOCK (10 Gold)", GUILayout.Height(60)))
+            if (LattiruneUITheme.DrawSecondaryButton("🔄 REROLL STOCK (10 Gold)", 65f))
             {
                 if (merchantSystem.RerollOffers(_economyService, 10, floorNum))
                 {
@@ -206,14 +182,9 @@ namespace Lattirune.UI
             }
             GUI.enabled = true;
 
-            GUILayout.Space(10);
+            GUILayout.Space(12);
 
-            // Leave / Continue Button
-            GUIStyle leaveBtnStyle = new GUIStyle(GUI.skin.button);
-            leaveBtnStyle.fontSize = 22;
-            leaveBtnStyle.fontStyle = FontStyle.Bold;
-
-            if (GUILayout.Button("LEAVE MERCHANT & CONTINUE", leaveBtnStyle, GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawPrimaryButton("⚔️ LEAVE MERCHANT & CONTINUE ➔", 75f))
             {
                 Hide();
                 if (runManager != null)

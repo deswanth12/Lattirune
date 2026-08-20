@@ -146,81 +146,58 @@ namespace Lattirune.UI
 
         private void DrawMainMenuWindow()
         {
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float panelWidth = 920f;
             float panelHeight = 1100f;
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "⚔️ LATTIRUNE ⚔️");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 50, panelWidth - 80, panelHeight - 100));
 
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 44;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
-            titleStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f); // Burnished Brass
-
-            GUIStyle subtitleStyle = new GUIStyle(GUI.skin.label);
-            subtitleStyle.fontSize = 20;
-            subtitleStyle.fontStyle = FontStyle.Italic;
-            subtitleStyle.alignment = TextAnchor.MiddleCenter;
-            subtitleStyle.normal.textColor = new Color(0.85f, 0.85f, 0.85f);
-
-            GUILayout.Label("⚔️ LATTIRUNE ⚔️", titleStyle);
-            GUILayout.Space(6);
-            GUILayout.Label("Align the Lattice. Awaken the Runes.", subtitleStyle);
+            LattiruneUITheme.DrawHeader("⚔️ LATTIRUNE ⚔️", "Align the Lattice. Awaken the Runes.");
             GUILayout.Space(36);
 
-            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
-            btnStyle.fontSize = 24;
-            btnStyle.fontStyle = FontStyle.Bold;
-
-            // Minimum touch target height 52dp compliant (65px in 1080x1920 portrait)
             if (hasSavedRun)
             {
-                GUI.color = Color.cyan;
-                if (GUILayout.Button("RESUME ACTIVE DESCENT", btnStyle, GUILayout.Height(65)))
+                if (LattiruneUITheme.DrawPrimaryButton("⚔️ RESUME ACTIVE DESCENT ⚔️", 75f))
                 {
                     ContinueRun();
                 }
-                GUI.color = oldColor;
-                GUILayout.Space(14);
+                GUILayout.Space(16);
             }
 
-            GUI.color = Color.yellow;
-            if (GUILayout.Button("START NEW RUN", btnStyle, GUILayout.Height(65)))
+            if (!hasSavedRun)
             {
-                StartNewRun();
+                if (LattiruneUITheme.DrawPrimaryButton("🔥 START NEW RUN 🔥", 75f))
+                {
+                    StartNewRun();
+                }
             }
-            GUI.color = oldColor;
-            GUILayout.Space(14);
+            else
+            {
+                if (LattiruneUITheme.DrawSecondaryButton("⚡ START NEW RUN (DISCARD SAVE)", 65f))
+                {
+                    StartNewRun();
+                }
+            }
+            GUILayout.Space(16);
 
-            if (GUILayout.Button("CAMPFIRE META-HUB", btnStyle, GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawSecondaryButton("🏕️ CAMPFIRE META-HUB", 65f))
             {
                 OpenCampfireHub();
             }
-            GUILayout.Space(14);
+            GUILayout.Space(16);
 
-            if (GUILayout.Button("AUDIO & SETTINGS", btnStyle, GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawSecondaryButton("🔊 AUDIO & SETTINGS", 65f))
             {
                 OpenSettings();
             }
-            GUILayout.Space(14);
+            GUILayout.Space(16);
 
-            if (GUILayout.Button("EXIT GAME", btnStyle, GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawDangerButton("🚪 EXIT GAME", 65f))
             {
                 ExitGame();
             }

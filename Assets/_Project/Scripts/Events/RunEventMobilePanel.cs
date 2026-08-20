@@ -3,6 +3,7 @@ using UnityEngine;
 using Lattirune.Combat;
 using Lattirune.Economy;
 using Lattirune.Modifiers;
+using Lattirune.UI;
 
 namespace Lattirune.Events
 {
@@ -70,59 +71,33 @@ namespace Lattirune.Events
         {
             if (!isVisible || _activeEvent == null) return;
 
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float panelWidth = 960f;
             float panelHeight = 1200f;
             float posX = (1080f - panelWidth) * 0.5f;
-            float posY = (1920f - panelHeight) * 0.5f;
+            float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.98f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), _activeEvent.Title);
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 36;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
-            titleStyle.normal.textColor = new Color(0.95f, 0.8f, 0.2f); // Gold
-
-            GUIStyle loreStyle = new GUIStyle(GUI.skin.label);
-            loreStyle.fontSize = 20;
-            loreStyle.wordWrap = true;
-            loreStyle.normal.textColor = new Color(0.9f, 0.9f, 0.9f);
-
-            GUIStyle statusStyle = new GUIStyle(GUI.skin.box);
-            statusStyle.fontSize = 20;
-            statusStyle.fontStyle = FontStyle.Bold;
-            statusStyle.alignment = TextAnchor.MiddleCenter;
-
-            GUILayout.Label(_activeEvent.Title, titleStyle);
+            LattiruneUITheme.DrawHeader(_activeEvent.Title, "A mysterious encounter unfolds in the shadow of the lattice.");
             GUILayout.Space(12);
 
             // Resource indicators
             int currentGold = _economyManager != null ? _economyManager.GoldBalance : 0;
             int currentHp = _playerCombatant != null ? _playerCombatant.CurrentHp : 100;
             int maxHp = _playerCombatant != null ? _playerCombatant.MaxHp : 100;
-            GUILayout.Box($"❤️ HP: {currentHp}/{maxHp}   |   💰 GOLD: {currentGold}", statusStyle, GUILayout.Height(44));
+            LattiruneUITheme.DrawProgressBar(currentHp, maxHp, $"HERO HP: {currentHp}/{maxHp}   |   💰 GOLD: {currentGold}", LattiruneUITheme.ColorGreenHealth, 28f);
             GUILayout.Space(16);
 
+            GUIStyle loreStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            loreStyle.fontSize = 18;
+            loreStyle.wordWrap = true;
+            loreStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
             GUILayout.Label(_activeEvent.Description, loreStyle);
-            GUILayout.Space(24);
-
-            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
-            btnStyle.fontSize = 20;
-            btnStyle.fontStyle = FontStyle.Bold;
+            GUILayout.Space(20);
 
             if (!_isResolved)
             {
@@ -132,8 +107,8 @@ namespace Lattirune.Events
                     var choice = _activeEvent.Choices[i];
                     if (choice == null) continue;
 
-                    string buttonText = $"<b>{choice.DisplayName}</b>\n<size=16>{choice.Description}</size>";
-                    if (GUILayout.Button(buttonText, btnStyle, GUILayout.MinHeight(75)))
+                    string buttonText = $"⚡ {choice.DisplayName}: {choice.Description}";
+                    if (LattiruneUITheme.DrawPrimaryButton(buttonText, 70f))
                     {
                         if (_eventService != null)
                         {
@@ -154,29 +129,27 @@ namespace Lattirune.Events
             else
             {
                 // Resolution view with Continue button
-                GUIStyle successStyle = new GUIStyle(GUI.skin.label);
-                successStyle.fontSize = 22;
+                GUIStyle successStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                successStyle.fontSize = 20;
                 successStyle.fontStyle = FontStyle.Bold;
-                successStyle.normal.textColor = Color.green;
+                successStyle.normal.textColor = LattiruneUITheme.ColorGreenHealth;
                 successStyle.alignment = TextAnchor.MiddleCenter;
 
                 GUILayout.Label(_outcomeFeedback, successStyle);
                 GUILayout.Space(24);
 
-                GUI.color = Color.cyan;
-                if (GUILayout.Button("CONTINUE DUNGEON EXPLORATION", btnStyle, GUILayout.Height(65)))
+                if (LattiruneUITheme.DrawPrimaryButton("⚔️ CONTINUE DUNGEON EXPLORATION ➔", 75f))
                 {
                     Hide();
                 }
-                GUI.color = oldColor;
             }
 
             if (!_isResolved && !string.IsNullOrEmpty(_outcomeFeedback))
             {
                 GUILayout.Space(10);
-                GUIStyle warnStyle = new GUIStyle(GUI.skin.label);
+                GUIStyle warnStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
                 warnStyle.fontSize = 18;
-                warnStyle.normal.textColor = Color.yellow;
+                warnStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
                 warnStyle.alignment = TextAnchor.MiddleCenter;
                 GUILayout.Label(_outcomeFeedback, warnStyle);
             }

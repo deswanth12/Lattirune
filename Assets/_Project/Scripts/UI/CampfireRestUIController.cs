@@ -129,99 +129,78 @@ namespace Lattirune.UI
             if (navigation != null && navigation.CurrentScreen != ScreenState.CAMPFIRE_REST) return;
             if (!isVisible) return;
 
-            // Responsive scale matrix
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float panelWidth = 960f;
             float panelHeight = 1500f;
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "🔥 CAMPFIRE REST SANCTUARY 🔥");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            // Header
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 32;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
-            titleStyle.normal.textColor = new Color(1f, 0.45f, 0.15f); // Magma Ember
-
-            GUILayout.Label("🔥 CAMPFIRE REST SANCTUARY 🔥", titleStyle);
-            GUILayout.Space(10);
-
-            // Subheader: Hero Status
-            GUIStyle statusStyle = new GUIStyle(GUI.skin.label);
-            statusStyle.fontSize = 22;
-            statusStyle.alignment = TextAnchor.MiddleCenter;
-            statusStyle.normal.textColor = Color.white;
+            LattiruneUITheme.DrawHeader("🔥 CAMPFIRE REST SANCTUARY 🔥", "A rare moment of warmth amidst the subterranean darkness.");
+            GUILayout.Space(12);
 
             int currentHp = playerCombatant != null ? playerCombatant.CurrentHp : 100;
             int maxHp = playerCombatant != null ? playerCombatant.MaxHp : 100;
-            GUILayout.Label($"Hero Health: {currentHp} / {maxHp} HP", statusStyle);
-            GUILayout.Space(20);
+            LattiruneUITheme.DrawProgressBar(currentHp, maxHp, $"HERO HEALTH: {currentHp} / {maxHp} HP", LattiruneUITheme.ColorGreenHealth, 28f);
+            GUILayout.Space(16);
 
             // Choices
             GUI.enabled = !_hasChosenOption;
 
             // Choice 1: Rest & Heal 40% HP
-            GUILayout.BeginVertical(GUI.skin.box);
-            GUIStyle choiceHeader = new GUIStyle(GUI.skin.label);
+            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+            GUIStyle choiceHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
             choiceHeader.fontSize = 22;
             choiceHeader.fontStyle = FontStyle.Bold;
-            choiceHeader.normal.textColor = Color.green;
+            choiceHeader.normal.textColor = LattiruneUITheme.ColorGreenHealth;
 
             GUILayout.Label("1. REST BY THE EMBERS", choiceHeader);
-            GUILayout.Label("Heal 40% of Max HP immediately to recover from brutal combat.", GUI.skin.label);
+            GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            descStyle.fontSize = 16;
+            descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUILayout.Label("Heal 40% of Max HP immediately to recover from brutal combat.", descStyle);
             GUILayout.Space(6);
-            if (GUILayout.Button("REST & HEAL (+40% HP)", GUILayout.Height(60)))
+            if (LattiruneUITheme.DrawPrimaryButton("❤️ REST & HEAL (+40% HP)", 60f))
             {
                 ChooseRestAndHeal();
             }
             GUILayout.EndVertical();
 
-            GUILayout.Space(16);
+            GUILayout.Space(12);
 
             // Choice 2: Attune Rune (+3 Power)
-            GUILayout.BeginVertical(GUI.skin.box);
-            GUIStyle runeHeader = new GUIStyle(GUI.skin.label);
+            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+            GUIStyle runeHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
             runeHeader.fontSize = 22;
             runeHeader.fontStyle = FontStyle.Bold;
-            runeHeader.normal.textColor = Color.cyan;
+            runeHeader.normal.textColor = LattiruneUITheme.ColorCyanArcane;
 
             GUILayout.Label("2. ATTUNE RUNE MATRIX", runeHeader);
-            GUILayout.Label("Forge your active runes in sacred heat, granting +3 Flat Elemental Power.", GUI.skin.label);
+            GUILayout.Label("Forge your active runes in sacred heat, granting +3 Flat Elemental Power.", descStyle);
             GUILayout.Space(6);
-            if (GUILayout.Button("ATTUNE RUNES (+3 Power)", GUILayout.Height(60)))
+            if (LattiruneUITheme.DrawPrimaryButton("⚡ ATTUNE RUNES (+3 Power)", 60f))
             {
                 ChooseUpgradeRune();
             }
             GUILayout.EndVertical();
 
-            GUILayout.Space(16);
+            GUILayout.Space(12);
 
             // Choice 3: Cleanse Curse
-            GUILayout.BeginVertical(GUI.skin.box);
-            GUIStyle curseHeader = new GUIStyle(GUI.skin.label);
+            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+            GUIStyle curseHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
             curseHeader.fontSize = 22;
             curseHeader.fontStyle = FontStyle.Bold;
-            curseHeader.normal.textColor = new Color(0.8f, 0.4f, 1f);
+            curseHeader.normal.textColor = LattiruneUITheme.ColorPurpleRune;
 
             GUILayout.Label("3. SACRED CLEANSE", curseHeader);
-            GUILayout.Label("Purge lingering dungeon curses and vulnerabilities from your spirit.", GUI.skin.label);
+            GUILayout.Label("Purge lingering dungeon curses and vulnerabilities from your spirit.", descStyle);
             GUILayout.Space(6);
-            if (GUILayout.Button("CLEANSE CURSES", GUILayout.Height(60)))
+            if (LattiruneUITheme.DrawPrimaryButton("✨ CLEANSE CURSES", 60f))
             {
                 ChooseCleanseCurse();
             }
@@ -232,17 +211,17 @@ namespace Lattirune.UI
             GUILayout.FlexibleSpace();
 
             // Dialogue / Feedback
-            GUIStyle feedbackStyle = new GUIStyle(GUI.skin.label);
+            GUIStyle feedbackStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
             feedbackStyle.fontSize = 18;
             feedbackStyle.fontStyle = FontStyle.Italic;
             feedbackStyle.alignment = TextAnchor.MiddleCenter;
-            feedbackStyle.normal.textColor = Color.yellow;
+            feedbackStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
             GUILayout.Label($"\"{_feedbackMessage}\"", feedbackStyle);
-            GUILayout.Space(15);
+            GUILayout.Space(12);
 
             // Leave / Continue Button
             GUI.enabled = _hasChosenOption;
-            if (GUILayout.Button("LEAVE REST SITE & DESCEND", GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawPrimaryButton("⚔️ LEAVE REST SITE & DESCEND ➔", 75f))
             {
                 Hide();
                 if (runManager != null)

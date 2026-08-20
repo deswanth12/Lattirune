@@ -136,39 +136,23 @@ namespace Lattirune.UI
 
         private void DrawSettingsWindow()
         {
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float panelWidth = 920f;
             float panelHeight = 1100f;
             float posX = (1080f - panelWidth) * 0.5f;
-            float posY = (1920f - panelHeight) * 0.5f;
+            float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "⚙️ AUDIO & SETTINGS ⚙️");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 36;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
-            titleStyle.normal.textColor = new Color(0.3f, 0.8f, 1f); // Arcane Cyan
-
-            GUILayout.Label("⚙️ AUDIO & HAPTICS ⚙️", titleStyle);
+            LattiruneUITheme.DrawHeader("⚙️ AUDIO & SETTINGS ⚙️", "Configure audio levels, tactile haptics, and accessibility.");
             GUILayout.Space(20);
 
-            GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
-            labelStyle.fontSize = 22;
-            labelStyle.normal.textColor = Color.white;
+            GUIStyle labelStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            labelStyle.fontSize = 20;
+            labelStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
 
             GUILayout.Label($"Master Volume: <b>{Mathf.RoundToInt(masterVolume * 100)}%</b>", labelStyle);
             float newMaster = GUILayout.HorizontalSlider(masterVolume, 0f, 1f, GUILayout.Height(30));
@@ -185,23 +169,19 @@ namespace Lattirune.UI
             if (Mathf.Abs(newSfx - sfxVolume) > 0.001f) SetSfxVolume(newSfx);
             GUILayout.Space(20);
 
-            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
-            btnStyle.fontSize = 22;
-            btnStyle.fontStyle = FontStyle.Bold;
-
-            if (GUILayout.Button(isMuted ? "🔇 UNMUTE AUDIO" : "🔊 MUTE AUDIO", btnStyle, GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawSecondaryButton(isMuted ? "🔇 UNMUTE AUDIO" : "🔊 MUTE AUDIO", 65f))
             {
                 ToggleMute();
             }
             GUILayout.Space(14);
 
-            if (GUILayout.Button(hapticsEnabled ? "📳 DISABLE HAPTICS" : "📳 ENABLE HAPTICS", btnStyle, GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawSecondaryButton(hapticsEnabled ? "📳 DISABLE HAPTICS" : "📳 ENABLE HAPTICS", 65f))
             {
                 ToggleHaptics();
             }
             GUILayout.Space(20);
 
-            if (GUILayout.Button("SAVE & RETURN", btnStyle, GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawPrimaryButton("⚔️ SAVE & RETURN ⚔️", 75f))
             {
                 CloseSettings();
             }

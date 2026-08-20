@@ -82,60 +82,36 @@ namespace Lattirune.UI
             if (navigation != null && navigation.CurrentScreen != ScreenState.RUN_START) return;
             if (!isVisible || _mapGraph == null) return;
 
-            // Responsive scale matrix
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
-
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+            Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float panelWidth = 960f;
             float panelHeight = 1500f;
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            GUIStyle boxStyle = new GUIStyle(GUI.skin.box);
-            boxStyle.normal.background = Texture2D.whiteTexture;
-
-            Color oldColor = GUI.color;
-            GUI.color = new Color(0.06f, 0.07f, 0.10f, 0.96f); // Slate Obsidian
-            GUI.Box(new Rect(posX, posY, panelWidth, panelHeight), GUIContent.none, boxStyle);
-            GUI.color = oldColor;
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "🗺 DUNGEON MAP: THE CURSED SEWERS 🗺");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            // Title
-            GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-            titleStyle.fontSize = 32;
-            titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.alignment = TextAnchor.MiddleCenter;
-            titleStyle.normal.textColor = new Color(0.77f, 0.61f, 0.15f); // Burnished Brass
-
-            GUILayout.Label("🗺 DUNGEON MAP: THE CURSED SEWERS 🗺", titleStyle);
-            GUILayout.Space(8);
-
-            GUIStyle subStyle = new GUIStyle(GUI.skin.label);
-            subStyle.fontSize = 18;
-            subStyle.alignment = TextAnchor.MiddleCenter;
-            subStyle.normal.textColor = Color.gray;
-            GUILayout.Label("Select an available room to advance your descent.", subStyle);
-            GUILayout.Space(14);
+            LattiruneUITheme.DrawHeader("🗺 DUNGEON MAP: THE CURSED SEWERS 🗺", "Select an available room node to advance your descent.");
+            GUILayout.Space(12);
 
             // Scrollable Map Nodes List (Floors 1 to 10)
-            _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(850));
+            _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(840));
 
             for (int f = 1; f <= 10; f++)
             {
                 var floorNodes = _mapGraph.GetNodesOnFloor(f);
                 if (floorNodes.Count == 0) continue;
 
-                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
-                GUIStyle floorHeader = new GUIStyle(GUI.skin.label);
+                GUIStyle floorHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
                 floorHeader.fontSize = 20;
                 floorHeader.fontStyle = FontStyle.Bold;
-                floorHeader.normal.textColor = Color.yellow;
+                floorHeader.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
                 GUILayout.Label($"── FLOOR {f} ──", floorHeader);
+                GUILayout.Space(4);
 
                 GUILayout.BeginHorizontal();
                 foreach (var node in floorNodes)
@@ -148,18 +124,27 @@ namespace Lattirune.UI
                     string statusIcon = isCleared ? "✓ " : (isAvailable ? "► " : "🔒 ");
                     string btnText = $"{statusIcon}{badge}\n{node.Title}";
 
-                    if (isCleared) GUI.color = new Color(0.4f, 0.8f, 0.4f);
-                    else if (isAvailable) GUI.color = isSelected ? Color.yellow : Color.cyan;
-                    else GUI.color = Color.gray;
-
                     GUI.enabled = isAvailable || isCleared;
-                    if (GUILayout.Button(btnText, GUILayout.Height(65), GUILayout.MinWidth(220)))
+                    bool clicked = false;
+                    if (isSelected)
+                    {
+                        clicked = LattiruneUITheme.DrawPrimaryButton(btnText, 65f);
+                    }
+                    else if (isCleared)
+                    {
+                        clicked = LattiruneUITheme.DrawSecondaryButton(btnText, 65f);
+                    }
+                    else
+                    {
+                        clicked = LattiruneUITheme.DrawSecondaryButton(btnText, 65f);
+                    }
+
+                    if (clicked)
                     {
                         _selectedNodeId = node.NodeId;
                     }
                     GUI.enabled = true;
                 }
-                GUI.color = oldColor;
                 GUILayout.EndHorizontal();
 
                 GUILayout.EndVertical();
@@ -168,24 +153,24 @@ namespace Lattirune.UI
 
             GUILayout.EndScrollView();
 
-            GUILayout.Space(15);
+            GUILayout.Space(12);
 
             // Selected Node Detail Card
             var selectedNode = _mapGraph.GetNode(_selectedNodeId);
             if (selectedNode != null)
             {
-                GUILayout.BeginVertical(GUI.skin.box);
+                GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
-                GUIStyle detailTitle = new GUIStyle(GUI.skin.label);
+                GUIStyle detailTitle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
                 detailTitle.fontSize = 22;
                 detailTitle.fontStyle = FontStyle.Bold;
-                detailTitle.normal.textColor = selectedNode.IsAvailable ? Color.white : Color.gray;
+                detailTitle.normal.textColor = selectedNode.IsAvailable ? LattiruneUITheme.ColorGoldPrimary : LattiruneUITheme.ColorTextMuted;
 
                 GUILayout.Label($"{GetNodeBadge(selectedNode.NodeType)}: {selectedNode.Title}", detailTitle);
 
-                GUIStyle detailDesc = new GUIStyle(GUI.skin.label);
+                GUIStyle detailDesc = new GUIStyle(LattiruneUITheme.StyleStatLabel);
                 detailDesc.fontSize = 16;
-                detailDesc.normal.textColor = new Color(0.85f, 0.85f, 0.85f);
+                detailDesc.normal.textColor = LattiruneUITheme.ColorTextMuted;
                 GUILayout.Label(selectedNode.Description, detailDesc);
 
                 GUILayout.EndVertical();
@@ -197,11 +182,7 @@ namespace Lattirune.UI
             bool canEnter = selectedNode != null && selectedNode.IsAvailable && !selectedNode.IsCleared;
             GUI.enabled = canEnter;
 
-            GUIStyle enterBtnStyle = new GUIStyle(GUI.skin.button);
-            enterBtnStyle.fontSize = 24;
-            enterBtnStyle.fontStyle = FontStyle.Bold;
-
-            if (GUILayout.Button("ENTER ROOM & BEGIN", enterBtnStyle, GUILayout.Height(65)))
+            if (LattiruneUITheme.DrawPrimaryButton("⚔️ ENTER ROOM & BEGIN ⚔️", 75f))
             {
                 if (_mapGraph.SelectAndEnterNode(_selectedNodeId))
                 {
