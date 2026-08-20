@@ -130,105 +130,163 @@ namespace Lattirune.UI
         {
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 980f;
-            float panelHeight = 1500f;
-            float posX = (1080f - panelWidth) * 0.5f;
-            float posY = 150f + offsetY;
+            float screenW = 1080f;
+            float virtualH = Screen.height / scale;
+            float padX = 35f;
+            float contentW = screenW - (padX * 2f);
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "CAMPFIRE REST");
+            // =================================================================
+            // 1. TOP HEADER & HUD BAR
+            // =================================================================
+            float topY = 45f;
+            float topH = 120f;
+            Rect topBarRect = new Rect(padX, topY, contentW, topH);
+            LattiruneUITheme.DrawCard(topBarRect);
 
-            // Campfire Backdrop
-            Texture2D bg = VisualAssetProvider.GetBackdrop("bg_campfire");
-            if (bg != null)
+            Texture2D campIcon = VisualAssetProvider.GetUIIcon("ui_icon_campfire");
+            if (campIcon != null)
             {
+                GUI.DrawTexture(new Rect(padX + 18f, topY + 18f, 84f, 84f), campIcon, ScaleMode.ScaleToFit);
+            }
+
+            GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+            titleStyle.fontSize = 20;
+            titleStyle.fontStyle = FontStyle.Bold;
+            titleStyle.alignment = TextAnchor.MiddleLeft;
+            titleStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+            GUI.Label(new Rect(padX + 116f, topY + 18f, 400f, 26f), "CAMPFIRE REST SITE", titleStyle);
+
+            GUIStyle statusStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            statusStyle.fontSize = 13;
+            statusStyle.fontStyle = FontStyle.Italic;
+            statusStyle.alignment = TextAnchor.MiddleLeft;
+            statusStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUI.Label(new Rect(padX + 116f, topY + 48f, contentW - 130f, 50f), _statusMessage, statusStyle);
+
+            // =================================================================
+            // 2. REST CHOICES (3 CARDS)
+            // =================================================================
+            float choicesY = topY + topH + 16f;
+            float botBtnH = 85f;
+            float botMargin = 25f;
+            float actY = virtualH - botBtnH - botMargin;
+            float listH = actY - choicesY - 16f;
+
+            Rect listRect = new Rect(padX, choicesY, contentW, listH);
+            LattiruneUITheme.DrawCard(listRect);
+
+            float cardY = choicesY + 16f;
+            float cardH = (listH - 48f) / 3f;
+
+            // Choice 1: Rest & Heal
+            DrawChoiceCard(
+                new Rect(padX + 16f, cardY, contentW - 32f, cardH),
+                "ui_icon_heal",
+                "REST & TEND WOUNDS",
+                "Heal 40% of your maximum health to survive deeper floors.",
+                "REST (+40% HP)",
+                new Color(0.3f, 0.9f, 0.4f),
+                RestAndHeal
+            );
+
+            cardY += cardH + 8f;
+
+            // Choice 2: Temper Runes
+            DrawChoiceCard(
+                new Rect(padX + 16f, cardY, contentW - 32f, cardH),
+                "ui_icon_upgrade",
+                "TEMPER RUNES",
+                "Infuse your runes in the flame to permanently boost elemental damage.",
+                "TEMPER (+20% DMG)",
+                LattiruneUITheme.ColorCyanArcane,
+                ForgeRune
+            );
+
+            cardY += cardH + 8f;
+
+            // Choice 3: Meditate for Embers
+            DrawChoiceCard(
+                new Rect(padX + 16f, cardY, contentW - 32f, cardH),
+                "ui_icon_embers",
+                "MEDITATE FOR EMBERS",
+                "Attune to the primordial flame and harvest +50 Persistent Embers.",
+                "HARVEST (+50 EMBERS)",
+                new Color(1f, 0.6f, 0.2f),
+                MeditateForEmbers
+            );
+
+            // =================================================================
+            // 3. BOTTOM ACTION BUTTON
+            // =================================================================
+            Rect actRect = new Rect(padX, actY, contentW, botBtnH);
+            if (GUI.Button(actRect, "LEAVE REST SITE & RESUME DESCENT", LattiruneUITheme.StylePrimaryBtn))
+            {
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
+                navigation?.NavigateTo(ScreenState.DUNGEON_MAP);
+            }
+
+            GUI.matrix = oldMatrix;
+        }
+
+        private void DrawChoiceCard(Rect rect, string iconId, string title, string desc, string btnText, Color accentColor, Action onChoose)
+        {
+            Color cardBg = _restActionUsed ? new Color(0.06f, 0.08f, 0.10f, 0.70f) : new Color(0.12f, 0.16f, 0.24f, 0.90f);
+            GUI.color = cardBg;
+            LattiruneUITheme.DrawCard(rect);
+            GUI.color = Color.white;
+
+            if (!_restActionUsed)
+            {
+                LattiruneUITheme.DrawBorder(rect, 1.5f, accentColor);
+            }
+
+            Texture2D icon = VisualAssetProvider.GetUIIcon(iconId);
+            if (icon != null)
+            {
+                Rect iconRect = new Rect(rect.x + 16f, rect.y + (rect.height - 72f) * 0.5f, 72f, 72f);
                 Color oldC = GUI.color;
-                GUI.color = new Color(1f, 1f, 1f, 0.35f);
-                GUI.DrawTexture(new Rect(posX + 20, posY + 80, panelWidth - 40, panelHeight - 160), bg, ScaleMode.ScaleAndCrop);
+                if (_restActionUsed) GUI.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit);
                 GUI.color = oldC;
             }
 
-            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
+            float textX = rect.x + 104f;
+            float textW = rect.width - 320f;
 
-            LattiruneUITheme.DrawHeader("CAMPFIRE REST SITE", _statusMessage);
-            GUILayout.Space(24);
-
-            // 1. Rest Option
-            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical();
             GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-            titleStyle.fontSize = 22;
+            titleStyle.fontSize = 18;
             titleStyle.fontStyle = FontStyle.Bold;
-            titleStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
-            GUILayout.Label("REST & TEND WOUNDS", titleStyle);
+            titleStyle.normal.textColor = _restActionUsed ? LattiruneUITheme.ColorTextMuted : Color.white;
+            GUI.Label(new Rect(textX, rect.y + 18f, textW, 24f), title, titleStyle);
+
             GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            descStyle.fontSize = 15;
+            descStyle.fontSize = 13;
             descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-            GUILayout.Label("Heal 30% of your maximum health to survive deeper floors.", descStyle);
-            GUILayout.EndVertical();
-            GUILayout.FlexibleSpace();
-            if (!_restActionUsed)
+            GUI.Label(new Rect(textX, rect.y + 46f, textW, 40f), desc, descStyle);
+
+            float btnW = 190f;
+            float btnX = rect.x + rect.width - btnW - 16f;
+            float btnY = rect.y + (rect.height - 55f) * 0.5f;
+            Rect btnRect = new Rect(btnX, btnY, btnW, 55f);
+
+            if (_restActionUsed)
             {
-                if (LattiruneUITheme.DrawPrimaryButton("REST (HEAL 30%)", 60f)) RestAndHeal();
+                GUI.DrawTexture(btnRect, LattiruneUITheme.StyleCard.normal.background ?? Texture2D.blackTexture);
+                LattiruneUITheme.DrawBorder(btnRect, 1f, LattiruneUITheme.ColorTextMuted);
+                GUIStyle pStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                pStyle.alignment = TextAnchor.MiddleCenter;
+                pStyle.fontSize = 14;
+                pStyle.fontStyle = FontStyle.Bold;
+                pStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+                GUI.Label(btnRect, "USED", pStyle);
             }
             else
             {
-                LattiruneUITheme.DrawBadge("USED", LattiruneUITheme.ColorTextMuted);
+                if (GUI.Button(btnRect, btnText, LattiruneUITheme.StylePrimaryBtn))
+                {
+                    onChoose?.Invoke();
+                }
             }
-            GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
-            GUILayout.Space(18);
-
-            // 2. Temper Rune Option
-            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical();
-            GUILayout.Label("TEMPER RUNES", titleStyle);
-            GUILayout.Label("Infuse your runes in the flame to permanently boost elemental damage.", descStyle);
-            GUILayout.EndVertical();
-            GUILayout.FlexibleSpace();
-            if (!_restActionUsed)
-            {
-                if (LattiruneUITheme.DrawPrimaryButton("TEMPER (+20% DMG)", 60f)) ForgeRune();
-            }
-            else
-            {
-                LattiruneUITheme.DrawBadge("USED", LattiruneUITheme.ColorTextMuted);
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
-            GUILayout.Space(18);
-
-            // 3. Meditate Option
-            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUILayout.BeginHorizontal();
-            GUILayout.BeginVertical();
-            GUILayout.Label("MEDITATE FOR EMBERS", titleStyle);
-            GUILayout.Label("Attune to the cosmic forge and harvest +50 Persistent Embers.", descStyle);
-            GUILayout.EndVertical();
-            GUILayout.FlexibleSpace();
-            if (!_restActionUsed)
-            {
-                if (LattiruneUITheme.DrawPrimaryButton("HARVEST (+50 EMBERS)", 60f)) MeditateForEmbers();
-            }
-            else
-            {
-                LattiruneUITheme.DrawBadge("USED", LattiruneUITheme.ColorTextMuted);
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.EndVertical();
-            GUILayout.Space(24);
-
-            GUILayout.FlexibleSpace();
-
-            if (LattiruneUITheme.DrawPrimaryButton("DEPART CAMPFIRE & CONTINUE DESCENT", 75f))
-            {
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.ButtonClick);
-                if (navigation != null) navigation.NavigateTo(ScreenState.DUNGEON_MAP);
-            }
-
-            GUILayout.EndArea();
-            GUI.matrix = oldMatrix;
         }
     }
 }

@@ -1,18 +1,18 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
 [Licensing::IpcConnector] Connection attempt to the License Client on channel: "LicenseClient-k deswanth" failed because channel doesn't exist; code: "0x80000002"
-[Licensing::Module] Successfully launched the LicensingClient (PId: 26916)
-[Licensing::IpcConnector] Successfully connected to the License Client on channel: "LicenseClient-k deswanth" at "2026-08-20T15:23:16.3591474Z"
-[Licensing::Client] Error: Code 10 while verifying Licensing Client signature (process Id: 26916, path: "C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] Successfully launched the LicensingClient (PId: 21584)
+[Licensing::IpcConnector] Successfully connected to the License Client on channel: "LicenseClient-k deswanth" at "2026-08-20T15:28:07.606966Z"
+[Licensing::Client] Error: Code 10 while verifying Licensing Client signature (process Id: 21584, path: "C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] Error: LicensingClient has failed validation; ignoring
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.16.2+bdef8f5
-  Session Id:              8a8e1a2657d345f18df663fb5d3d1f97
-  Correlation Id:          70ae0f1505e1c322433710cc060c303f
-  External correlation Id: 2745385221129435941
+  Session Id:              58d42e94c62b465180d48985f6173af6
+  Correlation Id:          b99b9c363ca52f4e639deb20d2def588
+  External correlation Id: 1372118542760797459
   Machine Id:              7TIDP4hQvQAnfbRYHZkxxeqEfqk=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-k deswanth" (connect: 0.56s, validation: 0.05s, handshake: 0.04s)
-[Licensing::IpcConnector] Successfully connected to the License Notification on channel: "LicenseClient-k deswanth-notifications" at "2026-08-20T15:23:16.4477694Z"
-[Licensing::Module] Connected to LicensingClient (PId: 26916, launch time: 0.00, total connection time: 0.65s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-k deswanth" (connect: 0.57s, validation: 0.05s, handshake: 0.04s)
+[Licensing::IpcConnector] Successfully connected to the License Notification on channel: "LicenseClient-k deswanth-notifications" at "2026-08-20T15:28:07.6955392Z"
+[Licensing::Module] Connected to LicensingClient (PId: 21584, launch time: 0.00, total connection time: 0.65s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully updated license
 Built from '6000.0/staging' branch; Version is '6000.0.38f1 (82314a941f2d) revision 8532298'; Using compiler version '193933523'; Build Type 'Release'
@@ -71,16 +71,16 @@ C:/GAME PLAN
     "memorysetup-temp-allocator-size-gi-baking-worker=262144"
     "memorysetup-temp-allocator-size-gi-baking-worker=262144"
     "memorysetup-temp-allocator-size-gfx=262144"
-Player connection [24360]  Target information:
+Player connection [9828]  Target information:
 
-Player connection [24360]  * "[IP] 192.168.1.6 [Port] 55504 [Flags] 2 [Guid] 1896251296 [EditorId] 1896251296 [Version] 1048832 [Id] WindowsEditor(7,buddy) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [9828]  * "[IP] 192.168.1.6 [Port] 55504 [Flags] 2 [Guid] 3941325925 [EditorId] 3941325925 [Version] 1048832 [Id] WindowsEditor(7,buddy) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [24360] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [24360] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [9828] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [9828] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Package Manager] Connected to IPC stream "Upm-26592" after 0.2 seconds.
+[Package Manager] Connected to IPC stream "Upm-14760" after 0.2 seconds.
 Library Redirect Path: Library/
 [Package Manager] Restoring resolved packages state from cache
 [Licensing::Client] Successfully resolved entitlement details
@@ -139,11 +139,11 @@ Library Redirect Path: Library/
 [Physics::Module] Threading Mode: Multi-Threaded
 [Subsystems] No new subsystems found in resolved package list.
 Package Manager log level set to [2]
-[Package Manager] Done registering packages in 0.38 seconds
+[Package Manager] Done registering packages in 0.39 seconds
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] Serial number assigned to: "F4-4G3C-GQHF-7FCK-8FSR-XXXX"
 [Licensing::Module] Serial number assigned to: "13469957967341-UnityPersXXXX"
-Refreshing native plugins compatible for Editor in 1.30 ms, found 1 plugins.
+Refreshing native plugins compatible for Editor in 1.19 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.0.38f1 (82314a941f2d)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/Resources/UnitySubsystems
@@ -162,7 +162,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56592
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56760
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -171,15 +171,15 @@ Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
-Registered in 0.003418 seconds.
-- Loaded All Assemblies, in  0.279 seconds
+Registered in 0.003017 seconds.
+- Loaded All Assemblies, in  0.275 seconds
 Native extension for Android target not found
-Android Extension - Scanning For ADB Devices 190 ms
+Android Extension - Scanning For ADB Devices 194 ms
 Native extension for WindowsStandalone target not found
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.434 seconds
+- Finished resetting the current domain, in  0.439 seconds
 Domain Reload Profiling: 712ms
-	BeginReloadAssembly (94ms)
+	BeginReloadAssembly (92ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
@@ -187,25 +187,25 @@ Domain Reload Profiling: 712ms
 		CreateAndSetChildDomain (1ms)
 	RebuildCommonClasses (26ms)
 	RebuildNativeTypeToScriptingClass (8ms)
-	initialDomainReloadingComplete (37ms)
-	LoadAllAssembliesAndSetupDomain (112ms)
-		LoadAssemblies (93ms)
+	initialDomainReloadingComplete (38ms)
+	LoadAllAssembliesAndSetupDomain (109ms)
+		LoadAssemblies (90ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (110ms)
-			TypeCache.Refresh (108ms)
-				TypeCache.ScanAssembly (99ms)
+		AnalyzeDomain (106ms)
+			TypeCache.Refresh (105ms)
+				TypeCache.ScanAssembly (96ms)
 			BuildScriptInfoCaches (0ms)
 			ResolveRequiredComponents (0ms)
-	FinalizeReload (434ms)
+	FinalizeReload (439ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (408ms)
+		SetupLoadedEditorAssemblies (414ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (255ms)
+			InitializePlatformSupportModulesInManaged (258ms)
 			SetLoadedEditorAssemblies (3ms)
 			BeforeProcessingInitializeOnLoad (34ms)
-			ProcessInitializeOnLoadAttributes (77ms)
-			ProcessInitializeOnLoadMethodAttributes (40ms)
+			ProcessInitializeOnLoadAttributes (78ms)
+			ProcessInitializeOnLoadMethodAttributes (41ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -221,7 +221,7 @@ Application.AssetDatabase Initial Refresh Start
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\bee_backend.exe --dont-print-to-structured-log --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/GAME PLAN
 DisplayProgressbar: Compiling Scripts
-ExitCode: 0 Duration: 1s436ms
+ExitCode: 0 Duration: 1s387ms
 [591/748    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
 [736/748    0s] Csc Library/Bee/artifacts/1300b0aE.dag/Lattirune.Runtime.dll (+2 others)
 [739/748    0s] ILPostProcess Library/Bee/artifacts/1300b0aE.dag/post-processed/Lattirune.Runtime.dll (+pdb)
@@ -250,85 +250,85 @@ running Unity.Jobs.CodeGen.JobsILPostProcessor
 
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
 [747/748    0s] CopyFiles Library/ScriptAssemblies/Lattirune.Runtime.dll
-*** Tundra build success (1.41 seconds), 7 items updated, 748 evaluated
-AssetDatabase: script compilation time: 1.788678s
+*** Tundra build success (1.36 seconds), 7 items updated, 748 evaluated
+AssetDatabase: script compilation time: 1.765142s
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  1.137 seconds
-Refreshing native plugins compatible for Editor in 1.01 ms, found 1 plugins.
+- Loaded All Assemblies, in  1.229 seconds
+Refreshing native plugins compatible for Editor in 1.12 ms, found 1 plugins.
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  1.858 seconds
-Domain Reload Profiling: 2992ms
-	BeginReloadAssembly (257ms)
+- Finished resetting the current domain, in  1.819 seconds
+Domain Reload Profiling: 3044ms
+	BeginReloadAssembly (252ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (11ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (142ms)
-	RebuildCommonClasses (25ms)
-	RebuildNativeTypeToScriptingClass (8ms)
-	initialDomainReloadingComplete (20ms)
-	LoadAllAssembliesAndSetupDomain (824ms)
-		LoadAssemblies (785ms)
+		CreateAndSetChildDomain (139ms)
+	RebuildCommonClasses (27ms)
+	RebuildNativeTypeToScriptingClass (9ms)
+	initialDomainReloadingComplete (22ms)
+	LoadAllAssembliesAndSetupDomain (916ms)
+		LoadAssemblies (878ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (111ms)
-			TypeCache.Refresh (81ms)
+		AnalyzeDomain (112ms)
+			TypeCache.Refresh (80ms)
 				TypeCache.ScanAssembly (72ms)
-			BuildScriptInfoCaches (22ms)
-			ResolveRequiredComponents (6ms)
-	FinalizeReload (1859ms)
+			BuildScriptInfoCaches (24ms)
+			ResolveRequiredComponents (7ms)
+	FinalizeReload (1819ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (1745ms)
+		SetupLoadedEditorAssemblies (1702ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (21ms)
-			SetLoadedEditorAssemblies (3ms)
-			BeforeProcessingInitializeOnLoad (93ms)
-			ProcessInitializeOnLoadAttributes (1564ms)
-			ProcessInitializeOnLoadMethodAttributes (59ms)
-			AfterProcessingInitializeOnLoad (5ms)
+			InitializePlatformSupportModulesInManaged (23ms)
+			SetLoadedEditorAssemblies (4ms)
+			BeforeProcessingInitializeOnLoad (96ms)
+			ProcessInitializeOnLoadAttributes (1503ms)
+			ProcessInitializeOnLoadMethodAttributes (72ms)
+			AfterProcessingInitializeOnLoad (4ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
 		AwakeInstancesAfterBackupRestoration (8ms)
-Refreshing native plugins compatible for Editor in 1.34 ms, found 1 plugins.
+Refreshing native plugins compatible for Editor in 1.14 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=c7da7dd502a7dae49a8ab7e73120f9ca): Total: 5.290 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=bb36cdc511f256b4589c5248f733b195): Total: 5.343 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
 		Imports: total=0 (actual=0, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=2111 ms
-		Asset DB Callback time: managed=184 ms, native=4 ms
-		Scripting: domain reloads=1, domain reload time=1170 ms, compile time=1791 ms, other=28 ms
+		Asset DB Process Time: managed=0 ms, native=2079 ms
+		Asset DB Callback time: managed=201 ms, native=4 ms
+		Scripting: domain reloads=1, domain reload time=1263 ms, compile time=1767 ms, other=27 ms
 		Project Asset Count: scripts=958, non-scripts=2386
 		Asset File Changes: new=0, changed=1, moved=0, deleted=0
 		Scan Filter Count: 0
 	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 1.551ms
-	ApplyChangesToAssetFolders: 0.363ms
-	Scan: 65.318ms
-	OnSourceAssetsModified: 0.704ms
-	CategorizeAssetsWithTransientArtifact: 18.487ms
-	ProcessAssetsWithTransientArtifactChanges: 41.654ms
-	CategorizeAssets: 33.201ms
-	ImportOutOfDateAssets: 1865.675ms (74.037ms without children)
-		CompileScripts: 1790.557ms
+	InvokePackagesCallback: 1.711ms
+	ApplyChangesToAssetFolders: 0.471ms
+	Scan: 66.005ms
+	OnSourceAssetsModified: 0.738ms
+	CategorizeAssetsWithTransientArtifact: 18.362ms
+	ProcessAssetsWithTransientArtifactChanges: 49.299ms
+	CategorizeAssets: 34.972ms
+	ImportOutOfDateAssets: 1825.230ms (57.642ms without children)
+		CompileScripts: 1766.598ms
 		ReloadNativeAssets: 0.004ms
-		UnloadImportedAssets: 0.091ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.383ms
+		UnloadImportedAssets: 0.104ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.384ms
 		InitializingProgressBar: 0.000ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 0.601ms
-	PostProcessAllAssets: 185.470ms
-	Hotreload: 2.399ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.000ms
+		OnDemandSchedulerStart: 0.497ms
+	PostProcessAllAssets: 203.055ms
+	Hotreload: 2.089ms
 	GatherAllCurrentPrimaryArtifactRevisions: 0.002ms
-	UnloadStreamsBegin: 1.073ms
-	PersistCurrentRevisions: 0.098ms
-	UnloadStreamsEnd: 0.002ms
+	UnloadStreamsBegin: 1.197ms
+	PersistCurrentRevisions: 0.101ms
+	UnloadStreamsEnd: 0.001ms
 	GenerateScriptTypeHashes: 2.276ms
-	Untracked: 3073.773ms
+	Untracked: 3139.698ms
 
 Application.AssetDatabase Initial Refresh End
-Scanning for USB devices : 3.444ms
+Scanning for USB devices : 3.779ms
 Initializing Unity extensions:
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] Serial number assigned to: "F4-4G3C-GQHF-7FCK-8FSR-XXXX"
@@ -337,9 +337,9 @@ Initializing Unity extensions:
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-Lattirune
 Unloading 59 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4256 unused Assets / (6.5 MB). Loaded Objects now: 4918.
-Memory consumption went from 176.2 MB to 169.7 MB.
-Total: 13.271900 ms (FindLiveObjects: 0.597700 ms CreateObjectMapping: 0.585200 ms MarkObjects: 6.336200 ms  DeleteObjects: 5.750300 ms)
+Unloading 4256 unused Assets / (5.4 MB). Loaded Objects now: 4918.
+Memory consumption went from 174.3 MB to 168.9 MB.
+Total: 8.675200 ms (FindLiveObjects: 0.795900 ms CreateObjectMapping: 0.397000 ms MarkObjects: 5.738800 ms  DeleteObjects: 1.741500 ms)
 
 [Lattirune.Build] Starting Android Build (Lattirune-1.0.0.apk, AppBundle: False, Release: True)...
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -353,18 +353,18 @@ Lattirune.Editor.AndroidBuildScript:BuildAndroidV100ReleaseApk () (at Assets/_Pr
 
 (Filename: Assets/_Project/Editor/AndroidBuildScript.cs Line: 69)
 
-Start importing Assets/Resources using Guid(2063f1ea30d20ea40aeeec65ed8323c3) (DefaultImporter) -> (artifact id: '37c757e7d3335d4389be216019cd2fda') in 0.0236252 seconds
-Refreshing native plugins compatible for Editor in 1.09 ms, found 1 plugins.
+Start importing Assets/Resources using Guid(6819239ca663cef4f9680e0b4307966f) (DefaultImporter) -> (artifact id: '278e6b715c3219239bf633606e903ac2') in 0.0249083 seconds
+Refreshing native plugins compatible for Editor in 1.19 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=878d5b43308b91a4fbf9a4e6b5d0a4d1): Total: 0.099 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '0d14969b610140937c7a23ff6a431064') in 0.0022735 seconds
-Start importing Assets/Settings/Build Profiles/New Android™ Profile.asset using Guid(b047ad1d6c186ca459a2733ee13fa4bc) (NativeFormatImporter) -> (artifact id: 'e7ad3122b5a6f32b057e120b695aedd0') in 0.0024021 seconds
-Start importing Assets/Resources/PerformanceTestRunInfo.json using Guid(2129a46cdbc99974fbf72bafd1e7f9d3) (TextScriptImporter) -> (artifact id: 'e57113fb4d106df46d2554095f3e16fd') in 0.0204556 seconds
-Start importing Assets/Resources/PerformanceTestRunSettings.json using Guid(bd2d276908c4e274e89ba63126454051) (TextScriptImporter) -> (artifact id: '3421afa343cec3ed6217d7c1c6cb42cc') in 0.0165451 seconds
+Asset Pipeline Refresh (id=0988f2bed8c2269429fdbe493ad87119): Total: 0.101 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '0d14969b610140937c7a23ff6a431064') in 0.0023941 seconds
+Start importing Assets/Settings/Build Profiles/New Android™ Profile.asset using Guid(b047ad1d6c186ca459a2733ee13fa4bc) (NativeFormatImporter) -> (artifact id: 'e7ad3122b5a6f32b057e120b695aedd0') in 0.0019419 seconds
+Start importing Assets/Resources/PerformanceTestRunSettings.json using Guid(84f4c7978c918c7429e78cf0f99b459e) (TextScriptImporter) -> (artifact id: 'cbcbc529c74555c82394985b23314d2c') in 0.0160379 seconds
+Start importing Assets/Resources/PerformanceTestRunInfo.json using Guid(db7a79067b773c34aaec17934dc55cc1) (TextScriptImporter) -> (artifact id: '0dd2b002cb1e9ef2faec6e2c7815b57f') in 0.016565 seconds
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.02 seconds
-Refreshing native plugins compatible for Editor in 1.07 ms, found 1 plugins.
+Refreshing native plugins compatible for Editor in 1.30 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=a5f5e09a630ce44429e674325d114ffd): Total: 0.248 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=8f00af3ae6f9e7841b129cdb77e36417): Total: 0.218 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 DisplayProgressbar: Checking prerequisites
 PlayerSettings->Active Input Handling is set to Both, this is unsupported on Android and might cause issues with input and application performance. Please choose only one active input handling.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -388,9 +388,9 @@ Lattirune.Editor.AndroidBuildScript:BuildAndroidV100ReleaseApk () (at Assets/_Pr
 
 (Filename: Assets/_Project/Editor/AndroidBuildScript.cs Line: 106)
 
-Android PostProcess task "Checking prerequisites" took 13.5567 ms
+Android PostProcess task "Checking prerequisites" took 13.2045 ms
 DisplayProgressbar: Detect Java Development Kit (JDK)
-Android PostProcess task "Detect Java Development Kit (JDK)" took 86.1767 ms
+Android PostProcess task "Detect Java Development Kit (JDK)" took 92.4566 ms
 DisplayProgressbar: Detecting Android SDK
 AndroidSDKTools:
 
@@ -401,76 +401,76 @@ AndroidSDKTools:
 
 	adb           : C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\platform-tools\adb.exe
 
-Android PostProcess task "Detecting Android SDK" took 2433.1073 ms
+Android PostProcess task "Detecting Android SDK" took 1912.0786 ms
 DisplayProgressbar: Detect Android NDK
-Android PostProcess task "Detect Android NDK" took 1.6355 ms
-Android PostProcess task "Trying to find a suitable Android device" took 0.4403 ms
+Android PostProcess task "Detect Android NDK" took 1.9783 ms
+Android PostProcess task "Trying to find a suitable Android device" took 0.4265 ms
 DisplayProgressbar: Check resources
-Android PostProcess task "Check resources" took 0.1889 ms
+Android PostProcess task "Check resources" took 0.2069 ms
 DisplayProgressbar: Check Android Player Settings
-Android PostProcess task "Check Android Player Settings" took 0.2601 ms
+Android PostProcess task "Check Android Player Settings" took 0.2975 ms
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\bee_backend.exe --dont-print-to-structured-log --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aESkipCompile.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssembliesAndTypeDB
 WorkingDir: C:/GAME PLAN
 DisplayProgressbar: Compiling Scripts
-ExitCode: 0 Duration: 0s802ms
+ExitCode: 0 Duration: 0s804ms
 [2/3        0s] BuildPlayerDataGenerator Library/BuildPlayerData/Editor/TypeDb-All.json
-*** Tundra build success (0.76 seconds), 1 items updated, 3 evaluated
-Asset Pipeline Refresh (id=af31c11da15edbb46ab3a8fe75bdf2e0): Total: 0.009 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+*** Tundra build success (0.77 seconds), 1 items updated, 3 evaluated
+Asset Pipeline Refresh (id=26b8f5e95fbd4eb4a8c60d3142f81e96): Total: 0.009 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 [ScriptCompilation] Requested script compilation because: Recompiling scripts for player build.
 BuildPlayer: start building target 13
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\bee_backend.exe --dont-print-to-structured-log --ipc --defer-dag-verification --dagfile="Library/Bee/1300b0aP.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssembliesAndTypeDB
 WorkingDir: C:/GAME PLAN
 Total cache size 156493697
-Total cache size after purge 156493697, took 00:00:00.1271287
-ExitCode: 0 Duration: 3s56ms
+Total cache size after purge 156493697, took 00:00:00.1351487
+ExitCode: 0 Duration: 3s487ms
 [343/503    0s] WriteResponseFile Library/Bee/artifacts/rsp/4747638433968585886.rsp
 [427/503    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
 [451/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.IK.Runtime.dll
-[452/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Shared.dll
-[453/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll
-[454/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Burst.dll
-[455/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.dll
-[456/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll
-[457/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Config.Runtime.dll
-[458/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll
-[459/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Rendering.LightTransport.Runtime.dll
-[460/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.PixelPerfect.dll
-[461/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.2D.Runtime.dll
-[462/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InternalAPIEngineBridge.001.dll
-[463/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll
-[464/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InputSystem.ForUI.dll
-[465/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.Animation.Runtime.dll
-[466/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.Common.Runtime.dll
-[467/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll
-[468/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/UnityEngine.UI.dll
-[469/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll
-[470/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Collections.dll
-[471/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Mathematics.dll
-[472/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InputSystem.ForUI.pdb
-[473/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.pdb
-[474/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.TextMeshPro.dll
-[475/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InternalAPIEngineBridge.001.pdb
-[476/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/UnityEngine.UI.pdb
-[477/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.Animation.Runtime.pdb
-[478/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.Common.Runtime.pdb
-[479/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InputSystem.dll
-[480/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Config.Runtime.pdb
-[481/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.Runtime.pdb
-[482/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.PixelPerfect.pdb
-[483/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.pdb
-[484/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Rendering.LightTransport.Runtime.pdb
-[485/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Burst.pdb
-[486/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.pdb
-[487/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.pdb
-[488/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.2D.Runtime.pdb
-[489/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.pdb
-[490/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.IK.Runtime.pdb
-[491/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Shared.pdb
-[492/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.pdb
-[493/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InputSystem.pdb
+[452/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InputSystem.ForUI.dll
+[453/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.Animation.Runtime.dll
+[454/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Shared.dll
+[455/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InternalAPIEngineBridge.001.dll
+[456/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.PixelPerfect.dll
+[457/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll
+[458/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Rendering.LightTransport.Runtime.dll
+[459/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Mathematics.dll
+[460/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll
+[461/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.dll
+[462/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.2D.Runtime.dll
+[463/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll
+[464/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll
+[465/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.Common.Runtime.dll
+[466/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Burst.dll
+[467/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/UnityEngine.UI.dll
+[468/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll
+[469/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InputSystem.dll
+[470/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.TextMeshPro.dll
+[471/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Collections.dll
+[472/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll
+[473/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.Common.Runtime.pdb
+[474/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/UnityEngine.UI.pdb
+[475/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Config.Runtime.dll
+[476/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.Runtime.pdb
+[477/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InputSystem.pdb
+[478/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.pdb
+[479/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.pdb
+[480/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.IK.Runtime.pdb
+[481/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.2D.Runtime.pdb
+[482/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.pdb
+[483/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.PixelPerfect.pdb
+[484/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.pdb
+[485/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.2D.Animation.Runtime.pdb
+[486/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Rendering.LightTransport.Runtime.pdb
+[487/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Shared.pdb
+[488/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InputSystem.ForUI.pdb
+[489/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Burst.pdb
+[490/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.pdb
+[491/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.InternalAPIEngineBridge.001.pdb
+[492/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Config.Runtime.pdb
+[493/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.TextMeshPro.pdb
 [494/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Mathematics.pdb
-[495/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Collections.pdb
-[496/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.TextMeshPro.pdb
+[495/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.pdb
+[496/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Unity.Collections.pdb
 [497/503    0s] Csc Library/Bee/artifacts/1300b0aP.dag/Lattirune.Runtime.dll (+2 others)
 [498/503    0s] ILPostProcess Library/Bee/artifacts/1300b0aP.dag/post-processed/Lattirune.Runtime.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1300b0aP.dag/Lattirune.Runtime.dll, with 120 defines and 178 references
@@ -483,23 +483,23 @@ running zzzUnity.Burst.CodeGen.BurstILPostProcessor
 [499/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Lattirune.Runtime.pdb
 [500/503    0s] CopyFiles Library/Bee/PlayerScriptAssemblies/Lattirune.Runtime.dll
 [502/503    0s] BuildPlayerDataGenerator Library/BuildPlayerData/Player/RuntimeInitializeOnLoads.json (+1 other)
-*** Tundra build success (3.03 seconds), 53 items updated, 503 evaluated
-Rebuilding Data files because Assets/Resources/PerformanceTestRunSettings.json is dirty (hash)
+*** Tundra build success (3.45 seconds), 53 items updated, 503 evaluated
+Rebuilding Data files because Assets/Resources/PerformanceTestRunInfo.json is dirty (hash)
 Total cache size 156493697
-Total cache size after purge 156493697, took 00:00:00.1319830
+Total cache size after purge 156493697, took 00:00:00.1177974
 Opening scene 'Assets/_Project/Scenes/Bootstrap.unity'
 Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Assets/_Project/Scenes/Bootstrap.unity'
-	Deserialize:            2.188 ms
-	Integration:            176.831 ms
+	Deserialize:            2.012 ms
+	Integration:            194.677 ms
 	Integration of assets:  0.004 ms
-	Thread Wait Time:       0.037 ms
-	Total Operation Time:   179.060 ms
-Unloading 41 unused Assets / (7.9 MB). Loaded Objects now: 4966.
-Memory consumption went from 171.5 MB to 163.6 MB.
-Total: 5.860100 ms (FindLiveObjects: 0.214500 ms CreateObjectMapping: 0.094300 ms MarkObjects: 5.288100 ms  DeleteObjects: 0.262500 ms)
+	Thread Wait Time:       0.040 ms
+	Total Operation Time:   196.732 ms
+Unloading 41 unused Assets / (4.3 MB). Loaded Objects now: 4966.
+Memory consumption went from 165.8 MB to 161.5 MB.
+Total: 6.877000 ms (FindLiveObjects: 0.277500 ms CreateObjectMapping: 0.099700 ms MarkObjects: 6.189700 ms  DeleteObjects: 0.309600 ms)
 
-Created GICache directory at C:/Users/k deswanth/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.013s, timestamps: [19.555 - 19.569]
+Created GICache directory at C:/Users/k deswanth/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.014s, timestamps: [19.178 - 19.192]
 
 
 Mono dependencies included in the build
@@ -746,19 +746,19 @@ Dependency assembly - Microsoft.CSharp.dll
 
 DisplayProgressbar: Fetching assembly references
 Unloading 154 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 1521 unused Assets / (13.7 MB). Loaded Objects now: 4967.
-Memory consumption went from 200.6 MB to 186.9 MB.
-Total: 7.669600 ms (FindLiveObjects: 0.171600 ms CreateObjectMapping: 0.085200 ms MarkObjects: 6.321900 ms  DeleteObjects: 1.090200 ms)
+Unloading 1521 unused Assets / (14.5 MB). Loaded Objects now: 4967.
+Memory consumption went from 198.6 MB to 184.0 MB.
+Total: 8.685800 ms (FindLiveObjects: 0.279800 ms CreateObjectMapping: 0.165700 ms MarkObjects: 5.840500 ms  DeleteObjects: 2.399300 ms)
 
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
 Unloading 0 unused Assets / (2.2 KB). Loaded Objects now: 4969.
-Memory consumption went from 164.7 MB to 164.7 MB.
-Total: 6.284700 ms (FindLiveObjects: 0.313900 ms CreateObjectMapping: 0.165800 ms MarkObjects: 5.796200 ms  DeleteObjects: 0.008200 ms)
+Memory consumption went from 162.6 MB to 162.6 MB.
+Total: 9.692600 ms (FindLiveObjects: 0.254600 ms CreateObjectMapping: 0.058500 ms MarkObjects: 9.371400 ms  DeleteObjects: 0.007300 ms)
 
 Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
 Unloading 164 unused Assets / (139.3 MB). Loaded Objects now: 4969.
-Memory consumption went from 305.4 MB to 166.1 MB.
-Total: 16.083000 ms (FindLiveObjects: 0.155800 ms CreateObjectMapping: 0.064000 ms MarkObjects: 5.815700 ms  DeleteObjects: 10.046800 ms)
+Memory consumption went from 303.3 MB to 164.0 MB.
+Total: 15.707000 ms (FindLiveObjects: 0.163400 ms CreateObjectMapping: 0.074700 ms MarkObjects: 5.461200 ms  DeleteObjects: 10.006800 ms)
 
 Compiling shader "Legacy Shaders/VertexLit" pass "" (vp)
     Full variant space:         24
@@ -797,7 +797,7 @@ Compiling shader "Legacy Shaders/Diffuse" pass "FORWARD" (vp)
     After scriptable stripping: 48
     Processed in 0.00 seconds
     starting compilation...
-    finished in 0.00 seconds. Local cache hits 48 (0.03s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
+    finished in 0.00 seconds. Local cache hits 48 (0.02s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
     Prepared data for serialisation in 0.00s
 Compiling shader "Legacy Shaders/Diffuse" pass "FORWARD" (vp)
     Full variant space:         40
@@ -806,7 +806,7 @@ Compiling shader "Legacy Shaders/Diffuse" pass "FORWARD" (vp)
     After scriptable stripping: 30
     Processed in 0.00 seconds
     starting compilation...
-    finished in 0.00 seconds. Local cache hits 30 (0.02s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
+    finished in 0.00 seconds. Local cache hits 30 (0.01s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
     Prepared data for serialisation in 0.00s
 Compiling shader "Legacy Shaders/Diffuse" pass "DEFERRED" (vp)
     Full variant space:         152
@@ -1019,7 +1019,7 @@ Compiling shader "Hidden/Internal-DeferredShading" pass "" (vp)
     After scriptable stripping: 156
     Processed in 0.00 seconds
     starting compilation...
-    finished in 0.00 seconds. Local cache hits 156 (0.07s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
+    finished in 0.00 seconds. Local cache hits 156 (0.06s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
     Prepared data for serialisation in 0.00s
 Compiling shader "Hidden/Internal-DeferredShading" pass "" (vp)
     Full variant space:         2
@@ -1049,7 +1049,7 @@ Compiling shader "Hidden/Internal-DeferredReflections" pass "" (vp)
     After scriptable stripping: 12
     Processed in 0.00 seconds
     starting compilation...
-    finished in 0.00 seconds. Local cache hits 12 (0.01s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
+    finished in 0.00 seconds. Local cache hits 12 (0.00s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
     Prepared data for serialisation in 0.00s
 Serialized binary data for shader Hidden/Internal-DeferredReflections in 0.00s
     gles3 (total internal programs: 9, unique: 4)
@@ -1670,7 +1670,7 @@ Compiling shader "Hidden/VideoDecode" pass "Flip_NV12_To_RGBA" (vp)
     After scriptable stripping: 12
     Processed in 0.00 seconds
     starting compilation...
-    finished in 0.00 seconds. Local cache hits 12 (0.01s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
+    finished in 0.00 seconds. Local cache hits 12 (0.00s CPU time), remote cache hits 0 (0.00s CPU time), compiled 0 variants (0.00s CPU time), skipped 0 variants
     Prepared data for serialisation in 0.00s
 Compiling shader "Hidden/VideoDecode" pass "Flip_P010_To_RGB1" (vp)
     Full variant space:         2
@@ -1718,21 +1718,21 @@ Serialized binary data for shader Hidden/TextCore/Distance Field SSD in 0.00s
     gles3 (total internal programs: 3, unique: 1)
     vulkan (total internal programs: 3, unique: 1)
 DisplayProgressbar: Initializing
-Android PostProcess task "Initializing" took 0.862 ms
+Android PostProcess task "Initializing" took 0.8202 ms
 DisplayProgressbar: Check gradle project collisions
-Android PostProcess task "Check gradle project collisions" took 0.2233 ms
+Android PostProcess task "Check gradle project collisions" took 0.2052 ms
 DisplayProgressbar: Preparing banner
-Android PostProcess task "Preparing banner" took 0.3277 ms
+Android PostProcess task "Preparing banner" took 0.325 ms
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\bee_backend.exe --dont-print-to-structured-log --ipc --dagfile="Library/Bee/Playered517f1b.dag" --profile="Library/Bee/backend1.traceevents" Player
 WorkingDir: C:/GAME PLAN
-ExitCode: 4 Duration: 0s71ms
+ExitCode: 4 Duration: 0s74ms
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\Tools\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\PlaybackEngines\AndroidPlayer\AndroidPlayerBuildProgram.exe" "C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/PlaybackEngines/AndroidPlayer/Bee;C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/Tools/BuildPipeline" "Library/Bee/Playered517f1b.dag.json" "Library/Bee/Playered517f1b-inputdata.json" "Library\Bee\buildprogram0.traceevents"
 WorkingDir: C:/GAME PLAN
 DisplayProgressbar: Incremental Player Build
-ExitCode: 0 Duration: 0s471ms
+ExitCode: 0 Duration: 0s522ms
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\bee_backend.exe --dont-print-to-structured-log --ipc --dagfile="Library/Bee/Playered517f1b.dag" --dagfilejson="Library\Bee\Playered517f1b.dag.json" --profile="Library/Bee/backend2.traceevents" Player
 WorkingDir: C:/GAME PLAN
-C:/GAME PLAN/Library/PackageCache/com.unity.burst@7a907cf5a459/.Runtime\bcl.exe exited after 4005 ms.
+C:/GAME PLAN/Library/PackageCache/com.unity.burst@7a907cf5a459/.Runtime\bcl.exe exited after 4767 ms.
 stdout:
 Starting 1 library requests
 Done
@@ -1740,37 +1740,40 @@ stderr:
 
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\Tools\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\PlaybackEngines\AndroidPlayer\AndroidPlayerBuildProgram.exe" "C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/PlaybackEngines/AndroidPlayer/Bee;C:/Program Files/Unity/Hub/Editor/6000.0.38f1/Editor/Data/Tools/BuildPipeline" "Library/Bee/Playered517f1b.dag.json" "Library/Bee/Playered517f1b-inputdata.json" "Library\Bee\buildprogram1.traceevents"
 WorkingDir: C:/GAME PLAN
-ExitCode: 4 Duration: 15s
-ExitCode: 0 Duration: 0s477ms
+ExitCode: 4 Duration: 35s
+ExitCode: 0 Duration: 0s480ms
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\bee_backend.exe --dont-print-to-structured-log --ipc --dagfile="Library/Bee/Playered517f1b.dag" --dagfilejson="Library\Bee\Playered517f1b.dag.json" --profile="Library/Bee/backend3.traceevents" Player
 WorkingDir: C:/GAME PLAN
-ExitCode: 0 Duration: 0s238ms
+ExitCode: 0 Duration: 0s247ms
 DisplayProgressbar: Calling IPostGenerateGradleAndroidProject callbacks
 Calling IPostGenerateGradleAndroidProject callbacks on 'C:\GAME PLAN\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary':
-Android PostProcess task "Calling IPostGenerateGradleAndroidProject callbacks" took 1.52 ms
+Android PostProcess task "Calling IPostGenerateGradleAndroidProject callbacks" took 1.5003 ms
 DisplayProgressbar: Validate Gradle Project
-Android PostProcess task "Validate Gradle Project" took 1.2365 ms
-Android PostProcess task "Cloud Diagnostics Symbol Upload" took 0.3462 ms
+Android PostProcess task "Validate Gradle Project" took 1.1961 ms
+Android PostProcess task "Cloud Diagnostics Symbol Upload" took 0.2749 ms
 DisplayProgressbar: Building Gradle project
 Total cache size 156493697
-Total cache size after purge 156493697, took 00:00:00.1249769
+Total cache size after purge 156493697, took 00:00:00.1209043
 Starting: C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\PlaybackEngines\AndroidPlayer\OpenJDK\bin\java.exe -classpath "C:\Program Files\Unity\Hub\Editor\6000.0.38f1\Editor\Data\PlaybackEngines\AndroidPlayer\Tools\gradle\lib\gradle-launcher-8.4.jar" org.gradle.launcher.GradleMain "-Dorg.gradle.jvmargs=-Xmx4096m" "assembleRelease" 
 WorkingDir: C:/GAME PLAN/Library/Bee/Android/Prj/IL2CPP/Gradle\launcher
-Android PostProcess task "Building Gradle project" took 17164.5875 ms
+Android PostProcess task "Building Gradle project" took 10978.5098 ms
 DisplayProgressbar: Building Gradle Symbols
-Android PostProcess task "Building Gradle Symbols" took 0.2875 ms
+Android PostProcess task "Building Gradle Symbols" took 0.1984 ms
 DisplayProgressbar: Processing Mapping File
-Android PostProcess task "Processing Mapping File" took 0.2418 ms
+Android PostProcess task "Processing Mapping File" took 0.2344 ms
 DisplayProgressbar: Moving output package(s)
 Deleting file 'C:/GAME PLAN/Builds/Android/Lattirune-1.0.0.apk'
 Copy 'C:/GAME PLAN/Library/Bee/Android/Prj/IL2CPP/Gradle\launcher\build\outputs\apk\release\launcher-release.apk' -> 
  'C:/GAME PLAN/Builds/Android/Lattirune-1.0.0.apk'
-Android PostProcess task "Moving output package(s)" took 11.8224 ms
-Android PostProcess task "Checking Symbols size" took 0.6257 ms
-Refreshing native plugins compatible for Editor in 1.99 ms, found 1 plugins.
+Android PostProcess task "Moving output package(s)" took 12.156 ms
+Android PostProcess task "Checking Symbols size" took 0.6538 ms
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Serial number assigned to: "F4-4G3C-GQHF-7FCK-8FSR-XXXX"
+[Licensing::Module] Serial number assigned to: "13469957967341-UnityPersXXXX"
+Refreshing native plugins compatible for Editor in 2.02 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=424de0bf7c41cc742a513f238f9984a6): Total: 0.064 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
-Refreshing native plugins compatible for Editor in 1.06 ms, found 1 plugins.
+Asset Pipeline Refresh (id=655efbb90c56bb74c9b32be712a34f02): Total: 0.051 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Refreshing native plugins compatible for Editor in 1.11 ms, found 1 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 
 -------------------------------------------------------------------------------
@@ -3318,24 +3321,24 @@ Used Assets and files from the Resources folder, sorted by uncompressed size:
 -------------------------------------------------------------------------------
 Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
 Unloading 1429 unused Assets / (1.3 MB). Loaded Objects now: 5126.
-Memory consumption went from 170.6 MB to 169.3 MB.
-Total: 8.833500 ms (FindLiveObjects: 0.734000 ms CreateObjectMapping: 0.199400 ms MarkObjects: 6.754300 ms  DeleteObjects: 1.145000 ms)
+Memory consumption went from 168.6 MB to 167.2 MB.
+Total: 8.255400 ms (FindLiveObjects: 0.365300 ms CreateObjectMapping: 0.165400 ms MarkObjects: 6.258500 ms  DeleteObjects: 1.465600 ms)
 
 DisplayProgressNotification: Build Successful
 Build Finished, Result: Success.
-##utp:{"type":"PlayerBuildInfo","version":2,"phase":"Immediate","time":1787239452084,"processId":26592,"steps":[{"description":"Preprocess Player","duration":168},{"description":"Prepare For Build","duration":2553},{"description":"ProducePlayerScriptAssemblies","duration":4082},{"description":"Verify Build setup","duration":44},{"description":"Prepare assets for target platform","duration":3},{"description":"Prepare splash screen","duration":1},{"description":"Building scenes","duration":500},{"description":"Build scripts DLLs","duration":34},{"description":"Build GlobalGameManagers file","duration":135},{"description":"Writing asset files","duration":445},{"description":"Building Resources/unity_builtin_extra","duration":113},{"description":"Write data build dirty tracking information","duration":238},{"description":"Postprocess built player","duration":34613}],"duration":42929}
+##utp:{"type":"PlayerBuildInfo","version":2,"phase":"Immediate","time":1787239756125,"processId":14760,"steps":[{"description":"Preprocess Player","duration":175},{"description":"Prepare For Build","duration":2036},{"description":"ProducePlayerScriptAssemblies","duration":4548},{"description":"Verify Build setup","duration":28},{"description":"Prepare assets for target platform","duration":3},{"description":"Prepare splash screen","duration":1},{"description":"Building scenes","duration":511},{"description":"Build scripts DLLs","duration":37},{"description":"Build GlobalGameManagers file","duration":137},{"description":"Writing asset files","duration":403},{"description":"Building Resources/unity_builtin_extra","duration":101},{"description":"Write data build dirty tracking information","duration":206},{"description":"Postprocess built player","duration":47908}],"duration":56094}
 Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
 Loaded scene 'Temp/__Backupscenes/0.backup'
-	Deserialize:            0.742 ms
-	Integration:            206.868 ms
+	Deserialize:            0.586 ms
+	Integration:            206.857 ms
 	Integration of assets:  0.002 ms
-	Thread Wait Time:       0.064 ms
-	Total Operation Time:   207.675 ms
-Unloading 0 unused Assets / (240 B). Loaded Objects now: 5119.
-Memory consumption went from 168.7 MB to 168.7 MB.
-Total: 5.461400 ms (FindLiveObjects: 0.219100 ms CreateObjectMapping: 0.084400 ms MarkObjects: 5.148500 ms  DeleteObjects: 0.008700 ms)
+	Thread Wait Time:       0.060 ms
+	Total Operation Time:   207.506 ms
+Unloading 0 unused Assets / (0 B). Loaded Objects now: 5119.
+Memory consumption went from 166.6 MB to 166.6 MB.
+Total: 5.344100 ms (FindLiveObjects: 0.210600 ms CreateObjectMapping: 0.075600 ms MarkObjects: 5.048800 ms  DeleteObjects: 0.008700 ms)
 
-[Lattirune.Build] Android Build SUCCEEDED: C:\GAME PLAN\Builds/Android\Lattirune-1.0.0.apk (674 MB, Duration: 43.9s)
+[Lattirune.Build] Android Build SUCCEEDED: C:\GAME PLAN\Builds/Android\Lattirune-1.0.0.apk (674 MB, Duration: 57.0s)
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -3347,19 +3350,19 @@ Lattirune.Editor.AndroidBuildScript:BuildAndroidV100ReleaseApk () (at Assets/_Pr
 
 (Filename: Assets/_Project/Editor/AndroidBuildScript.cs Line: 111)
 
-[Project] Loading completed in 56.568 seconds
-	Project init time: 				7.723 seconds
+[Project] Loading completed in 69.374 seconds
+	Project init time: 				7.811 seconds
 		Template init time: 		0.000 seconds
-		Package Manager init time: 		0.190 seconds
-		Asset Database init time: 		0.564 seconds
+		Package Manager init time: 		0.200 seconds
+		Asset Database init time: 		0.571 seconds
 		Global illumination init time: 	0.003 seconds
-		Assemblies load time: 			0.724 seconds
+		Assemblies load time: 			0.725 seconds
 		Unity extensions init time: 	0.004 seconds
-		Asset Database refresh time: 	5.290 seconds
-	Scene opening time: 			46.700 seconds
-##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1787239452336,"processId":26592,"projectLoad":56.5682807,"projectInit":7.7228797,"templateInit":0.0,"packageManagerInit":0.1901197,"assetDatabaseInit":0.563913,"globalIlluminationInit":0.0034635,"assembliesLoad":0.7243994,"unityExtensionsInit":0.0039669,"assetDatabaseRefresh":5.2898634,"sceneOpening":46.7001853}
-##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1787239452336,"processId":26592,"editorVersion":"6000.0.38f1 (82314a941f2d)","branch":"6000.0/staging","buildType":"Release","platform":"Windows"}
-Asset Pipeline Refresh (id=7e8c1b2e4dbf0ea40826670fd6a01595): Total: 0.030 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+		Asset Database refresh time: 	5.343 seconds
+	Scene opening time: 			59.482 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1787239756388,"processId":14760,"projectLoad":69.3740498,"projectInit":7.8110609,"templateInit":0.0,"packageManagerInit":0.2001371,"assetDatabaseInit":0.5709474,"globalIlluminationInit":0.0033946,"assembliesLoad":0.7252458,"unityExtensionsInit":0.0038104,"assetDatabaseRefresh":5.3430401,"sceneOpening":59.4822742}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1787239756388,"processId":14760,"editorVersion":"6000.0.38f1 (82314a941f2d)","branch":"6000.0/staging","buildType":"Release","platform":"Windows"}
+Asset Pipeline Refresh (id=4ad9e6a423063204d9680a28c87fd9f6): Total: 0.029 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
 [UnityConnectServicesConfig] config is NOT valid, switching to default
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] Serial number assigned to: "F4-4G3C-GQHF-7FCK-8FSR-XXXX"

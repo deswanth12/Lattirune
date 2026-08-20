@@ -118,76 +118,125 @@ namespace Lattirune.UI
         {
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 960f;
-            float panelHeight = 1400f;
-            float posX = (1080f - panelWidth) * 0.5f;
-            float posY = (Screen.height / scale - panelHeight) * 0.5f;
+            float screenW = 1080f;
+            float virtualH = Screen.height / scale;
+            float padX = 35f;
+            float contentW = screenW - (padX * 2f);
 
-            string windowTitle = isVictory ? "EXPEDITION TRIUMPH" : "EXPEDITION CONCLUDED";
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), windowTitle);
+            // =================================================================
+            // 1. TOP HEADER & HUD BAR
+            // =================================================================
+            float topY = 45f;
+            float topH = 120f;
+            Rect topBarRect = new Rect(padX, topY, contentW, topH);
+            LattiruneUITheme.DrawCard(topBarRect);
 
-            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
-
-            string headerTitle = isVictory ? "TRIUMPH OVER DARKNESS" : "FALLEN IN THE DEPTHS";
-            string headerSubtitle = isVictory ? "The Lich Lord is slain. The subterranean catacombs are cleansed." : "Your soul returns to the sacred campfire to forge anew.";
-            LattiruneUITheme.DrawHeader(headerTitle, headerSubtitle);
-            GUILayout.Space(12);
-
-            // Large Center Emblem / Backdrop
-            Texture2D endBg = isVictory ? VisualAssetProvider.GetBackdrop("bg_victory_hall") : VisualAssetProvider.GetBackdrop("bg_death_crypt");
-            if (endBg != null)
+            Texture2D icon = isVictory ? VisualAssetProvider.GetUIIcon("ui_icon_unlock") : VisualAssetProvider.GetUIIcon("ui_icon_death");
+            if (icon != null)
             {
-                Rect bgRect = GUILayoutUtility.GetRect(panelWidth - 80, 240f);
-                GUI.DrawTexture(bgRect, endBg, ScaleMode.ScaleAndCrop);
-                GUILayout.Space(16);
+                GUI.DrawTexture(new Rect(padX + 18f, topY + 18f, 84f, 84f), icon, ScaleMode.ScaleToFit);
             }
 
-            // Run Statistics Card
-            GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+            string headerTitle = isVictory ? "TRIUMPH OVER DARKNESS" : "FALLEN IN THE DEPTHS";
+            string headerSubtitle = isVictory ? "The Lich Lord is slain. The catacombs are cleansed." : "Your soul returns to the sacred campfire to forge anew.";
 
+            GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+            titleStyle.fontSize = 20;
+            titleStyle.fontStyle = FontStyle.Bold;
+            titleStyle.alignment = TextAnchor.MiddleLeft;
+            titleStyle.normal.textColor = isVictory ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorRedDanger;
+            GUI.Label(new Rect(padX + 116f, topY + 18f, contentW - 130f, 26f), headerTitle, titleStyle);
+
+            GUIStyle subStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            subStyle.fontSize = 13;
+            subStyle.fontStyle = FontStyle.Italic;
+            subStyle.alignment = TextAnchor.MiddleLeft;
+            subStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUI.Label(new Rect(padX + 116f, topY + 48f, contentW - 130f, 40f), headerSubtitle, subStyle);
+
+            // =================================================================
+            // 2. EXPEDITION TELEMETRY & ARTWORK
+            // =================================================================
+            float contentY = topY + topH + 16f;
+            float botBtnH = 75f;
+            float botMargin = 25f;
+            float act2Y = virtualH - botBtnH - botMargin;
+            float act1Y = act2Y - botBtnH - 12f;
+            float areaH = act1Y - contentY - 16f;
+
+            Rect areaRect = new Rect(padX, contentY, contentW, areaH);
+            LattiruneUITheme.DrawCard(areaRect);
+
+            // Telemetry Cards
+            float tY = contentY + 24f;
             GUIStyle sectionTitle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-            sectionTitle.fontSize = 20;
+            sectionTitle.fontSize = 22;
             sectionTitle.fontStyle = FontStyle.Bold;
+            sectionTitle.alignment = TextAnchor.MiddleCenter;
             sectionTitle.normal.textColor = isVictory ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorRedDanger;
-            GUILayout.Label("EXPEDITION TELEMETRY", sectionTitle);
-            GUILayout.Space(10);
+            GUI.Label(new Rect(padX + 20f, tY, contentW - 40f, 30f), "EXPEDITION SUMMARY", sectionTitle);
 
-            GUIStyle statStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            statStyle.fontSize = 18;
-            statStyle.fontStyle = FontStyle.Bold;
-            statStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
+            float rowY = tY + 60f;
+            float rowH = 75f;
+            float rowW = contentW - 48f;
 
-            GUILayout.Label($"Floors Cleared: {floorsCleared} / 10", statStyle);
-            GUILayout.Label($"Gold Collected: {goldEarned}g", statStyle);
-            GUILayout.Label($"Embers Awarded: +{embersEarned}", statStyle);
+            // Stat 1: Floors Cleared
+            Rect r1 = new Rect(padX + 24f, rowY, rowW, rowH);
+            LattiruneUITheme.DrawCard(r1);
+            Texture2D floorIcon = VisualAssetProvider.GetUIIcon("ui_icon_floor");
+            if (floorIcon != null) GUI.DrawTexture(new Rect(r1.x + 16f, r1.y + 14f, 48f, 48f), floorIcon, ScaleMode.ScaleToFit);
+            GUIStyle sStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            sStyle.fontSize = 18;
+            sStyle.fontStyle = FontStyle.Bold;
+            sStyle.alignment = TextAnchor.MiddleLeft;
+            sStyle.normal.textColor = Color.white;
+            GUI.Label(new Rect(r1.x + 76f, r1.y + 22f, 300f, 30f), $"Floors Cleared: {floorsCleared} / 10", sStyle);
 
-            GUILayout.EndVertical();
-            GUILayout.Space(24);
+            // Stat 2: Gold Collected
+            rowY += rowH + 14f;
+            Rect r2 = new Rect(padX + 24f, rowY, rowW, rowH);
+            LattiruneUITheme.DrawCard(r2);
+            Texture2D goldIcon = VisualAssetProvider.GetUIIcon("ui_icon_gold");
+            if (goldIcon != null) GUI.DrawTexture(new Rect(r2.x + 16f, r2.y + 14f, 48f, 48f), goldIcon, ScaleMode.ScaleToFit);
+            GUI.Label(new Rect(r2.x + 76f, r2.y + 22f, 300f, 30f), $"Gold Collected: {goldEarned} Gold", sStyle);
 
-            // Action Buttons
+            // Stat 3: Embers Awarded
+            rowY += rowH + 14f;
+            Rect r3 = new Rect(padX + 24f, rowY, rowW, rowH);
+            LattiruneUITheme.DrawCard(r3);
+            Texture2D embIcon = VisualAssetProvider.GetUIIcon("ui_icon_embers");
+            if (embIcon != null) GUI.DrawTexture(new Rect(r3.x + 16f, r3.y + 14f, 48f, 48f), embIcon, ScaleMode.ScaleToFit);
+            GUI.Label(new Rect(r3.x + 76f, r3.y + 22f, 300f, 30f), $"Embers Harvested: +{embersEarned} Embers", sStyle);
+
+            // =================================================================
+            // 3. BOTTOM ACTION BUTTONS
+            // =================================================================
+            Rect act1Rect = new Rect(padX, act1Y, contentW, botBtnH);
+            Rect act2Rect = new Rect(padX, act2Y, contentW, botBtnH);
+
             if (isVictory)
             {
-                if (LattiruneUITheme.DrawPrimaryButton("ENTER ENDLESS DESCENT", 75f))
+                if (GUI.Button(act1Rect, "ENTER ENDLESS DESCENT", LattiruneUITheme.StylePrimaryBtn))
                 {
+                    AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                     ContinueEndlessMode();
                 }
-                GUILayout.Space(12);
             }
             else
             {
-                if (LattiruneUITheme.DrawPrimaryButton("START NEW RUN", 75f))
+                if (GUI.Button(act1Rect, "START NEW RUN", LattiruneUITheme.StylePrimaryBtn))
                 {
+                    AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                     StartNewRun();
                 }
-                GUILayout.Space(12);
             }
 
-            if (LattiruneUITheme.DrawSecondaryButton("RETURN TO CAMPFIRE HUB", 75f))
+            if (GUI.Button(act2Rect, "RETURN TO CAMPFIRE HUB", LattiruneUITheme.StyleSecondaryBtn))
             {
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 ReturnToCampfireHub();
             }
 
-            GUILayout.EndArea();
             GUI.matrix = oldMatrix;
         }
     }

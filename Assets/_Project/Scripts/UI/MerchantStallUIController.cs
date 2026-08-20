@@ -126,94 +126,150 @@ namespace Lattirune.UI
         {
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 980f;
-            float panelHeight = 1500f;
-            float posX = (1080f - panelWidth) * 0.5f;
-            float posY = 150f + offsetY;
+            float screenW = 1080f;
+            float virtualH = Screen.height / scale;
+            float padX = 35f;
+            float contentW = screenW - (padX * 2f);
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "MERCHANT OUTPOST");
+            // =================================================================
+            // 1. TOP HEADER & HUD BAR
+            // =================================================================
+            float topY = 45f;
+            float topH = 120f;
+            Rect topBarRect = new Rect(padX, topY, contentW, topH);
+            LattiruneUITheme.DrawCard(topBarRect);
 
-            // Merchant Stall Backdrop
-            Texture2D bg = VisualAssetProvider.GetBackdrop("bg_merchant_stall");
-            if (bg != null)
+            Texture2D merchantIcon = VisualAssetProvider.GetUIIcon("ui_icon_merchant");
+            if (merchantIcon != null)
             {
-                Color oldC = GUI.color;
-                GUI.color = new Color(1f, 1f, 1f, 0.25f);
-                GUI.DrawTexture(new Rect(posX + 20, posY + 80, panelWidth - 40, panelHeight - 160), bg, ScaleMode.ScaleAndCrop);
-                GUI.color = oldC;
+                GUI.DrawTexture(new Rect(padX + 18f, topY + 18f, 84f, 84f), merchantIcon, ScaleMode.ScaleToFit);
             }
 
-            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
+            GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+            titleStyle.fontSize = 20;
+            titleStyle.fontStyle = FontStyle.Bold;
+            titleStyle.alignment = TextAnchor.MiddleLeft;
+            titleStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+            GUI.Label(new Rect(padX + 116f, topY + 18f, 400f, 26f), "THE UNDERGROUND OUTPOST", titleStyle);
 
-            LattiruneUITheme.DrawHeader("THE UNDERGROUND OUTPOST", "Ah, an adventurer! Fresh wares from the upper catacombs... for a price.");
-            GUILayout.Space(10);
+            GUIStyle dialogueStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            dialogueStyle.fontSize = 13;
+            dialogueStyle.fontStyle = FontStyle.Italic;
+            dialogueStyle.alignment = TextAnchor.MiddleLeft;
+            dialogueStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUI.Label(new Rect(padX + 116f, topY + 48f, contentW - 320f, 38f), "“Ah, an adventurer! Fresh wares from the upper catacombs... for a price.”", dialogueStyle);
 
             int gold = runManager != null ? runManager.CurrentGold : 100;
-            LattiruneUITheme.DrawBadge($"Your Gold: {gold}g", LattiruneUITheme.ColorGoldPrimary);
-            GUILayout.Space(20);
+            Texture2D iconGold = VisualAssetProvider.GetUIIcon("ui_icon_gold");
+            float pillW = 160f;
+            float pillX = padX + contentW - pillW - 12f;
+            LattiruneUITheme.DrawIconValue(new Rect(pillX, topY + 30f, pillW, 30f), iconGold, $"{gold} Gold", LattiruneUITheme.ColorGoldPrimary, 16);
+
+            // =================================================================
+            // 2. MERCHANT ITEMS LIST
+            // =================================================================
+            float itemsY = topY + topH + 16f;
+            float botBtnH = 85f;
+            float botMargin = 25f;
+            float actY = virtualH - botBtnH - botMargin;
+            float listH = actY - itemsY - 16f;
+
+            Rect listRect = new Rect(padX, itemsY, contentW, listH);
+            LattiruneUITheme.DrawCard(listRect);
+
+            float cardY = itemsY + 16f;
+            float cardH = (listH - 48f) / 3f;
 
             for (int i = 0; i < _inventory.Count; i++)
             {
                 var item = _inventory[i];
-                GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+                Rect itemCardRect = new Rect(padX + 16f, cardY, contentW - 32f, cardH);
+                
+                Color cardBg = item.isPurchased ? new Color(0.06f, 0.08f, 0.10f, 0.70f) : new Color(0.12f, 0.16f, 0.24f, 0.90f);
+                GUI.color = cardBg;
+                LattiruneUITheme.DrawCard(itemCardRect);
+                GUI.color = Color.white;
 
-                GUILayout.BeginHorizontal();
+                if (!item.isPurchased)
+                {
+                    LattiruneUITheme.DrawBorder(itemCardRect, 1.5f, item.rarityColor);
+                }
 
-                // Item Texture
+                // Item Artwork
                 Texture2D icon = VisualAssetProvider.GetItemTexture(item.id);
                 if (icon != null)
                 {
-                    Rect r = GUILayoutUtility.GetRect(80f, 80f, GUILayout.Width(80f), GUILayout.Height(80f));
-                    GUI.DrawTexture(r, icon, ScaleMode.ScaleToFit);
-                    GUILayout.Space(14);
+                    Rect iconRect = new Rect(itemCardRect.x + 16f, itemCardRect.y + (cardH - 80f) * 0.5f, 80f, 80f);
+                    Color oldC = GUI.color;
+                    if (item.isPurchased) GUI.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+                    GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit);
+                    GUI.color = oldC;
                 }
 
-                GUILayout.BeginVertical();
-                GUILayout.BeginHorizontal();
-                GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                titleStyle.fontSize = 20;
-                titleStyle.fontStyle = FontStyle.Bold;
-                titleStyle.normal.textColor = item.isPurchased ? LattiruneUITheme.ColorTextMuted : Color.white;
-                GUILayout.Label(item.name, titleStyle);
+                // Item Info
+                float textX = itemCardRect.x + 110f;
+                float textW = itemCardRect.width - 320f;
 
-                GUILayout.FlexibleSpace();
-                LattiruneUITheme.DrawBadge(item.rarity, item.rarityColor);
-                GUILayout.EndHorizontal();
+                GUIStyle itemNameStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+                itemNameStyle.fontSize = 18;
+                itemNameStyle.fontStyle = FontStyle.Bold;
+                itemNameStyle.normal.textColor = item.isPurchased ? LattiruneUITheme.ColorTextMuted : Color.white;
+                GUI.Label(new Rect(textX, itemCardRect.y + 16f, textW, 24f), item.name, itemNameStyle);
+
+                // Rarity pill
+                Rect rarityRect = new Rect(textX, itemCardRect.y + 44f, 95f, 22f);
+                GUI.DrawTexture(rarityRect, LattiruneUITheme.StyleCard.normal.background ?? Texture2D.blackTexture);
+                LattiruneUITheme.DrawBorder(rarityRect, 1f, item.rarityColor);
+                GUIStyle rStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                rStyle.fontSize = 11;
+                rStyle.fontStyle = FontStyle.Bold;
+                rStyle.alignment = TextAnchor.MiddleCenter;
+                rStyle.normal.textColor = item.rarityColor;
+                GUI.Label(rarityRect, item.rarity, rStyle);
 
                 GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                descStyle.fontSize = 14;
+                descStyle.fontSize = 13;
                 descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-                GUILayout.Label(item.desc, descStyle);
-                GUILayout.EndVertical();
+                GUI.Label(new Rect(textX, itemCardRect.y + 72f, textW, 36f), item.desc, descStyle);
 
-                GUILayout.FlexibleSpace();
+                // Buy Action Button / Purchased State
+                float btnW = 180f;
+                float btnX = itemCardRect.x + itemCardRect.width - btnW - 16f;
+                float btnY = itemCardRect.y + (cardH - 55f) * 0.5f;
+                Rect btnRect = new Rect(btnX, btnY, btnW, 55f);
 
                 if (item.isPurchased)
                 {
-                    LattiruneUITheme.DrawBadge("PURCHASED", LattiruneUITheme.ColorTextMuted);
+                    GUI.DrawTexture(btnRect, LattiruneUITheme.StyleCard.normal.background ?? Texture2D.blackTexture);
+                    LattiruneUITheme.DrawBorder(btnRect, 1f, LattiruneUITheme.ColorTextMuted);
+                    GUIStyle pStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                    pStyle.alignment = TextAnchor.MiddleCenter;
+                    pStyle.fontSize = 14;
+                    pStyle.fontStyle = FontStyle.Bold;
+                    pStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+                    GUI.Label(btnRect, "PURCHASED", pStyle);
                 }
                 else
                 {
-                    if (LattiruneUITheme.DrawPrimaryButton($"BUY ({item.cost}g)", 55f))
+                    if (GUI.Button(btnRect, $"BUY ({item.cost}g)", LattiruneUITheme.StylePrimaryBtn))
                     {
                         BuyItem(i);
                     }
                 }
 
-                GUILayout.EndHorizontal();
-                GUILayout.EndVertical();
-                GUILayout.Space(14);
+                cardY += cardH + 8f;
             }
 
-            GUILayout.FlexibleSpace();
-
-            if (LattiruneUITheme.DrawPrimaryButton("LEAVE OUTPOST & RESUME DESCENT", 75f))
+            // =================================================================
+            // 3. BOTTOM ACTION BUTTON
+            // =================================================================
+            Rect actRect = new Rect(padX, actY, contentW, botBtnH);
+            if (GUI.Button(actRect, "LEAVE OUTPOST & RESUME DESCENT", LattiruneUITheme.StylePrimaryBtn))
             {
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.ButtonClick);
-                if (navigation != null) navigation.NavigateTo(ScreenState.DUNGEON_MAP);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
+                navigation?.NavigateTo(ScreenState.DUNGEON_MAP);
             }
 
-            GUILayout.EndArea();
             GUI.matrix = oldMatrix;
         }
     }
