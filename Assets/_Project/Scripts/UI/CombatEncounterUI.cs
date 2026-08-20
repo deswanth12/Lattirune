@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Lattirune.Combat;
-using Lattirune.Grid;
-using Lattirune.Items;
-using Lattirune.Boss;
 using Lattirune.Audio;
-using Lattirune.Progression;
+using Lattirune.Combat;
 using Lattirune.Dungeon;
+using Lattirune.Progression;
 
 namespace Lattirune.UI
 {
     /// <summary>
-    /// Screen controller for Combat and Floor Encounters with integrated 2D Battle Stage,
-    /// dynamic victory reward selection, contextual tutorial hints, and AAA game feel.
+    /// Master Combat Encounter HUD & Screen Controller.
+    /// Manages the compact top status HUD (Hero vs Enemy HP/Stats/Floor),
+    /// dedicated Upper-Middle Combat Stage, Bottom Action Bar (Start Battle / Speed / Potions),
+    /// and Victory Reward drafting flow.
     /// </summary>
     public class CombatEncounterUI : MonoBehaviour
     {
@@ -24,28 +23,28 @@ namespace Lattirune.UI
         [SerializeField] private CombatStageVisualController stageVisual;
 
         [Header("Encounter State")]
-        [SerializeField] private bool isCombatActive = false;
-        [SerializeField] private bool isVictoryRewardOpen = false;
         [SerializeField] private int currentFloor = 1;
         [SerializeField] private string enemyName = "Sewer Rat";
         [SerializeField] private int enemyMaxHp = 35;
         [SerializeField] private int enemyCurrentHp = 35;
-        [SerializeField] private int enemyArmor = 0;
         [SerializeField] private int enemyAtk = 3;
+        [SerializeField] private int enemyArmor = 0;
         [SerializeField] private bool isBossEncounter = false;
         [SerializeField] private int bossPhase = 1;
 
-        [Header("Hero State")]
+        [Header("Hero State (Cached)")]
         [SerializeField] private string heroName = "Rune Knight";
         [SerializeField] private int heroMaxHp = 100;
         [SerializeField] private int heroCurrentHp = 100;
-        [SerializeField] private int heroArmor = 0;
         [SerializeField] private int heroAtk = 10;
+        [SerializeField] private int heroArmor = 0;
 
-        private List<RewardCardData> _rewardOptions = new List<RewardCardData>();
-        private RewardCardData _selectedRewardOption = null;
-        private string _combatLogMessage = "Prepare your grid alignment and initiate battle.";
+        [Header("Runtime State")]
+        [SerializeField] private bool isCombatActive = false;
+        [SerializeField] private bool isVictoryRewardOpen = false;
+        private string _combatLogMessage = "Align your weapons with rune conduits, then tap Start Battle.";
 
+        [Serializable]
         public class RewardCardData
         {
             public string itemId;
@@ -55,6 +54,9 @@ namespace Lattirune.UI
             public Color rarityColor;
             public Texture2D icon;
         }
+
+        private readonly List<RewardCardData> _rewardOptions = new List<RewardCardData>();
+        private RewardCardData _selectedRewardOption = null;
 
         public void Initialize(ScreenNavigationController nav, CombatSystem combat, RunManager run, CombatStageVisualController stage = null)
         {
@@ -98,16 +100,17 @@ namespace Lattirune.UI
             bossPhase = phase;
             isCombatActive = false;
             isVictoryRewardOpen = false;
-            _combatLogMessage = isBoss 
-                ? $"BOSS ENCOUNTER: {enemyName}! Align conduits to breach defenses." 
-                : $"Floor {currentFloor}: {enemyName} approaches. Align your lattice.";
+            _selectedRewardOption = null;
+            _combatLogMessage = isBoss ? "A mighty dungeon boss looms! Prepare your lattice synergies." : $"{enemyName} approaches. Align conduits and begin!";
         }
 
         public void StartBattle()
         {
+            if (isCombatActive) return;
+
             isCombatActive = true;
             _combatLogMessage = "Battle commenced! Conduits and weapons activating...";
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.CombatHit);
             JuiceController.Instance?.TriggerHaptic(HapticType.Light);
 
             if (combatSystem != null)
@@ -137,16 +140,18 @@ namespace Lattirune.UI
                 stageVisual?.TriggerHeroAttack();
                 stageVisual?.TriggerEnemyHit(result.FinalDamage, result.IsCritical);
                 enemyCurrentHp = Mathf.Max(0, enemyCurrentHp - result.FinalDamage);
+                _combatLogMessage = $"Hero strikes {enemyName} for {result.FinalDamage} damage!";
             }
             else
             {
                 stageVisual?.TriggerEnemyAttack();
                 stageVisual?.TriggerHeroHit(result.FinalDamage);
                 heroCurrentHp = Mathf.Max(0, heroCurrentHp - result.FinalDamage);
+                _combatLogMessage = $"{enemyName} attacks Hero for {result.FinalDamage} damage!";
             }
         }
 
-                private void HandleVictory()
+        private void HandleVictory()
         {
             HandleCombatResolved(true);
         }
@@ -168,6 +173,7 @@ namespace Lattirune.UI
                 JuiceController.Instance?.TriggerHaptic(HapticType.Success);
                 GenerateRewardOptions();
                 isVictoryRewardOpen = true;
+                _combatLogMessage = "Victory! Select your reward.";
             }
             else
             {
@@ -215,13 +221,14 @@ namespace Lattirune.UI
             _selectedRewardOption = null;
         }
 
-                public void SelectReward(object rewardObj)
+        public void SelectReward(object rewardObj)
         {
             if (_rewardOptions.Count > 0)
             {
                 SelectReward(_rewardOptions[0]);
             }
         }
+
         public void SelectReward(RewardCardData reward)
         {
             _selectedRewardOption = reward;
@@ -232,13 +239,37 @@ namespace Lattirune.UI
         public void CloseRewardScreenAndContinue()
         {
             isVictoryRewardOpen = false;
+
+            if (navigation == null) navigation = FindFirstObjectByType<ScreenNavigationController>();
+            if (runManager == null) runManager = FindFirstObjectByType<RunManager>();
+
+            var mapCtrl = FindFirstObjectByType<DungeonMapScreenController>();
+            if (mapCtrl != null && mapCtrl.MapGraph != null)
+            {
+                mapCtrl.MapGraph.CompleteCurrentNode();
+            }
+
             if (runManager != null)
             {
-                // Advanced floor
+                runManager.ContinueAfterReward();
             }
+
+            var runComp = FindFirstObjectByType<RunCompleteController>();
+            if (runComp != null && (runManager == null || runManager.CurrentState == RunState.RunComplete))
+            {
+                runComp.SetupSummary(true, 10, 100, 50);
+            }
+
             if (navigation != null)
             {
-                navigation.NavigateTo(ScreenState.DUNGEON_MAP);
+                if (runManager != null && runManager.CurrentState == RunState.RunComplete)
+                {
+                    navigation.NavigateTo(ScreenState.RUN_COMPLETE);
+                }
+                else
+                {
+                    navigation.NavigateTo(ScreenState.DUNGEON_MAP);
+                }
             }
         }
 
@@ -246,7 +277,6 @@ namespace Lattirune.UI
         {
             if (navigation != null && 
                 navigation.CurrentScreen != ScreenState.COMBAT && 
-                
                 navigation.CurrentScreen != ScreenState.RUN_START)
             {
                 return;
@@ -265,12 +295,76 @@ namespace Lattirune.UI
         {
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 980f;
-            float panelHeight = 440f;
-            float posX = (1080f - panelWidth) * 0.5f;
-            float posY = 20f + offsetY;
+            float screenW = 1080f;
+            float padX = 40f;
+            float topHUDY = 30f;
 
-            // 1. Render 2D Battle Arena
+            // =================================================================
+            // 1. TOP COMPACT COMBAT HUD (Floor / Currency / Compact Stats)
+            // =================================================================
+            float hudW = screenW - (padX * 2f);
+            float hudH = 110f;
+            Rect hudRect = new Rect(padX, topHUDY, hudW, hudH);
+            LattiruneUITheme.DrawCard(hudRect);
+
+            // 1a. Header Title Badge
+            string encounterTitle = isBossEncounter ? $"FLOOR {currentFloor} — BOSS SANCTUM" : $"FLOOR {currentFloor} — NORMAL ENCOUNTER";
+            int gold = runManager != null ? runManager.CurrentGold : 0;
+            int embers = runManager != null ? runManager.CurrentEmbers : 0;
+
+            GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+            titleStyle.fontSize = 17;
+            titleStyle.fontStyle = FontStyle.Bold;
+            titleStyle.alignment = TextAnchor.MiddleLeft;
+            titleStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+            GUI.Label(new Rect(padX + 20f, topHUDY + 8f, 450f, 24f), encounterTitle, titleStyle);
+
+            GUIStyle currStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            currStyle.fontSize = 15;
+            currStyle.alignment = TextAnchor.MiddleRight;
+            currStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
+            GUI.Label(new Rect(padX + hudW - 350f, topHUDY + 8f, 330f, 24f), $"🪙 {gold}g  |  🔥 {embers} Embers", currStyle);
+
+            // 1b. Hero Health & Stats (Left Sub-Pill)
+            float pillW = (hudW - 60f) * 0.5f;
+            float pillY = topHUDY + 38f;
+            float heroRatio = (float)heroCurrentHp / Mathf.Max(1, heroMaxHp);
+            float enemyRatio = (float)enemyCurrentHp / Mathf.Max(1, enemyMaxHp);
+
+            // Hero HP Bar
+            LattiruneUITheme.DrawHealthBar(new Rect(padX + 20f, pillY, pillW, 30f), heroRatio, $"HERO: {heroCurrentHp}/{heroMaxHp} HP");
+            GUIStyle heroStatStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            heroStatStyle.fontSize = 14;
+            heroStatStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUI.Label(new Rect(padX + 20f, pillY + 34f, pillW, 20f), $"⚔️ ATK: {heroAtk}  |  🛡️ ARMOR: {heroArmor}", heroStatStyle);
+
+            // Enemy HP Bar
+            Rect enemyBarRect = new Rect(padX + 40f + pillW, pillY, pillW, 30f);
+            GUI.DrawTexture(enemyBarRect, LattiruneUITheme.StyleCard.normal.background ?? Texture2D.blackTexture);
+            Rect enemyFillRect = new Rect(enemyBarRect.x + 2f, enemyBarRect.y + 2f, Mathf.Max(0f, (enemyBarRect.width - 4f) * Mathf.Clamp01(enemyRatio)), enemyBarRect.height - 4f);
+            GUI.color = new Color(0.85f, 0.22f, 0.26f, 1f);
+            GUI.DrawTexture(enemyFillRect, Texture2D.whiteTexture);
+            GUI.color = Color.white;
+
+            GUIStyle enemyLabelStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            enemyLabelStyle.alignment = TextAnchor.MiddleCenter;
+            enemyLabelStyle.fontSize = 18;
+            enemyLabelStyle.normal.textColor = Color.white;
+            GUI.Label(enemyBarRect, $"{enemyName.ToUpper()}: {enemyCurrentHp}/{enemyMaxHp} HP", enemyLabelStyle);
+
+            GUIStyle enemyStatStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            enemyStatStyle.alignment = TextAnchor.MiddleRight;
+            enemyStatStyle.fontSize = 14;
+            enemyStatStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUI.Label(new Rect(padX + 40f + pillW, pillY + 34f, pillW, 20f), $"⚔️ ATK: {enemyAtk}  |  🛡️ ARMOR: {enemyArmor}", enemyStatStyle);
+
+            // =================================================================
+            // 2. DEDICATED OPEN COMBAT STAGE (Hero vs Enemy Silhouette Arena)
+            // =================================================================
+            float stageY = topHUDY + hudH + 12f;
+            float stageH = 480f;
+            Rect stageRect = new Rect(padX, stageY, hudW, stageH);
+
             if (stageVisual == null) stageVisual = FindFirstObjectByType<CombatStageVisualController>();
             if (stageVisual != null)
             {
@@ -278,7 +372,7 @@ namespace Lattirune.UI
                 Texture2D enemyTex = VisualAssetProvider.GetEnemyTexture(enemyName, isBossEncounter, bossPhase);
 
                 stageVisual.DrawBattleArenaStage(
-                    new Rect(posX, posY, panelWidth, 310f),
+                    stageRect,
                     heroTex,
                     heroName,
                     heroCurrentHp,
@@ -296,57 +390,58 @@ namespace Lattirune.UI
                 );
             }
 
-            // 2. Health Bars Area
-            float barY = posY + 316f;
-            float barW = panelWidth;
-            float heroRatio = (float)heroCurrentHp / Mathf.Max(1, heroMaxHp);
-            float enemyRatio = (float)enemyCurrentHp / Mathf.Max(1, enemyMaxHp);
-
-            LattiruneUITheme.DrawHealthBar(new Rect(posX, barY, barW, 20f), heroRatio, $"HP {heroCurrentHp}/{heroMaxHp}");
-            LattiruneUITheme.DrawHealthBar(new Rect(posX, barY + 22f, barW, 20f), enemyRatio, $"HP {enemyCurrentHp}/{enemyMaxHp}");
-
-            // 3. Combat Log / Status Message
+            // =================================================================
+            // 3. COMBAT LOG / STATUS MESSAGE (Below Combat Stage)
+            // =================================================================
+            float logY = stageY + stageH + 10f;
             GUIStyle logStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            logStyle.alignment = TextAnchor.MiddleCenter;
             logStyle.fontSize = 15;
             logStyle.fontStyle = FontStyle.Italic;
             logStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
-            GUI.Label(new Rect(posX, barY + 46f, panelWidth, 22f), $"Log: {_combatLogMessage}", logStyle);
+            GUI.Label(new Rect(padX, logY, hudW, 22f), _combatLogMessage, logStyle);
 
-            // 4. Primary Action Button (START BATTLE)
-            float btnY = barY + 70f;
+            // =================================================================
+            // 4. CONTEXTUAL ONBOARDING PROMPT (Floor 1)
+            // =================================================================
+            if (currentFloor == 1 && !isCombatActive)
+            {
+                float tutY = logY + 28f;
+                Rect tutRect = new Rect(padX + 20f, tutY, hudW - 40f, 42f);
+                Color oldC = GUI.color;
+                GUI.color = new Color(0.08f, 0.14f, 0.22f, 0.95f);
+                LattiruneUITheme.DrawCard(tutRect);
+                LattiruneUITheme.DrawBorder(tutRect, 1.5f, new Color(0.38f, 0.8f, 1.0f, 0.8f));
+
+                GUIStyle tutStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                tutStyle.alignment = TextAnchor.MiddleCenter;
+                tutStyle.fontSize = 15;
+                tutStyle.fontStyle = FontStyle.Bold;
+                tutStyle.normal.textColor = new Color(0.4f, 0.9f, 1f);
+                GUI.Label(tutRect, "💡 TUTORIAL: Align weapons with rune conduits to ignite elemental synergies!", tutStyle);
+                GUI.color = oldC;
+            }
+
+            // =================================================================
+            // 5. BOTTOM ACTION BAR (Large Mobile-First Touch Targets)
+            // =================================================================
+            float virtualHeight = Screen.height / scale;
+            float botBarY = virtualHeight - 120f;
+            float botBarW = hudW;
+            float botBtnH = 90f;
+
             if (!isCombatActive)
             {
-                if (LattiruneUITheme.DrawPrimaryButton("START BATTLE", 70f))
+                Rect startBtnRect = new Rect(padX, botBarY, botBarW, botBtnH);
+                if (GUI.Button(startBtnRect, "⚔️  START BATTLE  ⚔️", LattiruneUITheme.StylePrimaryBtn))
                 {
                     StartBattle();
                 }
             }
             else
             {
-                LattiruneUITheme.DrawSecondaryButton("RESOLVING COMBAT...", 70f);
-            }
-
-            // 5. Contextual First-5-Minutes Tutorial Hint (Floor 1)
-            if (currentFloor == 1 && !isCombatActive)
-            {
-                float tutW = 900f;
-                float tutH = 50f;
-                float tutX = (1080f - tutW) * 0.5f;
-                float tutY = btnY + 80f;
-
-                Rect tutRect = new Rect(tutX, tutY, tutW, tutH);
-                Color oldC = GUI.color;
-                GUI.color = new Color(0.1f, 0.15f, 0.25f, 0.92f);
-                LattiruneUITheme.DrawCard(tutRect);
-                LattiruneUITheme.DrawBorder(tutRect, 1.5f, new Color(0.38f, 0.8f, 1.0f, 0.8f));
-
-                GUIStyle tutStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                tutStyle.alignment = TextAnchor.MiddleCenter;
-                tutStyle.fontSize = 16;
-                tutStyle.fontStyle = FontStyle.Bold;
-                tutStyle.normal.textColor = new Color(0.4f, 0.9f, 1f);
-                GUI.Label(tutRect, "💡 TUTORIAL: Align weapons with rune conduits to ignite elemental synergies!", tutStyle);
-                GUI.color = oldC;
+                Rect activeBtnRect = new Rect(padX, botBarY, botBarW, botBtnH);
+                GUI.Button(activeBtnRect, "⚔️  RESOLVING COMBAT...  ⚔️", LattiruneUITheme.StyleSecondaryBtn);
             }
 
             GUI.matrix = oldMatrix;

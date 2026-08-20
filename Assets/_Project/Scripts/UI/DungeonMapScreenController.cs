@@ -25,20 +25,37 @@ namespace Lattirune.UI
         private Vector2 _scrollPos = Vector2.zero;
         private string _selectedNodeId = null;
 
-                public void Initialize(RunManager run, ScreenNavigationController nav)
+        public void Initialize(RunManager run, ScreenNavigationController nav, DungeonMapGraph map)
+        {
+            navigation = nav;
+            runManager = run;
+            _mapGraph = map ?? DungeonMapGraph.CreateCanonicalCursedSewersMap();
+            combatUI = FindFirstObjectByType<CombatEncounterUI>();
+        }
+
+        public void Initialize(RunManager run, ScreenNavigationController nav, object map)
+        {
+            if (map is DungeonMapGraph dmg)
+            {
+                Initialize(run, nav, dmg);
+            }
+            else
+            {
+                Initialize(nav, run);
+            }
+        }
+
+        public void Initialize(RunManager run, ScreenNavigationController nav)
         {
             Initialize(nav, run);
         }
-                public void Initialize(RunManager run, ScreenNavigationController nav, object map)
-        {
-            Initialize(nav, run);
-        }
+
         public void Initialize(ScreenNavigationController nav, RunManager run, CombatEncounterUI combat = null)
         {
             navigation = nav;
             runManager = run;
             combatUI = combat ?? FindFirstObjectByType<CombatEncounterUI>();
-            _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
+            if (_mapGraph == null) _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
         }
 
         public void SelectNode(string nodeId)

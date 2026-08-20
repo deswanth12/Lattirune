@@ -11,7 +11,7 @@ namespace Lattirune.Grid
     public class GridView : MonoBehaviour
     {
         [Header("Grid Layout Settings")]
-        [SerializeField] private Vector2 gridCenter = Vector2.zero;
+        [SerializeField] private Vector2 gridCenter = new Vector2(0f, -1.8f);
         [SerializeField] private float cellSize = GridCoordinateUtility.DEFAULT_CELL_SIZE;
         [SerializeField] private float cellSpacing = GridCoordinateUtility.DEFAULT_CELL_SPACING;
 

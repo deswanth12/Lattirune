@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 using Lattirune.Audio;
+using Lattirune.Combat;
+using Lattirune.Modifiers;
 using Lattirune.Progression;
 using Lattirune.Dungeon;
 
@@ -23,11 +25,64 @@ namespace Lattirune.UI
                 public void Initialize(object a, object b, object c, object d) { }
         public void BindMapController(object map) { }
 
-                        public void Initialize(object a, object b, object c) { }
-        public void Initialize(RunManager run, object player, ScreenNavigationController nav = null) { Initialize(nav, run); }
-        public bool ChooseCleanseCurse() { MeditateForEmbers(); return true; }
-        public bool ChooseRestAndHeal() { RestAndHeal(); return true; }
-        public bool ChooseUpgradeRune(string runeId = null) { ForgeRune(); return true; }
+                                private PlayerCombatant _playerCombatant;
+        private RunModifierManager _modifierManager;
+
+        public void Initialize(object a, object b, object c) { }
+        public void Initialize(RunManager run, PlayerCombatant player, RunModifierManager mod, ScreenNavigationController nav)
+        {
+            runManager = run;
+            _playerCombatant = player;
+            _modifierManager = mod;
+            Initialize(nav, run);
+        }
+
+        public void Initialize(RunManager run, PlayerCombatant player, RunModifierManager mod = null)
+        {
+            runManager = run;
+            _playerCombatant = player;
+            _modifierManager = mod;
+            Initialize(FindFirstObjectByType<ScreenNavigationController>(), run);
+        }
+
+        public void Initialize(RunManager run, object player, ScreenNavigationController nav = null)
+        {
+            if (player is PlayerCombatant pc) _playerCombatant = pc;
+            Initialize(nav, run);
+        }
+
+        public bool ChooseCleanseCurse()
+        {
+            if (_restActionUsed) return false;
+            _restActionUsed = true;
+            if (_modifierManager != null)
+            {
+                _modifierManager.RemoveModifier("mod_curse_vulnerability");
+            }
+            MeditateForEmbers();
+            return true;
+        }
+
+        public bool ChooseRestAndHeal()
+        {
+            if (_restActionUsed) return false;
+            _restActionUsed = true;
+            if (_playerCombatant != null)
+            {
+                _playerCombatant.Heal(Mathf.RoundToInt(_playerCombatant.MaxHp * 0.4f));
+            }
+            RestAndHeal();
+            return true;
+        }
+
+        public bool ChooseUpgradeRune(string runeId = null)
+        {
+            if (_restActionUsed) return false;
+            _restActionUsed = true;
+            ForgeRune();
+            return true;
+        }
+
         public bool HasChosenOption => _restActionUsed;
         public void Initialize(ScreenNavigationController nav, RunManager run)
         {
