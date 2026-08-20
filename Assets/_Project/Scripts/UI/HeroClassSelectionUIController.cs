@@ -73,6 +73,7 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
+            if (navigation != null && navigation.CurrentScreen != ScreenState.HERO_SELECTION) return;
             if (!isVisible || classManager == null || classManager.Database == null) return;
 
             var classes = classManager.Database.AllClasses;

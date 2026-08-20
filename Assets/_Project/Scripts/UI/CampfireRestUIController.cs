@@ -126,6 +126,7 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
+            if (navigation != null && navigation.CurrentScreen != ScreenState.CAMPFIRE_REST) return;
             if (!isVisible) return;
 
             // Responsive scale matrix

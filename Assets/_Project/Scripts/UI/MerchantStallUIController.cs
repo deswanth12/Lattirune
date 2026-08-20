@@ -93,6 +93,7 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
+            if (navigation != null && navigation.CurrentScreen != ScreenState.MERCHANT) return;
             if (!isVisible || merchantSystem == null) return;
 
             // Fullscreen dark neo-arcane backdrop (1080x1920 scaled)

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Core;
@@ -64,10 +64,7 @@ namespace Lattirune.UI
         public void Show()
         {
             isVisible = true;
-            if (_mapGraph == null)
-            {
-                _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
-            }
+            _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
             var available = _mapGraph.GetAvailableNodes();
             if (available.Count > 0)
             {
@@ -82,6 +79,7 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
+            if (navigation != null && navigation.CurrentScreen != ScreenState.RUN_START) return;
             if (!isVisible || _mapGraph == null) return;
 
             // Responsive scale matrix
