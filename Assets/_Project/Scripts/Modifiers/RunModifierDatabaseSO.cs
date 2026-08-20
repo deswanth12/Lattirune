@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -56,10 +56,15 @@ namespace Lattirune.Modifiers
             m4.Initialize("mod_glass_cannon", "Glass Cannon", "Increases damage by 50%, but enemies have 30% more HP.", RunModifierRarity.Epic, RunModifierPolarity.Hybrid, RunModifierType.DamageMultiplier, 0.50f, Color.magenta);
             list.Add(m4);
 
-            // 5. Curse of Vulnerability (Curse, Negative, -20% Defense)
+            // 5. Iron Shell (Uncommon, Positive, +10 Defense)
             var m5 = CreateInstance<RunModifierDefinitionSO>();
-            m5.Initialize("mod_curse_vulnerability", "Curse of Vulnerability", "Reduces hero defense and armor effectiveness by 20%.", RunModifierRarity.Curse, RunModifierPolarity.Negative, RunModifierType.CurseOfVulnerability, -0.20f, Color.gray);
+            m5.Initialize("mod_iron_shell", "Iron Shell", "Grants +10 bonus armor defense during combat encounters.", RunModifierRarity.Uncommon, RunModifierPolarity.Positive, RunModifierType.DefenseBonus, 10f, Color.blue);
             list.Add(m5);
+
+            // 6. Curse of Vulnerability (Curse, Negative, -20% Defense)
+            var m6 = CreateInstance<RunModifierDefinitionSO>();
+            m6.Initialize("mod_curse_vulnerability", "Curse of Vulnerability", "Reduces hero defense and armor effectiveness by 20%.", RunModifierRarity.Curse, RunModifierPolarity.Negative, RunModifierType.CurseOfVulnerability, -0.20f, Color.gray);
+            list.Add(m6);
 
             db.Initialize(list);
             return db;

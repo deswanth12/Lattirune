@@ -1,4 +1,4 @@
-﻿namespace Lattirune.Modifiers
+namespace Lattirune.Modifiers
 {
     /// <summary>
     /// Supported modifier mechanics for procedural runs in Lattirune 1.1.
@@ -13,6 +13,7 @@
         LifestealRatio,
         ShieldRetentionBonus,
         ComboWindowBonus,
+        DefenseBonus,
         CurseOfVulnerability,
         CurseOfGreed
     }

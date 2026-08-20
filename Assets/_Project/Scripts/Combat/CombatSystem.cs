@@ -242,7 +242,8 @@ namespace Lattirune.Combat
                 if (modifierManager != null)
                 {
                     float defenseMultiplier = modifierManager.GetAggregateMultiplier(RunModifierType.CurseOfVulnerability, 1.0f);
-                    effectivePlayerArmor = Mathf.Max(0, Mathf.RoundToInt(effectivePlayerArmor * defenseMultiplier));
+                    int bonusArmor = Mathf.RoundToInt(modifierManager.GetAggregateMultiplier(RunModifierType.DefenseBonus, 0.0f));
+                    effectivePlayerArmor = Mathf.Max(0, Mathf.RoundToInt((player.Armor + bonusArmor) * defenseMultiplier));
                 }
 
                 if (effectSystem != null)

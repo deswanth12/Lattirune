@@ -158,5 +158,33 @@ namespace Lattirune.Tests
             // Base gold for non-elite is 6-12 -> 1.5x gives 9-18
             Assert.GreaterOrEqual(runManager.CurrentGold, 9);
         }
+
+        [Test]
+        public void IronShell_IncreasesEffectivePlayerArmor()
+        {
+            var playerObj = new GameObject("Player");
+            playerObj.transform.SetParent(_holder.transform);
+            var player = playerObj.AddComponent<PlayerCombatant>();
+            player.SetupDefaultPlayer(100);
+            player.SetExplicitStats(baseDamage: 0, runeBonus: 0, armorValue: 5); // Base 5 Armor
+
+            var enemyObj = new GameObject("Enemy");
+            enemyObj.transform.SetParent(_holder.transform);
+            var enemy = enemyObj.AddComponent<EnemyCombatant>();
+            enemy.SetupTrainingDummy(hp: 100, baseArmor: 0, attack: 20, interval: 0.1f);
+
+            var modManager = _holder.AddComponent<RunModifierManager>();
+            modManager.Initialize();
+            modManager.AddModifierById("mod_iron_shell"); // +10 Defense Bonus -> Total 15 Armor
+
+            var combat = _holder.AddComponent<CombatSystem>();
+            combat.Initialize(player, enemy, null, modManager);
+
+            combat.StartCombat();
+            combat.Tick(1.5f);
+
+            // Enemy Attack: 20 - (5 + 10) armor = 5 DMG -> Player HP = 100 - 5 = 95
+            Assert.AreEqual(95, player.CurrentHp);
+        }
     }
 }
