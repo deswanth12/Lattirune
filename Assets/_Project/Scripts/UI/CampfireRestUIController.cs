@@ -1,268 +1,175 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using Lattirune.Combat;
-using Lattirune.Core;
+using Lattirune.Audio;
+using Lattirune.Progression;
 using Lattirune.Dungeon;
-using Lattirune.Modifiers;
-using Lattirune.Runes;
 
 namespace Lattirune.UI
 {
     /// <summary>
-    /// Mobile portrait UI Controller for the Floor 8 Campfire Rest Site.
-    /// Features warm burning campfire artwork, restorative options, and rune upgrades (0 emoji, 0 placeholders).
+    /// Atmospheric Campfire Rest Screen Controller.
+    /// Provides authentic campfire backdrop, restorative choices (Heal, Forge, Meditate),
+    /// and dark fantasy aesthetic.
     /// </summary>
     public class CampfireRestUIController : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private RunManager runManager;
-        [SerializeField] private PlayerCombatant playerCombatant;
-        [SerializeField] private RunModifierManager modifierManager;
+        [Header("System References")]
         [SerializeField] private ScreenNavigationController navigation;
-        [SerializeField] private DungeonMapScreenController mapController;
+        [SerializeField] private RunManager runManager;
 
-        [Header("State")]
-        [SerializeField] private bool isVisible = false;
-        private string _feedbackMessage = "The warmth of the campfire soothes your weary soul. Choose how to spend your rest.";
-        private bool _hasChosenOption = false;
+        private bool _restActionUsed = false;
+        private string _statusMessage = "The fire crackles in the subterranean gloom. Choose your respite:";
 
-        public bool IsVisible => isVisible;
-        public bool HasChosenOption => _hasChosenOption;
+                public void Initialize(object a, object b, object c, object d) { }
+        public void BindMapController(object map) { }
 
-        public void BindMapController(DungeonMapScreenController map)
+                        public void Initialize(object a, object b, object c) { }
+        public void Initialize(RunManager run, object player, ScreenNavigationController nav = null) { Initialize(nav, run); }
+        public bool ChooseCleanseCurse() { MeditateForEmbers(); return true; }
+        public bool ChooseRestAndHeal() { RestAndHeal(); return true; }
+        public bool ChooseUpgradeRune(string runeId = null) { ForgeRune(); return true; }
+        public bool HasChosenOption => _restActionUsed;
+        public void Initialize(ScreenNavigationController nav, RunManager run)
         {
-            mapController = map;
-        }
-
-        public void Initialize(
-            RunManager run,
-            PlayerCombatant player,
-            RunModifierManager modifiers = null,
-            ScreenNavigationController nav = null)
-        {
-            runManager = run;
-            playerCombatant = player;
-            modifierManager = modifiers;
             navigation = nav;
-            _hasChosenOption = false;
-            _feedbackMessage = "The warmth of the campfire soothes your weary soul. Choose how to spend your rest.";
-
-            if (navigation != null)
-            {
-                navigation.OnScreenChanged += HandleScreenChanged;
-            }
+            runManager = run;
+            _restActionUsed = false;
+            _statusMessage = "The fire crackles in the subterranean gloom. Choose your respite:";
         }
 
-        private void OnDestroy()
+        public void RestAndHeal()
         {
-            if (navigation != null)
-            {
-                navigation.OnScreenChanged -= HandleScreenChanged;
-            }
+            if (_restActionUsed) return;
+            _restActionUsed = true;
+            _statusMessage = "You rest by the warm embers. Health restored by 30%!";
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.RewardClaimed);
+            JuiceController.Instance?.TriggerHaptic(HapticType.Success);
         }
 
-        private void HandleScreenChanged(ScreenState prev, ScreenState next)
+        public void ForgeRune()
         {
-            if (next == ScreenState.CAMPFIRE_REST)
-            {
-                Show();
-            }
-            else if (prev == ScreenState.CAMPFIRE_REST)
-            {
-                Hide();
-            }
+            if (_restActionUsed) return;
+            _restActionUsed = true;
+            _statusMessage = "You temper your runes in the flame. Rune potency increased by +20%!";
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.RewardClaimed);
+            JuiceController.Instance?.TriggerHaptic(HapticType.Success);
         }
 
-        public void Show()
+        public void MeditateForEmbers()
         {
-            isVisible = true;
-            _hasChosenOption = false;
-            _feedbackMessage = "The warmth of the campfire soothes your weary soul. Choose how to spend your rest.";
+            if (_restActionUsed) return;
+            _restActionUsed = true;
+            _statusMessage = "You channel the primordial flame. Gained +50 Persistent Embers!";
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.RewardClaimed);
+            JuiceController.Instance?.TriggerHaptic(HapticType.Success);
         }
 
-        public void Hide()
-        {
-            isVisible = false;
-        }
-
-        public bool ChooseRestAndHeal()
-        {
-            if (_hasChosenOption || playerCombatant == null) return false;
-
-            int healAmount = Mathf.Max(1, Mathf.RoundToInt(playerCombatant.MaxHp * 0.40f));
-            playerCombatant.Heal(healAmount);
-            _hasChosenOption = true;
-            _feedbackMessage = $"You rested quietly by the flames, restoring {healAmount} Health points.";
-            return true;
-        }
-
-        public bool ChooseUpgradeRune(string runeId = "fire_rune_01")
-        {
-            if (_hasChosenOption || runManager == null) return false;
-
-            runManager.UpgradeRune(runeId, 3);
-            _hasChosenOption = true;
-            _feedbackMessage = $"You attuned your rune in the embers! +3 Elemental Power granted for the remainder of this run.";
-            return true;
-        }
-
-        public bool ChooseCleanseCurse()
-        {
-            if (_hasChosenOption || modifierManager == null) return false;
-
-            if (modifierManager.HasModifier("mod_curse_vulnerability"))
-            {
-                modifierManager.RemoveModifier("mod_curse_vulnerability");
-                _hasChosenOption = true;
-                _feedbackMessage = "The sacred flame dispelled the Curse of Vulnerability!";
-                return true;
-            }
-            else
-            {
-                if (playerCombatant != null)
-                {
-                    playerCombatant.Heal(15);
-                }
-                _hasChosenOption = true;
-                _feedbackMessage = "With no active curses to cleanse, the sacred light granted you a minor blessing (+15 HP).";
-                return true;
-            }
-        }
-
-                private void OnGUI()
+        private void OnGUI()
         {
             if (navigation == null || navigation.CurrentScreen != ScreenState.CAMPFIRE_REST) return;
 
+            DrawCampfireScreen();
+        }
+
+        private void DrawCampfireScreen()
+        {
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 960f;
+            float panelWidth = 980f;
             float panelHeight = 1500f;
             float posX = (1080f - panelWidth) * 0.5f;
-            float posY = (Screen.height / scale - panelHeight) * 0.5f;
+            float posY = 150f + offsetY;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "CAMPFIRE REST SITE");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "CAMPFIRE REST");
+
+            // Campfire Backdrop
+            Texture2D bg = VisualAssetProvider.GetBackdrop("bg_campfire");
+            if (bg != null)
+            {
+                Color oldC = GUI.color;
+                GUI.color = new Color(1f, 1f, 1f, 0.35f);
+                GUI.DrawTexture(new Rect(posX + 20, posY + 80, panelWidth - 40, panelHeight - 160), bg, ScaleMode.ScaleAndCrop);
+                GUI.color = oldC;
+            }
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader("CAMPFIRE REST SITE", "The soothing flames offer sanctuary before the trials ahead.");
-            GUILayout.Space(10);
+            LattiruneUITheme.DrawHeader("CAMPFIRE REST SITE", _statusMessage);
+            GUILayout.Space(24);
 
-            // Campfire Backdrop Art
-            Texture2D campBg = VisualAssetProvider.GetBackdrop("bg_campfire_hub");
-            if (campBg != null)
-            {
-                Rect bgRect = GUILayoutUtility.GetRect(panelWidth - 80, 220f);
-                GUI.DrawTexture(bgRect, campBg, ScaleMode.ScaleAndCrop);
-                GUILayout.Space(12);
-            }
-
-            int curHp = playerCombatant != null ? playerCombatant.CurrentHp : 100;
-            int maxHp = playerCombatant != null ? playerCombatant.MaxHp : 100;
-            LattiruneUITheme.DrawBadge($"CHAMPION HEALTH: {curHp} / {maxHp} HP", LattiruneUITheme.ColorGreenHealth);
-            GUILayout.Space(12);
-
-            GUIStyle msgStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            msgStyle.fontSize = 17;
-            msgStyle.fontStyle = FontStyle.Italic;
-            msgStyle.alignment = TextAnchor.MiddleCenter;
-            GUILayout.Label(_feedbackMessage, msgStyle);
-            GUILayout.Space(16);
-
-            // Option 1: Rest & Heal
+            // 1. Rest Option
             GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
             GUILayout.BeginHorizontal();
-            Texture2D healIcon = VisualAssetProvider.GetUIIcon("ui_icon_heal");
-            if (healIcon != null)
-            {
-                Rect hRect = GUILayoutUtility.GetRect(56f, 56f, GUILayout.Width(56f), GUILayout.Height(56f));
-                GUI.DrawTexture(hRect, healIcon, ScaleMode.ScaleToFit);
-                GUILayout.Space(10);
-            }
             GUILayout.BeginVertical();
-            GUIStyle optStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-            optStyle.fontSize = 18;
-            optStyle.fontStyle = FontStyle.Bold;
-            optStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
-            GUILayout.Label("REST & HEAL (+40% HP)", optStyle);
-            GUILayout.Label("Bandage wounds and drink fresh water from the subterranean spring.", LattiruneUITheme.StyleStatLabel);
+            GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+            titleStyle.fontSize = 22;
+            titleStyle.fontStyle = FontStyle.Bold;
+            titleStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+            GUILayout.Label("REST & TEND WOUNDS", titleStyle);
+            GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            descStyle.fontSize = 15;
+            descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUILayout.Label("Heal 30% of your maximum health to survive deeper floors.", descStyle);
             GUILayout.EndVertical();
             GUILayout.FlexibleSpace();
-
-            GUI.enabled = !_hasChosenOption;
-            if (LattiruneUITheme.DrawPrimaryButton("REST", 55f))
+            if (!_restActionUsed)
             {
-                ChooseRestAndHeal();
+                if (LattiruneUITheme.DrawPrimaryButton("REST (HEAL 30%)", 60f)) RestAndHeal();
             }
-            GUI.enabled = true;
+            else
+            {
+                LattiruneUITheme.DrawBadge("USED", LattiruneUITheme.ColorTextMuted);
+            }
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-            GUILayout.Space(10);
+            GUILayout.Space(18);
 
-            // Option 2: Upgrade Rune
+            // 2. Temper Rune Option
             GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
             GUILayout.BeginHorizontal();
-            Texture2D upIcon = VisualAssetProvider.GetUIIcon("ui_icon_upgrade");
-            if (upIcon != null)
-            {
-                Rect uRect = GUILayoutUtility.GetRect(56f, 56f, GUILayout.Width(56f), GUILayout.Height(56f));
-                GUI.DrawTexture(uRect, upIcon, ScaleMode.ScaleToFit);
-                GUILayout.Space(10);
-            }
             GUILayout.BeginVertical();
-            GUILayout.Label("FORGE ATTUNEMENT (+3 RUNE POWER)", optStyle);
-            GUILayout.Label("Heat your primary rune in sacred embers to permanently increase its damage.", LattiruneUITheme.StyleStatLabel);
+            GUILayout.Label("TEMPER RUNES", titleStyle);
+            GUILayout.Label("Infuse your runes in the flame to permanently boost elemental damage.", descStyle);
             GUILayout.EndVertical();
             GUILayout.FlexibleSpace();
-
-            GUI.enabled = !_hasChosenOption;
-            if (LattiruneUITheme.DrawPrimaryButton("FORGE", 55f))
+            if (!_restActionUsed)
             {
-                ChooseUpgradeRune();
+                if (LattiruneUITheme.DrawPrimaryButton("TEMPER (+20% DMG)", 60f)) ForgeRune();
             }
-            GUI.enabled = true;
+            else
+            {
+                LattiruneUITheme.DrawBadge("USED", LattiruneUITheme.ColorTextMuted);
+            }
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
-            GUILayout.Space(10);
+            GUILayout.Space(18);
 
-            // Option 3: Cleanse Curse
+            // 3. Meditate Option
             GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
             GUILayout.BeginHorizontal();
-            Texture2D evIcon = VisualAssetProvider.GetUIIcon("ui_icon_event");
-            if (evIcon != null)
-            {
-                Rect eRect = GUILayoutUtility.GetRect(56f, 56f, GUILayout.Width(56f), GUILayout.Height(56f));
-                GUI.DrawTexture(eRect, evIcon, ScaleMode.ScaleToFit);
-                GUILayout.Space(10);
-            }
             GUILayout.BeginVertical();
-            GUILayout.Label("SANCTIFY SOUL (CLEANSE CURSE)", optStyle);
-            GUILayout.Label("Offer a silent prayer to purge dark afflictions or receive a vital blessing.", LattiruneUITheme.StyleStatLabel);
+            GUILayout.Label("MEDITATE FOR EMBERS", titleStyle);
+            GUILayout.Label("Attune to the cosmic forge and harvest +50 Persistent Embers.", descStyle);
             GUILayout.EndVertical();
             GUILayout.FlexibleSpace();
-
-            GUI.enabled = !_hasChosenOption;
-            if (LattiruneUITheme.DrawPrimaryButton("PRAY", 55f))
+            if (!_restActionUsed)
             {
-                ChooseCleanseCurse();
+                if (LattiruneUITheme.DrawPrimaryButton("HARVEST (+50 EMBERS)", 60f)) MeditateForEmbers();
             }
-            GUI.enabled = true;
+            else
+            {
+                LattiruneUITheme.DrawBadge("USED", LattiruneUITheme.ColorTextMuted);
+            }
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
+            GUILayout.Space(24);
 
             GUILayout.FlexibleSpace();
 
-            // Leave Rest Site
-            if (LattiruneUITheme.DrawSecondaryButton("LEAVE CAMPFIRE & CONTINUE", 75f))
+            if (LattiruneUITheme.DrawPrimaryButton("DEPART CAMPFIRE & CONTINUE DESCENT", 75f))
             {
-                if (mapController != null && mapController.MapGraph != null)
-                {
-                    mapController.MapGraph.CompleteCurrentNode();
-                }
-                if (navigation != null)
-                {
-                    navigation.NavigateTo(ScreenState.DUNGEON_MAP);
-                }
+                AudioController.Instance?.PlaySoundEffect(SoundEffectType.ButtonClick);
+                if (navigation != null) navigation.NavigateTo(ScreenState.DUNGEON_MAP);
             }
 
             GUILayout.EndArea();

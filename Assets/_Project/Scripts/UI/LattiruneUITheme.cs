@@ -351,6 +351,41 @@ namespace Lattirune.UI
             GUI.color = oldC;
         }
 
+                public static void DrawSectionTitle(string title)
+        {
+            EnsureInitialized();
+            GUILayout.Label(title, _styleSectionTitle);
+        }
+
+        public static void DrawBorder(Rect rect, float thickness, Color color)
+        {
+            DrawBorder(rect, color, Mathf.RoundToInt(thickness));
+        }
+
+        public static void DrawBorder(Rect rect, Color color, float thickness)
+        {
+            DrawBorder(rect, color, Mathf.RoundToInt(thickness));
+        }
+
+        public static void DrawHealthBar(Rect rect, float fillRatio, string label = "")
+        {
+            EnsureInitialized();
+            GUI.DrawTexture(rect, _texProgressBarBg);
+            Rect fillRect = new Rect(rect.x + 2, rect.y + 2, Mathf.Max(0, (rect.width - 4) * Mathf.Clamp01(fillRatio)), rect.height - 4);
+            GUI.DrawTexture(fillRect, _texProgressBarFillHp);
+
+            if (!string.IsNullOrEmpty(label))
+            {
+                GUIStyle lblStyle = new GUIStyle(StyleStatLabel);
+                lblStyle.alignment = TextAnchor.MiddleCenter;
+                lblStyle.fontSize = Mathf.RoundToInt(rect.height * 0.7f);
+                lblStyle.normal.textColor = Color.white;
+                GUI.Label(rect, label, lblStyle);
+            }
+        }
+
+        public static GUIStyle StyleHeroTitle => _styleHeaderTitle;
+
         public static GUIStyle StyleHeaderTitle => _styleHeaderTitle;
         public static GUIStyle StyleHeaderSubtitle => _styleHeaderSubtitle;
         public static GUIStyle StyleSectionTitle => _styleSectionTitle;

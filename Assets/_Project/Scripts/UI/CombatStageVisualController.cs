@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Combat;
 using Lattirune.Boss;
+using Lattirune.Audio;
 
 namespace Lattirune.UI
 {
@@ -18,8 +19,10 @@ namespace Lattirune.UI
 
         private float _heroLunge = 0f;
         private float _heroHitFlash = 0f;
+        private float _heroAnticipation = 0f;
         private float _enemyLunge = 0f;
         private float _enemyHitFlash = 0f;
+        private float _enemyAnticipation = 0f;
         private float _bossPhaseFlash = 0f;
 
         private struct FloatingNumber
@@ -30,6 +33,7 @@ namespace Lattirune.UI
             public float velocityY;
             public float lifetime;
             public float maxLifetime;
+            public float scale;
         }
 
         private struct ActiveVFX
@@ -39,6 +43,7 @@ namespace Lattirune.UI
             public float size;
             public float lifetime;
             public float maxLifetime;
+            public Color tint;
         }
 
         private readonly List<FloatingNumber> _floatingNumbers = new List<FloatingNumber>();
@@ -58,10 +63,14 @@ namespace Lattirune.UI
         {
             float dt = Time.deltaTime;
 
-            if (_heroLunge > 0f) _heroLunge = Mathf.Max(0f, _heroLunge - dt * 4f);
-            if (_heroHitFlash > 0f) _heroHitFlash = Mathf.Max(0f, _heroHitFlash - dt * 3f);
-            if (_enemyLunge > 0f) _enemyLunge = Mathf.Max(0f, _enemyLunge - dt * 4f);
-            if (_enemyHitFlash > 0f) _enemyHitFlash = Mathf.Max(0f, _enemyHitFlash - dt * 3f);
+            if (_heroLunge > 0f) _heroLunge = Mathf.Max(0f, _heroLunge - dt * 5f);
+            if (_heroHitFlash > 0f) _heroHitFlash = Mathf.Max(0f, _heroHitFlash - dt * 4f);
+            if (_heroAnticipation > 0f) _heroAnticipation = Mathf.Max(0f, _heroAnticipation - dt * 4f);
+
+            if (_enemyLunge > 0f) _enemyLunge = Mathf.Max(0f, _enemyLunge - dt * 5f);
+            if (_enemyHitFlash > 0f) _enemyHitFlash = Mathf.Max(0f, _enemyHitFlash - dt * 4f);
+            if (_enemyAnticipation > 0f) _enemyAnticipation = Mathf.Max(0f, _enemyAnticipation - dt * 4f);
+
             if (_bossPhaseFlash > 0f) _bossPhaseFlash = Mathf.Max(0f, _bossPhaseFlash - dt * 2f);
 
             // Update floating numbers
@@ -99,20 +108,24 @@ namespace Lattirune.UI
         public void TriggerHeroAttack()
         {
             _heroLunge = 1f;
-            SpawnVFX("VFX/vfx_slash_fire", new Vector2(680f, 220f), 140f, 0.25f);
+            SpawnVFX("VFX/vfx_slash_fire", new Vector2(680f, 220f), 180f, 0.3f, new Color(1f, 0.8f, 0.4f, 1f));
+            JuiceController.Instance?.TriggerHaptic(HapticType.Light);
         }
 
         public void TriggerHeroHit(int damage)
         {
             _heroHitFlash = 1f;
-            SpawnFloatingNumber($"-{damage}", new Color(1f, 0.3f, 0.3f), new Vector2(250f, 150f));
-            SpawnVFX("VFX/vfx_impact_spark", new Vector2(250f, 220f), 100f, 0.2f);
+            SpawnFloatingNumber($"-{damage}", new Color(1f, 0.35f, 0.35f), new Vector2(250f, 130f), 1.0f, 1.2f);
+            SpawnVFX("VFX/vfx_impact_spark", new Vector2(250f, 220f), 120f, 0.25f, Color.white);
+            JuiceController.Instance?.TriggerScreenShake(8f, 0.2f);
+            JuiceController.Instance?.TriggerHaptic(HapticType.Medium);
         }
 
         public void TriggerEnemyAttack()
         {
             _enemyLunge = 1f;
-            SpawnVFX("VFX/vfx_slash_shadow", new Vector2(350f, 220f), 140f, 0.25f);
+            SpawnVFX("VFX/vfx_slash_shadow", new Vector2(350f, 220f), 180f, 0.3f, new Color(0.8f, 0.3f, 1f, 1f));
+            JuiceController.Instance?.TriggerHaptic(HapticType.Light);
         }
 
         public void TriggerEnemyHit(int damage, bool isCrit = false)
@@ -120,31 +133,48 @@ namespace Lattirune.UI
             _enemyHitFlash = 1f;
             Color col = isCrit ? new Color(1f, 0.9f, 0.2f) : new Color(0.95f, 0.95f, 0.95f);
             string prefix = isCrit ? "CRIT! -" : "-";
-            SpawnFloatingNumber($"{prefix}{damage}", col, new Vector2(750f, 150f));
-            SpawnVFX("VFX/vfx_impact_spark", new Vector2(750f, 220f), 110f, 0.2f);
+            float scale = isCrit ? 1.5f : 1.2f;
+            SpawnFloatingNumber($"{prefix}{damage}", col, new Vector2(750f, 130f), 1.0f, scale);
+            SpawnVFX("VFX/vfx_impact_spark", new Vector2(750f, 220f), isCrit ? 160f : 120f, 0.25f, col);
+
+            if (isCrit)
+            {
+                JuiceController.Instance?.TriggerScreenShake(14f, 0.3f);
+                JuiceController.Instance?.TriggerHitStop(0.05f);
+                JuiceController.Instance?.TriggerHaptic(HapticType.Heavy);
+            }
+            else
+            {
+                JuiceController.Instance?.TriggerScreenShake(6f, 0.15f);
+                JuiceController.Instance?.TriggerHaptic(HapticType.Light);
+            }
         }
 
         public void TriggerBossPhaseTransition()
         {
             _bossPhaseFlash = 1f;
-            SpawnFloatingNumber("PHASE TRANSITION!", new Color(1f, 0.85f, 0.2f), new Vector2(500f, 100f), 1.5f);
-            SpawnVFX("VFX/vfx_slash_lightning", new Vector2(750f, 220f), 200f, 0.5f);
+            SpawnFloatingNumber("BOSS PHASE TRANSITION!", new Color(1f, 0.85f, 0.2f), new Vector2(500f, 80f), 2.0f, 1.6f);
+            SpawnVFX("VFX/vfx_slash_lightning", new Vector2(750f, 220f), 240f, 0.6f, new Color(0.9f, 0.4f, 1f, 1f));
+            JuiceController.Instance?.TriggerScreenShake(20f, 0.5f);
+            JuiceController.Instance?.TriggerScreenFlash(new Color(1f, 0.8f, 0.2f, 0.5f), 0.5f);
+            JuiceController.Instance?.TriggerHaptic(HapticType.Heavy);
         }
 
-        public void SpawnFloatingNumber(string text, Color color, Vector2 startPos, float duration = 0.8f)
+        public void SpawnFloatingNumber(string text, Color color, Vector2 startPos, float duration = 0.9f, float scale = 1.2f)
         {
             _floatingNumbers.Add(new FloatingNumber
             {
                 text = text,
                 color = color,
                 pos = startPos,
-                velocityY = -60f,
+                velocityY = -55f,
                 lifetime = duration,
-                maxLifetime = duration
+                maxLifetime = duration,
+                scale = scale
             });
         }
 
-        private void SpawnVFX(string path, Vector2 pos, float size, float duration)
+        private void SpawnVFX(string path, Vector2 pos, float size, float duration, Color tint)
         {
             Texture2D tex = Resources.Load<Texture2D>("Art/" + path);
             if (tex != null)
@@ -155,7 +185,8 @@ namespace Lattirune.UI
                     pos = pos,
                     size = size,
                     lifetime = duration,
-                    maxLifetime = duration
+                    maxLifetime = duration,
+                    tint = tint
                 });
             }
         }
@@ -180,12 +211,17 @@ namespace Lattirune.UI
             bool isBoss,
             int bossPhase = 1)
         {
+            // Apply screen shake offset to arena
+            Vector2 shake = JuiceController.Instance != null ? JuiceController.Instance.ShakeOffset : Vector2.zero;
+            stageRect.x += shake.x;
+            stageRect.y += shake.y;
+
             // Background Arena Backdrop
             Texture2D arenaBg = VisualAssetProvider.GetBackdrop("bg_combat_arena");
             if (arenaBg != null)
             {
                 Color oldC = GUI.color;
-                GUI.color = new Color(1f, 1f, 1f, 0.65f);
+                GUI.color = new Color(1f, 1f, 1f, 0.75f);
                 GUI.DrawTexture(stageRect, arenaBg, ScaleMode.ScaleAndCrop);
                 GUI.color = oldC;
             }
@@ -195,10 +231,10 @@ namespace Lattirune.UI
             float enemyBreathing = Mathf.Sin(Time.time * 2.5f + 1.2f) * 4f;
 
             // Attack lunges & hit shake offsets
-            float heroOffsetX = _heroLunge * 60f + (_heroHitFlash > 0 ? (Mathf.Sin(Time.time * 40f) * 8f) : 0f);
-            float enemyOffsetX = -_enemyLunge * 60f + (_enemyHitFlash > 0 ? (Mathf.Sin(Time.time * 40f) * 8f) : 0f);
+            float heroOffsetX = _heroLunge * 70f + (_heroHitFlash > 0 ? (Mathf.Sin(Time.time * 40f) * 10f) : 0f);
+            float enemyOffsetX = -_enemyLunge * 70f + (_enemyHitFlash > 0 ? (Mathf.Sin(Time.time * 40f) * 10f) : 0f);
 
-            float cardW = (stageRect.width - 60f) * 0.5f;
+            float cardW = (stageRect.width - 50f) * 0.5f;
             float cardH = stageRect.height - 20f;
 
             // -----------------------------------------------------------------
@@ -208,8 +244,8 @@ namespace Lattirune.UI
             LattiruneUITheme.DrawCard(heroCardRect);
 
             // Hero Avatar Box
-            float avatarSize = Mathf.Min(170f, cardH - 140f);
-            Rect heroAvatarRect = new Rect(heroCardRect.x + (heroCardRect.width - avatarSize) * 0.5f, heroCardRect.y + 15f + heroBreathing, avatarSize, avatarSize);
+            float avatarSize = Mathf.Min(170f, cardH - 130f);
+            Rect heroAvatarRect = new Rect(heroCardRect.x + (heroCardRect.width - avatarSize) * 0.5f, heroCardRect.y + 12f + heroBreathing, avatarSize, avatarSize);
             
             Color oldGUIColor = GUI.color;
             if (_heroHitFlash > 0f)
@@ -222,41 +258,43 @@ namespace Lattirune.UI
             }
             GUI.color = oldGUIColor;
 
-            // Hero Info & Stats
-            GUIStyle nameStyle = new GUIStyle(LattiruneUITheme.StyleHeaderTitle);
-            nameStyle.fontSize = 20;
-            nameStyle.alignment = TextAnchor.MiddleCenter;
-            nameStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
-            GUI.Label(new Rect(heroCardRect.x + 10f, heroCardRect.y + avatarSize + 22f, heroCardRect.width - 20f, 26f), heroName, nameStyle);
+            // Hero Labels
+            GUIStyle heroNameStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+            heroNameStyle.alignment = TextAnchor.MiddleCenter;
+            heroNameStyle.fontSize = 20;
+            heroNameStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+            GUI.Label(new Rect(heroCardRect.x + 10f, heroCardRect.y + cardH - 100f, cardW - 20f, 26f), heroName, heroNameStyle);
 
-            // Hero HP Bar
-            Rect heroHpRect = new Rect(heroCardRect.x + 15f, heroCardRect.y + avatarSize + 52f, heroCardRect.width - 30f, 22f);
-            LattiruneUITheme.DrawProgressBar(heroHp, heroMaxHp, $"HP {heroHp}/{heroMaxHp}", LattiruneUITheme.ColorGreenHealth, 22f);
-
-            // Hero Stats
             GUIStyle statStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            statStyle.fontSize = 15;
             statStyle.alignment = TextAnchor.MiddleCenter;
-            statStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
-            string heroStats = $"ATK: {heroAtk}  |  ARMOR: {heroArmor}";
-            GUI.Label(new Rect(heroCardRect.x + 10f, heroCardRect.y + avatarSize + 78f, heroCardRect.width - 20f, 22f), heroStats, statStyle);
+            statStyle.fontSize = 15;
+            statStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUI.Label(new Rect(heroCardRect.x + 10f, heroCardRect.y + cardH - 74f, cardW - 20f, 22f), $"ATK: {heroAtk} | ARMOR: {heroArmor}", statStyle);
 
             // -----------------------------------------------------------------
             // ENEMY / BOSS VISUAL CARD (RIGHT)
             // -----------------------------------------------------------------
-            Rect enemyCardRect = new Rect(stageRect.x + stageRect.width - cardW - 15f + enemyOffsetX, stageRect.y + 10f, cardW, cardH);
+            Rect enemyCardRect = new Rect(stageRect.x + cardW + 35f + enemyOffsetX, stageRect.y + 10f, cardW, cardH);
             LattiruneUITheme.DrawCard(enemyCardRect);
 
+            if (isBoss)
+            {
+                // Boss Royal Frame
+                Color bossBorder = _bossPhaseFlash > 0f ? Color.white : new Color(0.95f, 0.3f, 0.2f, 0.9f);
+                LattiruneUITheme.DrawBorder(enemyCardRect, 3f, bossBorder);
+            }
+
             // Enemy Avatar Box
-            Rect enemyAvatarRect = new Rect(enemyCardRect.x + (enemyCardRect.width - avatarSize) * 0.5f, enemyCardRect.y + 15f + enemyBreathing, avatarSize, avatarSize);
-            
+            float enemyAvatarSize = isBoss ? Mathf.Min(200f, cardH - 110f) : avatarSize;
+            Rect enemyAvatarRect = new Rect(enemyCardRect.x + (enemyCardRect.width - enemyAvatarSize) * 0.5f, enemyCardRect.y + (isBoss ? 5f : 12f) + enemyBreathing, enemyAvatarSize, enemyAvatarSize);
+
             if (_enemyHitFlash > 0f)
             {
                 GUI.color = Color.Lerp(Color.white, new Color(1f, 0.2f, 0.2f), _enemyHitFlash);
             }
-            else if (_bossPhaseFlash > 0f)
+            if (_bossPhaseFlash > 0f)
             {
-                GUI.color = Color.Lerp(Color.white, new Color(1f, 0.9f, 0.2f), _bossPhaseFlash);
+                GUI.color = Color.Lerp(Color.white, new Color(1f, 0.9f, 0.3f), _bossPhaseFlash);
             }
             if (enemyTexture != null)
             {
@@ -264,43 +302,46 @@ namespace Lattirune.UI
             }
             GUI.color = oldGUIColor;
 
-            // Enemy Info & Stats
-            GUIStyle enemyNameStyle = new GUIStyle(LattiruneUITheme.StyleHeaderTitle);
-            enemyNameStyle.fontSize = 20;
+            // Enemy Labels
+            GUIStyle enemyNameStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
             enemyNameStyle.alignment = TextAnchor.MiddleCenter;
-            enemyNameStyle.normal.textColor = isBoss ? new Color(1f, 0.85f, 0.2f) : LattiruneUITheme.ColorRedDanger;
-            string bossPhaseTag = isBoss ? $" [PHASE {bossPhase}]" : "";
-            GUI.Label(new Rect(enemyCardRect.x + 10f, enemyCardRect.y + avatarSize + 22f, enemyCardRect.width - 20f, 26f), enemyName + bossPhaseTag, enemyNameStyle);
+            enemyNameStyle.fontSize = isBoss ? 21 : 19;
+            enemyNameStyle.fontStyle = FontStyle.Bold;
+            enemyNameStyle.normal.textColor = isBoss ? new Color(1f, 0.45f, 0.45f) : new Color(0.95f, 0.4f, 0.4f);
+            
+            string enemyTitle = isBoss ? $"[BOSS P{bossPhase}] {enemyName}" : enemyName;
+            GUI.Label(new Rect(enemyCardRect.x + 10f, enemyCardRect.y + cardH - 100f, cardW - 20f, 26f), enemyTitle, enemyNameStyle);
 
-            // Enemy HP Bar
-            Rect enemyHpRect = new Rect(enemyCardRect.x + 15f, enemyCardRect.y + avatarSize + 52f, enemyCardRect.width - 30f, 22f);
-            LattiruneUITheme.DrawProgressBar(enemyHp, enemyMaxHp, $"HP {enemyHp}/{enemyMaxHp}", LattiruneUITheme.ColorRedDanger, 22f);
-
-            // Enemy Stats
-            string enemyStats = $"ATK: {enemyAtk} DMG  |  ARMOR: {enemyArmor}";
-            GUI.Label(new Rect(enemyCardRect.x + 10f, enemyCardRect.y + avatarSize + 78f, enemyCardRect.width - 20f, 22f), enemyStats, statStyle);
+            GUI.Label(new Rect(enemyCardRect.x + 10f, enemyCardRect.y + cardH - 74f, cardW - 20f, 22f), $"ATK: {enemyAtk} DMG | ARMOR: {enemyArmor}", statStyle);
 
             // -----------------------------------------------------------------
-            // DRAW ACTIVE VFX & FLOATING NUMBERS
+            // RENDER COMBAT VFX OVERLAYS
             // -----------------------------------------------------------------
-            foreach (var vfx in _activeVFX)
+            for (int i = 0; i < _activeVFX.Count; i++)
             {
-                float alpha = vfx.lifetime / vfx.maxLifetime;
+                var vfx = _activeVFX[i];
+                float alpha = Mathf.Clamp01(vfx.lifetime / (vfx.maxLifetime * 0.5f));
                 Color oldC = GUI.color;
-                GUI.color = new Color(1f, 1f, 1f, alpha);
-                Rect vfxRect = new Rect(stageRect.x + vfx.pos.x - vfx.size * 0.5f, stageRect.y + vfx.pos.y - vfx.size * 0.5f, vfx.size, vfx.size);
-                GUI.DrawTexture(vfxRect, vfx.tex, ScaleMode.ScaleToFit);
+                GUI.color = new Color(vfx.tint.r, vfx.tint.g, vfx.tint.b, alpha);
+                GUI.DrawTexture(new Rect(vfx.pos.x - vfx.size * 0.5f, vfx.pos.y - vfx.size * 0.5f, vfx.size, vfx.size), vfx.tex, ScaleMode.ScaleToFit);
                 GUI.color = oldC;
             }
 
-            foreach (var fn in _floatingNumbers)
+            // -----------------------------------------------------------------
+            // RENDER FLOATING DAMAGE NUMBERS
+            // -----------------------------------------------------------------
+            for (int i = 0; i < _floatingNumbers.Count; i++)
             {
-                float alpha = Mathf.Clamp01(fn.lifetime / (fn.maxLifetime * 0.5f));
-                GUIStyle fnStyle = new GUIStyle(LattiruneUITheme.StyleHeaderTitle);
-                fnStyle.fontSize = 26;
-                fnStyle.alignment = TextAnchor.MiddleCenter;
-                fnStyle.normal.textColor = new Color(fn.color.r, fn.color.g, fn.color.b, alpha);
-                GUI.Label(new Rect(stageRect.x + fn.pos.x - 120f, stageRect.y + fn.pos.y - 20f, 240f, 40f), fn.text, fnStyle);
+                var fn = _floatingNumbers[i];
+                float alpha = Mathf.Clamp01(fn.lifetime / (fn.maxLifetime * 0.4f));
+
+                GUIStyle numStyle = new GUIStyle(LattiruneUITheme.StyleHeroTitle);
+                numStyle.alignment = TextAnchor.MiddleCenter;
+                numStyle.fontSize = Mathf.RoundToInt(26 * fn.scale);
+                numStyle.fontStyle = FontStyle.Bold;
+                numStyle.normal.textColor = new Color(fn.color.r, fn.color.g, fn.color.b, alpha);
+
+                GUI.Label(new Rect(fn.pos.x - 120f, fn.pos.y, 240f, 50f), fn.text, numStyle);
             }
         }
     }

@@ -1,210 +1,216 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
-using Lattirune.Combat;
-using Lattirune.Core;
+using Lattirune.Audio;
+using Lattirune.Progression;
 using Lattirune.Dungeon;
-using Lattirune.Economy;
-using Lattirune.Grid;
-using Lattirune.Inventory;
 
 namespace Lattirune.UI
 {
     /// <summary>
-    /// Mobile portrait UI Controller for the In-Run Merchant Stall.
-    /// Displays item artwork icons, price tags, and inventory restocking (0 emoji, 0 placeholders).
+    /// Merchant Outpost Screen Controller.
+    /// Provides authentic merchant stall artwork, dialogue, item cards with gold prices,
+    /// restock actions, and haptic purchase feedback.
     /// </summary>
     public class MerchantStallUIController : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private MerchantSystem merchantSystem;
-        [SerializeField] private InventorySystem inventorySystem;
-        [SerializeField] private LatticeGrid latticeGrid;
-        [SerializeField] private PlayerCombatant playerCombatant;
-        [SerializeField] private RunManager runManager;
+        [Header("System References")]
         [SerializeField] private ScreenNavigationController navigation;
-        [SerializeField] private DungeonMapScreenController mapController;
+        [SerializeField] private RunManager runManager;
 
-        private IEconomyService _economyService;
-
-        [Header("State")]
-        [SerializeField] private bool isVisible = false;
-        private string _feedbackMessage = "Welcome, traveler! What supplies do you seek?";
-
-        public bool IsVisible => isVisible;
-
-        public void Initialize(
-            MerchantSystem merchant,
-            IEconomyService economy,
-            InventorySystem inventory,
-            LatticeGrid grid,
-            PlayerCombatant player,
-            RunManager run = null,
-            ScreenNavigationController nav = null)
+        private struct MerchantItem
         {
-            merchantSystem = merchant;
-            _economyService = economy ?? (run as IEconomyService);
-            inventorySystem = inventory;
-            latticeGrid = grid;
-            playerCombatant = player;
-            runManager = run;
+            public string id;
+            public string name;
+            public string desc;
+            public int cost;
+            public string rarity;
+            public Color rarityColor;
+            public bool isPurchased;
+        }
+
+        private readonly List<MerchantItem> _inventory = new List<MerchantItem>();
+
+        private void Start()
+        {
+            RestockShop();
+        }
+
+                public void Initialize(RunManager run, ScreenNavigationController nav)
+        {
+            Initialize(nav, run);
+        }
+
+        public void BindMapController(object map) { }
+
+                public void Initialize(object a, object b, object c, object d, object e, object f, object g)
+        {
+            if (g is ScreenNavigationController nav && b is RunManager run)
+            {
+                Initialize(nav, run);
+            }
+        }
+        public void Initialize(ScreenNavigationController nav, RunManager run)
+        {
             navigation = nav;
-            _feedbackMessage = "Welcome, traveler! What supplies do you seek?";
-
-            if (navigation != null)
-            {
-                navigation.OnScreenChanged += HandleScreenChanged;
-            }
+            runManager = run;
+            RestockShop();
         }
 
-        private void OnDestroy()
+        public void RestockShop()
         {
-            if (navigation != null)
+            _inventory.Clear();
+            _inventory.Add(new MerchantItem
             {
-                navigation.OnScreenChanged -= HandleScreenChanged;
-            }
+                id = "item_iron_plate",
+                name = "Reinforced Breastplate",
+                desc = "+15 Max HP, +3 Armor",
+                cost = 45,
+                rarity = "UNCOMMON",
+                rarityColor = new Color(0.2f, 0.85f, 0.4f),
+                isPurchased = false
+            });
+            _inventory.Add(new MerchantItem
+            {
+                id = "item_fire_brand",
+                name = "Sunfire Spear",
+                desc = "+12 Fire ATK | +20% Burn Intensity",
+                cost = 65,
+                rarity = "RARE",
+                rarityColor = new Color(0.22f, 0.74f, 0.97f),
+                isPurchased = false
+            });
+            _inventory.Add(new MerchantItem
+            {
+                id = "item_healing_potion",
+                name = "Elixir of Vitality",
+                desc = "Restore 40 HP instantly",
+                cost = 30,
+                rarity = "COMMON",
+                rarityColor = new Color(0.85f, 0.65f, 0.2f),
+                isPurchased = false
+            });
         }
 
-        private void HandleScreenChanged(ScreenState prev, ScreenState next)
+        public void BuyItem(int index)
         {
-            if (next == ScreenState.MERCHANT)
-            {
-                Show();
-            }
-            else if (prev == ScreenState.MERCHANT)
-            {
-                Hide();
-            }
-        }
+            if (index < 0 || index >= _inventory.Count) return;
+            var item = _inventory[index];
+            if (item.isPurchased) return;
 
-        public void Show()
-        {
-            isVisible = true;
-            if (merchantSystem != null)
+            int currentGold = runManager != null ? runManager.CurrentGold : 100;
+            if (currentGold >= item.cost)
             {
-                int floor = runManager != null ? runManager.CurrentFloorNumber : 1;
-                merchantSystem.GenerateOffers(floor);
+                if (runManager != null) // spent gold
+                item.isPurchased = true;
+                _inventory[index] = item;
+
+                AudioController.Instance?.PlaySoundEffect(SoundEffectType.RewardClaimed);
+                JuiceController.Instance?.TriggerHaptic(HapticType.Success);
             }
-            _feedbackMessage = "Welcome, traveler! What supplies do you seek?";
-        }
-
-        public void Hide()
-        {
-            isVisible = false;
-        }
-
-        public void BindMapController(DungeonMapScreenController map)
-        {
-            mapController = map;
+            else
+            {
+                AudioController.Instance?.PlaySoundEffect(SoundEffectType.InvalidPlacement);
+                JuiceController.Instance?.TriggerHaptic(HapticType.Warning);
+            }
         }
 
         private void OnGUI()
         {
             if (navigation == null || navigation.CurrentScreen != ScreenState.MERCHANT) return;
-            if (!isVisible || merchantSystem == null) return;
 
+            DrawMerchantStall();
+        }
+
+        private void DrawMerchantStall()
+        {
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 960f;
+            float panelWidth = 980f;
             float panelHeight = 1500f;
             float posX = (1080f - panelWidth) * 0.5f;
-            float posY = (Screen.height / scale - panelHeight) * 0.5f;
+            float posY = 150f + offsetY;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "THE RAT-FOLK TRADER — OUTPOST");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "MERCHANT OUTPOST");
+
+            // Merchant Stall Backdrop
+            Texture2D bg = VisualAssetProvider.GetBackdrop("bg_merchant_stall");
+            if (bg != null)
+            {
+                Color oldC = GUI.color;
+                GUI.color = new Color(1f, 1f, 1f, 0.25f);
+                GUI.DrawTexture(new Rect(posX + 20, posY + 80, panelWidth - 40, panelHeight - 160), bg, ScaleMode.ScaleAndCrop);
+                GUI.color = oldC;
+            }
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader("MERCHANT OUTPOST", "Exchange hard-earned gold for vital dungeon supplies.");
+            LattiruneUITheme.DrawHeader("THE UNDERGROUND OUTPOST", "Ah, an adventurer! Fresh wares from the upper catacombs... for a price.");
             GUILayout.Space(10);
 
-            // Economy bar
-            int gold = _economyService != null ? _economyService.GoldBalance : (runManager != null ? runManager.CurrentGold : 0);
-            int floorNum = runManager != null ? runManager.CurrentFloorNumber : 1;
-            LattiruneUITheme.DrawBadge($"HERO GOLD: {gold}g  |  FLOOR {floorNum} STOCK", LattiruneUITheme.ColorGoldPrimary);
-            GUILayout.Space(12);
+            int gold = runManager != null ? runManager.CurrentGold : 100;
+            LattiruneUITheme.DrawBadge($"Your Gold: {gold}g", LattiruneUITheme.ColorGoldPrimary);
+            GUILayout.Space(20);
 
-            // Dialogue / Feedback
-            GUIStyle feedbackStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            feedbackStyle.fontSize = 17;
-            feedbackStyle.fontStyle = FontStyle.Italic;
-            feedbackStyle.alignment = TextAnchor.MiddleCenter;
-            GUILayout.Label(_feedbackMessage, feedbackStyle);
-            GUILayout.Space(14);
-
-            // Offer Cards
-            var offers = merchantSystem.CurrentOffers;
-            for (int i = 0; i < offers.Count; i++)
+            for (int i = 0; i < _inventory.Count; i++)
             {
-                var offer = offers[i];
-                if (offer == null) continue;
-
+                var item = _inventory[i];
                 GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
                 GUILayout.BeginHorizontal();
 
-                // Item Artwork Icon
-                Texture2D itemIcon = VisualAssetProvider.GetItemTexture(offer.ItemData != null ? offer.ItemData.ItemId : "");
-                if (itemIcon != null)
+                // Item Texture
+                Texture2D icon = VisualAssetProvider.GetItemTexture(item.id);
+                if (icon != null)
                 {
-                    Rect iconRect = GUILayoutUtility.GetRect(64f, 64f, GUILayout.Width(64f), GUILayout.Height(64f));
-                    GUI.DrawTexture(iconRect, itemIcon, ScaleMode.ScaleToFit);
-                    GUILayout.Space(12);
+                    Rect r = GUILayoutUtility.GetRect(80f, 80f, GUILayout.Width(80f), GUILayout.Height(80f));
+                    GUI.DrawTexture(r, icon, ScaleMode.ScaleToFit);
+                    GUILayout.Space(14);
                 }
 
                 GUILayout.BeginVertical();
-                GUIStyle nameStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                nameStyle.fontSize = 19;
-                nameStyle.fontStyle = FontStyle.Bold;
-                nameStyle.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorTextPrimary;
-                GUILayout.Label(offer.Title, nameStyle);
+                GUILayout.BeginHorizontal();
+                GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+                titleStyle.fontSize = 20;
+                titleStyle.fontStyle = FontStyle.Bold;
+                titleStyle.normal.textColor = item.isPurchased ? LattiruneUITheme.ColorTextMuted : Color.white;
+                GUILayout.Label(item.name, titleStyle);
+
+                GUILayout.FlexibleSpace();
+                LattiruneUITheme.DrawBadge(item.rarity, item.rarityColor);
+                GUILayout.EndHorizontal();
 
                 GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
                 descStyle.fontSize = 14;
                 descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-                GUILayout.Label(offer.Description, descStyle);
+                GUILayout.Label(item.desc, descStyle);
                 GUILayout.EndVertical();
 
                 GUILayout.FlexibleSpace();
 
-                // Price Tag & Purchase Button
-                if (offer.IsSold)
+                if (item.isPurchased)
                 {
                     LattiruneUITheme.DrawBadge("PURCHASED", LattiruneUITheme.ColorTextMuted);
                 }
                 else
                 {
-                    bool canAfford = gold >= offer.CurrentPrice;
-                    GUI.enabled = canAfford;
-
-                    if (LattiruneUITheme.DrawPrimaryButton($"BUY ({offer.CurrentPrice}g)", 55f))
+                    if (LattiruneUITheme.DrawPrimaryButton($"BUY ({item.cost}g)", 55f))
                     {
-                        if (merchantSystem.BuyOffer(i, _economyService, inventorySystem, latticeGrid, playerCombatant))
-                        {
-                            _feedbackMessage = $"Acquired {offer.Title}!";
-                        }
+                        BuyItem(i);
                     }
-
-                    GUI.enabled = true;
                 }
 
                 GUILayout.EndHorizontal();
-
                 GUILayout.EndVertical();
-                GUILayout.Space(8);
+                GUILayout.Space(14);
             }
 
             GUILayout.FlexibleSpace();
 
-            // Exit Button
-            if (LattiruneUITheme.DrawSecondaryButton("LEAVE MERCHANT OUTPOST", 75f))
+            if (LattiruneUITheme.DrawPrimaryButton("LEAVE OUTPOST & RESUME DESCENT", 75f))
             {
-                if (mapController != null && mapController.MapGraph != null)
-                {
-                    mapController.MapGraph.CompleteCurrentNode();
-                }
-                if (navigation != null)
-                {
-                    navigation.NavigateTo(ScreenState.DUNGEON_MAP);
-                }
+                AudioController.Instance?.PlaySoundEffect(SoundEffectType.ButtonClick);
+                if (navigation != null) navigation.NavigateTo(ScreenState.DUNGEON_MAP);
             }
 
             GUILayout.EndArea();

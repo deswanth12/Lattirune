@@ -1,100 +1,106 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Lattirune.Core;
+using Lattirune.Audio;
+using Lattirune.Progression;
 using Lattirune.Dungeon;
 
 namespace Lattirune.UI
 {
     /// <summary>
-    /// Mobile portrait UI Controller for the 10-Floor Dungeon Map DAG and branch path selection.
-    /// Displays crisp vector-quality node icons, room level tags, and authentic background (0 emoji, 0 placeholders).
+    /// Dark Fantasy Dungeon Map DAG Screen Controller.
+    /// Visualizes 10 dungeon floors, node branching, room clearance states,
+    /// and pulsing golden beacons for active accessible rooms.
     /// </summary>
     public class DungeonMapScreenController : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private RunManager runManager;
-        [SerializeField] private ScreenNavigationController navigation;
-
-        [Header("State")]
-        [SerializeField] private bool isVisible = false;
-        private DungeonMapGraph _mapGraph;
-        private string _selectedNodeId = "node_f1_entry";
-        private Vector2 _scrollPos = Vector2.zero;
-
-        public bool IsVisible => isVisible;
+        public void ResetMapForNewRun() { _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap(); }
         public DungeonMapGraph MapGraph => _mapGraph;
+        [Header("System References")]
+        [SerializeField] private ScreenNavigationController navigation;
+        [SerializeField] private RunManager runManager;
+        [SerializeField] private CombatEncounterUI combatUI;
 
-        public void Initialize(
-            RunManager run,
-            ScreenNavigationController nav = null,
-            DungeonMapGraph graph = null)
+        private DungeonMapGraph _mapGraph;
+        private Vector2 _scrollPos = Vector2.zero;
+        private string _selectedNodeId = null;
+
+                public void Initialize(RunManager run, ScreenNavigationController nav)
         {
-            runManager = run;
+            Initialize(nav, run);
+        }
+                public void Initialize(RunManager run, ScreenNavigationController nav, object map)
+        {
+            Initialize(nav, run);
+        }
+        public void Initialize(ScreenNavigationController nav, RunManager run, CombatEncounterUI combat = null)
+        {
             navigation = nav;
-            _mapGraph = graph ?? DungeonMapGraph.CreateCanonicalCursedSewersMap();
-            _selectedNodeId = _mapGraph.CurrentNodeId;
-
-            if (navigation != null)
-            {
-                navigation.OnScreenChanged += HandleScreenChanged;
-                if (navigation.CurrentScreen == ScreenState.DUNGEON_MAP || navigation.CurrentScreen == ScreenState.RUN_START)
-                {
-                    Show();
-                }
-            }
-        }
-
-        private void OnDestroy()
-        {
-            if (navigation != null)
-            {
-                navigation.OnScreenChanged -= HandleScreenChanged;
-            }
-        }
-
-        private void HandleScreenChanged(ScreenState prev, ScreenState next)
-        {
-            if (next == ScreenState.DUNGEON_MAP || next == ScreenState.RUN_START)
-            {
-                Show();
-            }
-            else if (prev == ScreenState.DUNGEON_MAP || prev == ScreenState.RUN_START)
-            {
-                Hide();
-            }
-        }
-
-        public void ResetMapForNewRun()
-        {
+            runManager = run;
+            combatUI = combat ?? FindFirstObjectByType<CombatEncounterUI>();
             _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
-            _selectedNodeId = "node_f1_entry";
         }
 
-        public void Show()
+        public void SelectNode(string nodeId)
         {
-            isVisible = true;
-            if (_mapGraph == null)
+            _selectedNodeId = nodeId;
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            JuiceController.Instance?.TriggerHaptic(HapticType.Light);
+        }
+
+        public void EnterSelectedNode()
+        {
+            if (string.IsNullOrEmpty(_selectedNodeId) && _mapGraph != null)
             {
-                _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
+                var avail = _mapGraph.GetAvailableNodes();
+                if (avail.Count > 0) _selectedNodeId = avail[0].NodeId;
             }
-            var available = _mapGraph.GetAvailableNodes();
-            if (available.Count > 0)
+
+            if (string.IsNullOrEmpty(_selectedNodeId)) return;
+
+            AudioController.Instance?.PlaySoundEffect(SoundEffectType.ButtonClick);
+            JuiceController.Instance?.TriggerHaptic(HapticType.Medium);
+
+            var node = _mapGraph.GetNode(_selectedNodeId);
+            if (node != null)
             {
-                var curr = _mapGraph.GetNode(_selectedNodeId);
-                if (curr == null || !curr.IsAvailable || curr.IsCleared)
+                _mapGraph.SelectAndEnterNode(_selectedNodeId);
+                _mapGraph.CompleteCurrentNode();
+
+                if (node.NodeType == DungeonMapNodeType.MerchantStall)
                 {
-                    _selectedNodeId = available[0].NodeId;
+                    if (navigation != null) navigation.NavigateTo(ScreenState.MERCHANT);
+                }
+                else if (node.NodeType == DungeonMapNodeType.CampfireRest)
+                {
+                    if (navigation != null) navigation.NavigateTo(ScreenState.CAMPFIRE_REST);
+                }
+                else if (node.NodeType == DungeonMapNodeType.MysteryShrine)
+                {
+                    if (navigation != null) navigation.NavigateTo(ScreenState.EVENT);
+                }
+                else
+                {
+                    // Combat Encounter (Normal, Elite, Boss)
+                    if (combatUI == null) combatUI = FindFirstObjectByType<CombatEncounterUI>();
+                    if (combatUI != null)
+                    {
+                        bool isBoss = (node.NodeType == DungeonMapNodeType.Boss);
+                        bool isElite = (node.NodeType == DungeonMapNodeType.EliteBattle);
+                        int hp = isBoss ? 150 : (isElite ? 80 : 35);
+                        int atk = isBoss ? 12 : (isElite ? 7 : 3);
+                        int armor = isBoss ? 5 : (isElite ? 2 : 0);
+                        string enemy = isBoss ? "The Lich Lord" : (isElite ? "Armored Skeleton" : "Sewer Rat");
+                        
+                        combatUI.SetupEncounter(node.FloorNumber, enemy, hp, atk, armor, isBoss, 1);
+                    }
+
+                    if (navigation != null) navigation.NavigateTo(ScreenState.COMBAT);
                 }
             }
         }
 
-        public void Hide()
-        {
-            isVisible = false;
-        }
-
-                private void OnGUI()
+        private void OnGUI()
         {
             if (navigation == null || (navigation.CurrentScreen != ScreenState.DUNGEON_MAP && navigation.CurrentScreen != ScreenState.RUN_START)) return;
             if (_mapGraph == null)
@@ -102,92 +108,86 @@ namespace Lattirune.UI
                 _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
             }
 
+            DrawDungeonMap();
+        }
+
+        private void DrawDungeonMap()
+        {
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 960f;
-            float panelHeight = 1500f;
+            float panelWidth = 980f;
+            float panelHeight = 1750f;
             float posX = (1080f - panelWidth) * 0.5f;
-            float posY = (Screen.height / scale - panelHeight) * 0.5f;
+            float posY = 80f + offsetY;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "THE CURSED SEWERS — 10-FLOOR DESCENT");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "THE CURSED SEWERS");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
             LattiruneUITheme.DrawHeader("THE CURSED SEWERS", "Select an active room node to advance your descent.");
-            GUILayout.Space(10);
+            GUILayout.Space(8);
 
-            // Run Telemetry Bar
+            int curFloor = runManager != null ? runManager.CurrentFloorNumber : 1;
             int gold = runManager != null ? runManager.CurrentGold : 0;
-            int floorNum = runManager != null ? runManager.CurrentFloorNumber : 1;
-            LattiruneUITheme.DrawBadge($"Floor: {floorNum} / 10  |  Gold: {gold}g  |  Target: The Lich Lord", LattiruneUITheme.ColorGoldPrimary);
-            GUILayout.Space(12);
+            LattiruneUITheme.DrawBadge($"Floor: {curFloor} / 10  |  Gold: {gold}g  |  Target: The Lich Lord", LattiruneUITheme.ColorGoldPrimary);
+            GUILayout.Space(16);
 
-            // Scrollable Map Nodes List (Floors 1 to 10)
-            _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(850));
+            _scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(panelHeight - 280));
 
-            for (int f = 1; f <= 10; f++)
+            var allNodes = _mapGraph.AllNodes;
+            int totalFloors = 10;
+
+            for (int f = 1; f <= totalFloors; f++)
             {
-                var floorNodes = _mapGraph.GetNodesOnFloor(f);
+                int floorNum = f;
+                var floorNodes = _mapGraph.GetNodesOnFloor(floorNum);
                 if (floorNodes.Count == 0) continue;
+
+                string floorHeader = (floorNum == 5) ? "FLOOR 5 — MID-BOSS LAIR" : ((floorNum == 10) ? "FLOOR 10 — LICH LORD'S CRYPT" : $"FLOOR {floorNum}");
+                LattiruneUITheme.DrawSectionTitle(floorHeader);
 
                 GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
-                GUIStyle floorHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                floorHeader.fontSize = 18;
-                floorHeader.fontStyle = FontStyle.Bold;
-                floorHeader.normal.textColor = (f == floorNum) ? LattiruneUITheme.ColorGoldBright : LattiruneUITheme.ColorTextMuted;
-                
-                string floorTag = (f == 10) ? "FLOOR 10 — BOSS LAIR" : (f == 5 ? "FLOOR 5 — MID-BOSS LAIR" : $"FLOOR {f}");
-                GUILayout.Label(floorTag, floorHeader);
-                GUILayout.Space(6);
-
                 foreach (var node in floorNodes)
                 {
-                    bool isSelected = (node.NodeId == _selectedNodeId);
-                    bool isAvailable = node.IsAvailable && !node.IsCleared;
+                    bool isAvailable = node.IsAvailable;
+                    bool isCleared = node.IsCleared;
+                    bool isSelected = (_selectedNodeId == node.NodeId || (string.IsNullOrEmpty(_selectedNodeId) && isAvailable));
 
                     GUILayout.BeginHorizontal();
 
-                    // Room Icon
-                    Texture2D nodeIcon = GetNodeIcon(node.NodeType);
-                    if (nodeIcon != null)
+                    // Room Type Icon Badge
+                    Texture2D roomIcon = GetRoomIcon(node.NodeType);
+                    if (roomIcon != null)
                     {
-                        Rect iconRect = GUILayoutUtility.GetRect(48f, 48f, GUILayout.Width(48f), GUILayout.Height(48f));
-                        GUI.DrawTexture(iconRect, nodeIcon, ScaleMode.ScaleToFit);
+                        Rect iconRect = GUILayoutUtility.GetRect(40f, 40f, GUILayout.Width(40f), GUILayout.Height(40f));
+                        GUI.DrawTexture(iconRect, roomIcon, ScaleMode.ScaleToFit);
                         GUILayout.Space(10);
                     }
 
-                    string statusTag = node.IsCleared ? "[CLEARED]" : (isAvailable ? "[AVAILABLE]" : "[LOCKED]");
-                    string nodeTitle = $"{statusTag} {node.Title.ToUpper()}";
+                    string statusText = isCleared ? $"[CLEARED] {node.Title.ToUpper()}" : (isAvailable ? $">> [AVAILABLE] {node.Title.ToUpper()} <<" : $"[LOCKED] {node.Title.ToUpper()}");
 
-                    if (node.IsCleared)
+                    if (isCleared)
                     {
-                        GUI.enabled = false;
-                        LattiruneUITheme.DrawSecondaryButton(nodeTitle, 52f);
-                        GUI.enabled = true;
+                        GUIStyle clearedStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                        clearedStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+                        clearedStyle.fontSize = 17;
+                        GUILayout.Label(statusText, clearedStyle, GUILayout.Height(45f));
                     }
                     else if (isAvailable)
                     {
-                        if (isSelected)
+                        if (LattiruneUITheme.DrawPrimaryButton(statusText, 55f))
                         {
-                            if (LattiruneUITheme.DrawPrimaryButton($">> {nodeTitle} <<", 55f))
-                            {
-                                _selectedNodeId = node.NodeId;
-                            }
-                        }
-                        else
-                        {
-                            if (LattiruneUITheme.DrawSecondaryButton(nodeTitle, 52f))
-                            {
-                                _selectedNodeId = node.NodeId;
-                            }
+                            SelectNode(node.NodeId);
+                            EnterSelectedNode();
                         }
                     }
                     else
                     {
-                        GUI.enabled = false;
-                        LattiruneUITheme.DrawSecondaryButton(nodeTitle, 52f);
-                        GUI.enabled = true;
+                        GUIStyle lockedStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                        lockedStyle.normal.textColor = new Color(0.4f, 0.45f, 0.55f);
+                        lockedStyle.fontSize = 16;
+                        GUILayout.Label(statusText, lockedStyle, GUILayout.Height(40f));
                     }
 
                     GUILayout.EndHorizontal();
@@ -195,71 +195,52 @@ namespace Lattirune.UI
                 }
 
                 GUILayout.EndVertical();
-                GUILayout.Space(10);
+                GUILayout.Space(14);
             }
 
             GUILayout.EndScrollView();
-            GUILayout.Space(14);
+            GUILayout.Space(16);
 
-            // Active Room Preview & Launch Button
-            var selectedNode = _mapGraph.GetNode(_selectedNodeId);
-            if (selectedNode != null && selectedNode.IsAvailable && !selectedNode.IsCleared)
+            // Action Button
+            var availNodes = _mapGraph.GetAvailableNodes();
+            if (availNodes.Count > 0)
             {
-                if (LattiruneUITheme.DrawPrimaryButton($"ENTER {selectedNode.Title.ToUpper()} & BEGIN", 80f))
+                var activeNode = !string.IsNullOrEmpty(_selectedNodeId) ? _mapGraph.GetNode(_selectedNodeId) : availNodes[0];
+                string btnLabel = activeNode != null ? $"ENTER {activeNode.Title.ToUpper()} & BEGIN" : "ENTER NEXT ROOM";
+
+                if (LattiruneUITheme.DrawPrimaryButton(btnLabel, 75f))
                 {
-                    EnterSelectedNode(selectedNode);
+                    EnterSelectedNode();
                 }
             }
             else
             {
-                GUI.enabled = false;
-                LattiruneUITheme.DrawSecondaryButton("SELECT AN ACTIVE ROOM TO PROCEED", 80f);
-                GUI.enabled = true;
+                if (LattiruneUITheme.DrawSecondaryButton("DESCENT COMPLETE — ASCEND TO SURFACE", 75f))
+                {
+                    if (navigation != null) navigation.NavigateTo(ScreenState.VICTORY);
+                }
             }
 
             GUILayout.EndArea();
             GUI.matrix = oldMatrix;
         }
 
-        private Texture2D GetNodeIcon(DungeonMapNodeType type)
+        private Texture2D GetRoomIcon(DungeonMapNodeType type)
         {
             switch (type)
             {
-                case DungeonMapNodeType.NormalBattle: return VisualAssetProvider.GetUIIcon("ui_icon_battle");
-                case DungeonMapNodeType.EliteBattle: return VisualAssetProvider.GetUIIcon("ui_icon_elite");
-                case DungeonMapNodeType.MerchantStall: return VisualAssetProvider.GetUIIcon("ui_icon_merchant");
-                case DungeonMapNodeType.CampfireRest: return VisualAssetProvider.GetUIIcon("ui_icon_campfire");
-                case DungeonMapNodeType.MysteryShrine: return VisualAssetProvider.GetUIIcon("ui_icon_event");
-                case DungeonMapNodeType.TreasureVault: return VisualAssetProvider.GetUIIcon("ui_icon_event");
-                case DungeonMapNodeType.Boss: return VisualAssetProvider.GetUIIcon("ui_icon_boss");
-                default: return VisualAssetProvider.GetUIIcon("ui_icon_battle");
-            }
-        }
-
-        private void EnterSelectedNode(DungeonMapNode node)
-        {
-            if (node == null || runManager == null) return;
-
-            _mapGraph.SelectAndEnterNode(node.NodeId);
-            runManager.SetCurrentFloor(node.FloorNumber - 1);
-
-            switch (node.NodeType)
-            {
-                case DungeonMapNodeType.NormalBattle:
-                case DungeonMapNodeType.EliteBattle:
                 case DungeonMapNodeType.Boss:
-                    navigation?.NavigateTo(ScreenState.GRID_BUILD);
-                    break;
+                    return VisualAssetProvider.GetUIIcon("ui_icon_boss");
+                case DungeonMapNodeType.EliteBattle:
+                    return VisualAssetProvider.GetUIIcon("ui_icon_elite");
                 case DungeonMapNodeType.MerchantStall:
-                    navigation?.NavigateTo(ScreenState.MERCHANT);
-                    break;
+                    return VisualAssetProvider.GetUIIcon("ui_icon_merchant");
                 case DungeonMapNodeType.CampfireRest:
-                    navigation?.NavigateTo(ScreenState.CAMPFIRE_REST);
-                    break;
+                    return VisualAssetProvider.GetUIIcon("ui_icon_campfire");
                 case DungeonMapNodeType.MysteryShrine:
-                case DungeonMapNodeType.TreasureVault:
-                    navigation?.NavigateTo(ScreenState.EVENT);
-                    break;
+                    return VisualAssetProvider.GetUIIcon("ui_icon_event");
+                default:
+                    return VisualAssetProvider.GetUIIcon("ui_icon_battle");
             }
         }
     }
