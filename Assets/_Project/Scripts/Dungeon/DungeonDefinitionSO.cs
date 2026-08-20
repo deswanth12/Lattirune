@@ -129,10 +129,10 @@ namespace Lattirune.Dungeon
             f5.Initialize(5, "floor_05", "Floor 5: Armory Gate", new List<EncounterDefinitionSO> { EncounterDefinitionSO.CreateGraveGoliath() });
             floorList.Add(f5);
 
-            // Floor 6: Treasure Vault Guard: Sewer Rat Pack
+            // Floor 6: Shadow Stalker Ambush
             DungeonFloorDefinitionSO f6 = ScriptableObject.CreateInstance<DungeonFloorDefinitionSO>();
-            EncounterDefinitionSO enc6 = EncounterDefinitionSO.CreateSewerRat();
-            f6.Initialize(6, "floor_06", "Floor 6: Treasure Vault", new List<EncounterDefinitionSO> { enc6 });
+            EncounterDefinitionSO enc6 = EncounterDefinitionSO.CreateShadowStalker();
+            f6.Initialize(6, "floor_06", "Floor 6: Shadow Vault", new List<EncounterDefinitionSO> { enc6 });
             floorList.Add(f6);
 
             // Floor 7: Elite: Necromancer
@@ -140,15 +140,15 @@ namespace Lattirune.Dungeon
             f7.Initialize(7, "floor_07", "Floor 7: Bone Crypt", new List<EncounterDefinitionSO> { EncounterDefinitionSO.CreateNecromancer() });
             floorList.Add(f7);
 
-            // Floor 8: Campfire Rest Site / Spider Sentry
+            // Floor 8: Crystal Golem Guard Site
             DungeonFloorDefinitionSO f8 = ScriptableObject.CreateInstance<DungeonFloorDefinitionSO>();
-            EncounterDefinitionSO enc8 = EncounterDefinitionSO.CreateVenomousSpider();
-            f8.Initialize(8, "floor_08", "Floor 8: Campfire Rest Site", new List<EncounterDefinitionSO> { enc8 });
+            EncounterDefinitionSO enc8 = EncounterDefinitionSO.CreateCrystalGolem();
+            f8.Initialize(8, "floor_08", "Floor 8: Crystalline Chasm", new List<EncounterDefinitionSO> { enc8 });
             floorList.Add(f8);
 
-            // Floor 9: Pre-Boss Nest: Venomous Spider
+            // Floor 9: Pre-Boss Vanguard: Crystal Golem & Shadow Stalker
             DungeonFloorDefinitionSO f9 = ScriptableObject.CreateInstance<DungeonFloorDefinitionSO>();
-            f9.Initialize(9, "floor_09", "Floor 9: Spider Nest", new List<EncounterDefinitionSO> { EncounterDefinitionSO.CreateVenomousSpider() });
+            f9.Initialize(9, "floor_09", "Floor 9: Pre-Boss Sanctum", new List<EncounterDefinitionSO> { EncounterDefinitionSO.CreateCrystalGolem() });
             floorList.Add(f9);
 
             // Floor 10: Boss Chamber: The Lich Lord

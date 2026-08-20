@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Lattirune.Events
@@ -297,6 +297,116 @@ namespace Lattirune.Events
                 }
             );
             list.Add(e6);
+
+            // 7. Wandering Alchemist (Floor 3-10, Weight 12)
+            var e7 = CreateInstance<RunEventDefinitionSO>();
+            e7.Initialize(
+                "event_wandering_alchemist",
+                "Wandering Alchemist",
+                "A hooded scholar surrounded by bubbling vials offers secret alchemical transactions.",
+                RunEventType.RiskReward,
+                eventWeight: 12,
+                minFloor: 3,
+                maxFloor: 10,
+                choiceList: new List<RunEventChoice>
+                {
+                    new RunEventChoice(
+                        "choice_alchemist_transmute",
+                        "Transmute Blood (15% HP -> 60 Gold)",
+                        "Allow the alchemist to extract your vital essence into 60 pure gold coins.",
+                        costGold: 0,
+                        rewardGold: 60,
+                        costHpPct: 0.15f,
+                        restoreHpPct: 0f,
+                        grantModId: null,
+                        curseModId: null,
+                        reqGold: 0,
+                        oneTime: true
+                    ),
+                    new RunEventChoice(
+                        "choice_alchemist_elixir",
+                        "Buy Fortifying Elixir (40 Gold)",
+                        "Purchase a potent healing tonic restoring 40% Max HP.",
+                        costGold: 40,
+                        rewardGold: 0,
+                        costHpPct: 0f,
+                        restoreHpPct: 0.40f,
+                        grantModId: null,
+                        curseModId: null,
+                        reqGold: 40,
+                        oneTime: true
+                    ),
+                    new RunEventChoice(
+                        "choice_alchemist_leave",
+                        "Decline Offers",
+                        "Nod politly and pass by the alchemist's makeshift stall.",
+                        costGold: 0,
+                        rewardGold: 0,
+                        costHpPct: 0f,
+                        restoreHpPct: 0f,
+                        grantModId: null,
+                        curseModId: null,
+                        reqGold: 0,
+                        oneTime: false
+                    )
+                }
+            );
+            list.Add(e7);
+
+            // 8. Rune Carver Shrine (Floor 4-10, Weight 10)
+            var e8 = CreateInstance<RunEventDefinitionSO>();
+            e8.Initialize(
+                "event_rune_carver",
+                "Rune Carver Shrine",
+                "A glowing anvil inscribed with ancient protective runes hums with dormant kinetic energy.",
+                RunEventType.ModifierReward,
+                eventWeight: 10,
+                minFloor: 4,
+                maxFloor: 10,
+                choiceList: new List<RunEventChoice>
+                {
+                    new RunEventChoice(
+                        "choice_carver_aegis",
+                        "Engrave Aegis Armor (50 Gold)",
+                        "Pay 50 Gold to reinforce your equipment with Iron Shell (+10 Defense).",
+                        costGold: 50,
+                        rewardGold: 0,
+                        costHpPct: 0f,
+                        restoreHpPct: 0f,
+                        grantModId: "mod_iron_shell",
+                        curseModId: null,
+                        reqGold: 50,
+                        oneTime: true
+                    ),
+                    new RunEventChoice(
+                        "choice_carver_risk",
+                        "Risk Overcharge (10% HP)",
+                        "Suffer 10% HP from an explosive mana feedback to gain Elemental Surge (+25% Elemental Damage).",
+                        costGold: 0,
+                        rewardGold: 0,
+                        costHpPct: 0.10f,
+                        restoreHpPct: 0f,
+                        grantModId: "mod_elemental_surge",
+                        curseModId: null,
+                        reqGold: 0,
+                        oneTime: true
+                    ),
+                    new RunEventChoice(
+                        "choice_carver_leave",
+                        "Leave Shrine",
+                        "Step back safely without risking rune overload.",
+                        costGold: 0,
+                        rewardGold: 0,
+                        costHpPct: 0f,
+                        restoreHpPct: 0f,
+                        grantModId: null,
+                        curseModId: null,
+                        reqGold: 0,
+                        oneTime: false
+                    )
+                }
+            );
+            list.Add(e8);
 
             db.Initialize(list);
             return db;

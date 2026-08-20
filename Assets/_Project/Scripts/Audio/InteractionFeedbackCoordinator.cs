@@ -24,6 +24,7 @@ namespace Lattirune.Audio
         private Reactions.ElementalReactionSystem _reactionSystem;
         private Economy.MerchantSystem _merchantSystem;
         private Combo.ComboTracker _comboTracker;
+        private Boss.BossSystem _bossSystem;
 
         public AudioController Audio => audioController;
         public HapticFeedback Haptics => hapticFeedback;
@@ -37,7 +38,8 @@ namespace Lattirune.Audio
             RewardService rewards,
             Reactions.ElementalReactionSystem reactions = null,
             Economy.MerchantSystem merchant = null,
-            Combo.ComboTracker combo = null)
+            Combo.ComboTracker combo = null,
+            Boss.BossSystem boss = null)
         {
             UnsubscribeAll();
 
@@ -50,6 +52,7 @@ namespace Lattirune.Audio
             _reactionSystem = reactions;
             _merchantSystem = merchant;
             _comboTracker = combo;
+            _bossSystem = boss;
 
             SubscribeAll();
         }
@@ -101,6 +104,12 @@ namespace Lattirune.Audio
                 _comboTracker.OnComboIncremented += HandleComboIncremented;
                 _comboTracker.OnReactionChainIncremented += HandleReactionChainIncremented;
             }
+
+            if (_bossSystem != null)
+            {
+                _bossSystem.OnPhaseChanged += HandleBossPhaseChanged;
+                _bossSystem.OnBossEnraged += HandleBossEnraged;
+            }
         }
 
         public void UnsubscribeAll()
@@ -144,6 +153,12 @@ namespace Lattirune.Audio
             {
                 _comboTracker.OnComboIncremented -= HandleComboIncremented;
                 _comboTracker.OnReactionChainIncremented -= HandleReactionChainIncremented;
+            }
+
+            if (_bossSystem != null)
+            {
+                _bossSystem.OnPhaseChanged -= HandleBossPhaseChanged;
+                _bossSystem.OnBossEnraged -= HandleBossEnraged;
             }
         }
 
@@ -231,6 +246,18 @@ namespace Lattirune.Audio
                 audioController?.PlaySfx(AudioCueType.RuneConduitIgnite);
                 hapticFeedback?.TriggerHaptic(HapticType.Heavy);
             }
+        }
+
+        private void HandleBossPhaseChanged(int phaseIndex, Boss.BossPhaseDefinitionSO phase)
+        {
+            audioController?.PlaySfx(AudioCueType.RuneConduitIgnite);
+            hapticFeedback?.TriggerHaptic(HapticType.Heavy);
+        }
+
+        private void HandleBossEnraged()
+        {
+            audioController?.PlaySfx(AudioCueType.RuneConduitIgnite);
+            hapticFeedback?.TriggerHaptic(HapticType.Failure);
         }
     }
 }

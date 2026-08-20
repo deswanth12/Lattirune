@@ -153,6 +153,32 @@ namespace Lattirune.Tests
         }
 
         [Test]
+        public void ShadowStalker_ArchetypeStats_MatchDefinition()
+        {
+            EncounterDefinitionSO stalker = EncounterDefinitionSO.CreateShadowStalker();
+            Assert.AreEqual("Shadow Stalker", stalker.EnemyName);
+            Assert.AreEqual(85, stalker.EnemyHp);
+            Assert.AreEqual(4, stalker.EnemyArmor);
+            Assert.AreEqual(7, stalker.EnemyAttack);
+            Assert.AreEqual(1.1f, stalker.AttackInterval);
+            Assert.AreEqual(1, stalker.EnemyTraits.Count);
+            Assert.AreEqual(EnemyTraitType.GoldSteal, stalker.EnemyTraits[0].TraitType);
+        }
+
+        [Test]
+        public void CrystalGolem_ArchetypeStats_MatchDefinition()
+        {
+            EncounterDefinitionSO golem = EncounterDefinitionSO.CreateCrystalGolem();
+            Assert.AreEqual("Crystal Golem", golem.EnemyName);
+            Assert.AreEqual(175, golem.EnemyHp);
+            Assert.AreEqual(16, golem.EnemyArmor);
+            Assert.AreEqual(8, golem.EnemyAttack);
+            Assert.AreEqual(2.2f, golem.AttackInterval);
+            Assert.AreEqual(1, golem.EnemyTraits.Count);
+            Assert.AreEqual(EnemyTraitType.DamageReflect, golem.EnemyTraits[0].TraitType);
+        }
+
+        [Test]
         public void LichLord_BossStats_AndThreePhases_MatchPlan()
         {
             BossDefinitionSO boss = BossDefinitionSO.CreateLichLordDefinition();

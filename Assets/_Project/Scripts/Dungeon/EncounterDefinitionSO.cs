@@ -161,6 +161,28 @@ namespace Lattirune.Dungeon
             return enc;
         }
 
+        public static EncounterDefinitionSO CreateShadowStalker()
+        {
+            EncounterDefinitionSO enc = ScriptableObject.CreateInstance<EncounterDefinitionSO>();
+            EnemyTraitDefinitionSO stealthStrike = ScriptableObject.CreateInstance<EnemyTraitDefinitionSO>();
+            stealthStrike.Initialize("trait_gold_steal", "Shadow Siphon", EnemyTraitType.GoldSteal, 5f);
+
+            enc.Initialize("enc_shadow_stalker", "Shadow Stalker Ambush", "Shadow Stalker", hp: 85, armor: 4, attack: 7, interval: 1.1f, boss: false,
+                new List<EnemyTraitDefinitionSO> { stealthStrike });
+            return enc;
+        }
+
+        public static EncounterDefinitionSO CreateCrystalGolem()
+        {
+            EncounterDefinitionSO enc = ScriptableObject.CreateInstance<EncounterDefinitionSO>();
+            EnemyTraitDefinitionSO reflect = ScriptableObject.CreateInstance<EnemyTraitDefinitionSO>();
+            reflect.Initialize("trait_crystal_reflect", "Crystalline Shell", EnemyTraitType.DamageReflect, 0.25f);
+
+            enc.Initialize("enc_crystal_golem", "Crystal Golem Bastion", "Crystal Golem", hp: 175, armor: 16, attack: 8, interval: 2.2f, boss: false,
+                new List<EnemyTraitDefinitionSO> { reflect });
+            return enc;
+        }
+
         public static EncounterDefinitionSO CreateLichLord()
         {
             EncounterDefinitionSO enc = ScriptableObject.CreateInstance<EncounterDefinitionSO>();

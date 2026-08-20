@@ -81,10 +81,10 @@ namespace Lattirune.Tests
         }
 
         [Test]
-        public void CanonicalDatabase_ContainsAtLeastSixValidEvents()
+        public void CanonicalDatabase_ContainsAtLeastEightValidEvents()
         {
             var db = RunEventDatabaseSO.CreateCanonicalEventDatabase();
-            Assert.GreaterOrEqual(db.Count, 6);
+            Assert.GreaterOrEqual(db.Count, 8);
 
             string[] expectedEvents = new string[]
             {
@@ -93,7 +93,9 @@ namespace Lattirune.Tests
                 "event_cursed_treasury",
                 "event_elemental_forge",
                 "event_ember_well",
-                "event_mysterious_chest"
+                "event_mysterious_chest",
+                "event_wandering_alchemist",
+                "event_rune_carver"
             };
 
             foreach (var eventId in expectedEvents)

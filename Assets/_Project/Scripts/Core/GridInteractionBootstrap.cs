@@ -525,7 +525,7 @@ namespace Lattirune.Core
 
             if (feedbackCoordinator != null)
             {
-                feedbackCoordinator.Initialize(audioController, hapticFeedback, _grid, synergySystem, combatSystem, rewardService, reactionSystem, merchantSystem, comboTracker);
+                feedbackCoordinator.Initialize(audioController, hapticFeedback, _grid, synergySystem, combatSystem, rewardService, reactionSystem, merchantSystem, comboTracker, bossSystem);
             }
 
             // Hero Classes & Loadouts Subsystem (TASK-057)
@@ -893,5 +893,18 @@ namespace Lattirune.Core
             GUILayout.EndArea();
         }
 #endif
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            if (pauseStatus)
+            {
+                SaveCurrentState();
+            }
+        }
+
+        private void OnApplicationQuit()
+        {
+            SaveCurrentState();
+        }
     }
 }
