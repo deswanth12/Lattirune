@@ -12,10 +12,10 @@ namespace Lattirune.Runes
     public class RuneConduitDebugView : MonoBehaviour
     {
         [Header("Visualization Settings")]
-        [SerializeField] private Color defaultLaserColor = new Color(0f, 0.9f, 1f, 0.9f); // Electric Cyan
-        [SerializeField] private Color targetHitColor = new Color(1f, 0.85f, 0.2f, 1f);   // Bright Gold
-        [SerializeField] private Color prismRefractColor = new Color(1f, 0.7f, 1f, 0.9f); // Magenta/Rainbow
-        [SerializeField] private float laserLineWidth = 0.15f;
+        [SerializeField] private Color defaultLaserColor = new Color(0.2f, 0.85f, 1f, 0.85f); // Electric Cyan
+        [SerializeField] private Color targetHitColor = new Color(1f, 0.8f, 0.25f, 0.9f);   // Bright Gold
+        [SerializeField] private Color prismRefractColor = new Color(0.9f, 0.5f, 1f, 0.85f); // Arcane Violet
+        [SerializeField] private float laserLineWidth = 0.04f;
 
         private GridView _gridView;
         private readonly List<LineRenderer> _activeLines = new List<LineRenderer>();

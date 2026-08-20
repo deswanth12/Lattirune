@@ -149,6 +149,10 @@ namespace Lattirune.UI
             if (lower.Contains("fury") || lower.Contains("elixir")) return LoadArtTexture("Items/item_elixir_fury", "Items/item_health_potion");
             if (lower.Contains("stoneskin")) return LoadArtTexture("Items/item_stoneskin_draught", "Items/item_health_potion");
 
+            if (lower.Contains("ruby") || (lower.Contains("ring") && lower.Contains("fire"))) return LoadArtTexture("Items/item_ruby_ring", "Items/item_ruby_ring");
+            if (lower.Contains("sapphire") || (lower.Contains("ring") && (lower.Contains("ice") || lower.Contains("frost")))) return LoadArtTexture("Items/item_sapphire_ring", "Items/item_sapphire_ring");
+            if (lower.Contains("ring")) return LoadArtTexture("Items/item_ruby_ring", "Items/item_ruby_ring");
+
             if (lower.Contains("gold") || lower.Contains("coin")) return LoadArtTexture("Items/item_gold_coin", "Items/item_gold_coin");
             if (lower.Contains("ember") || lower.Contains("soul")) return LoadArtTexture("Items/item_soul_ember", "Items/item_soul_ember");
 

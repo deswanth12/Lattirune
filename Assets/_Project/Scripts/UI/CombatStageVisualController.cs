@@ -277,17 +277,7 @@ namespace Lattirune.UI
             stageRect.x += shake.x;
             stageRect.y += shake.y;
 
-            // 1. Arena Floor / Atmospheric Backdrop
-            if (_texArenaFloor != null)
-            {
-                Color oldC = GUI.color;
-                GUI.color = new Color(1f, 1f, 1f, 0.85f);
-                GUI.DrawTexture(stageRect, _texArenaFloor, ScaleMode.StretchToFill);
-                LattiruneUITheme.DrawBorder(stageRect, 2f, new Color(0.84f, 0.65f, 0.16f, 0.50f));
-                GUI.color = oldC;
-            }
-
-            // Stance breathing calculations
+            // 1. Stance breathing calculations
             float heroBreathingY = Mathf.Sin(Time.time * 2.8f) * 6f;
             float enemyBreathingY = Mathf.Sin(Time.time * 2.5f + 1.2f) * 6f;
             float heroScalePulse = 1f + Mathf.Sin(Time.time * 2.8f) * 0.02f;
@@ -298,19 +288,19 @@ namespace Lattirune.UI
             float enemyLungeOffset = -_enemyLunge * 140f + _enemyAnticipation * 30f + (_enemyHitFlash > 0 ? (Mathf.Sin(Time.time * 40f) * 12f) : 0f);
 
             // Ground base Y position
-            float groundBaseY = stageRect.y + stageRect.height - 50f;
+            float groundBaseY = stageRect.y + stageRect.height - 30f;
 
             // =================================================================
-            // 2. HERO CHARACTER SILHOUETTE (LEFT)
+            // 2. HERO CHARACTER SILHOUETTE (LEFT - LARGE FULL ARTWORK)
             // =================================================================
-            float heroWidth = 260f * heroScalePulse;
-            float heroHeight = 320f * heroScalePulse;
+            float heroWidth = 300f * heroScalePulse;
+            float heroHeight = 360f * heroScalePulse;
             float heroCenterX = stageRect.x + 220f + heroLungeOffset;
 
             // Hero Shadow Disc
             if (_texShadowDisc != null)
             {
-                Rect heroShadowRect = new Rect(heroCenterX - 100f, groundBaseY - 15f, 200f, 35f);
+                Rect heroShadowRect = new Rect(heroCenterX - 110f, groundBaseY - 15f, 220f, 35f);
                 GUI.DrawTexture(heroShadowRect, _texShadowDisc);
             }
 
@@ -319,7 +309,7 @@ namespace Lattirune.UI
             {
                 Color oldAura = GUI.color;
                 GUI.color = new Color(1f, 1f, 1f, 0.40f + Mathf.Sin(Time.time * 3f) * 0.15f);
-                Rect heroAuraRect = new Rect(heroCenterX - 110f, groundBaseY - 25f, 220f, 50f);
+                Rect heroAuraRect = new Rect(heroCenterX - 120f, groundBaseY - 25f, 240f, 50f);
                 GUI.DrawTexture(heroAuraRect, _texHeroAura);
                 GUI.color = oldAura;
             }
@@ -340,23 +330,23 @@ namespace Lattirune.UI
             // Hero Floating Name Badge
             GUIStyle heroBadgeStyle = new GUIStyle(LattiruneUITheme.StyleBadge);
             heroBadgeStyle.alignment = TextAnchor.MiddleCenter;
-            heroBadgeStyle.fontSize = 16;
+            heroBadgeStyle.fontSize = 15;
             heroBadgeStyle.fontStyle = FontStyle.Bold;
             heroBadgeStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
-            Rect heroBadgeRect = new Rect(heroCenterX - 90f, groundBaseY + 6f, 180f, 28f);
-            GUI.Label(heroBadgeRect, $"🛡️ {heroName.ToUpper()}", heroBadgeStyle);
+            Rect heroBadgeRect = new Rect(heroCenterX - 90f, groundBaseY + 4f, 180f, 26f);
+            GUI.Label(heroBadgeRect, heroName.ToUpper(), heroBadgeStyle);
 
             // =================================================================
-            // 3. ENEMY / BOSS CHARACTER SILHOUETTE (RIGHT)
+            // 3. ENEMY / BOSS CHARACTER SILHOUETTE (RIGHT - LARGE FULL ARTWORK)
             // =================================================================
-            float enemyWidth = (isBoss ? 340f : 260f) * enemyScalePulse;
-            float enemyHeight = (isBoss ? 380f : 300f) * enemyScalePulse;
+            float enemyWidth = (isBoss ? 360f : 290f) * enemyScalePulse;
+            float enemyHeight = (isBoss ? 400f : 330f) * enemyScalePulse;
             float enemyCenterX = stageRect.x + stageRect.width - 220f + enemyLungeOffset;
 
             // Enemy Shadow Disc
             if (_texShadowDisc != null)
             {
-                Rect enemyShadowRect = new Rect(enemyCenterX - (isBoss ? 130f : 100f), groundBaseY - 15f, isBoss ? 260f : 200f, isBoss ? 45f : 35f);
+                Rect enemyShadowRect = new Rect(enemyCenterX - (isBoss ? 140f : 110f), groundBaseY - 15f, isBoss ? 280f : 220f, isBoss ? 45f : 35f);
                 GUI.DrawTexture(enemyShadowRect, _texShadowDisc);
             }
 
@@ -380,11 +370,11 @@ namespace Lattirune.UI
             // Enemy Floating Name Badge
             GUIStyle enemyBadgeStyle = new GUIStyle(LattiruneUITheme.StyleBadge);
             enemyBadgeStyle.alignment = TextAnchor.MiddleCenter;
-            enemyBadgeStyle.fontSize = 16;
+            enemyBadgeStyle.fontSize = 15;
             enemyBadgeStyle.fontStyle = FontStyle.Bold;
             enemyBadgeStyle.normal.textColor = isBoss ? new Color(1f, 0.35f, 0.35f) : new Color(0.95f, 0.45f, 0.45f);
-            Rect enemyBadgeRect = new Rect(enemyCenterX - 100f, groundBaseY + 6f, 200f, 28f);
-            string enemyLabel = isBoss ? $"👑 [BOSS P{bossPhase}] {enemyName.ToUpper()}" : $"💀 {enemyName.ToUpper()}";
+            Rect enemyBadgeRect = new Rect(enemyCenterX - 100f, groundBaseY + 4f, 200f, 26f);
+            string enemyLabel = isBoss ? $"[BOSS P{bossPhase}] {enemyName.ToUpper()}" : enemyName.ToUpper();
             GUI.Label(enemyBadgeRect, enemyLabel, enemyBadgeStyle);
 
             // =================================================================

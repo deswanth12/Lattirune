@@ -183,16 +183,18 @@ namespace Lattirune.Reactions
                 float guiY = ((Screen.height - screenPos.y) / scale) - 20f;
 
                 Color oldColor = GUI.color;
-                GUI.color = new Color(rxn.ReactionColor.r, rxn.ReactionColor.g, rxn.ReactionColor.b, pulse);
-                GUI.Box(new Rect(guiX, guiY, 200f, 40f), GUIContent.none, UI.LattiruneUITheme.StyleBadge);
+                GUI.color = new Color(rxn.ReactionColor.r, rxn.ReactionColor.g, rxn.ReactionColor.b, 0.92f);
+                Rect badgeRect = new Rect(guiX + 10f, guiY, 180f, 32f);
+                GUI.Box(badgeRect, GUIContent.none, UI.LattiruneUITheme.StyleBadge);
 
-                // High contrast shadow
+                // High contrast text
+                labelStyle.fontSize = 15;
                 GUIStyle shadowStyle = new GUIStyle(labelStyle);
                 shadowStyle.normal.textColor = new Color(0f, 0f, 0f, 0.9f);
-                GUI.Label(new Rect(guiX + 1, guiY + 1, 200f, 40f), $"* {rxn.ReactionName.ToUpper()}! *", shadowStyle);
+                GUI.Label(new Rect(badgeRect.x + 1, badgeRect.y + 1, badgeRect.width, badgeRect.height), rxn.ReactionName.ToUpper(), shadowStyle);
 
                 labelStyle.normal.textColor = Color.white;
-                GUI.Label(new Rect(guiX, guiY, 200f, 40f), $"* {rxn.ReactionName.ToUpper()}! *", labelStyle);
+                GUI.Label(badgeRect, rxn.ReactionName.ToUpper(), labelStyle);
                 GUI.color = oldColor;
             }
 

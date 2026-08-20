@@ -278,8 +278,12 @@ namespace Lattirune.Core
                 ItemDataSO itemData = prototypeItemCatalogue.Find(x => x != null && x.ItemId == savedItem.itemId);
                 if (itemData == null) continue;
 
+                Vector2 origin = gridView != null ? gridView.GridOrigin : Vector2.zero;
+                float cSize = gridView != null ? gridView.CellSize : GridCoordinateUtility.DEFAULT_CELL_SIZE;
+                float cSpacing = gridView != null ? gridView.CellSpacing : GridCoordinateUtility.DEFAULT_CELL_SPACING;
+
                 Vector3 spawnPos = savedItem.isPlacedOnGrid 
-                    ? GridCoordinateUtility.GridToWorld(new Vector2Int(savedItem.gridX, savedItem.gridY))
+                    ? GridCoordinateUtility.GetFootprintWorldCenter(new Vector2Int(savedItem.gridX, savedItem.gridY), itemData.BaseDimensions, origin, cSize, cSpacing)
                     : new Vector3(savedItem.stagingPosX, savedItem.stagingPosY, 0f);
 
                 ItemInstance instance = ItemFactory.CreateInstance(itemData, spawnPos, stagingAreaParent);
@@ -296,7 +300,8 @@ namespace Lattirune.Core
                         Vector2Int gridCoord = new Vector2Int(savedItem.gridX, savedItem.gridY);
                         if (_grid.PlaceItem(instance.InstanceId, gridCoord, instance.CurrentDimensions))
                         {
-                            instance.OnPlaced(gridCoord, GridCoordinateUtility.GridToWorld(gridCoord));
+                            Vector3 placePos = GridCoordinateUtility.GetFootprintWorldCenter(gridCoord, instance.CurrentDimensions, origin, cSize, cSpacing);
+                            instance.OnPlaced(gridCoord, placePos);
                         }
                     }
 
@@ -756,14 +761,19 @@ namespace Lattirune.Core
             if (rune == null) return;
             GameObject runeObj = new GameObject($"RuneVisual_{rune.RuneName}_{gridPos.x}_{gridPos.y}");
             runeObj.transform.SetParent(_worldGameplayContainer != null ? _worldGameplayContainer.transform : transform);
-            runeObj.transform.position = GridCoordinateUtility.GridToWorld(gridPos);
-            runeObj.transform.localScale = new Vector3(GridCoordinateUtility.DEFAULT_CELL_SIZE * 0.85f, GridCoordinateUtility.DEFAULT_CELL_SIZE * 0.85f, 1f);
+
+            Vector2 origin = gridView != null ? gridView.GridOrigin : Vector2.zero;
+            float cSize = gridView != null ? gridView.CellSize : GridCoordinateUtility.DEFAULT_CELL_SIZE;
+            float cSpacing = gridView != null ? gridView.CellSpacing : GridCoordinateUtility.DEFAULT_CELL_SPACING;
+
+            runeObj.transform.position = GridCoordinateUtility.GridToWorldPosition(gridPos.x, gridPos.y, origin, cSize, cSpacing);
+            runeObj.transform.localScale = new Vector3(0.75f, 0.75f, 1f);
 
             SpriteRenderer sr = runeObj.AddComponent<SpriteRenderer>();
             Texture2D runeTex = VisualAssetProvider.GetRuneTexture(rune.Element);
             if (runeTex != null)
             {
-                sr.sprite = Sprite.Create(runeTex, new Rect(0, 0, runeTex.width, runeTex.height), new Vector2(0.5f, 0.5f), 128);
+                sr.sprite = Sprite.Create(runeTex, new Rect(0, 0, runeTex.width, runeTex.height), new Vector2(0.5f, 0.5f), 256);
             }
             sr.sortingOrder = 5;
         }

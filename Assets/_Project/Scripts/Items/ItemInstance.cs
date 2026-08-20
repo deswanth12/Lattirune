@@ -114,12 +114,12 @@ namespace Lattirune.Items
         {
             if (itemData == null) return;
 
-            Vector2Int dims = CurrentDimensions;
+            Vector2Int baseDims = itemData.BaseDimensions;
             float cellSize = GridCoordinateUtility.DEFAULT_CELL_SIZE;
             float cellSpacing = GridCoordinateUtility.DEFAULT_CELL_SPACING;
 
-            float width = (dims.x * cellSize) + ((dims.x - 1) * cellSpacing);
-            float height = (dims.y * cellSize) + ((dims.y - 1) * cellSpacing);
+            float baseW = (baseDims.x * cellSize) + ((baseDims.x - 1) * cellSpacing);
+            float baseH = (baseDims.y * cellSize) + ((baseDims.y - 1) * cellSpacing);
 
             Texture2D itemTex = VisualAssetProvider.GetItemTexture(itemData.ItemId);
 
@@ -134,17 +134,23 @@ namespace Lattirune.Items
 
             if (itemTex != null)
             {
-                _spriteRenderer.sprite = Sprite.Create(itemTex, new Rect(0, 0, itemTex.width, itemTex.height), new Vector2(0.5f, 0.5f), 128);
+                float ppu = 256f;
+                _spriteRenderer.sprite = Sprite.Create(itemTex, new Rect(0, 0, itemTex.width, itemTex.height), new Vector2(0.5f, 0.5f), ppu);
+
+                float naturalW = itemTex.width / ppu;
+                float naturalH = itemTex.height / ppu;
+
+                transform.localScale = new Vector3(baseW / Mathf.Max(0.01f, naturalW), baseH / Mathf.Max(0.01f, naturalH), 1f);
             }
 
-            _spriteRenderer.color = hasActiveSynergy ? new Color(1f, 0.8f, 0.35f, 1f) : Color.white;
-            _spriteRenderer.sortingOrder = 10;
+            transform.localRotation = Quaternion.Euler(0f, 0f, -currentRotationDegrees);
 
-            transform.localScale = new Vector3(width, height, 1f);
+            _spriteRenderer.color = hasActiveSynergy ? new Color(1f, 0.85f, 0.4f, 1f) : Color.white;
+            _spriteRenderer.sortingOrder = 10;
 
             if (_collider != null)
             {
-                _collider.size = new Vector2(1f, 1f);
+                _collider.size = new Vector2(baseW, baseH);
                 _collider.offset = Vector2.zero;
             }
         }

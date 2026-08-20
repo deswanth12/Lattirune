@@ -11,16 +11,16 @@ namespace Lattirune.Grid
     public class GridView : MonoBehaviour
     {
         [Header("Grid Layout Settings")]
-        [SerializeField] private Vector2 gridCenter = new Vector2(0f, -1.8f);
+        [SerializeField] private Vector2 gridCenter = new Vector2(0f, -2.1f);
         [SerializeField] private float cellSize = GridCoordinateUtility.DEFAULT_CELL_SIZE;
         [SerializeField] private float cellSpacing = GridCoordinateUtility.DEFAULT_CELL_SPACING;
 
         [Header("Cell Colors (Prototyping / Dark Neo-Arcane Palette)")]
-        [SerializeField] private Color activeCellColor = new Color(0.12f, 0.15f, 0.22f, 1f);   // Deep Slate
-        [SerializeField] private Color lockedCellColor = new Color(0.04f, 0.05f, 0.08f, 0.8f); // Locked Dark
-        [SerializeField] private Color occupiedCellColor = new Color(0.18f, 0.22f, 0.32f, 1f); // Occupied
-        [SerializeField] private Color validHighlightColor = new Color(0.18f, 0.80f, 0.44f, 0.6f); // Emerald Green
-        [SerializeField] private Color invalidHighlightColor = new Color(0.91f, 0.30f, 0.24f, 0.6f); // Ruby Red
+        [SerializeField] private Color activeCellColor = Color.white;
+        [SerializeField] private Color lockedCellColor = new Color(0.3f, 0.3f, 0.35f, 0.6f);
+        [SerializeField] private Color occupiedCellColor = new Color(0.85f, 0.9f, 1f, 1f);
+        [SerializeField] private Color validHighlightColor = new Color(0.2f, 1f, 0.5f, 0.75f);
+        [SerializeField] private Color invalidHighlightColor = new Color(1f, 0.25f, 0.25f, 0.75f);
 
         private LatticeGrid _grid;
         private Vector2 _gridOrigin;
@@ -51,31 +51,31 @@ namespace Lattirune.Grid
             }
         }
 
-                private void CreateDefaultCellSprite()
+        private void CreateDefaultCellSprite()
         {
             if (_defaultCellSprite == null)
             {
-                Texture2D tex = new Texture2D(64, 64, TextureFormat.RGBA32, false);
-                Color border = new Color(0.85f, 0.65f, 0.2f, 0.9f); // Gold Arcane Border
-                Color inner = new Color(0.10f, 0.12f, 0.18f, 0.95f); // Deep Slate
-                Color corner = new Color(1.0f, 0.85f, 0.35f, 1.0f); // Bright Gold Corner
-
-                for (int x = 0; x < 64; x++)
+                Texture2D tex = Resources.Load<Texture2D>("Art/Runes/tile_rune_stone");
+                if (tex != null)
                 {
-                    for (int y = 0; y < 64; y++)
-                    {
-                        bool isOuter = x == 0 || x == 63 || y == 0 || y == 63;
-                        bool isInner = x == 1 || x == 62 || y == 1 || y == 62;
-                        bool isCorner = (x <= 3 || x >= 60) && (y <= 3 || y >= 60);
-
-                        if (isCorner) tex.SetPixel(x, y, corner);
-                        else if (isOuter || isInner) tex.SetPixel(x, y, border);
-                        else tex.SetPixel(x, y, inner);
-                    }
+                    _defaultCellSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 256);
                 }
-                tex.filterMode = FilterMode.Bilinear;
-                tex.Apply();
-                _defaultCellSprite = Sprite.Create(tex, new Rect(0, 0, 64, 64), new Vector2(0.5f, 0.5f), 64);
+                else
+                {
+                    Texture2D fallback = new Texture2D(64, 64, TextureFormat.RGBA32, false);
+                    Color border = new Color(0.85f, 0.65f, 0.2f, 0.9f);
+                    Color inner = new Color(0.10f, 0.12f, 0.18f, 0.95f);
+                    for (int x = 0; x < 64; x++)
+                    {
+                        for (int y = 0; y < 64; y++)
+                        {
+                            bool isBorder = x <= 1 || x >= 62 || y <= 1 || y >= 62;
+                            fallback.SetPixel(x, y, isBorder ? border : inner);
+                        }
+                    }
+                    fallback.Apply();
+                    _defaultCellSprite = Sprite.Create(fallback, new Rect(0, 0, 64, 64), new Vector2(0.5f, 0.5f), 64);
+                }
             }
         }
 

@@ -298,8 +298,37 @@ namespace Lattirune.UI
             EnsureInitialized();
             Color oldColor = GUI.color;
             GUI.color = badgeColor;
-            GUILayout.Box(text, _styleBadge, GUILayout.Height(32));
+            GUILayout.Box(text, _styleBadge, GUILayout.Height(32f));
             GUI.color = oldColor;
+        }
+
+        public static void DrawIconValue(Rect rect, Texture2D icon, string text, Color textColor, int fontSize = 16)
+        {
+            EnsureInitialized();
+            if (icon != null)
+            {
+                float iconSize = Mathf.Min(rect.height, 24f);
+                float iconY = rect.y + (rect.height - iconSize) * 0.5f;
+                Rect iconRect = new Rect(rect.x, iconY, iconSize, iconSize);
+                GUI.DrawTexture(iconRect, icon, ScaleMode.ScaleToFit);
+
+                Rect textRect = new Rect(rect.x + iconSize + 6f, rect.y, rect.width - iconSize - 6f, rect.height);
+                GUIStyle style = new GUIStyle(_styleStatLabel ?? GUI.skin.label);
+                style.fontSize = fontSize;
+                style.fontStyle = FontStyle.Bold;
+                style.alignment = TextAnchor.MiddleLeft;
+                style.normal.textColor = textColor;
+                GUI.Label(textRect, text, style);
+            }
+            else
+            {
+                GUIStyle style = new GUIStyle(_styleStatLabel ?? GUI.skin.label);
+                style.fontSize = fontSize;
+                style.fontStyle = FontStyle.Bold;
+                style.alignment = TextAnchor.MiddleLeft;
+                style.normal.textColor = textColor;
+                GUI.Label(rect, text, style);
+            }
         }
 
         public static float GetPulseAlpha(float speed = 4f, float min = 0.70f, float max = 1.00f)

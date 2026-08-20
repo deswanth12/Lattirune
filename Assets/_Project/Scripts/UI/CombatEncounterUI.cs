@@ -296,14 +296,14 @@ namespace Lattirune.UI
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
             float screenW = 1080f;
-            float padX = 40f;
-            float topHUDY = 30f;
+            float padX = 35f;
+            float topHUDY = 25f;
 
             // =================================================================
             // 1. TOP COMPACT COMBAT HUD (Floor / Currency / Compact Stats)
             // =================================================================
             float hudW = screenW - (padX * 2f);
-            float hudH = 110f;
+            float hudH = 115f;
             Rect hudRect = new Rect(padX, topHUDY, hudW, hudH);
             LattiruneUITheme.DrawCard(hudRect);
 
@@ -317,29 +317,33 @@ namespace Lattirune.UI
             titleStyle.fontStyle = FontStyle.Bold;
             titleStyle.alignment = TextAnchor.MiddleLeft;
             titleStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
-            GUI.Label(new Rect(padX + 20f, topHUDY + 8f, 450f, 24f), encounterTitle, titleStyle);
+            GUI.Label(new Rect(padX + 16f, topHUDY + 8f, 420f, 24f), encounterTitle, titleStyle);
 
-            GUIStyle currStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            currStyle.fontSize = 15;
-            currStyle.alignment = TextAnchor.MiddleRight;
-            currStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
-            GUI.Label(new Rect(padX + hudW - 350f, topHUDY + 8f, 330f, 24f), $"🪙 {gold}g  |  🔥 {embers} Embers", currStyle);
+            // 1b. Gold & Embers with Sprite Icons
+            Texture2D iconGold = VisualAssetProvider.GetUIIcon("ui_icon_gold");
+            Texture2D iconEmbers = VisualAssetProvider.GetUIIcon("ui_icon_embers");
+            Texture2D iconAtk = VisualAssetProvider.GetUIIcon("ui_icon_attack");
+            Texture2D iconArmor = VisualAssetProvider.GetUIIcon("ui_icon_armor");
+            Texture2D iconBattle = VisualAssetProvider.GetUIIcon("ui_icon_battle");
 
-            // 1b. Hero Health & Stats (Left Sub-Pill)
-            float pillW = (hudW - 60f) * 0.5f;
+            float currX = padX + hudW - 270f;
+            LattiruneUITheme.DrawIconValue(new Rect(currX, topHUDY + 8f, 110f, 24f), iconGold, $"{gold}g", LattiruneUITheme.ColorGoldPrimary, 15);
+            LattiruneUITheme.DrawIconValue(new Rect(currX + 120f, topHUDY + 8f, 140f, 24f), iconEmbers, $"{embers} Embers", new Color(1f, 0.55f, 0.2f), 15);
+
+            // 1c. Hero Health & Stats (Left Sub-Pill)
+            float pillW = (hudW - 40f) * 0.5f;
             float pillY = topHUDY + 38f;
             float heroRatio = (float)heroCurrentHp / Mathf.Max(1, heroMaxHp);
             float enemyRatio = (float)enemyCurrentHp / Mathf.Max(1, enemyMaxHp);
 
             // Hero HP Bar
-            LattiruneUITheme.DrawHealthBar(new Rect(padX + 20f, pillY, pillW, 30f), heroRatio, $"HERO: {heroCurrentHp}/{heroMaxHp} HP");
-            GUIStyle heroStatStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            heroStatStyle.fontSize = 14;
-            heroStatStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-            GUI.Label(new Rect(padX + 20f, pillY + 34f, pillW, 20f), $"⚔️ ATK: {heroAtk}  |  🛡️ ARMOR: {heroArmor}", heroStatStyle);
+            LattiruneUITheme.DrawHealthBar(new Rect(padX + 16f, pillY, pillW, 30f), heroRatio, $"HERO: {heroCurrentHp}/{heroMaxHp} HP");
+            float statY = pillY + 36f;
+            LattiruneUITheme.DrawIconValue(new Rect(padX + 16f, statY, 110f, 24f), iconAtk, $"ATK: {heroAtk}", LattiruneUITheme.ColorTextPrimary, 14);
+            LattiruneUITheme.DrawIconValue(new Rect(padX + 130f, statY, 130f, 24f), iconArmor, $"ARMOR: {heroArmor}", LattiruneUITheme.ColorCyanArcane, 14);
 
-            // Enemy HP Bar
-            Rect enemyBarRect = new Rect(padX + 40f + pillW, pillY, pillW, 30f);
+            // Enemy HP Bar (Right Sub-Pill)
+            Rect enemyBarRect = new Rect(padX + 24f + pillW, pillY, pillW, 30f);
             GUI.DrawTexture(enemyBarRect, LattiruneUITheme.StyleCard.normal.background ?? Texture2D.blackTexture);
             Rect enemyFillRect = new Rect(enemyBarRect.x + 2f, enemyBarRect.y + 2f, Mathf.Max(0f, (enemyBarRect.width - 4f) * Mathf.Clamp01(enemyRatio)), enemyBarRect.height - 4f);
             GUI.color = new Color(0.85f, 0.22f, 0.26f, 1f);
@@ -348,21 +352,20 @@ namespace Lattirune.UI
 
             GUIStyle enemyLabelStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
             enemyLabelStyle.alignment = TextAnchor.MiddleCenter;
-            enemyLabelStyle.fontSize = 18;
+            enemyLabelStyle.fontSize = 17;
+            enemyLabelStyle.fontStyle = FontStyle.Bold;
             enemyLabelStyle.normal.textColor = Color.white;
             GUI.Label(enemyBarRect, $"{enemyName.ToUpper()}: {enemyCurrentHp}/{enemyMaxHp} HP", enemyLabelStyle);
 
-            GUIStyle enemyStatStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            enemyStatStyle.alignment = TextAnchor.MiddleRight;
-            enemyStatStyle.fontSize = 14;
-            enemyStatStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-            GUI.Label(new Rect(padX + 40f + pillW, pillY + 34f, pillW, 20f), $"⚔️ ATK: {enemyAtk}  |  🛡️ ARMOR: {enemyArmor}", enemyStatStyle);
+            float enemyStatX = padX + 24f + pillW;
+            LattiruneUITheme.DrawIconValue(new Rect(enemyStatX, statY, 110f, 24f), iconAtk, $"ATK: {enemyAtk}", LattiruneUITheme.ColorTextPrimary, 14);
+            LattiruneUITheme.DrawIconValue(new Rect(enemyStatX + 120f, statY, 130f, 24f), iconArmor, $"ARMOR: {enemyArmor}", LattiruneUITheme.ColorCyanArcane, 14);
 
             // =================================================================
             // 2. DEDICATED OPEN COMBAT STAGE (Hero vs Enemy Silhouette Arena)
             // =================================================================
-            float stageY = topHUDY + hudH + 12f;
-            float stageH = 480f;
+            float stageY = topHUDY + hudH + 10f;
+            float stageH = 580f;
             Rect stageRect = new Rect(padX, stageY, hudW, stageH);
 
             if (stageVisual == null) stageVisual = FindFirstObjectByType<CombatStageVisualController>();
@@ -393,7 +396,7 @@ namespace Lattirune.UI
             // =================================================================
             // 3. COMBAT LOG / STATUS MESSAGE (Below Combat Stage)
             // =================================================================
-            float logY = stageY + stageH + 10f;
+            float logY = stageY + stageH + 8f;
             GUIStyle logStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
             logStyle.alignment = TextAnchor.MiddleCenter;
             logStyle.fontSize = 15;
@@ -406,8 +409,8 @@ namespace Lattirune.UI
             // =================================================================
             if (currentFloor == 1 && !isCombatActive)
             {
-                float tutY = logY + 28f;
-                Rect tutRect = new Rect(padX + 20f, tutY, hudW - 40f, 42f);
+                float tutY = logY + 26f;
+                Rect tutRect = new Rect(padX + 20f, tutY, hudW - 40f, 38f);
                 Color oldC = GUI.color;
                 GUI.color = new Color(0.08f, 0.14f, 0.22f, 0.95f);
                 LattiruneUITheme.DrawCard(tutRect);
@@ -415,10 +418,10 @@ namespace Lattirune.UI
 
                 GUIStyle tutStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
                 tutStyle.alignment = TextAnchor.MiddleCenter;
-                tutStyle.fontSize = 15;
+                tutStyle.fontSize = 14;
                 tutStyle.fontStyle = FontStyle.Bold;
                 tutStyle.normal.textColor = new Color(0.4f, 0.9f, 1f);
-                GUI.Label(tutRect, "💡 TUTORIAL: Align weapons with rune conduits to ignite elemental synergies!", tutStyle);
+                GUI.Label(tutRect, "Align weapons with rune conduits to ignite elemental synergies!", tutStyle);
                 GUI.color = oldC;
             }
 
@@ -426,14 +429,14 @@ namespace Lattirune.UI
             // 5. BOTTOM ACTION BAR (Large Mobile-First Touch Targets)
             // =================================================================
             float virtualHeight = Screen.height / scale;
-            float botBarY = virtualHeight - 120f;
+            float botBarY = virtualHeight - 115f;
             float botBarW = hudW;
-            float botBtnH = 90f;
+            float botBtnH = 85f;
 
             if (!isCombatActive)
             {
                 Rect startBtnRect = new Rect(padX, botBarY, botBarW, botBtnH);
-                if (GUI.Button(startBtnRect, "⚔️  START BATTLE  ⚔️", LattiruneUITheme.StylePrimaryBtn))
+                if (GUI.Button(startBtnRect, "START BATTLE", LattiruneUITheme.StylePrimaryBtn))
                 {
                     StartBattle();
                 }
@@ -441,7 +444,7 @@ namespace Lattirune.UI
             else
             {
                 Rect activeBtnRect = new Rect(padX, botBarY, botBarW, botBtnH);
-                GUI.Button(activeBtnRect, "⚔️  RESOLVING COMBAT...  ⚔️", LattiruneUITheme.StyleSecondaryBtn);
+                GUI.Button(activeBtnRect, "RESOLVING COMBAT...", LattiruneUITheme.StyleSecondaryBtn);
             }
 
             GUI.matrix = oldMatrix;
