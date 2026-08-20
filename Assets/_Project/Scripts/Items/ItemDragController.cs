@@ -68,24 +68,19 @@ namespace Lattirune.Items
             if (navigation == null || (navigation.CurrentScreen != UI.ScreenState.GRID_BUILD && navigation.CurrentScreen != UI.ScreenState.COMBAT)) return;
             if (_activeDraggedItem == null) return;
 
-            float scale = Mathf.Min(Screen.width / 1080f, Screen.height / 1920f);
-            if (scale <= 0.01f) scale = 1.0f;
+            Matrix4x4 oldMatrix = UI.LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            Matrix4x4 oldMatrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1.0f));
+            float btnWidth = 380f;
+            float btnHeight = 72f;
+            float posX = (1080f - btnWidth) * 0.5f;
+            float posY = 1540f + offsetY;
 
-            GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
-            btnStyle.fontSize = 24;
-            btnStyle.fontStyle = FontStyle.Bold;
-
-            float offsetY = (Screen.height / scale - 1920f) * 0.5f;
-            Color oldColor = GUI.color;
-            GUI.color = Color.cyan;
-            if (GUI.Button(new Rect(540f - 180f, 1550f + offsetY, 360f, 75f), "[?] ROTATE (90°)", btnStyle))
+            GUILayout.BeginArea(new Rect(posX, posY, btnWidth, btnHeight));
+            if (UI.LattiruneUITheme.DrawPrimaryButton("ROTATE RUNE (90°)", btnHeight))
             {
                 RotateActiveItem();
             }
-            GUI.color = oldColor;
+            GUILayout.EndArea();
 
             GUI.matrix = oldMatrix;
         }
@@ -95,29 +90,35 @@ namespace Lattirune.Items
             if (_activeDraggedItem == null) return false;
 
             bool rotated = _activeDraggedItem.Rotate90();
-            if (rotated && gridView != null && _grid != null)
+            if (rotated)
             {
-                // Refresh grid highlight with new rotated dimensions
-                bool inBounds = GridCoordinateUtility.WorldToGridCoordinate(
-                    _activeDraggedItem.transform.position,
-                    gridView.GridOrigin,
-                    out Vector2Int anchorCoord,
-                    gridView.CellSize,
-                    gridView.CellSpacing
-                );
+                Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.ItemDragStart);
+                Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Selection);
 
-                bool isValidPlacement = inBounds && _grid.CanPlaceItem(anchorCoord, _activeDraggedItem.CurrentDimensions);
-
-                if (inBounds)
+                if (gridView != null && _grid != null)
                 {
-                    gridView.SetFootprintHighlight(anchorCoord, _activeDraggedItem.CurrentDimensions, isValidPlacement);
-                }
-                else
-                {
-                    gridView.ClearHighlight();
-                }
+                    // Refresh grid highlight with new rotated dimensions
+                    bool inBounds = GridCoordinateUtility.WorldToGridCoordinate(
+                        _activeDraggedItem.transform.position,
+                        gridView.GridOrigin,
+                        out Vector2Int anchorCoord,
+                        gridView.CellSize,
+                        gridView.CellSpacing
+                    );
 
-                _activeDraggedItem.SetVisualState(isDragging: true, isValidDrop: isValidPlacement);
+                    bool isValidPlacement = inBounds && _grid.CanPlaceItem(anchorCoord, _activeDraggedItem.CurrentDimensions);
+
+                    if (inBounds)
+                    {
+                        gridView.SetFootprintHighlight(anchorCoord, _activeDraggedItem.CurrentDimensions, isValidPlacement);
+                    }
+                    else
+                    {
+                        gridView.ClearHighlight();
+                    }
+
+                    _activeDraggedItem.SetVisualState(isDragging: true, isValidDrop: isValidPlacement);
+                }
             }
 
             return rotated;
@@ -152,6 +153,9 @@ namespace Lattirune.Items
             _wasPlacedBeforeDrag = item.IsPlacedOnGrid;
             _previousGridPos = item.CurrentGridPosition;
             _previousRotation = item.CurrentRotationDegrees;
+
+            Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.ItemDragStart);
+            Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Selection);
 
             // If the item was placed, remove its occupancy temporarily while dragging
             if (_wasPlacedBeforeDrag)
@@ -222,6 +226,8 @@ namespace Lattirune.Items
                     );
 
                     _activeDraggedItem.OnPlaced(anchorCoord, snapPos);
+                    Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.ItemValidPlacement);
+                    Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Light);
 
                     if (enableDebugLogs)
                     {
@@ -232,6 +238,9 @@ namespace Lattirune.Items
             else
             {
                 // Invalid drop -> return to previous valid position/rotation
+                Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.ItemInvalidPlacement);
+                Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Failure);
+
                 if (_wasPlacedBeforeDrag)
                 {
                     _grid.PlaceItem(_activeDraggedItem.InstanceId, _previousGridPos, _activeDraggedItem.CurrentDimensions);

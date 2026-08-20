@@ -136,33 +136,39 @@ namespace Lattirune.UI
             statStyle.normal.textColor = LattiruneUITheme.ColorTextPrimary;
 
             GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
-            GUILayout.Label($"<b>Floors Reached:</b> {floorsCleared} / 10", statStyle);
-            GUILayout.Space(8);
-            GUILayout.Label($"<b>In-Run Gold Collected:</b> {goldEarned} Gold", statStyle);
-            GUILayout.Space(8);
-            GUILayout.Label($"<b>Dungeon Embers Awarded:</b> {embersEarned} Embers", statStyle);
+            GUILayout.Label($"<b>Floors Cleared:</b> {floorsCleared} / 10", statStyle);
+            GUILayout.Space(6);
+            GUILayout.Label($"<b>Gold Collected:</b> {goldEarned} Gold", statStyle);
+            GUILayout.Space(6);
+            GUILayout.Label($"<b>Embers Banked:</b> {embersEarned} Embers", statStyle);
+            if (metaProgression != null)
+            {
+                GUILayout.Space(6);
+                GUILayout.Label($"<b>Total Boss Clears:</b> {metaProgression.TotalBossClears}", statStyle);
+                GUILayout.Label($"<b>Total Runs Attempted:</b> {metaProgression.TotalRunsAttempted}", statStyle);
+            }
             GUILayout.EndVertical();
 
-            GUILayout.Space(28);
+            GUILayout.Space(24);
+
+            if (LattiruneUITheme.DrawPrimaryButton("START ANOTHER RUN", 75f))
+            {
+                StartNewRun();
+            }
+            GUILayout.Space(12);
 
             if (isVictory)
             {
-                if (LattiruneUITheme.DrawPrimaryButton("CONTINUE IN ENDLESS MODE", 75f))
+                if (LattiruneUITheme.DrawSecondaryButton("CONTINUE IN ENDLESS MODE", 65f))
                 {
                     ContinueEndlessMode();
                 }
-                GUILayout.Space(14);
+                GUILayout.Space(12);
             }
 
-            if (LattiruneUITheme.DrawPrimaryButton("RETURN TO CAMPFIRE HUB", 75f))
+            if (LattiruneUITheme.DrawSecondaryButton("RETURN TO CAMPFIRE HUB", 65f))
             {
                 ReturnToCampfireHub();
-            }
-            GUILayout.Space(14);
-
-            if (LattiruneUITheme.DrawSecondaryButton("START NEW RUN", 65f))
-            {
-                StartNewRun();
             }
 
             GUILayout.EndArea();

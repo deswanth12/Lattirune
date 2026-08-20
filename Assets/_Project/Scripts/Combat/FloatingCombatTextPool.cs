@@ -73,7 +73,7 @@ namespace Lattirune.Combat
             if (result == null || !result.IsActive) return;
 
             Vector2 spawnPos = new Vector2(540f + UnityEngine.Random.Range(-50f, 50f), 520f + UnityEngine.Random.Range(-30f, 30f));
-            SpawnText($"** {result.ReactionName.ToUpper()}! **", spawnPos, FloatingTextType.ElementalDamage, duration: 1.2f);
+            SpawnText($"** {result.ReactionName.ToUpper()}! **", spawnPos, FloatingTextType.ElementalDamage, duration: 1.4f);
         }
 
         private void HandleAttackExecuted(DamageResult damage)
@@ -97,7 +97,7 @@ namespace Lattirune.Combat
             else if (damage.RuneBonus > 0)
             {
                 type = FloatingTextType.ElementalDamage;
-                prefix = "[RUNE] ";
+                prefix = "+RUNE ";
             }
             else
             {
@@ -119,6 +119,37 @@ namespace Lattirune.Combat
             if (tickDamage <= 0) return;
             Vector2 pos = new Vector2(540f + UnityEngine.Random.Range(-30f, 30f), 480f + UnityEngine.Random.Range(-15f, 15f));
             SpawnText($"-{Mathf.RoundToInt(tickDamage)} ({instance.Definition.DisplayName})", pos, FloatingTextType.StatusEffect, duration: 0.85f);
+        }
+
+        public void BindComboTracker(Lattirune.Combo.ComboTracker combo)
+        {
+            if (combo != null)
+            {
+                combo.OnComboIncremented += HandleComboIncremented;
+                combo.OnReactionChainIncremented += HandleReactionChainIncremented;
+            }
+        }
+
+        private void HandleComboIncremented(int combo, float multiplier)
+        {
+            if (combo == 5 || combo == 10 || combo == 15 || combo == 20 || combo == 25 || combo == 30)
+            {
+                Vector2 spawnPos = new Vector2(540f, 380f);
+                SpawnText($"COMBO x{combo}! ({multiplier:0.00}x DMG)", spawnPos, FloatingTextType.CriticalDamage, duration: 1.5f);
+                Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.Victory, 0.6f);
+                Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Medium);
+            }
+        }
+
+        private void HandleReactionChainIncremented(int chainCount)
+        {
+            if (chainCount >= 2)
+            {
+                Vector2 spawnPos = new Vector2(540f, 440f);
+                SpawnText($"CHAIN REACTION x{chainCount}!", spawnPos, FloatingTextType.ElementalDamage, duration: 1.6f);
+                Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.RuneConduitIgnite, 0.8f);
+                Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Heavy);
+            }
         }
 
         public FloatingCombatText SpawnText(string text, Vector2 screenPos, FloatingTextType type, float duration = 0.85f)
@@ -188,8 +219,16 @@ namespace Lattirune.Combat
 
                 labelStyle.fontSize = Mathf.RoundToInt(26 * entry.Scale);
                 labelStyle.fontStyle = FontStyle.Bold;
-                labelStyle.normal.textColor = entry.TextColor;
 
+                // High-contrast drop shadow
+                GUIStyle shadowStyle = new GUIStyle(labelStyle);
+                shadowStyle.normal.textColor = new Color(0f, 0f, 0f, entry.TextColor.a * 0.85f);
+
+                GUI.Label(new Rect(entry.ScreenPosition.x - 150 + 2, entry.ScreenPosition.y - 30 + 2, 300, 60), entry.Text, shadowStyle);
+                GUI.Label(new Rect(entry.ScreenPosition.x - 150 - 2, entry.ScreenPosition.y - 30 - 2, 300, 60), entry.Text, shadowStyle);
+
+                // Foreground text
+                labelStyle.normal.textColor = entry.TextColor;
                 GUI.Label(new Rect(entry.ScreenPosition.x - 150, entry.ScreenPosition.y - 30, 300, 60), entry.Text, labelStyle);
             }
 

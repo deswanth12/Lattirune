@@ -605,6 +605,7 @@ namespace Lattirune.Core
             var floatyPool = floatyObj.AddComponent<FloatingCombatTextPool>();
             floatyPool.Initialize(combatSystem, reactionSystem);
             floatyPool.BindNavigation(navigationController);
+            floatyPool.BindComboTracker(comboTracker);
 
             GameObject shakeObj = new GameObject("CombatCameraShakeController");
             shakeObj.transform.SetParent(transform);

@@ -102,6 +102,10 @@ namespace Lattirune.UI
             }
 
             _currentRewardOptions = RewardGenerator.GenerateRewardOptions(_itemCatalogue, count: 3);
+            if (navigation != null)
+            {
+                navigation.NavigateTo(ScreenState.REWARD_SELECTION);
+            }
         }
 
         private void HandleDefeat()
@@ -154,7 +158,7 @@ namespace Lattirune.UI
 
         private void OnGUI()
         {
-            if (navigation == null || (navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.COMBAT))
+            if (navigation == null || (navigation.CurrentScreen != ScreenState.GRID_BUILD && navigation.CurrentScreen != ScreenState.COMBAT && navigation.CurrentScreen != ScreenState.REWARD_SELECTION))
             {
                 return;
             }

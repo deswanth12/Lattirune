@@ -273,6 +273,42 @@ namespace Lattirune.Items
                 shield: 45, cursed: true);
             list.Add(bloodShield);
 
+            // 21. Burning Core (Build-Defining Relic, 1x1, +35% Fire Reaction Damage & Ignite)
+            ItemDataSO burningCore = ScriptableObject.CreateInstance<ItemDataSO>();
+            burningCore.Initialize("item_burning_core", "Burning Core", "Fire reactions deal +35% DMG and ignite target for 3s.",
+                ItemCategory.Relic, new Vector2Int(1, 1), canRotate: false, new Color(1.0f, 0.35f, 0.1f), flatBonus: 5);
+            list.Add(burningCore);
+
+            // 22. Unstable Prism (Build-Defining Relic, 1x1, +2 Chain Reaction Window)
+            ItemDataSO unstablePrism = ScriptableObject.CreateInstance<ItemDataSO>();
+            unstablePrism.Initialize("item_unstable_prism", "Unstable Prism", "Reaction chains gain +2s combo window and trigger cascading bursts.",
+                ItemCategory.Relic, new Vector2Int(1, 1), canRotate: false, new Color(0.85f, 0.4f, 0.95f), flatBonus: 4);
+            list.Add(unstablePrism);
+
+            // 23. Blood Sigil (Build-Defining Relic, 1x1, Lifesteal on Reactions/Crits)
+            ItemDataSO bloodSigil = ScriptableObject.CreateInstance<ItemDataSO>();
+            bloodSigil.Initialize("item_blood_sigil", "Blood Sigil", "Restores 4 HP whenever a critical hit or elemental reaction triggers.",
+                ItemCategory.Relic, new Vector2Int(1, 1), canRotate: false, new Color(0.8f, 0.15f, 0.2f), hpBonus: 10);
+            list.Add(bloodSigil);
+
+            // 24. Void Catalyst (Build-Defining Relic, 1x1, 5-Combo Void Collapse)
+            ItemDataSO voidCatalyst = ScriptableObject.CreateInstance<ItemDataSO>();
+            voidCatalyst.Initialize("item_void_catalyst", "Void Catalyst", "Every 5x combo triggers a Dark Void collapse dealing 30 flat AoE damage.",
+                ItemCategory.Relic, new Vector2Int(1, 1), canRotate: false, new Color(0.4f, 0.1f, 0.7f), flatBonus: 6);
+            list.Add(voidCatalyst);
+
+            // 25. Glacial Matrix (Build-Defining Relic, 1x1, Water+Ice Barrier)
+            ItemDataSO glacialMatrix = ScriptableObject.CreateInstance<ItemDataSO>();
+            glacialMatrix.Initialize("item_glacial_matrix", "Glacial Matrix", "Water + Ice reactions grant +12 temporary Armor barrier.",
+                ItemCategory.Relic, new Vector2Int(1, 1), canRotate: false, new Color(0.2f, 0.75f, 0.95f), shield: 12);
+            list.Add(glacialMatrix);
+
+            // 26. Thunderstruck Coil (Build-Defining Relic, 1x1, Lightning Double Strike & Crit)
+            ItemDataSO thunderCoil = ScriptableObject.CreateInstance<ItemDataSO>();
+            thunderCoil.Initialize("item_thunderstruck_coil", "Thunderstruck Coil", "Lightning reactions strike twice and grant +50% Crit Damage.",
+                ItemCategory.Relic, new Vector2Int(1, 1), canRotate: false, new Color(0.95f, 0.85f, 0.2f), crit: 0.15f);
+            list.Add(thunderCoil);
+
             db.Initialize(list);
 
             // Prototype aliases for backwards compatibility

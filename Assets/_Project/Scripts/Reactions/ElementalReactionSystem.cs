@@ -94,6 +94,8 @@ namespace Lattirune.Reactions
 
                 if (!wasAlreadyActive)
                 {
+                    Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.RuneConduitIgnite);
+                    Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Medium);
                     OnReactionActivated?.Invoke(result);
                 }
             }
@@ -177,14 +179,20 @@ namespace Lattirune.Reactions
                 );
 
                 Vector3 screenPos = Camera.main.WorldToScreenPoint(worldPos);
-                float guiX = (screenPos.x / scale) - 90f;
-                float guiY = ((Screen.height - screenPos.y) / scale) - 18f;
+                float guiX = (screenPos.x / scale) - 100f;
+                float guiY = ((Screen.height - screenPos.y) / scale) - 20f;
 
                 Color oldColor = GUI.color;
                 GUI.color = new Color(rxn.ReactionColor.r, rxn.ReactionColor.g, rxn.ReactionColor.b, pulse);
-                GUI.Box(new Rect(guiX - 10, guiY, 200f, 36f), GUIContent.none, UI.LattiruneUITheme.StyleBadge);
+                GUI.Box(new Rect(guiX, guiY, 200f, 40f), GUIContent.none, UI.LattiruneUITheme.StyleBadge);
+
+                // High contrast shadow
+                GUIStyle shadowStyle = new GUIStyle(labelStyle);
+                shadowStyle.normal.textColor = new Color(0f, 0f, 0f, 0.9f);
+                GUI.Label(new Rect(guiX + 1, guiY + 1, 200f, 40f), $"* {rxn.ReactionName.ToUpper()}! *", shadowStyle);
+
                 labelStyle.normal.textColor = Color.white;
-                GUI.Label(new Rect(guiX - 10, guiY, 200f, 36f), $"** {rxn.ReactionName.ToUpper()}! **", labelStyle);
+                GUI.Label(new Rect(guiX, guiY, 200f, 40f), $"* {rxn.ReactionName.ToUpper()}! *", labelStyle);
                 GUI.color = oldColor;
             }
 

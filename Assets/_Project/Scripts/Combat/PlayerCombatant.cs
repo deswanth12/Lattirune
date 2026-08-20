@@ -105,8 +105,8 @@ namespace Lattirune.Combat
                 }
             }
 
-            // If no weapon placed, default to 1 unarmed damage
-            baseAttackDamage = Mathf.Max(1, calculatedDamage);
+            // If no weapon placed, default to baseline 10 hero combat damage
+            baseAttackDamage = Mathf.Max(10, calculatedDamage);
             activeRuneBonus = calculatedRuneBonus;
             activeCritBonus = calculatedCrit;
             hasActiveSynergy = foundSynergy;

@@ -236,11 +236,12 @@ namespace Lattirune.Save
                 settings = new SavedSettingsData(1.0f, 1.0f, false, true)
             };
 
-            // Starting Runes: Fire Rune at (2,1) emitting North
+            // Starting Runes: Fire Rune at (2,1) emitting North, Water Rune at (0,2) emitting East -> STEAM reaction at (2,2)
             defaultSave.runes.Add(new SavedRuneData("fire_rune_01", 2, 1, 1 /* North */, 1 /* Fire */, 3));
+            defaultSave.runes.Add(new SavedRuneData("water_rune_01", 0, 2, 2 /* East */, 2 /* Water */, 3));
 
-            // Starting Items: 5 baseline prototype items in staging
-            defaultSave.items.Add(new SavedItemData("item_training_sword", -1, -1, 0, false, -2.2f + (0 * 1.1f), -4.0f));
+            // Starting Items: Training Sword placed on grid at (1, 1), other items in staging
+            defaultSave.items.Add(new SavedItemData("item_training_sword", 1, 1, 0, true, 0f, 0f));
             defaultSave.items.Add(new SavedItemData("item_ember_blade", -1, -1, 0, false, -2.2f + (1 * 1.1f), -4.0f));
             defaultSave.items.Add(new SavedItemData("item_guard_plate", -1, -1, 0, false, -2.2f + (2 * 1.1f), -4.0f));
             defaultSave.items.Add(new SavedItemData("item_arcane_relic", -1, -1, 0, false, -2.2f + (3 * 1.1f), -4.0f));
