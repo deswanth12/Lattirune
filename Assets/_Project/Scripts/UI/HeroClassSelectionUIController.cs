@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Core;
+using Lattirune.Dungeon;
 using Lattirune.Progression;
 
 namespace Lattirune.UI
@@ -17,6 +19,8 @@ namespace Lattirune.UI
         [SerializeField] private ScreenNavigationController navigation;
 
         [Header("State")]
+        [SerializeField] private RunManager runManager;
+        [SerializeField] private DungeonMapScreenController mapController;
         [SerializeField] private bool isVisible = false;
         private int _selectedPreviewIndex = 0;
         private string _feedbackMessage = "";
@@ -26,11 +30,15 @@ namespace Lattirune.UI
         public void Initialize(
             HeroClassManager heroManager,
             MetaProgressionManager meta,
-            ScreenNavigationController nav = null)
+            ScreenNavigationController nav = null,
+            RunManager run = null,
+            DungeonMapScreenController map = null)
         {
             classManager = heroManager;
             metaProgression = meta;
             navigation = nav;
+            runManager = run;
+            mapController = map;
             _selectedPreviewIndex = 0;
             _feedbackMessage = "Choose your Champion for the descent.";
 
@@ -241,6 +249,14 @@ namespace Lattirune.UI
             if (LattiruneUITheme.DrawPrimaryButton("DESCEND INTO DUNGEON", 75f))
             {
                 Hide();
+                if (mapController != null)
+                {
+                    mapController.ResetMapForNewRun();
+                }
+                if (runManager != null)
+                {
+                    runManager.StartRun(metaProgression);
+                }
                 if (navigation != null)
                 {
                     navigation.NavigateTo(ScreenState.DUNGEON_MAP);

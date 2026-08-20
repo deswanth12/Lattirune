@@ -96,6 +96,14 @@ namespace Lattirune.Dungeon
             isEndlessMode = true;
         }
 
+        public void SetCurrentFloor(int floorIndex)
+        {
+            currentFloorIndex = Mathf.Clamp(floorIndex, 0, 99);
+            currentEncounterIndex = 0;
+            SetState(RunState.FloorPreparing);
+            OnFloorStarted?.Invoke(CurrentFloorNumber, CurrentFloor);
+        }
+
         public void AdvanceFloor()
         {
             currentFloorIndex++;

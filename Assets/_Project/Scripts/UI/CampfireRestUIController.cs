@@ -20,6 +20,7 @@ namespace Lattirune.UI
         [SerializeField] private PlayerCombatant playerCombatant;
         [SerializeField] private RunModifierManager modifierManager;
         [SerializeField] private ScreenNavigationController navigation;
+        [SerializeField] private DungeonMapScreenController mapController;
 
         [Header("State")]
         [SerializeField] private bool isVisible = false;
@@ -27,6 +28,12 @@ namespace Lattirune.UI
         private bool _hasChosenOption = false;
 
         public bool IsVisible => isVisible;
+        public bool HasChosenOption => _hasChosenOption;
+
+        public void BindMapController(DungeonMapScreenController map)
+        {
+            mapController = map;
+        }
 
         public void Initialize(
             RunManager run,
@@ -224,13 +231,17 @@ namespace Lattirune.UI
             if (LattiruneUITheme.DrawPrimaryButton("LEAVE REST SITE & DESCEND", 75f))
             {
                 Hide();
+                if (mapController != null && mapController.MapGraph != null)
+                {
+                    mapController.MapGraph.CompleteCurrentNode();
+                }
                 if (runManager != null)
                 {
                     runManager.ContinueAfterReward();
                 }
                 if (navigation != null)
                 {
-                    navigation.NavigateTo(ScreenState.GRID_BUILD);
+                    navigation.NavigateTo(ScreenState.DUNGEON_MAP);
                 }
             }
             GUI.enabled = true;

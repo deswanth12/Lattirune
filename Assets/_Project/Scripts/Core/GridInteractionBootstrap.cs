@@ -552,6 +552,14 @@ namespace Lattirune.Core
                 feedbackCoordinator.Initialize(audioController, hapticFeedback, _grid, synergySystem, combatSystem, rewardService, reactionSystem, merchantSystem, comboTracker, bossSystem);
             }
 
+            // Dungeon Map Topology Subsystem (TASK-058)
+            GameObject mapUiObj = new GameObject("DungeonMapScreenController");
+            mapUiObj.transform.SetParent(transform);
+            var mapUI = mapUiObj.AddComponent<DungeonMapScreenController>();
+            mapUI.Initialize(runManager, navigationController);
+
+            merchantUI.BindMapController(mapUI);
+
             // Hero Classes & Loadouts Subsystem (TASK-057)
             GameObject heroObj = new GameObject("HeroClassManager");
             heroObj.transform.SetParent(transform);
@@ -561,13 +569,7 @@ namespace Lattirune.Core
             GameObject heroUiObj = new GameObject("HeroClassSelectionUIController");
             heroUiObj.transform.SetParent(transform);
             var heroClassUI = heroUiObj.AddComponent<HeroClassSelectionUIController>();
-            heroClassUI.Initialize(heroClassManager, metaProgressionManager, navigationController);
-
-            // Dungeon Map Topology Subsystem (TASK-058)
-            GameObject mapUiObj = new GameObject("DungeonMapScreenController");
-            mapUiObj.transform.SetParent(transform);
-            var mapUI = mapUiObj.AddComponent<DungeonMapScreenController>();
-            mapUI.Initialize(runManager, navigationController);
+            heroClassUI.Initialize(heroClassManager, metaProgressionManager, navigationController, runManager, mapUI);
 
             // Bestiary & Codex Subsystem (TASK-059)
             GameObject codexObj = new GameObject("CodexManager");
@@ -623,6 +625,37 @@ namespace Lattirune.Core
             restUiObj.transform.SetParent(transform);
             var campfireRestUI = restUiObj.AddComponent<CampfireRestUIController>();
             campfireRestUI.Initialize(runManager, _playerCombatant, null, navigationController);
+            campfireRestUI.BindMapController(mapUI);
+
+            // Run Event UI Controller
+            GameObject eventUiObj = new GameObject("RunEventUIController");
+            eventUiObj.transform.SetParent(transform);
+            var eventUI = eventUiObj.AddComponent<RunEventUIController>();
+            eventUI.Initialize(eventIntegration.EventService, runManager, _playerCombatant, eventIntegration.ModifierManager, navigationController, runManager, mapUI);
+
+            // Run Complete & Summary Controller
+            GameObject completeObj = new GameObject("RunCompleteController");
+            completeObj.transform.SetParent(transform);
+            var runCompleteUI = completeObj.AddComponent<RunCompleteController>();
+            runCompleteUI.Initialize(navigationController, runManager, metaProgressionManager);
+
+            combatEncounterUI.BindControllers(mapUI, runCompleteUI);
+
+            runManager.OnRunCompleted += () =>
+            {
+                runCompleteUI.SetupSummary(victory: true, floors: 10, gold: runManager.CurrentGold, embers: runManager.CurrentEmbers);
+                if (navigationController != null) navigationController.NavigateTo(ScreenState.VICTORY);
+            };
+
+            runManager.OnRunDefeated += () =>
+            {
+                if (!runManager.CanRevivePlayer)
+                {
+                    int cleared = Mathf.Max(0, runManager.CurrentFloorNumber - 1);
+                    runCompleteUI.SetupSummary(victory: false, floors: cleared, gold: runManager.CurrentGold, embers: runManager.CurrentEmbers);
+                    if (navigationController != null) navigationController.NavigateTo(ScreenState.DEATH);
+                }
+            };
 
             // Tutorial System Subsystem (TASK-063)
             GameObject tutObj = new GameObject("TutorialManager");
@@ -662,6 +695,10 @@ namespace Lattirune.Core
                 navigationController.RegisterScreenController(ScreenState.REWARD_SELECTION, combatEncounterUI);
                 navigationController.RegisterScreenController(ScreenState.MERCHANT, merchantUI);
                 navigationController.RegisterScreenController(ScreenState.CAMPFIRE_REST, campfireRestUI);
+                navigationController.RegisterScreenController(ScreenState.EVENT, eventUI);
+                navigationController.RegisterScreenController(ScreenState.VICTORY, runCompleteUI);
+                navigationController.RegisterScreenController(ScreenState.DEATH, runCompleteUI);
+                navigationController.RegisterScreenController(ScreenState.RUN_COMPLETE, runCompleteUI);
                 navigationController.RegisterScreenController(ScreenState.CODEX, codexUI);
 
                 if (dragController != null) dragController.BindNavigation(navigationController);

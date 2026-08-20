@@ -29,6 +29,7 @@ namespace Lattirune.Events
         public RunEventTrigger EventTrigger => eventTrigger;
         public RunEventPresenter EventPresenter => eventPresenter;
         public RunEventMobilePanel MobilePanel => mobilePanel;
+        public RunModifierManager ModifierManager => modifierManager;
 
         public void Initialize(
             RunManager manager,

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using Lattirune.Combat;
+using Lattirune.Dungeon;
 using Lattirune.Economy;
 using Lattirune.Events;
 using Lattirune.Modifiers;
@@ -17,32 +18,52 @@ namespace Lattirune.UI
         [SerializeField] private RunEventService eventService;
         [SerializeField] private PlayerCombatant playerCombatant;
         [SerializeField] private RunModifierManager modifierManager;
+        [SerializeField] private ScreenNavigationController navigation;
+        [SerializeField] private RunManager runManager;
+        [SerializeField] private DungeonMapScreenController mapController;
 
         private IEconomyService _economyService;
         private RunEventDefinitionSO _activeEvent;
         private string _lastOutcomeMessage = string.Empty;
         private bool _isShowingModal = false;
+        private bool _isResolved = false;
 
         public bool IsShowingModal => _isShowingModal;
         public RunEventDefinitionSO ActiveEvent => _activeEvent;
         public string LastOutcomeMessage => _lastOutcomeMessage;
 
+        public void BindMapController(DungeonMapScreenController map)
+        {
+            mapController = map;
+        }
+
         public void Initialize(
             RunEventService service,
             IEconomyService economy,
             PlayerCombatant player,
-            RunModifierManager modifiers)
+            RunModifierManager modifiers,
+            ScreenNavigationController nav = null,
+            RunManager run = null,
+            DungeonMapScreenController map = null)
         {
             eventService = service;
             _economyService = economy;
             playerCombatant = player;
             modifierManager = modifiers;
+            navigation = nav;
+            runManager = run;
+            mapController = map;
 
             if (eventService != null)
             {
                 eventService.OnEventPresented += HandleEventPresented;
                 eventService.OnEventResolved += HandleEventResolved;
                 eventService.OnEventFailed += HandleEventFailed;
+            }
+
+            if (navigation != null)
+            {
+                navigation.OnScreenChanged += HandleScreenChanged;
             }
         }
 
@@ -54,6 +75,22 @@ namespace Lattirune.UI
                 eventService.OnEventResolved -= HandleEventResolved;
                 eventService.OnEventFailed -= HandleEventFailed;
             }
+            if (navigation != null)
+            {
+                navigation.OnScreenChanged -= HandleScreenChanged;
+            }
+        }
+
+        private void HandleScreenChanged(ScreenState prev, ScreenState next)
+        {
+            if (next == ScreenState.EVENT)
+            {
+                if (_activeEvent == null && eventService != null)
+                {
+                    int floor = runManager != null ? runManager.CurrentFloorIndex : 0;
+                    eventService.SelectAndPresentEventForFloor(floor);
+                }
+            }
         }
 
         private void HandleEventPresented(RunEventDefinitionSO ev)
@@ -61,13 +98,13 @@ namespace Lattirune.UI
             _activeEvent = ev;
             _lastOutcomeMessage = string.Empty;
             _isShowingModal = true;
+            _isResolved = false;
         }
 
         private void HandleEventResolved(RunEventDefinitionSO ev, RunEventChoice choice, RunEventResolutionResult result)
         {
-            _lastOutcomeMessage = $"Outcome: {choice.DisplayName} applied successfully.";
-            _isShowingModal = false;
-            _activeEvent = null;
+            _lastOutcomeMessage = $"Choice resolved: {choice.DisplayName} applied successfully.";
+            _isResolved = true;
         }
 
         private void HandleEventFailed(RunEventDefinitionSO ev, RunEventChoice choice, string reason)
@@ -79,18 +116,11 @@ namespace Lattirune.UI
         {
             _isShowingModal = false;
             _activeEvent = null;
+            _isResolved = false;
             if (eventService != null)
             {
                 eventService.ClearActiveEvent();
             }
-        }
-
-        [SerializeField] private ScreenNavigationController navigation;
-
-        public void Initialize(RunEventService service = null, ScreenNavigationController nav = null)
-        {
-            eventService = service;
-            navigation = nav;
         }
 
         private void OnGUI()
@@ -128,6 +158,7 @@ namespace Lattirune.UI
             GUILayout.Space(20);
 
             // Choices list
+            GUI.enabled = !_isResolved;
             for (int i = 0; i < _activeEvent.Choices.Count; i++)
             {
                 var choice = _activeEvent.Choices[i];
@@ -143,6 +174,7 @@ namespace Lattirune.UI
                 }
                 GUILayout.Space(10);
             }
+            GUI.enabled = true;
 
             if (!string.IsNullOrEmpty(_lastOutcomeMessage))
             {
@@ -153,6 +185,27 @@ namespace Lattirune.UI
                 alertStyle.alignment = TextAnchor.MiddleCenter;
                 alertStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
                 GUILayout.Label(_lastOutcomeMessage, alertStyle);
+            }
+
+            if (_isResolved)
+            {
+                GUILayout.Space(16);
+                if (LattiruneUITheme.DrawPrimaryButton("CONTINUE DESCENT", 75f))
+                {
+                    if (mapController != null && mapController.MapGraph != null)
+                    {
+                        mapController.MapGraph.CompleteCurrentNode();
+                    }
+                    if (runManager != null)
+                    {
+                        runManager.ContinueAfterReward();
+                    }
+                    CloseModal();
+                    if (navigation != null)
+                    {
+                        navigation.NavigateTo(ScreenState.DUNGEON_MAP);
+                    }
+                }
             }
 
             GUILayout.EndArea();

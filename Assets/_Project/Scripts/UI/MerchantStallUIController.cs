@@ -22,6 +22,7 @@ namespace Lattirune.UI
         [SerializeField] private PlayerCombatant playerCombatant;
         [SerializeField] private RunManager runManager;
         [SerializeField] private ScreenNavigationController navigation;
+        [SerializeField] private DungeonMapScreenController mapController;
 
         private IEconomyService _economyService;
 
@@ -91,6 +92,11 @@ namespace Lattirune.UI
             isVisible = false;
         }
 
+        public void BindMapController(DungeonMapScreenController map)
+        {
+            mapController = map;
+        }
+
         private void OnGUI()
         {
             if (navigation == null || navigation.CurrentScreen != ScreenState.MERCHANT) return;
@@ -103,28 +109,29 @@ namespace Lattirune.UI
             float posX = (1080f - panelWidth) * 0.5f;
             float posY = (Screen.height / scale - panelHeight) * 0.5f;
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "WANDERING MERCHANT");
+            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "THE RAT-FOLK TRADER — OUTPOST");
 
             GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
 
-            LattiruneUITheme.DrawHeader("WANDERING MERCHANT", "Rare armaments, ancient runes, and lattice expansions.");
+            LattiruneUITheme.DrawHeader("MERCHANT OUTPOST", "Exchange hard-earned gold for vital dungeon supplies.");
             GUILayout.Space(10);
 
-            int currentGold = _economyService != null ? _economyService.CurrentGold : (runManager != null ? runManager.CurrentGold : 0);
+            // Economy bar
+            int gold = _economyService != null ? _economyService.GoldBalance : 0;
             int floorNum = runManager != null ? runManager.CurrentFloorNumber : 1;
-
-            LattiruneUITheme.DrawBadge($"Floor: {floorNum}  |  Your Gold: {currentGold}g", LattiruneUITheme.ColorGoldPrimary);
+            LattiruneUITheme.DrawBadge($"HERO GOLD: {gold}g  |  FLOOR {floorNum} STOCK", LattiruneUITheme.ColorGoldPrimary);
             GUILayout.Space(12);
 
-            GUIStyle dialogueStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-            dialogueStyle.fontSize = 17;
-            dialogueStyle.fontStyle = FontStyle.Italic;
-            dialogueStyle.alignment = TextAnchor.MiddleCenter;
-            dialogueStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
-            GUILayout.Label($"\"{_feedbackMessage}\"", dialogueStyle);
-            GUILayout.Space(16);
+            // Dialogue / Feedback
+            GUIStyle feedbackStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            feedbackStyle.fontSize = 17;
+            feedbackStyle.fontStyle = FontStyle.Italic;
+            feedbackStyle.alignment = TextAnchor.MiddleCenter;
+            feedbackStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+            GUILayout.Label($"\"{_feedbackMessage}\"", feedbackStyle);
+            GUILayout.Space(12);
 
-            // Offers List
+            // Offer Cards
             var offers = merchantSystem.CurrentOffers;
             for (int i = 0; i < offers.Count; i++)
             {
@@ -133,20 +140,19 @@ namespace Lattirune.UI
 
                 GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
 
-                GUIStyle offerHeader = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                offerHeader.fontSize = 22;
-                offerHeader.fontStyle = FontStyle.Bold;
-                offerHeader.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorGoldBright;
+                GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+                titleStyle.fontSize = 20;
+                titleStyle.fontStyle = FontStyle.Bold;
+                titleStyle.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorGoldPrimary;
 
-                string statusText = offer.IsSold ? "[SOLD OUT]" : $"{offer.CurrentPrice} Gold";
-                GUILayout.Label($"{offer.Title}  —  {statusText}", offerHeader);
-                GUILayout.Space(4);
+                string soldTag = offer.IsSold ? " [SOLD OUT]" : "";
+                GUILayout.Label($"{offer.Title}{soldTag}", titleStyle);
 
                 GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                descStyle.fontSize = 16;
-                descStyle.normal.textColor = offer.IsSold ? LattiruneUITheme.ColorTextMuted : LattiruneUITheme.ColorTextPrimary;
+                descStyle.fontSize = 15;
+                descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
                 GUILayout.Label(offer.Description, descStyle);
-                GUILayout.Space(8);
+                GUILayout.Space(6);
 
                 if (!offer.IsSold)
                 {
@@ -187,13 +193,17 @@ namespace Lattirune.UI
             if (LattiruneUITheme.DrawPrimaryButton("LEAVE MERCHANT & CONTINUE", 75f))
             {
                 Hide();
+                if (mapController != null && mapController.MapGraph != null)
+                {
+                    mapController.MapGraph.CompleteCurrentNode();
+                }
                 if (runManager != null)
                 {
                     runManager.ContinueAfterReward();
                 }
                 if (navigation != null)
                 {
-                    navigation.NavigateTo(ScreenState.GRID_BUILD);
+                    navigation.NavigateTo(ScreenState.DUNGEON_MAP);
                 }
             }
 

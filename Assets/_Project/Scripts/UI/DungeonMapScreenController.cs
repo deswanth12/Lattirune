@@ -65,14 +65,27 @@ namespace Lattirune.UI
             }
         }
 
+        public void ResetMapForNewRun()
+        {
+            _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
+            _selectedNodeId = "node_f1_entry";
+        }
+
         public void Show()
         {
             isVisible = true;
-            _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
+            if (_mapGraph == null)
+            {
+                _mapGraph = DungeonMapGraph.CreateCanonicalCursedSewersMap();
+            }
             var available = _mapGraph.GetAvailableNodes();
             if (available.Count > 0)
             {
-                _selectedNodeId = available[0].NodeId;
+                var curr = _mapGraph.GetNode(_selectedNodeId);
+                if (curr == null || !curr.IsAvailable || curr.IsCleared)
+                {
+                    _selectedNodeId = available[0].NodeId;
+                }
             }
         }
 
@@ -195,6 +208,12 @@ namespace Lattirune.UI
                 if (_mapGraph.SelectAndEnterNode(_selectedNodeId))
                 {
                     Hide();
+                    if (runManager != null)
+                    {
+                        runManager.SetCurrentFloor(selectedNode.FloorNumber - 1);
+                        runManager.PrepareCurrentEncounter();
+                    }
+
                     if (selectedNode.NodeType == DungeonMapNodeType.MerchantStall)
                     {
                         if (navigation != null) navigation.NavigateTo(ScreenState.MERCHANT);
@@ -202,6 +221,10 @@ namespace Lattirune.UI
                     else if (selectedNode.NodeType == DungeonMapNodeType.CampfireRest)
                     {
                         if (navigation != null) navigation.NavigateTo(ScreenState.CAMPFIRE_REST);
+                    }
+                    else if (selectedNode.NodeType == DungeonMapNodeType.MysteryShrine)
+                    {
+                        if (navigation != null) navigation.NavigateTo(ScreenState.EVENT);
                     }
                     else
                     {

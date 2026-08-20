@@ -74,6 +74,15 @@ namespace Lattirune.UI
             Initialize(combat, synergy, service, catalogue, spawnParent);
         }
 
+        [SerializeField] private DungeonMapScreenController mapController;
+        [SerializeField] private RunCompleteController runCompleteController;
+
+        public void BindControllers(DungeonMapScreenController map, RunCompleteController runComplete)
+        {
+            mapController = map;
+            runCompleteController = runComplete;
+        }
+
         private void OnDestroy()
         {
             if (combatSystem != null)
@@ -110,9 +119,22 @@ namespace Lattirune.UI
 
         private void HandleDefeat()
         {
-            _combatLog = ">>> DEFEAT! Player succumbed. Tap 'RETRY' to challenge again. <<<";
+            _combatLog = ">>> DEFEAT! Player succumbed. <<<";
             _isShowingRewards = false;
             _selectedRewardOption = null;
+
+            if (runManager != null && !runManager.CanRevivePlayer)
+            {
+                if (runCompleteController != null)
+                {
+                    int clearedFloors = Mathf.Max(0, runManager.CurrentFloorNumber - 1);
+                    runCompleteController.SetupSummary(victory: false, floors: clearedFloors, gold: runManager.CurrentGold, embers: runManager.CurrentEmbers);
+                }
+                if (navigation != null)
+                {
+                    navigation.NavigateTo(ScreenState.DEATH);
+                }
+            }
         }
 
         public void SelectReward(RewardOption option)
@@ -133,6 +155,11 @@ namespace Lattirune.UI
             _selectedRewardOption = null;
             _currentRewardOptions.Clear();
 
+            if (mapController != null && mapController.MapGraph != null)
+            {
+                mapController.MapGraph.CompleteCurrentNode();
+            }
+
             if (runManager != null && runManager.CurrentState == Lattirune.Dungeon.RunState.RewardSelection)
             {
                 runManager.ContinueAfterReward();
@@ -147,7 +174,11 @@ namespace Lattirune.UI
             {
                 if (runManager != null && runManager.CurrentState == Lattirune.Dungeon.RunState.RunComplete)
                 {
-                    navigation.NavigateTo(ScreenState.RUN_COMPLETE);
+                    if (runCompleteController != null)
+                    {
+                        runCompleteController.SetupSummary(victory: true, floors: 10, gold: runManager.CurrentGold, embers: runManager.CurrentEmbers);
+                    }
+                    navigation.NavigateTo(ScreenState.VICTORY);
                 }
                 else
                 {
