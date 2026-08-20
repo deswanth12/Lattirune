@@ -80,7 +80,25 @@ namespace Lattirune.UI
             isVisible = false;
         }
 
-                private void OnGUI()
+        private void StartDescent()
+        {
+            if (runManager != null)
+            {
+                runManager.StartRun(metaProgression);
+            }
+            if (mapController != null)
+            {
+                mapController.ResetMapForNewRun();
+            }
+            if (navigation != null)
+            {
+                navigation.NavigateTo(ScreenState.DUNGEON_MAP);
+            }
+            Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.ButtonClick);
+            Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Heavy);
+        }
+
+        private void OnGUI()
         {
             if (navigation == null || navigation.CurrentScreen != ScreenState.HERO_SELECTION) return;
 
@@ -102,205 +120,279 @@ namespace Lattirune.UI
 
             Matrix4x4 oldMatrix = LattiruneUITheme.PrepareGUIMatrix(out float scale, out float offsetY);
 
-            float panelWidth = 960f;
-            float panelHeight = 1500f;
-            float posX = (1080f - panelWidth) * 0.5f;
-            float posY = (Screen.height / scale - panelHeight) * 0.5f;
+            float screenW = 1080f;
+            float virtualH = Screen.height / scale;
+            float padX = 35f;
+            float contentW = screenW - (padX * 2f);
 
-            LattiruneUITheme.DrawModalWindow(new Rect(posX, posY, panelWidth, panelHeight), "HERO CLASS SELECTION");
+            // =================================================================
+            // 1. TOP HEADER & EMBERS PILL
+            // =================================================================
+            float topY = 25f;
+            Rect topBarRect = new Rect(padX, topY, contentW, 70f);
+            LattiruneUITheme.DrawCard(topBarRect);
 
-            GUILayout.BeginArea(new Rect(posX + 40, posY + 40, panelWidth - 80, panelHeight - 80));
+            GUIStyle titleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+            titleStyle.fontSize = 20;
+            titleStyle.fontStyle = FontStyle.Bold;
+            titleStyle.alignment = TextAnchor.MiddleLeft;
+            titleStyle.normal.textColor = LattiruneUITheme.ColorGoldBright;
+            GUI.Label(new Rect(padX + 20f, topY + 12f, 400f, 26f), "CHOOSE YOUR HERO", titleStyle);
 
-            LattiruneUITheme.DrawHeader("HERO CLASS SELECTION", "Choose your Champion for the subterranean descent.");
-            GUILayout.Space(10);
+            GUIStyle subTitleStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+            subTitleStyle.fontSize = 13;
+            subTitleStyle.fontStyle = FontStyle.Italic;
+            subTitleStyle.alignment = TextAnchor.MiddleLeft;
+            subTitleStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
+            GUI.Label(new Rect(padX + 20f, topY + 38f, 400f, 20f), "Select your champion for the subterranean descent", subTitleStyle);
 
             int embers = metaProgression != null ? metaProgression.CurrentEmbers : 0;
-            LattiruneUITheme.DrawBadge($"Persistent Embers: {embers}", LattiruneUITheme.ColorGoldPrimary);
-            GUILayout.Space(14);
+            Texture2D iconEmbers = VisualAssetProvider.GetUIIcon("ui_icon_embers");
+            LattiruneUITheme.DrawIconValue(new Rect(padX + contentW - 200f, topY + 20f, 180f, 30f), iconEmbers, $"{embers} Embers", new Color(1f, 0.6f, 0.2f), 16);
 
-            // 2x2 Hero Selection Grid
-            int count = classes.Count;
-            for (int r = 0; r < count; r += 2)
+            // =================================================================
+            // 2. HERO SELECTOR CARDS (4 TABS)
+            // =================================================================
+            float tabY = topY + 80f;
+            float tabW = (contentW - 30f) / 4f; // ~240px each
+            float tabH = 80f;
+
+            for (int i = 0; i < classes.Count && i < 4; i++)
             {
-                GUILayout.BeginHorizontal();
-                for (int c = 0; c < 2; c++)
+                var def = classes[i];
+                bool isSelected = (i == _selectedPreviewIndex);
+                bool isUnlocked = classManager.IsClassUnlocked(def.ClassId);
+                bool isActive = (def.ClassId == classManager.SelectedClassId);
+
+                Rect tabRect = new Rect(padX + (i * (tabW + 10f)), tabY, tabW, tabH);
+
+                // Background Card
+                Color tabBg = isSelected 
+                    ? new Color(0.18f, 0.22f, 0.32f, 0.95f) 
+                    : new Color(0.08f, 0.10f, 0.14f, 0.90f);
+                GUI.color = tabBg;
+                LattiruneUITheme.DrawCard(tabRect);
+                GUI.color = Color.white;
+
+                if (isSelected)
                 {
-                    int idx = r + c;
-                    if (idx < count)
-                    {
-                        var def = classes[idx];
-                        bool isSelectedPreview = (idx == _selectedPreviewIndex);
-                        bool isUnlocked = classManager.IsClassUnlocked(def.ClassId);
-                        bool isActiveHero = (def.ClassId == classManager.SelectedClassId);
-
-                        string tabText = def.ClassName.ToUpper();
-                        if (isActiveHero) tabText = $"[ACTIVE] {tabText}";
-                        else if (!isUnlocked) tabText = $"[LOCKED] {tabText}";
-
-                        if (isSelectedPreview)
-                        {
-                            if (LattiruneUITheme.DrawPrimaryButton(tabText, 55f))
-                            {
-                                _selectedPreviewIndex = idx;
-                            }
-                        }
-                        else
-                        {
-                            if (LattiruneUITheme.DrawSecondaryButton(tabText, 55f))
-                            {
-                                _selectedPreviewIndex = idx;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        GUILayout.FlexibleSpace();
-                    }
-                    if (c == 0) GUILayout.Space(10);
+                    LattiruneUITheme.DrawBorder(tabRect, 2.5f, LattiruneUITheme.ColorGoldBright);
                 }
-                GUILayout.EndHorizontal();
-                GUILayout.Space(8);
+                else if (isActive)
+                {
+                    LattiruneUITheme.DrawBorder(tabRect, 1.5f, LattiruneUITheme.ColorCyanArcane);
+                }
+
+                // Emblem Icon
+                Texture2D emblem = VisualAssetProvider.GetClassEmblem(def.ClassId);
+                if (emblem != null)
+                {
+                    Rect embRect = new Rect(tabRect.x + 8f, tabRect.y + (tabH - 44f) * 0.5f, 44f, 44f);
+                    GUI.DrawTexture(embRect, emblem, ScaleMode.ScaleToFit);
+                }
+
+                // Tab Title & Status
+                float textX = tabRect.x + 56f;
+                float textW = tabW - 60f;
+
+                GUIStyle nameStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                nameStyle.fontSize = 13;
+                nameStyle.fontStyle = FontStyle.Bold;
+                nameStyle.alignment = TextAnchor.MiddleLeft;
+                nameStyle.normal.textColor = isSelected ? LattiruneUITheme.ColorGoldBright : (isUnlocked ? Color.white : LattiruneUITheme.ColorTextMuted);
+                GUI.Label(new Rect(textX, tabRect.y + 12f, textW, 22f), def.ClassName, nameStyle);
+
+                string statusText = isActive ? "ACTIVE" : (isUnlocked ? "READY" : $"{def.EmbersCost} EMB");
+                Color statusCol = isActive ? LattiruneUITheme.ColorCyanArcane : (isUnlocked ? new Color(0.4f, 0.9f, 0.4f) : new Color(1f, 0.5f, 0.3f));
+
+                GUIStyle statSt = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                statSt.fontSize = 11;
+                statSt.fontStyle = FontStyle.Bold;
+                statSt.alignment = TextAnchor.MiddleLeft;
+                statSt.normal.textColor = statusCol;
+                GUI.Label(new Rect(textX, tabRect.y + 36f, textW, 20f), statusText, statSt);
+
+                // Button overlay for click detection
+                if (GUI.Button(tabRect, GUIContent.none, GUIStyle.none))
+                {
+                    if (_selectedPreviewIndex != i)
+                    {
+                        _selectedPreviewIndex = i;
+                        Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.ButtonClick);
+                        Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Light);
+                    }
+                }
             }
 
-            GUILayout.Space(12);
-
-            // Selected Hero Showcase Card
+            // =================================================================
+            // 3. CENTER SHOWCASE: LARGE SELECTED HERO ARTWORK & BREATHING
+            // =================================================================
             var currentDef = classes[Mathf.Clamp(_selectedPreviewIndex, 0, classes.Count - 1)];
             if (currentDef != null)
             {
                 bool isUnlocked = classManager.IsClassUnlocked(currentDef.ClassId);
                 bool isActive = (currentDef.ClassId == classManager.SelectedClassId);
 
-                GUILayout.BeginVertical(LattiruneUITheme.StyleCard);
+                float stageY = tabY + tabH + 8f;
+                float stageH = 560f;
+                Rect stageRect = new Rect(padX, stageY, contentW, stageH);
 
-                GUILayout.BeginHorizontal();
+                // Breathing animation
+                float breathY = Mathf.Sin(Time.time * 2.8f) * 6f;
+                float scalePulse = 1f + Mathf.Sin(Time.time * 2.8f) * 0.02f;
 
-                // 1. Large Hero Artwork Portrait
+                float heroW = 400f * scalePulse;
+                float heroH = 490f * scalePulse;
+                float heroCenterX = stageRect.x + stageRect.width * 0.5f;
+                float groundY = stageRect.y + stageH - 15f;
+
+                // Hero Artwork
                 Texture2D heroTex = VisualAssetProvider.GetHeroTexture(currentDef.ClassId);
                 if (heroTex != null)
                 {
-                    Rect heroArtRect = GUILayoutUtility.GetRect(180f, 180f, GUILayout.Width(180f), GUILayout.Height(180f));
-                    GUI.DrawTexture(heroArtRect, heroTex, ScaleMode.ScaleToFit);
-                    GUILayout.Space(16);
+                    Rect heroRect = new Rect(heroCenterX - heroW * 0.5f, groundY - heroH + breathY, heroW, heroH);
+                    Color oldC = GUI.color;
+                    if (!isUnlocked)
+                    {
+                        GUI.color = new Color(0.55f, 0.55f, 0.65f, 0.75f);
+                    }
+                    GUI.DrawTexture(heroRect, heroTex, ScaleMode.ScaleToFit);
+                    GUI.color = oldC;
                 }
 
-                // 2. Hero Info & Stats
-                GUILayout.BeginVertical();
-                GUIStyle headerStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
-                headerStyle.fontSize = 24;
-                headerStyle.fontStyle = FontStyle.Bold;
-                headerStyle.normal.textColor = isActive ? LattiruneUITheme.ColorGoldBright : (isUnlocked ? LattiruneUITheme.ColorTextPrimary : LattiruneUITheme.ColorTextMuted);
+                // =================================================================
+                // 4. STATS, ABILITIES & STARTING LOADOUT CARD
+                // =================================================================
+                float infoY = stageY + stageH + 8f;
+                float infoH = 340f;
+                Rect infoRect = new Rect(padX, infoY, contentW, infoH);
+                LattiruneUITheme.DrawCard(infoRect);
 
-                string badge = isActive ? " [ACTIVE CHAMPION]" : (isUnlocked ? " [UNLOCKED]" : $" [LOCKED: {currentDef.EmbersCost} Embers]");
-                GUILayout.Label($"{currentDef.ClassName.ToUpper()}{badge}", headerStyle);
-                GUILayout.Space(4);
+                // 4a. Header
+                GUIStyle cardTitleStyle = new GUIStyle(LattiruneUITheme.StyleSectionTitle);
+                cardTitleStyle.fontSize = 22;
+                cardTitleStyle.fontStyle = FontStyle.Bold;
+                cardTitleStyle.alignment = TextAnchor.MiddleLeft;
+                cardTitleStyle.normal.textColor = isActive ? LattiruneUITheme.ColorGoldBright : (isUnlocked ? Color.white : LattiruneUITheme.ColorTextMuted);
+
+                string activeTag = isActive ? " [ACTIVE CHAMPION]" : (isUnlocked ? " [UNLOCKED]" : $" [LOCKED — {currentDef.EmbersCost} EMBERS]");
+                GUI.Label(new Rect(padX + 20f, infoY + 12f, contentW - 40f, 28f), $"{currentDef.ClassName.ToUpper()}{activeTag}", cardTitleStyle);
 
                 GUIStyle descStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                descStyle.fontSize = 15;
+                descStyle.fontSize = 14;
                 descStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-                GUILayout.Label(currentDef.Description, descStyle);
-                GUILayout.Space(8);
+                GUI.Label(new Rect(padX + 20f, infoY + 44f, contentW - 40f, 38f), currentDef.Description, descStyle);
 
-                // Stats Row
-                GUIStyle statStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
-                statStyle.fontSize = 15;
-                statStyle.fontStyle = FontStyle.Bold;
-                statStyle.normal.textColor = LattiruneUITheme.ColorCyanArcane;
-                GUILayout.Label($"HP: {currentDef.BaseHp}  |  ARMOR: {currentDef.BaseArmor}  |  ATK: {currentDef.BaseAttack}  |  SPD: {currentDef.AttackInterval:0.0}s", statStyle);
+                // 4b. Stat Pills Row (HP, ATK, ARMOR, SPD)
+                float statY = infoY + 90f;
+                float statW = (contentW - 40f) / 4f;
+                Texture2D iconHp = VisualAssetProvider.GetUIIcon("ui_icon_hp");
+                Texture2D iconAtk = VisualAssetProvider.GetUIIcon("ui_icon_attack");
+                Texture2D iconArmor = VisualAssetProvider.GetUIIcon("ui_icon_armor");
+                Texture2D iconBattle = VisualAssetProvider.GetUIIcon("ui_icon_battle");
 
-                GUILayout.EndVertical();
-                GUILayout.EndHorizontal();
+                LattiruneUITheme.DrawIconValue(new Rect(padX + 20f, statY, statW, 26f), iconHp, $"HP: {currentDef.BaseHp}", new Color(0.3f, 0.9f, 0.4f), 15);
+                LattiruneUITheme.DrawIconValue(new Rect(padX + 20f + statW, statY, statW, 26f), iconAtk, $"ATK: {currentDef.BaseAttack}", LattiruneUITheme.ColorTextPrimary, 15);
+                LattiruneUITheme.DrawIconValue(new Rect(padX + 20f + statW * 2f, statY, statW, 26f), iconArmor, $"ARMOR: {currentDef.BaseArmor}", LattiruneUITheme.ColorCyanArcane, 15);
+                LattiruneUITheme.DrawIconValue(new Rect(padX + 20f + statW * 3f, statY, statW, 26f), iconBattle, $"SPD: {currentDef.AttackInterval:0.0}s", LattiruneUITheme.ColorGoldPrimary, 15);
 
-                GUILayout.Space(10);
+                // 4c. Starting Equipment & Runes Row
+                float loadoutY = statY + 38f;
+                GUIStyle loadoutTitleStyle = new GUIStyle(LattiruneUITheme.StyleStatLabel);
+                loadoutTitleStyle.fontSize = 13;
+                loadoutTitleStyle.fontStyle = FontStyle.Bold;
+                loadoutTitleStyle.normal.textColor = LattiruneUITheme.ColorGoldPrimary;
+                GUI.Label(new Rect(padX + 20f, loadoutY, 200f, 20f), "STARTING LOADOUT:", loadoutTitleStyle);
 
-                // Starting Runes & Items Row
-                GUILayout.BeginHorizontal();
-                for (int i = 0; i < currentDef.StartingRuneIds.Count; i++)
-                {
-                    Texture2D runeIcon = VisualAssetProvider.GetRuneTexture(ElementType.Fire);
-                    Rect rRect = GUILayoutUtility.GetRect(48f, 48f, GUILayout.Width(48f), GUILayout.Height(48f));
-                    if (runeIcon != null) GUI.DrawTexture(rRect, runeIcon, ScaleMode.ScaleToFit);
-                    GUILayout.Space(6);
-                }
+                float iconX = padX + 20f;
+                float itemIconY = loadoutY + 24f;
+                float itemSize = 48f;
+
                 for (int i = 0; i < currentDef.StartingItemIds.Count; i++)
                 {
-                    Texture2D itemIcon = VisualAssetProvider.GetItemTexture(currentDef.StartingItemIds[i]);
-                    Rect iRect = GUILayoutUtility.GetRect(48f, 48f, GUILayout.Width(48f), GUILayout.Height(48f));
-                    if (itemIcon != null) GUI.DrawTexture(iRect, itemIcon, ScaleMode.ScaleToFit);
-                    GUILayout.Space(6);
+                    Texture2D itex = VisualAssetProvider.GetItemTexture(currentDef.StartingItemIds[i]);
+                    Rect itRect = new Rect(iconX, itemIconY, itemSize, itemSize);
+                    GUI.DrawTexture(itRect, LattiruneUITheme.StyleCard.normal.background ?? Texture2D.blackTexture);
+                    LattiruneUITheme.DrawBorder(itRect, 1.5f, LattiruneUITheme.ColorGoldPrimary);
+                    if (itex != null) GUI.DrawTexture(new Rect(itRect.x + 4, itRect.y + 4, itRect.width - 8, itRect.height - 8), itex, ScaleMode.ScaleToFit);
+                    iconX += itemSize + 10f;
                 }
-                GUILayout.EndHorizontal();
 
-                GUILayout.Space(14);
+                for (int i = 0; i < currentDef.StartingRuneIds.Count; i++)
+                {
+                    Texture2D rtex = VisualAssetProvider.GetRuneTexture(currentDef.StartingRuneIds[i]);
+                    Rect rRect = new Rect(iconX, itemIconY, itemSize, itemSize);
+                    GUI.DrawTexture(rRect, LattiruneUITheme.StyleCard.normal.background ?? Texture2D.blackTexture);
+                    LattiruneUITheme.DrawBorder(rRect, 1.5f, LattiruneUITheme.ColorCyanArcane);
+                    if (rtex != null) GUI.DrawTexture(new Rect(rRect.x + 4, rRect.y + 4, rRect.width - 8, rRect.height - 8), rtex, ScaleMode.ScaleToFit);
+                    iconX += itemSize + 10f;
+                }
 
-                // Select / Unlock Action
+                // =================================================================
+                // 5. BOTTOM ACTION BAR (DESCEND / SELECT / UNLOCK & RETURN)
+                // =================================================================
+                float botBarY = virtualH - 115f;
+                float botBtnH = 85f;
+
                 if (!isUnlocked)
                 {
                     bool canAfford = metaProgression != null && metaProgression.CurrentEmbers >= currentDef.EmbersCost;
-                    GUI.enabled = canAfford;
+                    float unlockW = contentW - 220f;
+                    Rect unlockRect = new Rect(padX, botBarY, unlockW, botBtnH);
 
-                    if (LattiruneUITheme.DrawPrimaryButton($"UNLOCK CHAMPION ({currentDef.EmbersCost} Embers)", 60f))
+                    GUI.enabled = canAfford;
+                    if (GUI.Button(unlockRect, $"UNLOCK {currentDef.ClassName.ToUpper()} ({currentDef.EmbersCost} EMBERS)", LattiruneUITheme.StylePrimaryBtn))
                     {
                         if (classManager.UnlockClass(currentDef.ClassId, metaProgression))
                         {
                             _feedbackMessage = $"Unlocked {currentDef.ClassName}!";
+                            Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.RewardApplied);
+                            Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Success);
                         }
                     }
-
                     GUI.enabled = true;
+
+                    Rect backRect = new Rect(padX + unlockW + 16f, botBarY, 204f, botBtnH);
+                    if (GUI.Button(backRect, "RETURN", LattiruneUITheme.StyleSecondaryBtn))
+                    {
+                        navigation?.NavigateTo(ScreenState.MAIN_MENU);
+                    }
                 }
                 else if (!isActive)
                 {
-                    if (LattiruneUITheme.DrawPrimaryButton("SET AS ACTIVE CHAMPION", 60f))
+                    float selectW = (contentW - 16f) * 0.5f;
+                    Rect selectRect = new Rect(padX, botBarY, selectW, botBtnH);
+                    if (GUI.Button(selectRect, "SELECT HERO", LattiruneUITheme.StylePrimaryBtn))
                     {
                         classManager.SelectClass(currentDef.ClassId);
-                        _feedbackMessage = $"Selected {currentDef.ClassName} as active champion!";
+                        Audio.AudioController.Instance?.PlaySfx(Audio.AudioCueType.ButtonClick);
+                        Audio.HapticFeedback.Trigger(Audio.HapticFeedbackType.Medium);
+                    }
+
+                    Rect playRect = new Rect(padX + selectW + 16f, botBarY, selectW, botBtnH);
+                    if (GUI.Button(playRect, "DESCEND", LattiruneUITheme.StylePrimaryBtn))
+                    {
+                        classManager.SelectClass(currentDef.ClassId);
+                        StartDescent();
                     }
                 }
                 else
                 {
-                    GUI.enabled = false;
-                    LattiruneUITheme.DrawSecondaryButton("ACTIVE CHAMPION READY", 60f);
-                    GUI.enabled = true;
-                }
+                    float playW = contentW - 220f;
+                    Rect playRect = new Rect(padX, botBarY, playW, botBtnH);
+                    if (GUI.Button(playRect, "DESCEND INTO DUNGEON", LattiruneUITheme.StylePrimaryBtn))
+                    {
+                        StartDescent();
+                    }
 
-                GUILayout.EndVertical();
-            }
-
-            GUILayout.FlexibleSpace();
-
-            // Bottom Navigation Buttons
-            GUILayout.BeginHorizontal();
-
-            if (LattiruneUITheme.DrawPrimaryButton("DESCEND INTO DUNGEON", 75f))
-            {
-                if (runManager != null)
-                {
-                    runManager.StartRun(metaProgression);
-                }
-                if (mapController != null)
-                {
-                    mapController.ResetMapForNewRun();
-                }
-                if (navigation != null)
-                {
-                    navigation.NavigateTo(ScreenState.DUNGEON_MAP);
+                    Rect backRect = new Rect(padX + playW + 16f, botBarY, 204f, botBtnH);
+                    if (GUI.Button(backRect, "RETURN", LattiruneUITheme.StyleSecondaryBtn))
+                    {
+                        navigation?.NavigateTo(ScreenState.MAIN_MENU);
+                    }
                 }
             }
 
-            GUILayout.Space(16);
-
-            if (LattiruneUITheme.DrawSecondaryButton("RETURN", 75f))
-            {
-                if (navigation != null)
-                {
-                    navigation.NavigateTo(ScreenState.MAIN_MENU);
-                }
-            }
-
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndArea();
             GUI.matrix = oldMatrix;
         }
     }

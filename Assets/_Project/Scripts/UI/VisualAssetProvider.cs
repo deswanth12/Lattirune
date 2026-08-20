@@ -46,6 +46,13 @@ namespace Lattirune.UI
             return "hero_rune_knight";
         }
 
+        public static Texture2D GetClassEmblem(string classId)
+        {
+            string cleanId = NormalizeHeroId(classId);
+            string emblemName = cleanId.Replace("hero_", "emblem_");
+            return LoadArtTexture("UI/" + emblemName, "UI/emblem_rune_knight");
+        }
+
         // =========================================================================
         // 2. ENEMY & BOSS VISUALS
         // =========================================================================
@@ -105,6 +112,18 @@ namespace Lattirune.UI
             }
         }
 
+        public static Texture2D GetRuneTexture(string runeId)
+        {
+            if (string.IsNullOrEmpty(runeId)) return LoadArtTexture("Runes/rune_fire", "Runes/rune_fire");
+            string lower = runeId.ToLowerInvariant();
+            if (lower.Contains("spark") || lower.Contains("lightning")) return LoadArtTexture("Runes/rune_spark", "Runes/rune_lightning");
+            if (lower.Contains("prism") || lower.Contains("frost") || lower.Contains("ice")) return LoadArtTexture("Runes/rune_prism", "Runes/rune_frost");
+            if (lower.Contains("venom") || lower.Contains("poison") || lower.Contains("nature")) return LoadArtTexture("Runes/rune_venom", "Runes/rune_nature");
+            if (lower.Contains("void") || lower.Contains("shadow")) return LoadArtTexture("Runes/rune_shadow", "Runes/rune_shadow");
+            if (lower.Contains("light") || lower.Contains("sun")) return LoadArtTexture("Runes/rune_light", "Runes/rune_light");
+            return LoadArtTexture("Runes/rune_fire", "Runes/rune_fire");
+        }
+
         public static Texture2D GetConduitArrowTexture(string direction)
         {
             string lower = (direction ?? "north").ToLowerInvariant();
@@ -122,14 +141,17 @@ namespace Lattirune.UI
             if (string.IsNullOrEmpty(itemId)) return LoadArtTexture("Items/item_iron_broadsword", "Items/item_iron_broadsword");
             string lower = itemId.ToLowerInvariant();
 
+            if (lower.Contains("wand") || lower.Contains("apprentice")) return LoadArtTexture("Items/item_apprentice_wand", "Items/item_iron_broadsword");
+            if (lower.Contains("dagger") || lower.Contains("rusty") || lower.Contains("void")) return LoadArtTexture("Items/item_rusty_dagger", "Items/item_void_dagger");
+            if (lower.Contains("bow") || lower.Contains("shortbow")) return LoadArtTexture("Items/item_shortbow", "Items/item_iron_broadsword");
             if (lower.Contains("training")) return LoadArtTexture("Items/item_training_sword", "Items/item_iron_broadsword");
             if (lower.Contains("ember")) return LoadArtTexture("Items/item_ember_blade", "Items/item_iron_broadsword");
             if (lower.Contains("decay")) return LoadArtTexture("Items/item_decaying_blade", "Items/item_iron_broadsword");
             if (lower.Contains("scythe") || lower.Contains("frost")) return LoadArtTexture("Items/item_frost_scythe", "Items/item_iron_broadsword");
-            if (lower.Contains("hammer") || lower.Contains("storm")) return LoadArtTexture("Items/item_storm_hammer", "Items/item_iron_broadsword");
-            if (lower.Contains("dagger") || lower.Contains("void")) return LoadArtTexture("Items/item_void_dagger", "Items/item_iron_broadsword");
+            if (lower.Contains("hammer") || lower.Contains("mace") || lower.Contains("storm")) return LoadArtTexture("Items/item_heavy_mace", "Items/item_iron_broadsword");
             if (lower.Contains("spear") || lower.Contains("sunfire")) return LoadArtTexture("Items/item_sunfire_spear", "Items/item_iron_broadsword");
 
+            if (lower.Contains("tower")) return LoadArtTexture("Items/item_tower_shield", "Items/item_guard_plate");
             if (lower.Contains("buckler") || lower.Contains("wooden")) return LoadArtTexture("Items/item_wooden_buckler", "Items/item_guard_plate");
             if (lower.Contains("guard")) return LoadArtTexture("Items/item_guard_plate", "Items/item_guard_plate");
             if (lower.Contains("chainmail")) return LoadArtTexture("Items/item_chainmail_coat", "Items/item_guard_plate");
@@ -137,13 +159,15 @@ namespace Lattirune.UI
             if (lower.Contains("robe")) return LoadArtTexture("Items/item_robe_of_arcane", "Items/item_guard_plate");
             if (lower.Contains("dread")) return LoadArtTexture("Items/item_dread_plate", "Items/item_guard_plate");
 
+            if (lower.Contains("clover") || lower.Contains("lucky")) return LoadArtTexture("Items/item_lucky_clover", "Items/item_arcane_relic");
             if (lower.Contains("arcane")) return LoadArtTexture("Items/item_arcane_relic", "Items/item_arcane_relic");
-            if (lower.Contains("clover")) return LoadArtTexture("Items/item_lucky_clover", "Items/item_arcane_relic");
             if (lower.Contains("dragon") || lower.Contains("heart")) return LoadArtTexture("Items/item_dragon_heart", "Items/item_arcane_relic");
             if (lower.Contains("fang")) return LoadArtTexture("Items/item_vampire_fang", "Items/item_arcane_relic");
             if (lower.Contains("prism")) return LoadArtTexture("Items/item_prism_lens", "Items/item_arcane_relic");
             if (lower.Contains("idol")) return LoadArtTexture("Items/item_ancient_idol", "Items/item_ancient_idol");
 
+            if (lower.Contains("poison") || lower.Contains("venom")) return LoadArtTexture("Items/item_poison_vial", "Items/item_health_potion");
+            if (lower.Contains("stamina")) return LoadArtTexture("Items/item_stamina_flask", "Items/item_health_potion");
             if (lower.Contains("health") || lower.Contains("vital")) return LoadArtTexture("Items/item_health_potion", "Items/item_health_potion");
             if (lower.Contains("mana")) return LoadArtTexture("Items/item_mana_flask", "Items/item_health_potion");
             if (lower.Contains("fury") || lower.Contains("elixir")) return LoadArtTexture("Items/item_elixir_fury", "Items/item_health_potion");
