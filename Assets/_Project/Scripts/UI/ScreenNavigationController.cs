@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Audio;
@@ -62,7 +62,7 @@ namespace Lattirune.UI
             }
 
             currentScreen = nextScreen;
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             HapticFeedback.Trigger(HapticFeedbackType.Selection);
 
             EnforceScreenVisibility(currentScreen);
@@ -116,7 +116,7 @@ namespace Lattirune.UI
             if (currentScreen == ScreenState.COMBAT)
             {
                 OnBackNavigationBlocked?.Invoke(currentScreen);
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.InvalidPlacement);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 HapticFeedback.Trigger(HapticFeedbackType.Failure);
                 return false;
             }
@@ -146,7 +146,7 @@ namespace Lattirune.UI
                 ScreenState old = currentScreen;
                 currentScreen = previous;
 
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 HapticFeedback.Trigger(HapticFeedbackType.Selection);
                 OnScreenChanged?.Invoke(old, currentScreen);
                 return true;
@@ -170,3 +170,4 @@ namespace Lattirune.UI
         }
     }
 }
+

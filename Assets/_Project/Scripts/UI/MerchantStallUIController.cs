@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Audio;
@@ -105,12 +105,12 @@ namespace Lattirune.UI
                 item.isPurchased = true;
                 _inventory[index] = item;
 
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.RewardClaimed);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 JuiceController.Instance?.TriggerHaptic(HapticType.Success);
             }
             else
             {
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.InvalidPlacement);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 JuiceController.Instance?.TriggerHaptic(HapticType.Warning);
             }
         }
@@ -157,7 +157,7 @@ namespace Lattirune.UI
             dialogueStyle.fontStyle = FontStyle.Italic;
             dialogueStyle.alignment = TextAnchor.MiddleLeft;
             dialogueStyle.normal.textColor = LattiruneUITheme.ColorTextMuted;
-            GUI.Label(new Rect(padX + 116f, topY + 48f, contentW - 320f, 38f), "“Ah, an adventurer! Fresh wares from the upper catacombs... for a price.”", dialogueStyle);
+            GUI.Label(new Rect(padX + 116f, topY + 48f, contentW - 320f, 38f), "â€œAh, an adventurer! Fresh wares from the upper catacombs... for a price.â€", dialogueStyle);
 
             int gold = runManager != null ? runManager.CurrentGold : 100;
             Texture2D iconGold = VisualAssetProvider.GetUIIcon("ui_icon_gold");
@@ -274,3 +274,4 @@ namespace Lattirune.UI
         }
     }
 }
+

@@ -218,8 +218,8 @@ namespace Lattirune.UI
                     float btnY = cRect.y + (cRect.height - 55f) * 0.5f;
                     if (GUI.Button(new Rect(btnX, btnY, btnW, 55f), "CHOOSE", LattiruneUITheme.StylePrimaryBtn))
                     {
-                        AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
-                        HapticFeedback.Trigger(HapticFeedbackType.Medium);
+                        Lattirune.Audio.AudioController.Instance?.PlaySfx(Lattirune.Audio.AudioCueType.ButtonClick);
+                        Lattirune.Audio.HapticFeedback.Trigger(Lattirune.Audio.HapticFeedbackType.Medium);
                         eventService?.SelectChoice(choice.ChoiceId, _economyService, playerCombatant, modifierManager);
                     }
                 }
@@ -244,7 +244,7 @@ namespace Lattirune.UI
                 Rect actRect = new Rect(padX, actY, contentW, botBtnH);
                 if (GUI.Button(actRect, "CONTINUE DESCENT", LattiruneUITheme.StylePrimaryBtn))
                 {
-                    AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
+                    Lattirune.Audio.AudioController.Instance?.PlaySfx(Lattirune.Audio.AudioCueType.ButtonClick);
                     CloseModal();
                     mapController?.MapGraph?.CompleteCurrentNode();
                     navigation?.NavigateTo(ScreenState.DUNGEON_MAP);

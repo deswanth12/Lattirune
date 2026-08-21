@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using Lattirune.Audio;
 using Lattirune.Core;
@@ -49,7 +49,7 @@ namespace Lattirune.UI
 
         public void StartNewRun()
         {
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             if (hasSavedRun && saveSystem != null)
             {
                 saveSystem.DeleteSave();
@@ -75,7 +75,7 @@ namespace Lattirune.UI
 
         public void ContinueRun()
         {
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             if (navigation != null)
             {
                 navigation.NavigateTo(ScreenState.DUNGEON_MAP);
@@ -84,7 +84,7 @@ namespace Lattirune.UI
 
         public void OpenCampfireHub()
         {
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             if (navigation != null)
             {
                 navigation.NavigateTo(ScreenState.CAMPFIRE_HUB);
@@ -93,7 +93,7 @@ namespace Lattirune.UI
 
         public void OpenSettings()
         {
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             if (navigation != null)
             {
                 navigation.NavigateTo(ScreenState.SETTINGS);
@@ -102,7 +102,7 @@ namespace Lattirune.UI
 
         public void ExitGame()
         {
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
             #else
@@ -198,3 +198,4 @@ namespace Lattirune.UI
         }
     }
 }
+

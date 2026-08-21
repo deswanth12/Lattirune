@@ -52,7 +52,7 @@ namespace Lattirune.UI
         public void ShowHub()
         {
             isHubVisible = true;
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             OnHubOpened?.Invoke();
         }
 

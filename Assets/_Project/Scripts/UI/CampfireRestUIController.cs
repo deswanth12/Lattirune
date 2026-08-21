@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using Lattirune.Audio;
 using Lattirune.Combat;
@@ -97,7 +97,7 @@ namespace Lattirune.UI
             if (_restActionUsed) return;
             _restActionUsed = true;
             _statusMessage = "You rest by the warm embers. Health restored by 30%!";
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.RewardClaimed);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             JuiceController.Instance?.TriggerHaptic(HapticType.Success);
         }
 
@@ -106,7 +106,7 @@ namespace Lattirune.UI
             if (_restActionUsed) return;
             _restActionUsed = true;
             _statusMessage = "You temper your runes in the flame. Rune potency increased by +20%!";
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.RewardClaimed);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             JuiceController.Instance?.TriggerHaptic(HapticType.Success);
         }
 
@@ -115,7 +115,7 @@ namespace Lattirune.UI
             if (_restActionUsed) return;
             _restActionUsed = true;
             _statusMessage = "You channel the primordial flame. Gained +50 Persistent Embers!";
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.RewardClaimed);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             JuiceController.Instance?.TriggerHaptic(HapticType.Success);
         }
 
@@ -290,3 +290,4 @@ namespace Lattirune.UI
         }
     }
 }
+

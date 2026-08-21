@@ -74,6 +74,9 @@ namespace Lattirune.UI
 
         public void EnterSelectedNode()
         {
+            if (navigation == null) navigation = FindFirstObjectByType<ScreenNavigationController>();
+            if (combatUI == null) combatUI = FindFirstObjectByType<CombatEncounterUI>();
+
             if (string.IsNullOrEmpty(_selectedNodeId) && _mapGraph != null)
             {
                 var avail = _mapGraph.GetAvailableNodes();
@@ -89,7 +92,6 @@ namespace Lattirune.UI
             if (node != null)
             {
                 _mapGraph.SelectAndEnterNode(_selectedNodeId);
-                _mapGraph.CompleteCurrentNode();
 
                 if (node.NodeType == DungeonMapNodeType.MerchantStall)
                 {
@@ -105,8 +107,7 @@ namespace Lattirune.UI
                 }
                 else
                 {
-                    // Combat Encounter (Normal, Elite, Boss)
-                    if (combatUI == null) combatUI = FindFirstObjectByType<CombatEncounterUI>();
+                    // Combat Encounter (Normal, Elite, Boss, TreasureVault)
                     if (combatUI != null)
                     {
                         bool isBoss = (node.NodeType == DungeonMapNodeType.Boss);

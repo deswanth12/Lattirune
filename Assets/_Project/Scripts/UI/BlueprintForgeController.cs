@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Lattirune.Audio;
@@ -60,7 +60,7 @@ namespace Lattirune.UI
         {
             isOpen = true;
             _isProcessingPurchase = false;
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             HapticFeedback.Trigger(HapticFeedbackType.Selection);
             OnForgeOpened?.Invoke();
         }
@@ -70,14 +70,14 @@ namespace Lattirune.UI
             isOpen = false;
             selectedBlueprint = null;
             _isProcessingPurchase = false;
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.UiClick);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             OnForgeClosed?.Invoke();
         }
 
         public void SelectBlueprint(BlueprintDefinitionSO bp)
         {
             selectedBlueprint = bp;
-            AudioController.Instance?.PlaySoundEffect(SoundEffectType.ItemPickup);
+            AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
             HapticFeedback.Trigger(HapticFeedbackType.Selection);
             OnBlueprintSelected?.Invoke(selectedBlueprint);
         }
@@ -114,7 +114,7 @@ namespace Lattirune.UI
             BlueprintUIState state = GetBlueprintState(selectedBlueprint);
             if (state != BlueprintUIState.Available)
             {
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.InvalidPlacement);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 HapticFeedback.Trigger(HapticFeedbackType.Failure);
                 return false;
             }
@@ -125,13 +125,13 @@ namespace Lattirune.UI
 
             if (success)
             {
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.ItemPlaced);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 HapticFeedback.Trigger(HapticFeedbackType.Success);
                 OnBlueprintPurchased?.Invoke(selectedBlueprint);
             }
             else
             {
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.InvalidPlacement);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 HapticFeedback.Trigger(HapticFeedbackType.Failure);
             }
 
@@ -211,7 +211,7 @@ namespace Lattirune.UI
                         _ => ""
                     };
 
-                    GUILayout.Label($"<b>{bp.DisplayName}</b> — Cost: {bp.EmberCost} Embers {stateText}", cardTitleStyle);
+                    GUILayout.Label($"<b>{bp.DisplayName}</b> â€” Cost: {bp.EmberCost} Embers {stateText}", cardTitleStyle);
                     GUILayout.Space(4);
                     GUILayout.Label(bp.Description, descStyle);
                     GUILayout.Space(8);
@@ -251,3 +251,4 @@ namespace Lattirune.UI
         }
     }
 }
+

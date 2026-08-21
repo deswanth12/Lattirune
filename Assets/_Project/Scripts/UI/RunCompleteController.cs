@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using Lattirune.Audio;
 using Lattirune.Dungeon;
@@ -49,12 +49,12 @@ namespace Lattirune.UI
 
             if (isVictory)
             {
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.ItemPlaced);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 HapticFeedback.Trigger(HapticFeedbackType.Success);
             }
             else
             {
-                AudioController.Instance?.PlaySoundEffect(SoundEffectType.InvalidPlacement);
+                AudioController.Instance?.PlaySfx(AudioCueType.ButtonClick);
                 HapticFeedback.Trigger(HapticFeedbackType.Failure);
             }
         }
@@ -241,3 +241,4 @@ namespace Lattirune.UI
         }
     }
 }
+
